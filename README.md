@@ -1,0 +1,62 @@
+# WRO Angklung AI Player
+
+This repository contains the software foundation for a WRO robotics project: an AI-assisted angklung player.
+
+The system will read structured song data, schedule notes with reliable timing, and eventually drive hardware actuators that shake individual angklung instruments. The first milestone is intentionally software-only: prove that song parsing and note scheduling are predictable before attaching real motors, servos, or microcontroller interfaces.
+
+## Current Milestone
+
+Reliable software timing and note scheduling.
+
+The current implementation:
+
+- Loads songs from JSON files.
+- Validates note timing and duration.
+- Converts relative note timings into scheduled playback events.
+- Uses placeholder actuator functions that print which note should be played and when.
+
+Hardware-specific control is not implemented yet. That boundary is deliberate; actuator logic should only be added after the parser and scheduler are proven stable.
+
+## Project Layout
+
+```text
+docs/
+  architecture.md
+  hardware.md
+  software.md
+  roadmap.md
+hardware/
+  parts_list.md
+  wiring.md
+songs/
+  example_song.json
+src/
+  actuator_controller.py
+  config.py
+  main.py
+  note_scheduler.py
+  song_parser.py
+tests/
+  test_note_scheduler.py
+  test_song_parser.py
+```
+
+## Run the Example
+
+```bash
+python3 -m src.main songs/example_song.json
+```
+
+## Run Tests
+
+```bash
+python3 -m pytest
+```
+
+If `pytest` is not installed:
+
+```bash
+python3 -m venv .venv
+.venv/bin/python -m pip install -r requirements.txt
+.venv/bin/python -m pytest
+```
