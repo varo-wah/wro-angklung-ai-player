@@ -20,6 +20,8 @@ Hardware-specific control is not implemented yet. That boundary is deliberate; a
 ## Project Layout
 
 ```text
+config/
+  instrument_map.json
 docs/
   architecture.md
   hardware.md
@@ -33,10 +35,12 @@ songs/
 src/
   actuator_controller.py
   config.py
+  instrument_mapper.py
   main.py
   note_scheduler.py
   song_parser.py
 tests/
+  test_instrument_mapper.py
   test_note_scheduler.py
   test_song_parser.py
 ```

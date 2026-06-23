@@ -7,7 +7,7 @@ The software target is reliable note parsing and scheduling before any physical 
 The current pipeline is:
 
 ```text
-song JSON -> song parser -> note scheduler -> actuator controller placeholder
+song JSON -> song parser -> instrument mapper -> note scheduler -> actuator controller placeholder
 ```
 
 ## Song Format
@@ -42,7 +42,18 @@ The scheduler currently:
 - Sorts notes by `start`.
 - Converts relative note starts into absolute monotonic target times.
 - Sleeps until each target time.
-- Calls the actuator boundary with the scheduled note and actual trigger time.
+- Calls the actuator boundary with expected start time, actual start time, and drift.
+
+## Instrument Mapping
+
+Instrument mappings are stored in `config/instrument_map.json`.
+
+Each playable note must resolve to:
+
+- `instrument_id`: the physical angklung identifier.
+- `actuator_channel`: the placeholder channel that will later correspond to hardware routing.
+
+Playback fails before scheduling if any song note is missing from the map. Partial playback is not allowed at this stage.
 
 ## Testing
 
@@ -61,6 +72,6 @@ If using the local virtual environment created during setup:
 ## Known Limits
 
 - No hardware control is implemented.
-- No jitter measurement is recorded yet.
+- Drift is reported in terminal output, but it is not persisted yet.
 - Simultaneous notes are scheduled sequentially in sorted order.
 - Tempo is stored as metadata, but notes currently use seconds rather than beats.

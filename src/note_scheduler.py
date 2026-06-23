@@ -23,6 +23,16 @@ class ScheduledNote:
     target_time: float
 
 
+@dataclass(frozen=True)
+class PlaybackEvent:
+    """A scheduled note with measured trigger timing."""
+
+    scheduled_note: ScheduledNote
+    expected_start_time: float
+    actual_start_time: float
+    drift_seconds: float
+
+
 def build_schedule(song: Song, start_time: float) -> tuple[ScheduledNote, ...]:
     """Build a chronological schedule from a parsed song."""
 
@@ -52,7 +62,7 @@ class NoteScheduler:
     def play(
         self,
         scheduled_notes: Iterable[ScheduledNote],
-        play_note: Callable[[ScheduledNote, float], None],
+        play_note: Callable[[PlaybackEvent], None],
     ) -> None:
         """Wait until each note's target time, then call `play_note`."""
 
@@ -61,7 +71,15 @@ class NoteScheduler:
             if delay > 0:
                 self._sleeper(delay)
 
-            play_note(scheduled_note, self._clock())
+            actual_start_time = self._clock()
+            play_note(
+                PlaybackEvent(
+                    scheduled_note=scheduled_note,
+                    expected_start_time=scheduled_note.target_time,
+                    actual_start_time=actual_start_time,
+                    drift_seconds=actual_start_time - scheduled_note.target_time,
+                )
+            )
 
 
 def schedule_song(song: Song, start_delay_seconds: float = 0.0, clock: Clock = time.monotonic) -> tuple[ScheduledNote, ...]:

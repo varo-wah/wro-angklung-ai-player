@@ -1,0 +1,18 @@
+{
+  "C4": {
+    "instrument_id": "angklung_01",
+    "actuator_channel": 0
+  },
+  "E4": {
+    "instrument_id": "angklung_02",
+    "actuator_channel": 1
+  },
+  "G4": {
+    "instrument_id": "angklung_03",
+    "actuator_channel": 2
+  },
+  "C5": {
+    "instrument_id": "angklung_04",
+    "actuator_channel": 3
+  }
+}

@@ -1,6 +1,6 @@
 import pytest
 
-from src.note_scheduler import NoteScheduler, ScheduledNote, build_schedule, schedule_song
+from src.note_scheduler import NoteScheduler, PlaybackEvent, ScheduledNote, build_schedule, schedule_song
 from src.song_parser import Note, Song
 
 
@@ -45,7 +45,7 @@ def test_scheduler_sleeps_until_each_note_and_calls_play() -> None:
         ScheduledNote(note="E4", start=1.0, duration=0.5, target_time=11.0),
     )
 
-    scheduler.play(schedule, lambda note, actual_time: played.append((note.note, actual_time)))
+    scheduler.play(schedule, lambda event: played.append((event.scheduled_note.note, event.actual_start_time)))
 
     assert sleeps == pytest.approx([1.0, 0.8])
     assert played == [("C4", 10.0), ("E4", 11.0)]
@@ -57,7 +57,34 @@ def test_scheduler_does_not_sleep_for_late_notes() -> None:
     scheduler = NoteScheduler(clock=lambda: 12.0, sleeper=sleeps.append)
     schedule = (ScheduledNote(note="C4", start=0.0, duration=0.5, target_time=10.0),)
 
-    scheduler.play(schedule, lambda note, actual_time: played.append((note.note, actual_time)))
+    scheduler.play(schedule, lambda event: played.append((event.scheduled_note.note, event.actual_start_time)))
 
     assert sleeps == []
     assert played == [("C4", 12.0)]
+
+
+def test_scheduler_reports_drift_from_expected_target_time() -> None:
+    clock_values = iter([9.9, 10.25])
+    events: list[PlaybackEvent] = []
+    scheduler = NoteScheduler(clock=lambda: next(clock_values), sleeper=lambda delay: None)
+    schedule = (ScheduledNote(note="C4", start=0.0, duration=0.5, target_time=10.0),)
+
+    scheduler.play(schedule, events.append)
+
+    assert events[0].expected_start_time == 10.0
+    assert events[0].actual_start_time == 10.25
+    assert events[0].drift_seconds == pytest.approx(0.25)
+
+
+def test_scheduler_uses_absolute_targets_instead_of_accumulated_sleep() -> None:
+    clock_values = iter([100.0, 100.7, 100.8, 101.05])
+    sleeps: list[float] = []
+    scheduler = NoteScheduler(clock=lambda: next(clock_values), sleeper=sleeps.append)
+    schedule = (
+        ScheduledNote(note="C4", start=0.0, duration=0.5, target_time=100.5),
+        ScheduledNote(note="E4", start=0.5, duration=0.5, target_time=101.0),
+    )
+
+    scheduler.play(schedule, lambda event: None)
+
+    assert sleeps == pytest.approx([0.5, 0.2])
