@@ -55,6 +55,18 @@ Each playable note must resolve to:
 
 Playback fails before scheduling if any song note is missing from the map. Partial playback is not allowed at this stage.
 
+## Actuator Schedule Export
+
+The official command export format is `actuator_schedule.v1`.
+
+Generate an actuator schedule JSON file with:
+
+```bash
+python3 src/main.py --song songs/example_song.json --driver json --export outputs/example_schedule.json
+```
+
+The export is relative to playback start and is intended for the future website, simulator, and hardware controller layers.
+
 ## Testing
 
 Run tests with:

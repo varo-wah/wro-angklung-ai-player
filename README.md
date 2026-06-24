@@ -51,6 +51,12 @@ tests/
 python3 -m src.main songs/example_song.json
 ```
 
+## Export Actuator Schedule JSON
+
+```bash
+python3 src/main.py --song songs/example_song.json --driver json --export outputs/example_schedule.json
+```
+
 ## Run Tests
 
 ```bash
