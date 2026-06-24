@@ -57,6 +57,16 @@ python3 -m src.main songs/example_song.json
 python3 src/main.py --song songs/example_song.json --driver json --export outputs/example_schedule.json
 ```
 
+## Run The Website Simulator
+
+```bash
+cd frontend
+npm install
+npm run dev
+```
+
+Open the local Next.js URL, upload `outputs/example_schedule.json`, then use the playback controls to simulate the angklung rack.
+
 ## Run Tests
 
 ```bash

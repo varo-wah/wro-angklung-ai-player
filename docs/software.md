@@ -67,6 +67,20 @@ python3 src/main.py --song songs/example_song.json --driver json --export output
 
 The export is relative to playback start and is intended for the future website, simulator, and hardware controller layers.
 
+## Website Simulator
+
+The frontend simulator lives in `frontend/`.
+
+It supports uploading an `actuator_schedule.v1` JSON file, validates required command fields, renders a virtual angklung rack, plays oscillator tones, animates matching instruments, and shows both a timeline table and JSON preview.
+
+Run it with:
+
+```bash
+cd frontend
+npm install
+npm run dev
+```
+
 ## Testing
 
 Run tests with:
