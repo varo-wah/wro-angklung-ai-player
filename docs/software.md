@@ -7,8 +7,11 @@ The software target is reliable note parsing and scheduling before any physical 
 The current pipeline is:
 
 ```text
+YouTube URL -> mocked transcription -> internal song JSON -> actuator_schedule.v1
 song JSON -> song parser -> instrument mapper -> note scheduler -> actuator controller placeholder
 ```
+
+The YouTube path is architecture preparation only. It validates source input and produces deterministic mocked notes; it does not search YouTube, download audio, or perform real transcription.
 
 ## Song Format
 

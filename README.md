@@ -2,7 +2,9 @@
 
 This repository contains the software foundation for a WRO robotics project: an AI-assisted angklung player.
 
-The system will read structured song data, schedule notes with reliable timing, and eventually drive hardware actuators that shake individual angklung instruments. The first milestone is intentionally software-only: prove that song parsing and note scheduling are predictable before attaching real motors, servos, or microcontroller interfaces.
+The project direction is now direct YouTube Piano Reference Mode: a user or judge provides a simple piano reference link, the system normalizes it into internal song JSON, exports `actuator_schedule.v1`, and later sends that schedule to the website simulator or real robot.
+
+For now, YouTube search, real YouTube audio download, and real audio transcription are not implemented. The current source pipeline uses mocked transcription so the architecture can be tested before adding fragile external audio dependencies.
 
 ## Current Milestone
 
@@ -13,6 +15,9 @@ The current implementation:
 - Loads songs from JSON files.
 - Validates note timing and duration.
 - Converts relative note timings into scheduled playback events.
+- Imports a YouTube URL through a mocked transcription pipeline.
+- Converts mocked transcription notes into internal song JSON.
+- Exports official `actuator_schedule.v1` JSON.
 - Uses placeholder actuator functions that print which note should be played and when.
 
 Hardware-specific control is not implemented yet. That boundary is deliberate; actuator logic should only be added after the parser and scheduler are proven stable.
@@ -34,14 +39,19 @@ songs/
   example_song.json
 src/
   actuator_controller.py
+  actuator_schedule.py
   config.py
   instrument_mapper.py
   main.py
   note_scheduler.py
   song_parser.py
+  song_sources/
+  transcription/
 tests/
+  test_actuator_schedule.py
   test_instrument_mapper.py
   test_note_scheduler.py
+  test_song_sources.py
   test_song_parser.py
 ```
 
@@ -55,6 +65,26 @@ python3 -m src.main songs/example_song.json
 
 ```bash
 python3 src/main.py --song songs/example_song.json --driver json --export outputs/example_schedule.json
+```
+
+## Import A YouTube Piano Reference
+
+This currently validates the YouTube URL and uses mocked transcription. It does not download from YouTube yet.
+
+```bash
+.venv/bin/python -m src.song_sources.process_source --source-type youtube_url --url "https://youtube.com/watch?v=example" --title "Example Song"
+```
+
+That creates:
+
+```text
+songs/imported/example_song.json
+```
+
+Then export it to the actuator schedule format:
+
+```bash
+.venv/bin/python src/main.py --song songs/imported/example_song.json --driver json --export outputs/example_schedule.json
 ```
 
 ## Run The Website Simulator

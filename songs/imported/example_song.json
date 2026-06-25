@@ -1,0 +1,26 @@
+{
+  "title": "Example Song",
+  "tempo_bpm": 120,
+  "notes": [
+    {
+      "note": "C4",
+      "start": 0.0,
+      "duration": 0.5
+    },
+    {
+      "note": "E4",
+      "start": 0.5,
+      "duration": 0.5
+    },
+    {
+      "note": "G4",
+      "start": 1.0,
+      "duration": 0.5
+    },
+    {
+      "note": "C5",
+      "start": 1.5,
+      "duration": 0.75
+    }
+  ]
+}
