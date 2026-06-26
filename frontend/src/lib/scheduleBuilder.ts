@@ -1,6 +1,6 @@
 import type { ActuatorCommand, ActuatorSchedule } from "./types";
 import type { BuiltInSong, BuiltInSongNote } from "./builtInSongs";
-import { FRONTEND_INSTRUMENT_MAP } from "./instrumentMap";
+import { ANGKLUNG_RANGE_NOTES, FRONTEND_INSTRUMENT_MAP } from "./instrumentMap";
 
 export type ArrangementSettings = {
   difficulty: "easy" | "medium";
@@ -13,23 +13,7 @@ const SLOWER_TEMPO_SCALE = 1.25;
 export function buildScheduleFromBuiltInSong(song: BuiltInSong, settings: ArrangementSettings): ActuatorSchedule {
   const scale = settings.tempo === "slower" ? SLOWER_TEMPO_SCALE : 1;
   const notes = scaleNotes(song.notes, scale);
-  const commands = notes.map<ActuatorCommand>((note, index) => {
-    const mapping = FRONTEND_INSTRUMENT_MAP[note.note];
-    if (!mapping) {
-      throw new Error(`No frontend instrument mapping exists for note ${note.note}.`);
-    }
-
-    return {
-      command_id: `cmd_${String(index + 1).padStart(4, "0")}`,
-      start_time_seconds: roundSeconds(note.start),
-      note: note.note,
-      instrument_id: mapping.instrument_id,
-      actuator_channel: mapping.actuator_channel,
-      action: "shake",
-      duration_seconds: roundSeconds(note.duration),
-      strength: settings.difficulty === "easy" ? 0.75 : 0.85,
-    };
-  });
+  const commands = buildCommands(notes, settings);
 
   const totalDurationSeconds = commands.reduce(
     (max, command) => Math.max(max, command.start_time_seconds + command.duration_seconds),
@@ -70,6 +54,64 @@ export function scaleNotes(notes: BuiltInSongNote[], scale: number): BuiltInSong
     start: roundSeconds(note.start * scale),
     duration: roundSeconds(note.duration * scale),
   }));
+}
+
+function buildCommands(notes: BuiltInSongNote[], settings: ArrangementSettings): ActuatorCommand[] {
+  const commands: ActuatorCommand[] = [];
+
+  for (const note of notes) {
+    commands.push(createCommand(note, commands.length + 1, settings));
+
+    const harmonyNote = settings.mode === "harmony" ? findHarmonyNote(note.note) : null;
+    if (harmonyNote) {
+      commands.push(
+        createCommand(
+          {
+            note: harmonyNote,
+            start: note.start,
+            duration: Math.min(note.duration, 0.45),
+          },
+          commands.length + 1,
+          settings,
+          0.68,
+        ),
+      );
+    }
+  }
+
+  return commands.sort((left, right) => left.start_time_seconds - right.start_time_seconds || left.actuator_channel - right.actuator_channel);
+}
+
+function createCommand(note: BuiltInSongNote, commandNumber: number, settings: ArrangementSettings, strengthOverride?: number): ActuatorCommand {
+  const mapping = FRONTEND_INSTRUMENT_MAP[note.note];
+  if (!mapping) {
+    throw new Error(`No frontend instrument mapping exists for note ${note.note}.`);
+  }
+
+  return {
+    command_id: `cmd_${String(commandNumber).padStart(4, "0")}`,
+    start_time_seconds: roundSeconds(note.start),
+    note: note.note,
+    instrument_id: mapping.instrument_id,
+    actuator_channel: mapping.actuator_channel,
+    action: "shake",
+    duration_seconds: roundSeconds(note.duration),
+    strength: strengthOverride ?? (settings.difficulty === "easy" ? 0.75 : 0.85),
+  };
+}
+
+function findHarmonyNote(note: string): string | null {
+  const noteIndex = ANGKLUNG_RANGE_NOTES.indexOf(note as (typeof ANGKLUNG_RANGE_NOTES)[number]);
+  if (noteIndex === -1) {
+    return null;
+  }
+
+  const lowerHarmony = ANGKLUNG_RANGE_NOTES[noteIndex - 2];
+  if (lowerHarmony) {
+    return lowerHarmony;
+  }
+
+  return ANGKLUNG_RANGE_NOTES[noteIndex + 2] ?? null;
 }
 
 function roundSeconds(value: number): number {
