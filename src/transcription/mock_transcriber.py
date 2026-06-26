@@ -30,8 +30,8 @@ def transcribe_mock(source_input: SourceInput) -> tuple[MockNoteEvent, ...]:
 
     _ = source_input
     return (
-        MockNoteEvent(note="C4", start_time_seconds=0.0, duration_seconds=0.5, strength=0.8),
-        MockNoteEvent(note="E4", start_time_seconds=0.5, duration_seconds=0.5, strength=0.8),
-        MockNoteEvent(note="G4", start_time_seconds=1.0, duration_seconds=0.5, strength=0.8),
+        MockNoteEvent(note="G4", start_time_seconds=0.0, duration_seconds=0.5, strength=0.8),
+        MockNoteEvent(note="A4", start_time_seconds=0.5, duration_seconds=0.5, strength=0.8),
+        MockNoteEvent(note="B4", start_time_seconds=1.0, duration_seconds=0.5, strength=0.8),
         MockNoteEvent(note="C5", start_time_seconds=1.5, duration_seconds=0.75, strength=0.8),
     )

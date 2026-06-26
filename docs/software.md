@@ -2,13 +2,21 @@
 
 ## Current Target
 
-The software target is reliable note parsing and scheduling before any physical actuator is connected.
+The software target is reliable control flow before any physical actuator is connected.
+
+The official build order is:
+
+1. Phase 1: Angklung Website / Control UI first.
+2. Phase 2: Simple built-in songs playback.
+3. Phase 3: YouTube link piano-to-angklung converter.
+4. Phase 4: Optional automatic YouTube search later.
 
 The current pipeline is:
 
 ```text
 YouTube URL -> mocked transcription -> internal song JSON -> actuator_schedule.v1
 song JSON -> song parser -> instrument mapper -> note scheduler -> actuator controller placeholder
+built-in frontend song -> actuator_schedule.v1 -> website simulator
 ```
 
 The YouTube path is architecture preparation only. It validates source input and produces deterministic mocked notes; it does not search YouTube, download audio, or perform real transcription.
@@ -22,7 +30,7 @@ Songs are JSON objects with metadata and a list of notes:
   "title": "Example Angklung Pattern",
   "tempo_bpm": 120,
   "notes": [
-    {"note": "C4", "start": 0.0, "duration": 0.5}
+    {"note": "G4", "start": 0.0, "duration": 0.5}
   ]
 }
 ```
@@ -51,6 +59,14 @@ The scheduler currently:
 
 Instrument mappings are stored in `config/instrument_map.json`.
 
+The current physical range is modeled as 18 diatonic notes:
+
+```text
+G4 A4 B4 C5 D5 E5 F5
+G5 A5 B5 C6 D6 E6 F6
+G6 A6 B6 C7
+```
+
 Each playable note must resolve to:
 
 - `instrument_id`: the physical angklung identifier.
@@ -74,7 +90,7 @@ The export is relative to playback start and is intended for the future website,
 
 The frontend simulator lives in `frontend/`.
 
-It supports uploading an `actuator_schedule.v1` JSON file, validates required command fields, renders a virtual angklung rack, plays oscillator tones, animates matching instruments, and shows both a timeline table and JSON preview.
+It now acts as the Phase 1 AI Angklung Performance Console. It supports built-in song selection, arrangement controls, schedule generation, validation, virtual angklung playback, oscillator tones, timeline preview, JSON preview, and advanced `actuator_schedule.v1` upload.
 
 Run it with:
 

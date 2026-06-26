@@ -2,7 +2,14 @@
 
 This repository contains the software foundation for a WRO robotics project: an AI-assisted angklung player.
 
-The project direction is now direct YouTube Piano Reference Mode: a user or judge provides a simple piano reference link, the system normalizes it into internal song JSON, exports `actuator_schedule.v1`, and later sends that schedule to the website simulator or real robot.
+The official build order is now:
+
+1. Phase 1: Angklung Website / Control UI first.
+2. Phase 2: Simple built-in songs playback.
+3. Phase 3: YouTube link piano-to-angklung converter.
+4. Phase 4: Optional automatic YouTube search later.
+
+The project still targets direct YouTube Piano Reference Mode later: a user or judge provides a simple piano reference link, the system normalizes it into internal song JSON, exports `actuator_schedule.v1`, and later sends that schedule to the website simulator or real robot.
 
 For now, YouTube search, real YouTube audio download, and real audio transcription are not implemented. The current source pipeline uses mocked transcription so the architecture can be tested before adding fragile external audio dependencies.
 
@@ -14,10 +21,12 @@ The current implementation:
 
 - Loads songs from JSON files.
 - Validates note timing and duration.
+- Models the physical rack as 18 diatonic angklung notes from `G4` through `C7`.
 - Converts relative note timings into scheduled playback events.
 - Imports a YouTube URL through a mocked transcription pipeline.
 - Converts mocked transcription notes into internal song JSON.
 - Exports official `actuator_schedule.v1` JSON.
+- Provides a website performance console with built-in songs, schedule generation, validation, simulation playback, and advanced JSON upload.
 - Uses placeholder actuator functions that print which note should be played and when.
 
 Hardware-specific control is not implemented yet. That boundary is deliberate; actuator logic should only be added after the parser and scheduler are proven stable.
@@ -95,7 +104,13 @@ npm install
 npm run dev
 ```
 
-Open the local Next.js URL, upload `outputs/example_schedule.json`, then use the playback controls to simulate the angklung rack.
+Open the local Next.js URL. The Phase 1 console can generate and play built-in songs directly:
+
+- Twinkle Twinkle
+- Happy Birthday
+- Ode to Joy
+
+The advanced upload section still accepts `outputs/example_schedule.json`.
 
 ## Run Tests
 

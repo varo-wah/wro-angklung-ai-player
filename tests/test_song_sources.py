@@ -75,7 +75,7 @@ def test_mocked_transcription_creates_valid_note_events() -> None:
     events = transcribe_mock(source_input)
 
     assert len(events) == 4
-    assert events[0].note == "C4"
+    assert events[0].note == "G4"
     assert events[0].start_time_seconds == 0.0
     assert events[0].duration_seconds > 0
     assert 0.0 <= events[0].strength <= 1.0
@@ -88,7 +88,7 @@ def test_transcription_to_song_creates_valid_internal_song_json() -> None:
     song = parse_song(song_data)
 
     assert song.title == "Example Song"
-    assert song.notes[0].note == "C4"
+    assert song.notes[0].note == "G4"
 
 
 def test_process_source_writes_internal_song(tmp_path) -> None:
@@ -108,9 +108,9 @@ def test_generated_internal_song_can_export_actuator_schedule(tmp_path) -> None:
     song = load_song(result.internal_song_path)
     mapper = parse_instrument_map(
         {
-            "C4": {"instrument_id": "angklung_01", "actuator_channel": 0},
-            "E4": {"instrument_id": "angklung_02", "actuator_channel": 1},
-            "G4": {"instrument_id": "angklung_03", "actuator_channel": 2},
+            "G4": {"instrument_id": "angklung_01", "actuator_channel": 0},
+            "A4": {"instrument_id": "angklung_02", "actuator_channel": 1},
+            "B4": {"instrument_id": "angklung_03", "actuator_channel": 2},
             "C5": {"instrument_id": "angklung_04", "actuator_channel": 3},
         }
     )
