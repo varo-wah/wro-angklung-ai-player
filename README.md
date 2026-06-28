@@ -1,17 +1,18 @@
 # WRO Angklung AI Player
 
-This repository contains the software foundation for a WRO robotics project: an AI-assisted angklung player.
+This repository contains the software foundation for a WRO robotics project: a website-based AI Angklung Performance Console.
 
 The official build order is now:
 
-1. Phase 1: Angklung Website / Control UI first.
-2. Phase 2: Simple built-in songs playback.
-3. Phase 3: YouTube link piano-to-angklung converter.
-4. Phase 4: Optional automatic YouTube search later.
+1. Phase 1: Website/control UI and chatbot-style assistant.
+2. Phase 2: Reliable preloaded song library and simple song playback.
+3. Phase 3: YouTube Piano Reference Mode with user approval.
+4. Phase 4: Optional automatic YouTube search plus camera/voice interaction.
+5. Phase 5: Hardware driver using the same `actuator_schedule.v1` format.
 
-The project still targets direct YouTube Piano Reference Mode later: a user or judge provides a simple piano reference link, the system normalizes it into internal song JSON, exports `actuator_schedule.v1`, and later sends that schedule to the website simulator or real robot.
+The project claim is deliberately narrow: preloaded supported songs are reliable. If a request is not preloaded, future YouTube Piano Reference Mode may search for a simple piano reference, ask the user to approve it, and attempt conversion only if the melody fits the current angklung rack.
 
-For now, YouTube search, real YouTube audio download, and real audio transcription are not implemented. The current source pipeline uses mocked transcription so the architecture can be tested before adding fragile external audio dependencies.
+For now, YouTube search, real YouTube audio download, real audio transcription, camera detection, voice input, and hardware motor control are not implemented. The website shows that path as a disabled/mock workflow so the product direction is visible without pretending the conversion is ready.
 
 ## Current Milestone
 
@@ -26,8 +27,11 @@ The current implementation:
 - Imports a YouTube URL through a mocked transcription pipeline.
 - Converts mocked transcription notes into internal song JSON.
 - Exports official `actuator_schedule.v1` JSON.
-- Provides a website performance console with built-in songs, schedule generation, validation, simulation playback, and advanced JSON upload.
+- Provides a website performance console with an AI Song Assistant, built-in songs, schedule generation, validation, simulation playback, and advanced JSON upload.
 - Uses placeholder actuator functions that print which note should be played and when.
+- Rejects unsupported song requests safely instead of claiming arbitrary-song playback.
+
+The modeled frontend rack is the 2.5-octave diatonic range defined in `frontend/src/lib/instrumentMap.ts`. Songs containing unsupported notes such as sharps/flats must be rejected unless a future simplification step can convert them safely into that range.
 
 Hardware-specific control is not implemented yet. That boundary is deliberate; actuator logic should only be added after the parser and scheduler are proven stable.
 
@@ -104,11 +108,13 @@ npm install
 npm run dev
 ```
 
-Open the local Next.js URL. The Phase 1 console can generate and play built-in songs directly:
+Open the local Next.js URL. The Phase 1 console can accept chatbot-style song requests or generate built-in songs manually:
 
 - Twinkle Twinkle
 - Happy Birthday
 - Ode to Joy
+
+Unsupported song requests show the Phase 3 YouTube Piano Reference Mode placeholder. No download, search, transcription, or motor command is started from that placeholder.
 
 The advanced upload section still accepts `outputs/example_schedule.json`.
 

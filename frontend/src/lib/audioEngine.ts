@@ -21,14 +21,20 @@ const NOTE_OFFSETS: Record<string, number> = {
 export class AudioEngine {
   private context: AudioContext | null = null;
 
+  async ensureReady(): Promise<void> {
+    const context = this.getContext();
+    if (context.state === "suspended") {
+      await context.resume();
+    }
+  }
+
   playNote(note: string, durationSeconds: number, strength: number) {
-    const AudioContextClass = window.AudioContext || window.webkitAudioContext;
-    this.context ??= new AudioContextClass();
+    const context = this.getContext();
 
     const frequency = noteToFrequency(note);
-    const now = this.context.currentTime;
-    const oscillator = this.context.createOscillator();
-    const gain = this.context.createGain();
+    const now = context.currentTime;
+    const oscillator = context.createOscillator();
+    const gain = context.createGain();
     const toneDuration = Math.max(0.08, Math.min(durationSeconds, 1.4));
     const level = Math.max(0.02, Math.min(strength, 1)) * 0.22;
 
@@ -39,9 +45,25 @@ export class AudioEngine {
     gain.gain.exponentialRampToValueAtTime(0.0001, now + toneDuration);
 
     oscillator.connect(gain);
-    gain.connect(this.context.destination);
+    gain.connect(context.destination);
     oscillator.start(now);
     oscillator.stop(now + toneDuration + 0.04);
+  }
+
+  private getContext(): AudioContext {
+    if (this.context?.state === "closed") {
+      this.context = null;
+    }
+
+    if (!this.context) {
+      const AudioContextClass = window.AudioContext ?? window.webkitAudioContext;
+      if (!AudioContextClass) {
+        throw new Error("Web Audio is not supported in this browser.");
+      }
+      this.context = new AudioContextClass();
+    }
+
+    return this.context;
   }
 }
 

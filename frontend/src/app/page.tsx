@@ -16,17 +16,38 @@ import { type SafetyReport, validateMotorSafety } from "@/lib/safetyValidator";
 import type { ActuatorCommand, ActuatorSchedule, PlaybackState, RackInstrument } from "@/lib/types";
 
 type ConversionStatus = {
-  sourceLoaded: boolean;
-  notesLoaded: boolean;
+  requestReceived: boolean;
+  libraryChecked: boolean;
+  songFound: boolean | null;
   scheduleGenerated: boolean;
   validationPassed: boolean;
   readyForSimulation: boolean;
+};
+
+type AssistantMessage = {
+  id: number;
+  speaker: "assistant" | "user";
+  text: string;
 };
 
 const DEFAULT_SETTINGS: ArrangementSettings = {
   strength: 0.8,
   tempo: "normal",
   mode: "melody",
+};
+
+const INITIAL_ASSISTANT_MESSAGES: AssistantMessage[] = [
+  {
+    id: 1,
+    speaker: "assistant",
+    text: "Hi, what song would you like to hear?",
+  },
+];
+
+const SONG_ALIASES: Record<string, string[]> = {
+  happy_birthday: ["happy birthday", "birthday"],
+  ode_to_joy: ["ode to joy", "ode"],
+  twinkle_twinkle: ["twinkle", "twinkle twinkle"],
 };
 
 export default function Home() {
@@ -39,12 +60,16 @@ export default function Home() {
   const [errors, setErrors] = useState<string[]>([]);
   const [safetyReport, setSafetyReport] = useState<SafetyReport | null>(null);
   const [conversionStatus, setConversionStatus] = useState<ConversionStatus>({
-    sourceLoaded: false,
-    notesLoaded: false,
+    requestReceived: false,
+    libraryChecked: false,
+    songFound: null,
     scheduleGenerated: false,
     validationPassed: false,
     readyForSimulation: false,
   });
+  const [assistantInput, setAssistantInput] = useState("");
+  const [assistantMessages, setAssistantMessages] = useState<AssistantMessage[]>(INITIAL_ASSISTANT_MESSAGES);
+  const [youtubeFallbackActive, setYoutubeFallbackActive] = useState(false);
   const [playbackState, setPlaybackState] = useState<PlaybackState>("idle");
   const [elapsedSeconds, setElapsedSeconds] = useState(0);
   const [activeCommandIds, setActiveCommandIds] = useState<Set<string>>(new Set());
@@ -59,10 +84,10 @@ export default function Home() {
   const instruments = useMemo(() => buildFullAngklungRack(), []);
   const totalDuration = schedule?.timing.total_duration_seconds ?? 0;
 
-  function generateBuiltInSchedule() {
+  function generateScheduleForSong(song: BuiltInSong): SafetyReport | null {
     stopPlayback();
     try {
-      const nextSchedule = buildScheduleFromBuiltInSong(selectedSong, settings);
+      const nextSchedule = buildScheduleFromBuiltInSong(song, settings);
       const validationResult = validateSchedulePayload(nextSchedule);
       const nextSafetyReport = validateMotorSafety(nextSchedule);
 
@@ -71,32 +96,116 @@ export default function Home() {
         setSchedule(null);
         setSafetyReport(null);
         setConversionStatus({
-          sourceLoaded: true,
-          notesLoaded: true,
+          requestReceived: true,
+          libraryChecked: true,
+          songFound: true,
           scheduleGenerated: false,
           validationPassed: false,
           readyForSimulation: false,
         });
-        return;
+        return null;
       }
 
       setSchedule(validationResult.schedule);
-      setGeneratedNotes(scaleNotes(selectedSong.notes, settings.tempo === "slower" ? 1.25 : 1));
+      setGeneratedNotes(scaleNotes(song.notes, settings.tempo === "slower" ? 1.25 : 1));
       setSafetyReport(nextSafetyReport);
-      setSourceLabel(selectedSong.title);
+      setSourceLabel(song.title);
       setErrors([]);
       setPlaybackState("idle");
       setElapsedSeconds(0);
+      setYoutubeFallbackActive(false);
       setConversionStatus({
-        sourceLoaded: true,
-        notesLoaded: true,
+        requestReceived: true,
+        libraryChecked: true,
+        songFound: true,
         scheduleGenerated: true,
         validationPassed: nextSafetyReport.overall === "PASSED",
         readyForSimulation: nextSafetyReport.overall === "PASSED",
       });
+      return nextSafetyReport;
     } catch (error) {
       setErrors([error instanceof Error ? error.message : "Unable to generate schedule."]);
+      return null;
     }
+  }
+
+  function generateBuiltInSchedule() {
+    generateScheduleForSong(selectedSong);
+  }
+
+  function handleAssistantRequest(request: string) {
+    const trimmedRequest = request.trim();
+    if (!trimmedRequest) {
+      return;
+    }
+
+    const nextMessages: AssistantMessage[] = [
+      {
+        id: Date.now(),
+        speaker: "user",
+        text: trimmedRequest,
+      },
+      {
+        id: Date.now() + 1,
+        speaker: "assistant",
+        text: "Checking supported song library...",
+      },
+    ];
+    const matchedSong = findBuiltInSong(trimmedRequest);
+
+    setAssistantInput("");
+    setConversionStatus({
+      requestReceived: true,
+      libraryChecked: true,
+      songFound: Boolean(matchedSong),
+      scheduleGenerated: false,
+      validationPassed: false,
+      readyForSimulation: false,
+    });
+
+    if (!matchedSong) {
+      stopPlayback();
+      setYoutubeFallbackActive(true);
+      setSchedule(null);
+      setGeneratedNotes([]);
+      setSourceLabel("Unsupported song request");
+      setErrors([]);
+      setSafetyReport(null);
+      nextMessages.push({
+        id: Date.now() + 2,
+        speaker: "assistant",
+        text: "This song is not in the supported library yet. In Phase 3, I will search YouTube for a simple piano version and ask for approval before conversion.",
+      });
+      nextMessages.push({
+        id: Date.now() + 3,
+        speaker: "assistant",
+        text: "Sorry, this song is not currently supported. I could not find a supported built-in arrangement yet. In the future, the AI will search for a simple piano reference, ask for approval, and attempt conversion only if the melody fits our 2.5-octave angklung rack.",
+      });
+      setAssistantMessages((current) => [...current, ...nextMessages]);
+      return;
+    }
+
+    setSelectedSongId(matchedSong.id);
+    const report = generateScheduleForSong(matchedSong);
+    nextMessages.push({
+      id: Date.now() + 2,
+      speaker: "assistant",
+      text: `Found supported arrangement: ${matchedSong.title}.`,
+    });
+    nextMessages.push({
+      id: Date.now() + 3,
+      speaker: "assistant",
+      text: "Generating actuator schedule...",
+    });
+    nextMessages.push({
+      id: Date.now() + 4,
+      speaker: "assistant",
+      text:
+        report?.overall === "PASSED"
+          ? "Validation passed. Ready to simulate."
+          : "Validation did not pass. Review the validation panel before simulation.",
+    });
+    setAssistantMessages((current) => [...current, ...nextMessages]);
   }
 
   function loadSchedule(fileText: string, uploadedFileName: string) {
@@ -110,8 +219,9 @@ export default function Home() {
         setSourceLabel(uploadedFileName);
         setErrors(result.errors);
         setConversionStatus({
-          sourceLoaded: true,
-          notesLoaded: false,
+          requestReceived: true,
+          libraryChecked: false,
+          songFound: null,
           scheduleGenerated: false,
           validationPassed: false,
           readyForSimulation: false,
@@ -133,9 +243,11 @@ export default function Home() {
       setErrors([]);
       setPlaybackState("idle");
       setElapsedSeconds(0);
+      setYoutubeFallbackActive(false);
       setConversionStatus({
-        sourceLoaded: true,
-        notesLoaded: true,
+        requestReceived: true,
+        libraryChecked: false,
+        songFound: null,
         scheduleGenerated: true,
         validationPassed: nextSafetyReport.overall === "PASSED",
         readyForSimulation: nextSafetyReport.overall === "PASSED",
@@ -148,12 +260,20 @@ export default function Home() {
     }
   }
 
-  function playSchedule() {
+  async function playSchedule() {
     if (!schedule || playbackState === "playing") {
       return;
     }
 
     audioRef.current ??= new AudioEngine();
+    try {
+      await audioRef.current.ensureReady();
+      setErrors([]);
+    } catch (error) {
+      setErrors([error instanceof Error ? error.message : "Audio could not start. Check browser audio permissions and output volume."]);
+      return;
+    }
+
     const engine = new PlaybackEngine(schedule.commands, totalDuration, {
       onCommand: (command) => triggerCommand(command),
       onTimeUpdate: setElapsedSeconds,
@@ -226,6 +346,14 @@ export default function Home() {
 
         <section className="grid gap-4 xl:grid-cols-[390px_1fr]">
           <div className="flex flex-col gap-4">
+            <AiSongAssistantPanel
+              inputValue={assistantInput}
+              messages={assistantMessages}
+              supportedSongs={BUILT_IN_SONGS}
+              youtubeFallbackActive={youtubeFallbackActive}
+              onInputChange={setAssistantInput}
+              onRequestSong={handleAssistantRequest}
+            />
             <SongSourcePanel
               selectedSongId={selectedSongId}
               youtubeUrl={youtubeUrl}
@@ -266,6 +394,137 @@ export default function Home() {
       </div>
     </main>
   );
+}
+
+function AiSongAssistantPanel({
+  inputValue,
+  messages,
+  supportedSongs,
+  youtubeFallbackActive,
+  onInputChange,
+  onRequestSong,
+}: {
+  inputValue: string;
+  messages: AssistantMessage[];
+  supportedSongs: BuiltInSong[];
+  youtubeFallbackActive: boolean;
+  onInputChange: (value: string) => void;
+  onRequestSong: (request: string) => void;
+}) {
+  return (
+    <section className="rounded border border-slate-300 bg-white p-4 shadow-sm">
+      <div className="mb-3 flex items-start justify-between gap-3">
+        <div>
+          <h2 className="text-lg font-semibold text-slate-950">AI Song Assistant</h2>
+          <p className="mt-1 text-xs text-slate-500">Preloaded songs are reliable. YouTube conversion is experimental and not running.</p>
+        </div>
+        <span className="rounded bg-sky-100 px-2 py-1 text-xs font-bold text-sky-800">Phase 1</span>
+      </div>
+
+      <div className="max-h-64 space-y-2 overflow-auto rounded bg-slate-50 p-3">
+        {messages.map((message) => (
+          <div
+            className={`rounded px-3 py-2 text-sm ${
+              message.speaker === "assistant" ? "mr-6 bg-white text-slate-700 shadow-sm" : "ml-6 bg-sky-700 text-white"
+            }`}
+            key={message.id}
+          >
+            {message.text}
+          </div>
+        ))}
+      </div>
+
+      <form
+        className="mt-3 grid gap-2"
+        onSubmit={(event) => {
+          event.preventDefault();
+          onRequestSong(inputValue);
+        }}
+      >
+        <input
+          className="w-full rounded border border-slate-300 bg-white px-3 py-2 text-sm"
+          onChange={(event) => onInputChange(event.target.value)}
+          placeholder="Ask for a song, e.g. twinkle"
+          value={inputValue}
+        />
+        <button className="rounded bg-sky-700 px-4 py-2 text-sm font-semibold text-white hover:bg-sky-800" type="submit">
+          Ask / Request Song
+        </button>
+      </form>
+
+      <div className="mt-3">
+        <div className="mb-2 text-xs font-bold uppercase tracking-[0.14em] text-slate-500">Supported quick picks</div>
+        <div className="flex flex-wrap gap-2">
+          {supportedSongs.map((song) => (
+            <button
+              className="rounded border border-slate-300 bg-white px-3 py-1.5 text-xs font-semibold text-slate-700 hover:border-sky-700 hover:text-sky-800"
+              key={song.id}
+              onClick={() => onRequestSong(song.title)}
+              type="button"
+            >
+              {displaySongTitle(song.title)}
+            </button>
+          ))}
+        </div>
+      </div>
+
+      <div className={`mt-4 rounded border p-3 ${youtubeFallbackActive ? "border-amber-300 bg-amber-50" : "border-slate-200 bg-slate-50"}`}>
+        <div className="flex items-center justify-between gap-3">
+          <h3 className="text-sm font-bold text-slate-900">Candidate YouTube Reference</h3>
+          <span className="rounded bg-slate-200 px-2 py-1 text-xs font-bold text-slate-600">Coming in Phase 3</span>
+        </div>
+        <div className="mt-2 space-y-1 text-xs text-slate-600">
+          <div>Video title: Simple piano reference placeholder</div>
+          <div>Video URL: No candidate selected</div>
+          <div>YouTube Piano Reference Mode: Coming later</div>
+          <div>No audio download or transcription is currently running</div>
+        </div>
+        <div className="mt-3 grid grid-cols-2 gap-2">
+          <button className="rounded border border-slate-300 bg-slate-100 px-3 py-2 text-xs font-semibold text-slate-400" disabled type="button">
+            Approve
+          </button>
+          <button className="rounded border border-slate-300 bg-slate-100 px-3 py-2 text-xs font-semibold text-slate-400" disabled type="button">
+            Reject
+          </button>
+        </div>
+      </div>
+
+      <p className="mt-3 text-xs text-slate-500">
+        Songs with unsupported sharps, flats, or notes outside the 2.5-octave angklung rack are rejected instead of forced into playback.
+      </p>
+    </section>
+  );
+}
+
+function findBuiltInSong(request: string): BuiltInSong | null {
+  const normalizedRequest = normalizeSongText(request);
+  if (!normalizedRequest) {
+    return null;
+  }
+
+  return (
+    BUILT_IN_SONGS.find((song) => {
+      const normalizedTitle = normalizeSongText(song.title);
+      const aliases = SONG_ALIASES[song.id] ?? [];
+
+      return (
+        normalizedTitle.includes(normalizedRequest) ||
+        normalizedRequest.includes(normalizedTitle) ||
+        aliases.some((alias) => {
+          const normalizedAlias = normalizeSongText(alias);
+          return normalizedAlias.includes(normalizedRequest) || normalizedRequest.includes(normalizedAlias);
+        })
+      );
+    }) ?? null
+  );
+}
+
+function normalizeSongText(value: string): string {
+  return value.toLowerCase().replace(/[^a-z0-9]+/g, " ").trim();
+}
+
+function displaySongTitle(title: string): string {
+  return title.replace(/\s+[^a-zA-Z0-9\s]+?\s+Layered Angklung$/, "");
 }
 
 function SongSourcePanel({
@@ -420,21 +679,36 @@ function SegmentedControl({
 
 function ConversionStatusPanel({ status }: { status: ConversionStatus }) {
   const rows = [
-    ["Source loaded", status.sourceLoaded],
-    ["Notes loaded", status.notesLoaded],
-    ["Actuator schedule generated", status.scheduleGenerated],
-    ["Validation passed", status.validationPassed],
-    ["Ready for simulation", status.readyForSimulation],
+    ["Request received", status.requestReceived ? "Done" : "Waiting", status.requestReceived],
+    ["Library checked", status.libraryChecked ? "Done" : "Waiting", status.libraryChecked],
+    [
+      "Song found / not found",
+      status.songFound === null ? "Waiting" : status.songFound ? "Found" : "Not found",
+      status.songFound === true,
+    ],
+    ["Schedule generated", status.scheduleGenerated ? "Done" : "Waiting", status.scheduleGenerated],
+    ["Validation passed", status.validationPassed ? "Done" : "Waiting", status.validationPassed],
+    ["Ready for simulation", status.readyForSimulation ? "Done" : "Waiting", status.readyForSimulation],
   ] as const;
 
   return (
     <section className="rounded border border-slate-300 bg-white p-4 shadow-sm">
-      <h2 className="mb-3 text-lg font-semibold text-slate-950">Conversion Status</h2>
+      <h2 className="mb-3 text-lg font-semibold text-slate-950">Workflow Status</h2>
       <div className="space-y-2">
-        {rows.map(([label, passed]) => (
+        {rows.map(([label, stateLabel, passed]) => (
           <div className="flex items-center justify-between rounded bg-slate-50 px-3 py-2 text-sm" key={label}>
             <span className="font-medium text-slate-800">{label}</span>
-            <span className={passed ? "font-semibold text-emerald-700" : "font-semibold text-slate-400"}>{passed ? "Done" : "Waiting"}</span>
+            <span
+              className={
+                stateLabel === "Not found"
+                  ? "font-semibold text-amber-700"
+                  : passed
+                    ? "font-semibold text-emerald-700"
+                    : "font-semibold text-slate-400"
+              }
+            >
+              {stateLabel}
+            </span>
           </div>
         ))}
       </div>
