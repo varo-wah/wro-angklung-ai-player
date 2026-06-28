@@ -3,7 +3,7 @@ import type { BuiltInSong, BuiltInSongNote } from "./builtInSongs";
 import { ANGKLUNG_RANGE_NOTES, FRONTEND_INSTRUMENT_MAP } from "./instrumentMap";
 
 export type ArrangementSettings = {
-  difficulty: "easy" | "medium";
+  strength: number;
   tempo: "normal" | "slower";
   mode: "melody" | "harmony";
 };
@@ -73,7 +73,7 @@ function buildCommands(notes: BuiltInSongNote[], settings: ArrangementSettings):
           },
           commands.length + 1,
           settings,
-          0.68,
+          clampStrength(settings.strength * 0.85),
         ),
       );
     }
@@ -96,7 +96,7 @@ function createCommand(note: BuiltInSongNote, commandNumber: number, settings: A
     actuator_channel: mapping.actuator_channel,
     action: "shake",
     duration_seconds: roundSeconds(note.duration),
-    strength: strengthOverride ?? (settings.difficulty === "easy" ? 0.75 : 0.85),
+    strength: clampStrength(strengthOverride ?? settings.strength),
   };
 }
 
@@ -116,4 +116,8 @@ function findHarmonyNote(note: string): string | null {
 
 function roundSeconds(value: number): number {
   return Math.round(value * 1000) / 1000;
+}
+
+function clampStrength(value: number): number {
+  return Math.max(0, Math.min(1, Math.round(value * 100) / 100));
 }

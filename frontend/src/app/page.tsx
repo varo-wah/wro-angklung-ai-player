@@ -24,7 +24,7 @@ type ConversionStatus = {
 };
 
 const DEFAULT_SETTINGS: ArrangementSettings = {
-  difficulty: "easy",
+  strength: 0.8,
   tempo: "normal",
   mode: "melody",
 };
@@ -327,14 +327,9 @@ function ArrangementSettingsPanel({
     <section className="rounded border border-slate-300 bg-white p-4 shadow-sm">
       <h2 className="mb-3 text-lg font-semibold text-slate-950">Arrangement Settings</h2>
       <div className="grid gap-3">
-        <SegmentedControl
-          label="Difficulty"
-          value={settings.difficulty}
-          options={[
-            ["easy", "Easy"],
-            ["medium", "Medium"],
-          ]}
-          onChange={(value) => onChange({ ...settings, difficulty: value as ArrangementSettings["difficulty"] })}
+        <StrengthSlider
+          value={settings.strength}
+          onChange={(strength) => onChange({ ...settings, strength })}
         />
         <SegmentedControl
           label="Tempo"
@@ -355,8 +350,39 @@ function ArrangementSettingsPanel({
           onChange={(value) => onChange({ ...settings, mode: value as ArrangementSettings["mode"] })}
         />
       </div>
+      <p className="mt-3 text-xs text-slate-500">Strength controls simulator volume now and actuator intensity later.</p>
       <div className="mt-4 rounded bg-slate-100 px-3 py-2 text-sm font-semibold text-slate-700">Range: 2.5-octave angklung</div>
     </section>
+  );
+}
+
+function StrengthSlider({
+  value,
+  onChange,
+}: {
+  value: number;
+  onChange: (value: number) => void;
+}) {
+  return (
+    <label className="block">
+      <div className="mb-2 flex items-center justify-between gap-3 text-sm font-semibold text-slate-800">
+        <span>Actuator Strength</span>
+        <span className="rounded bg-slate-100 px-2 py-1 font-mono text-slate-700">{Math.round(value * 100)}%</span>
+      </div>
+      <input
+        className="w-full accent-sky-700"
+        max={1}
+        min={0.2}
+        onChange={(event) => onChange(Number(event.target.value))}
+        step={0.05}
+        type="range"
+        value={value}
+      />
+      <div className="mt-1 flex justify-between text-xs text-slate-500">
+        <span>Soft</span>
+        <span>Strong</span>
+      </div>
+    </label>
   );
 }
 
