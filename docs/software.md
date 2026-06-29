@@ -17,7 +17,7 @@ The current pipeline is:
 ```text
 YouTube URL -> mocked transcription -> internal song JSON -> actuator_schedule.v1
 song JSON -> song parser -> instrument mapper -> note scheduler -> actuator controller placeholder
-built-in frontend song -> actuator_schedule.v1 -> website simulator
+guest request or control-panel selection -> built-in frontend song -> actuator_schedule.v1 -> shared website simulator state
 ```
 
 The YouTube path is architecture preparation only. It validates source input and produces deterministic mocked notes; it does not search YouTube, download audio, or perform real transcription.
@@ -95,9 +95,14 @@ The export is relative to playback start and is intended for the future website,
 
 The frontend simulator lives in `frontend/`.
 
-It now acts as the Phase 1 AI Angklung Performance Console. It supports an AI Song Assistant, built-in song selection, arrangement controls, schedule generation, validation, virtual angklung playback, oscillator tones, timeline preview, JSON preview, and advanced `actuator_schedule.v1` upload.
+It now acts as the Phase 1 AI Angklung Performance Console with two route-based screens:
 
-The assistant can match supported song requests against the built-in library, generate `actuator_schedule.v1`, run validation, and prepare simulation playback. Unsupported requests show that YouTube Piano Reference Mode is coming later and that no audio download or transcription is currently running.
+- `/guest`: a visitor-facing chatbot interface for song requests, supported-song suggestions, simplified playback, and clear unsupported-song messaging.
+- `/control`: an operator-facing system monitor with built-in song selection, arrangement controls, schedule generation, validation, virtual rack playback, oscillator tones, timeline preview, JSON preview, and advanced `actuator_schedule.v1` upload.
+
+Both screens share frontend state during the browser session. A supported request on `/guest` generates the same schedule and validation state shown on `/control`.
+
+The assistant can match supported song requests against the built-in library, generate `actuator_schedule.v1`, run validation, and prepare simulation playback. Unsupported requests show that YouTube Piano Reference Mode is coming later, would require user approval, and that no audio download or transcription is currently running.
 
 Run it with:
 

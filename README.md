@@ -27,7 +27,8 @@ The current implementation:
 - Imports a YouTube URL through a mocked transcription pipeline.
 - Converts mocked transcription notes into internal song JSON.
 - Exports official `actuator_schedule.v1` JSON.
-- Provides a website performance console with an AI Song Assistant, built-in songs, schedule generation, validation, simulation playback, and advanced JSON upload.
+- Provides a two-screen website: a visitor-facing Guest Interface and an operator-facing Control Panel.
+- Shares song requests, schedule generation, validation, playback state, and rack animation between the two screens.
 - Uses placeholder actuator functions that print which note should be played and when.
 - Rejects unsupported song requests safely instead of claiming arbitrary-song playback.
 
@@ -108,11 +109,22 @@ npm install
 npm run dev
 ```
 
-Open the local Next.js URL. The Phase 1 console can accept chatbot-style song requests or generate built-in songs manually:
+Open the local Next.js URL. `/` redirects to the visitor-facing Guest Interface:
+
+- `/guest`: chatbot-style screen for visitors requesting songs.
+- `/control`: technical console showing schedule generation, validation, playback, virtual rack behavior, timeline, JSON preview, and advanced upload.
+
+The Guest Interface can accept chatbot-style song requests:
 
 - Twinkle Twinkle
 - Happy Birthday
 - Ode to Joy
+
+The workflow is:
+
+```text
+guest requests song -> system checks supported library -> if found, actuator_schedule.v1 is generated -> validation runs -> guest can play -> control panel shows the internal process
+```
 
 Unsupported song requests show the Phase 3 YouTube Piano Reference Mode placeholder. No download, search, transcription, or motor command is started from that placeholder.
 
