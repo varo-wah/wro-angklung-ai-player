@@ -33,7 +33,7 @@ export function PlaybackControls({
         <button className="rounded bg-emerald-400 px-4 py-2 text-sm font-semibold text-slate-950 hover:bg-emerald-300 disabled:bg-slate-800 disabled:text-slate-500" disabled={disabled || playbackState === "playing"} onClick={onPlay}>
           Play Simulation
         </button>
-        <button className="rounded bg-amber-300 px-4 py-2 text-sm font-semibold text-slate-950 hover:bg-amber-200 disabled:bg-slate-800 disabled:text-slate-500" disabled={disabled || playbackState !== "playing"} onClick={onPause}>
+        <button className="rounded bg-lime-300 px-4 py-2 text-sm font-semibold text-slate-950 hover:bg-lime-200 disabled:bg-slate-800 disabled:text-slate-500" disabled={disabled || playbackState !== "playing"} onClick={onPause}>
           Pause
         </button>
         <button className="rounded border border-white/15 bg-white/8 px-4 py-2 text-sm font-semibold text-slate-100 hover:border-white/30 disabled:text-slate-600" disabled={disabled} onClick={onStop}>
@@ -53,7 +53,7 @@ export function PlaybackControls({
         </div>
       </div>
       <div className="mt-4 h-2 overflow-hidden rounded bg-white/10">
-        <div className="h-full bg-amber-300 transition-[width]" style={{ width: `${progress}%` }} />
+        <div className="h-full bg-lime-300 transition-[width]" style={{ width: `${progress}%` }} />
       </div>
     </section>
   );

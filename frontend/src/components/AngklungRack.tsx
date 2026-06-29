@@ -19,7 +19,7 @@ export function AngklungRack({ instruments, activeInstrumentIds }: AngklungRackP
           <p className="mt-1 text-xs text-slate-400">18-note 2.5-octave map, arranged as a compact actuator board.</p>
         </div>
         <div className="flex items-center gap-2">
-          <span className="rounded border border-amber-300/30 bg-amber-300/10 px-2 py-1 text-sm font-semibold text-amber-100">
+          <span className="rounded border border-lime-300/30 bg-lime-300/10 px-2 py-1 text-sm font-semibold text-lime-100">
             {instruments.length} instruments
           </span>
           <span className="rounded border border-emerald-300/30 bg-emerald-300/10 px-2 py-1 text-sm font-semibold text-emerald-100">
@@ -29,8 +29,8 @@ export function AngklungRack({ instruments, activeInstrumentIds }: AngklungRackP
       </div>
       <div className="rounded border border-white/10 bg-black/45 p-4">
         <div className="relative grid grid-cols-3 gap-x-3 gap-y-7 border-b-8 border-stone-950 px-3 pb-5 pt-10 sm:grid-cols-6 lg:grid-cols-9">
-          <div className="absolute left-3 right-3 top-7 h-3 rounded bg-stone-950 shadow-[0_0_18px_rgba(251,191,36,0.2)]" />
-          <div className="absolute left-3 right-3 top-[calc(50%+0.3rem)] hidden h-3 rounded bg-stone-950 shadow-[0_0_18px_rgba(251,191,36,0.16)] lg:block" />
+          <div className="absolute left-3 right-3 top-7 h-3 rounded bg-stone-950 shadow-[0_0_18px_rgba(132,204,22,0.2)]" />
+          <div className="absolute left-3 right-3 top-[calc(50%+0.3rem)] hidden h-3 rounded bg-stone-950 shadow-[0_0_18px_rgba(132,204,22,0.16)] lg:block" />
           {instruments.map((instrument) => (
             <AngklungTube
               key={`${instrument.instrument_id}-${instrument.actuator_channel}`}

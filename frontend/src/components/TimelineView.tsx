@@ -27,7 +27,7 @@ export function TimelineView({ commands, activeCommandIds }: TimelineViewProps) 
             {commands.map((command) => {
               const active = activeCommandIds.has(command.command_id);
               return (
-                <tr key={command.command_id} className={active ? "bg-amber-300/18 text-amber-50" : "odd:bg-white/5 even:bg-white/[0.03] text-slate-300"}>
+                <tr key={command.command_id} className={active ? "bg-lime-300/18 text-lime-50" : "odd:bg-white/5 even:bg-white/[0.03] text-slate-300"}>
                   <td className="px-3 py-2 font-mono">{command.start_time_seconds.toFixed(3)}s</td>
                   <td className="px-3 py-2 font-semibold">{command.note}</td>
                   <td className="px-3 py-2">{command.instrument_id}</td>

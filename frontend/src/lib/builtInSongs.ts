@@ -7,6 +7,7 @@ export type BuiltInSongNote = {
 export type BuiltInSong = {
   id: string;
   title: string;
+  aliases?: string[];
   tempo_bpm: number;
   notes: BuiltInSongNote[];
 };
@@ -173,6 +174,7 @@ export const BUILT_IN_SONGS: BuiltInSong[] = [
   {
     id: "twinkle_twinkle",
     title: "Twinkle Twinkle — Layered Angklung",
+    aliases: ["twinkle", "twinkle twinkle"],
     tempo_bpm: 100,
     notes: [
       // Main: G G D D E E D
@@ -268,6 +270,7 @@ export const BUILT_IN_SONGS: BuiltInSong[] = [
   {
     id: "happy_birthday",
     title: "Happy Birthday — Layered Angklung",
+    aliases: ["happy birthday", "birthday"],
     tempo_bpm: 95,
     notes: [
       // Happy birthday to you
@@ -340,6 +343,7 @@ export const BUILT_IN_SONGS: BuiltInSong[] = [
   {
     id: "ode_to_joy",
     title: "Ode to Joy — Layered Angklung",
+    aliases: ["ode to joy", "ode"],
     tempo_bpm: 112,
     notes: [
       // Phrase 1
@@ -438,6 +442,7 @@ export const BUILT_IN_SONGS: BuiltInSong[] = [
   {
     id: "romantic_flight_melody",
     title: "Romantic Flight — Angklung Melody",
+    aliases: ["romantic flight", "romantic flight melody", "angklung melody"],
     tempo_bpm: 96,
     notes: toTimedNotes(ROMANTIC_FLIGHT_MELODY, 96),
   },
@@ -445,6 +450,7 @@ export const BUILT_IN_SONGS: BuiltInSong[] = [
   {
     id: "romantic_flight_angklung",
     title: "Romantic Flight — Angklung Adaptation",
+    aliases: ["romantic flight adaptation", "romantic flight angklung", "angklung adaptation"],
     tempo_bpm: 108,
     notes: [
       // Opening shimmer — soft flying intro

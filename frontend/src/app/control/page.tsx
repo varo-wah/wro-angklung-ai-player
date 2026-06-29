@@ -1,7 +1,12 @@
 "use client";
 
 import { AngklungRack } from "@/components/AngklungRack";
-import { useAngklungSystem, type WorkflowStatus } from "@/components/AngklungSystemProvider";
+import {
+  useAngklungSystem,
+  type SourceMode,
+  type SystemStatus,
+  type WorkflowStatus,
+} from "@/components/AngklungSystemProvider";
 import { PlaybackControls } from "@/components/PlaybackControls";
 import { ScheduleJsonViewer } from "@/components/ScheduleJsonViewer";
 import { ScheduleUploader } from "@/components/ScheduleUploader";
@@ -9,6 +14,7 @@ import { TimelineView } from "@/components/TimelineView";
 import type { BuiltInSongNote } from "@/lib/builtInSongs";
 import type { ArrangementSettings } from "@/lib/scheduleBuilder";
 import type { SafetyReport } from "@/lib/safetyValidator";
+import type { PlaybackState } from "@/lib/types";
 
 export default function ControlPage() {
   const system = useAngklungSystem();
@@ -18,7 +24,7 @@ export default function ControlPage() {
       <div className="mx-auto flex max-w-7xl flex-col gap-5">
         <section className="flex flex-wrap items-end justify-between gap-4 border-b border-white/10 pb-4">
           <div>
-            <p className="text-sm font-semibold uppercase tracking-[0.18em] text-amber-300">Control Panel</p>
+            <p className="text-sm font-semibold uppercase tracking-[0.18em] text-lime-300">Control Panel</p>
             <h2 className="mt-1 text-3xl font-bold text-slate-50">Operator System Monitor</h2>
             <p className="mt-2 max-w-2xl text-sm text-slate-300">
               This page shows what the computer is doing behind the scenes: selected song, schedule generation, validation,
@@ -32,6 +38,15 @@ export default function ControlPage() {
             <Metric label="Playback" value={system.playbackState} />
           </div>
         </section>
+
+        <GuestRequestMonitor
+          latestUserRequest={system.latestUserRequest}
+          playbackState={system.playbackState}
+          safetyReport={system.safetyReport}
+          selectedSongTitle={system.sourceMode === "youtube_placeholder" ? "" : system.selectedSong.title}
+          sourceMode={system.sourceMode}
+          systemStatus={system.systemStatus}
+        />
 
         <AngklungRack instruments={system.instruments} activeInstrumentIds={system.activeInstrumentIds} />
 
@@ -86,6 +101,87 @@ function Metric({ label, value }: { label: string; value: string }) {
   );
 }
 
+function GuestRequestMonitor({
+  latestUserRequest,
+  playbackState,
+  safetyReport,
+  selectedSongTitle,
+  sourceMode,
+  systemStatus,
+}: {
+  latestUserRequest: string;
+  playbackState: PlaybackState;
+  safetyReport: SafetyReport | null;
+  selectedSongTitle: string;
+  sourceMode: SourceMode;
+  systemStatus: SystemStatus;
+}) {
+  const matchedSong = selectedSongTitle || (sourceMode === "youtube_placeholder" ? "No supported match" : "No song selected");
+
+  return (
+    <section className="rounded-xl border border-lime-300/20 bg-lime-300/[0.07] p-4 shadow-[0_20px_70px_rgba(0,0,0,0.35)]">
+      <div className="mb-3 flex flex-wrap items-center justify-between gap-3">
+        <div>
+          <p className="text-xs font-bold uppercase tracking-[0.18em] text-lime-300">Guest Request Monitor</p>
+          <h2 className="mt-1 text-xl font-semibold text-slate-50">Visitor request handoff</h2>
+        </div>
+        <span className="rounded-full border border-emerald-300/30 bg-emerald-300/10 px-3 py-1 text-sm font-semibold text-emerald-100">
+          {formatSystemStatus(systemStatus)}
+        </span>
+      </div>
+      <div className="grid gap-2 md:grid-cols-2 xl:grid-cols-3">
+        <MonitorItem label="Latest request" value={latestUserRequest ? `“${latestUserRequest}”` : "No guest request yet"} />
+        <MonitorItem label="Matched song" value={matchedSong} />
+        <MonitorItem label="Source mode" value={formatSourceMode(sourceMode)} />
+        <MonitorItem label="Workflow status" value={formatSystemStatus(systemStatus)} />
+        <MonitorItem label="Validation status" value={safetyReport?.overall ?? "Not run"} />
+        <MonitorItem label="Playback status" value={formatPlaybackState(playbackState)} />
+      </div>
+    </section>
+  );
+}
+
+function MonitorItem({ label, value }: { label: string; value: string }) {
+  return (
+    <div className="rounded-lg border border-white/10 bg-black/30 px-3 py-2">
+      <div className="text-[10px] font-bold uppercase tracking-[0.12em] text-slate-500">{label}</div>
+      <div className="mt-1 truncate text-sm font-semibold text-slate-100">{value}</div>
+    </div>
+  );
+}
+
+function formatSourceMode(sourceMode: SourceMode): string {
+  const labels: Record<SourceMode, string> = {
+    library: "Supported Library",
+    manual_upload: "Manual Upload",
+    youtube_placeholder: "Future YouTube Placeholder",
+  };
+  return labels[sourceMode];
+}
+
+function formatSystemStatus(status: SystemStatus): string {
+  const labels: Record<SystemStatus, string> = {
+    idle: "Idle",
+    playing: "Playing",
+    request_received: "Request received",
+    schedule_generated: "Schedule generated",
+    stopped: "Stopped",
+    unsupported: "Unsupported",
+    validated: "Validated",
+  };
+  return labels[status];
+}
+
+function formatPlaybackState(playbackState: PlaybackState): string {
+  const labels: Record<PlaybackState, string> = {
+    idle: "Idle",
+    paused: "Paused",
+    playing: "Playing",
+    stopped: "Stopped",
+  };
+  return labels[playbackState];
+}
+
 function SongSourcePanel() {
   const system = useAngklungSystem();
 
@@ -95,7 +191,7 @@ function SongSourcePanel() {
       <label className="block text-sm font-semibold text-slate-200">
         Built-in Song
         <select
-          className="mt-2 w-full rounded border border-white/10 bg-black/45 px-3 py-2 text-sm text-slate-100 outline-none focus:border-amber-300/70"
+          className="mt-2 w-full rounded border border-white/10 bg-black/45 px-3 py-2 text-sm text-slate-100 outline-none focus:border-lime-300/70"
           value={system.selectedSongId}
           onChange={(event) => system.setSelectedSongId(event.target.value)}
         >
@@ -118,7 +214,7 @@ function SongSourcePanel() {
       </label>
       <p className="mt-2 text-xs text-slate-400">YouTube conversion remains Phase 3. No download or transcription runs here.</p>
       <button
-        className="mt-4 w-full rounded bg-amber-300 px-4 py-2 text-sm font-semibold text-slate-950 hover:bg-amber-200"
+        className="mt-4 w-full rounded bg-lime-300 px-4 py-2 text-sm font-semibold text-slate-950 hover:bg-lime-200"
         onClick={system.generateBuiltInSchedule}
         type="button"
       >
@@ -130,10 +226,10 @@ function SongSourcePanel() {
 
 function CandidateYoutubePanel({ active }: { active: boolean }) {
   return (
-    <section className={`rounded-lg border p-4 shadow-[0_20px_70px_rgba(0,0,0,0.35)] ${active ? "border-amber-300/40 bg-amber-300/10" : "border-white/10 bg-slate-950/78"}`}>
+    <section className={`rounded-lg border p-4 shadow-[0_20px_70px_rgba(0,0,0,0.35)] ${active ? "border-lime-300/40 bg-lime-300/10" : "border-white/10 bg-slate-950/78"}`}>
       <div className="flex items-center justify-between gap-3">
         <h2 className="text-lg font-semibold text-slate-50">Candidate YouTube Reference</h2>
-        <span className="rounded border border-amber-300/30 bg-amber-300/10 px-2 py-1 text-xs font-bold text-amber-200">Coming in Phase 3</span>
+        <span className="rounded border border-lime-300/30 bg-lime-300/10 px-2 py-1 text-xs font-bold text-lime-200">Coming in Phase 3</span>
       </div>
       <div className="mt-3 space-y-1 text-sm text-slate-300">
         <div>Video title: Simple piano reference placeholder</div>
@@ -194,10 +290,10 @@ function StrengthSlider({ value, onChange }: { value: number; onChange: (value: 
     <label className="block">
       <div className="mb-2 flex items-center justify-between gap-3 text-sm font-semibold text-slate-200">
         <span>Actuator Strength</span>
-        <span className="rounded border border-white/10 bg-white/5 px-2 py-1 font-mono text-amber-200">{Math.round(value * 100)}%</span>
+        <span className="rounded border border-white/10 bg-white/5 px-2 py-1 font-mono text-lime-200">{Math.round(value * 100)}%</span>
       </div>
       <input
-        className="w-full accent-amber-300"
+        className="w-full accent-lime-300"
         max={1}
         min={0.2}
         onChange={(event) => onChange(Number(event.target.value))}
@@ -231,7 +327,7 @@ function SegmentedControl({
         {options.map(([optionValue, optionLabel]) => (
           <button
             className={`rounded border px-3 py-2 text-sm font-semibold ${
-              value === optionValue ? "border-amber-300 bg-amber-300 text-slate-950" : "border-white/10 bg-white/5 text-slate-200 hover:border-amber-300/60"
+              value === optionValue ? "border-lime-300 bg-lime-300 text-slate-950" : "border-white/10 bg-white/5 text-slate-200 hover:border-lime-300/60"
             }`}
             key={optionValue}
             onClick={() => onChange(optionValue)}
@@ -269,7 +365,7 @@ function WorkflowStatusPanel({ status }: { status: WorkflowStatus }) {
             <span
               className={
                 stateLabel === "Not found"
-                  ? "font-semibold text-amber-200"
+                  ? "font-semibold text-lime-200"
                   : passed
                     ? "font-semibold text-emerald-300"
                     : "font-semibold text-slate-500"
@@ -305,7 +401,7 @@ function ValidationPanel({ report, errors }: { report: SafetyReport | null; erro
           <div className="rounded border border-white/10 bg-white/5 px-3 py-2 text-sm" key={check.label}>
             <div className="flex justify-between gap-3">
               <span className="font-semibold text-slate-200">{check.label}</span>
-              <span className={check.status === "failed" ? "text-red-300" : check.status === "warning" ? "text-amber-200" : "text-emerald-300"}>
+              <span className={check.status === "failed" ? "text-red-300" : check.status === "warning" ? "text-lime-200" : "text-emerald-300"}>
                 {check.status.toUpperCase()}
               </span>
             </div>

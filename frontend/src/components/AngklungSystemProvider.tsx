@@ -90,12 +90,6 @@ const INITIAL_WORKFLOW_STATUS: WorkflowStatus = {
   readyForSimulation: false,
 };
 
-const SONG_ALIASES: Record<string, string[]> = {
-  happy_birthday: ["happy birthday", "birthday"],
-  ode_to_joy: ["ode to joy", "ode"],
-  twinkle_twinkle: ["twinkle", "twinkle twinkle"],
-};
-
 const AngklungSystemContext = createContext<AngklungSystemContextValue | null>(null);
 
 export function AngklungSystemProvider({ children }: { children: ReactNode }) {
@@ -463,7 +457,7 @@ function SystemNavigation({ pathname, status }: { pathname: string; status: Syst
     <header className="border-b border-white/10 bg-black/55 px-5 py-4 shadow-[0_18px_60px_rgba(0,0,0,0.35)] backdrop-blur-xl lg:px-8">
       <div className="mx-auto flex max-w-7xl flex-wrap items-center justify-between gap-4">
         <div>
-          <p className="text-xs font-bold uppercase tracking-[0.18em] text-amber-300">{modeLabel}</p>
+          <p className="text-xs font-bold uppercase tracking-[0.18em] text-lime-300">{modeLabel}</p>
           <h1 className="mt-1 text-2xl font-bold text-slate-50">AI Angklung Performance System</h1>
         </div>
         <nav className="flex flex-wrap items-center gap-2">
@@ -483,8 +477,8 @@ function NavLink({ active, href, label }: { active: boolean; href: string; label
     <Link
       className={`rounded border px-3 py-2 text-sm font-semibold ${
         active
-          ? "border-amber-300/70 bg-amber-300 text-slate-950 shadow-[0_0_24px_rgba(251,191,36,0.22)]"
-          : "border-white/10 bg-white/5 text-slate-200 hover:border-amber-300/60 hover:text-amber-100"
+          ? "border-lime-300/70 bg-lime-300 text-slate-950 shadow-[0_0_24px_rgba(132,204,22,0.22)]"
+          : "border-white/10 bg-white/5 text-slate-200 hover:border-lime-300/60 hover:text-lime-100"
       }`}
       href={href}
     >
@@ -515,7 +509,7 @@ function findBuiltInSong(request: string): BuiltInSong | null {
   return (
     BUILT_IN_SONGS.find((song) => {
       const normalizedTitle = normalizeSongText(song.title);
-      const aliases = SONG_ALIASES[song.id] ?? [];
+      const aliases = song.aliases ?? [];
 
       return (
         normalizedTitle.includes(normalizedRequest) ||

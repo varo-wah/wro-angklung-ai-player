@@ -15,7 +15,7 @@ export default function GuestPage() {
           <div className="border-b border-white/10 px-5 py-5 sm:px-7">
             <div className="flex flex-wrap items-center justify-between gap-4">
               <div>
-                <p className="text-xs font-bold uppercase tracking-[0.18em] text-amber-300">Guest Interface</p>
+                <p className="text-xs font-bold uppercase tracking-[0.18em] text-lime-300">Guest Interface</p>
                 <h2 className="mt-2 text-2xl font-semibold text-slate-50 sm:text-3xl">AI Angklung Song Assistant</h2>
               </div>
               <StatusPill ready={ready} playbackState={system.playbackState} sourceMode={system.sourceMode} />
@@ -43,7 +43,7 @@ export default function GuestPage() {
             <div className="mb-4 flex flex-wrap gap-2">
               {system.supportedSongs.map((song) => (
                 <button
-                  className="rounded-full border border-white/10 bg-white/[0.06] px-4 py-2 text-sm font-medium text-slate-200 hover:border-amber-300/60 hover:bg-amber-300/10 hover:text-amber-100"
+                  className="rounded-full border border-white/10 bg-white/[0.06] px-4 py-2 text-sm font-medium text-slate-200 hover:border-lime-300/60 hover:bg-lime-300/10 hover:text-lime-100"
                   key={song.id}
                   onClick={() => system.requestSong(song.title)}
                   type="button"
@@ -54,7 +54,7 @@ export default function GuestPage() {
             </div>
 
             <form
-              className="flex items-center gap-2 rounded-full border border-white/10 bg-slate-900/95 p-2 shadow-[inset_0_1px_0_rgba(255,255,255,0.05)] focus-within:border-amber-300/60"
+              className="flex items-center gap-2 rounded-full border border-white/10 bg-slate-900/95 p-2 shadow-[inset_0_1px_0_rgba(255,255,255,0.05)] focus-within:border-lime-300/60"
               onSubmit={(event) => {
                 event.preventDefault();
                 system.requestSong(system.chatInput);
@@ -74,7 +74,7 @@ export default function GuestPage() {
               >
                 Mic
               </button>
-              <button className="grid h-11 w-11 place-items-center rounded-full bg-amber-300 text-sm font-bold text-slate-950 hover:bg-amber-200" type="submit">
+              <button className="grid h-11 w-11 place-items-center rounded-full bg-lime-300 text-sm font-bold text-slate-950 hover:bg-lime-200" type="submit">
                 Send
               </button>
             </form>
@@ -125,14 +125,14 @@ function ChatBubble({ speaker, text }: { speaker: "assistant" | "user"; text: st
     <div className={`flex gap-3 ${isAssistant ? "justify-start" : "justify-end"}`}>
       {isAssistant && <Avatar label="A" />}
       <div className={`max-w-[78%] ${isAssistant ? "" : "order-first"}`}>
-        <div className={`mb-1 text-xs font-semibold ${isAssistant ? "text-slate-400" : "text-right text-amber-200"}`}>
+        <div className={`mb-1 text-xs font-semibold ${isAssistant ? "text-slate-400" : "text-right text-lime-200"}`}>
           {isAssistant ? "Assistant" : "You"}
         </div>
         <div
           className={`rounded-[22px] px-5 py-3 text-sm leading-relaxed shadow-[0_14px_35px_rgba(0,0,0,0.22)] ${
             isAssistant
               ? "rounded-tl-md border border-white/10 bg-white/[0.07] text-slate-100"
-              : "rounded-tr-md bg-amber-300 text-slate-950"
+              : "rounded-tr-md bg-lime-300 text-slate-950"
           }`}
         >
           {text}
@@ -153,7 +153,7 @@ function Avatar({ label }: { label: string }) {
 
 function SystemNotice({ children }: { children: ReactNode }) {
   return (
-    <div className="mx-auto max-w-2xl rounded-3xl border border-amber-300/30 bg-amber-300/10 px-5 py-4 text-sm leading-relaxed text-amber-100">
+    <div className="mx-auto max-w-2xl rounded-3xl border border-lime-300/30 bg-lime-300/10 px-5 py-4 text-sm leading-relaxed text-lime-100">
       {children}
     </div>
   );
@@ -173,7 +173,7 @@ function StatusPill({
     playbackState === "playing"
       ? "border-emerald-300/40 bg-emerald-300/10 text-emerald-100"
       : ready
-        ? "border-amber-300/40 bg-amber-300/10 text-amber-100"
+        ? "border-lime-300/40 bg-lime-300/10 text-lime-100"
         : sourceMode === "youtube_placeholder"
           ? "border-red-300/40 bg-red-300/10 text-red-100"
           : "border-white/10 bg-white/[0.06] text-slate-300";
