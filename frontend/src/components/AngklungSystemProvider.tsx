@@ -451,7 +451,11 @@ export function displaySongTitle(title: string): string {
 }
 
 function SystemNavigation({ pathname, status }: { pathname: string; status: SystemStatus }) {
-  const modeLabel = pathname.startsWith("/control") ? "Operator-facing system monitor and simulator" : "Visitor-facing song request screen";
+  const modeLabel = pathname.startsWith("/control")
+    ? "Operator-facing system monitor and simulator"
+    : pathname.startsWith("/display")
+      ? "Audience-facing stage display"
+      : "Visitor-facing song request screen";
 
   return (
     <header className="border-b border-white/10 bg-black/55 px-5 py-4 shadow-[0_18px_60px_rgba(0,0,0,0.35)] backdrop-blur-xl lg:px-8">
@@ -463,6 +467,7 @@ function SystemNavigation({ pathname, status }: { pathname: string; status: Syst
         <nav className="flex flex-wrap items-center gap-2">
           <NavLink active={pathname.startsWith("/guest")} href="/guest" label="Guest Interface" />
           <NavLink active={pathname.startsWith("/control")} href="/control" label="Control Panel" />
+          <NavLink active={pathname.startsWith("/display")} href="/display" label="Display Screen" />
           <span className="rounded border border-emerald-400/30 bg-emerald-400/10 px-3 py-2 text-sm font-semibold text-emerald-200 shadow-[inset_0_1px_0_rgba(255,255,255,0.08)]">
             {formatSystemStatus(status)}
           </span>
