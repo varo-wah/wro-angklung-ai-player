@@ -95,12 +95,15 @@ The export is relative to playback start and is intended for the future website,
 
 The frontend simulator lives in `frontend/`.
 
-It now acts as the Phase 1 AI Angklung Performance Console with two route-based screens:
+It now acts as the Phase 1 AI Angklung Performance Console with three route-based screens:
 
 - `/guest`: a visitor-facing chatbot interface for song requests, supported-song suggestions, simplified playback, and clear unsupported-song messaging.
 - `/control`: an operator-facing system monitor with built-in song selection, arrangement controls, schedule generation, validation, virtual rack playback, oscillator tones, timeline preview, JSON preview, and advanced `actuator_schedule.v1` upload.
+- `/display`: an audience-facing performance display with assistant status, latest request, selected song, now-playing state, and a decorative music sheet preview.
 
-Both screens share frontend state during the browser session. A supported request on `/guest` generates the same schedule and validation state shown on `/control`.
+The screens share frontend state during the browser session. A supported request on `/guest` generates the same schedule and validation state shown on `/control` and the same presentation state shown on `/display`.
+
+For Phase 1 multi-screen demos, browser tabs synchronize through `BroadcastChannel` with `localStorage` as a hydration backup. No backend database is required yet. The tab that starts playback controls audio, while the other tabs mirror playback status and progress visually.
 
 The assistant can match supported song requests against the built-in library, generate `actuator_schedule.v1`, run validation, and prepare simulation playback. Unsupported requests show that YouTube Piano Reference Mode is coming later, would require user approval, and that no audio download or transcription is currently running.
 

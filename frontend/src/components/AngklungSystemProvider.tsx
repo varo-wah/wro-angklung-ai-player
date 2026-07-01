@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { createContext, useContext, useMemo, useRef, useState, type ReactNode } from "react";
+import { createContext, useContext, useEffect, useMemo, useRef, useState, type ReactNode } from "react";
 import { AudioEngine } from "@/lib/audioEngine";
 import { BUILT_IN_SONGS, type BuiltInSong, type BuiltInSongNote } from "@/lib/builtInSongs";
 import { buildFullAngklungRack } from "@/lib/instrumentMap";
@@ -10,6 +10,12 @@ import { PlaybackEngine } from "@/lib/playbackEngine";
 import { type ArrangementSettings, buildScheduleFromBuiltInSong, scaleNotes } from "@/lib/scheduleBuilder";
 import { type SafetyReport, validateMotorSafety } from "@/lib/safetyValidator";
 import { validateSchedulePayload } from "@/lib/scheduleValidator";
+import {
+  createSyncTabId,
+  createSystemSyncController,
+  readStoredSystemSnapshot,
+  type SyncedSystemSnapshot,
+} from "@/lib/systemSync";
 import type { ActuatorCommand, ActuatorSchedule, PlaybackState, RackInstrument } from "@/lib/types";
 
 export type SourceMode = "library" | "youtube_placeholder" | "manual_upload";
@@ -28,6 +34,12 @@ export type WorkflowStatus = {
   scheduleGenerated: boolean;
   validationPassed: boolean;
   readyForSimulation: boolean;
+};
+
+type SyncState = {
+  available: boolean;
+  lastSyncedAt: number | null;
+  status: "waiting" | "synced" | "local_only";
 };
 
 type AngklungSystemContextValue = {
@@ -113,8 +125,18 @@ export function AngklungSystemProvider({ children }: { children: ReactNode }) {
   const [activeCommandIds, setActiveCommandIds] = useState<Set<string>>(new Set());
   const [activeInstrumentIds, setActiveInstrumentIds] = useState<Set<string>>(new Set());
   const [systemStatus, setSystemStatus] = useState<SystemStatus>("idle");
+  const [syncState, setSyncState] = useState<SyncState>({
+    available: false,
+    lastSyncedAt: null,
+    status: "waiting",
+  });
   const engineRef = useRef<PlaybackEngine | null>(null);
   const audioRef = useRef<AudioEngine | null>(null);
+  const applyingSyncedSnapshotRef = useRef(false);
+  const lastPublishedAtRef = useRef(0);
+  const latestSnapshotAtRef = useRef(0);
+  const syncControllerRef = useRef<ReturnType<typeof createSystemSyncController> | null>(null);
+  const tabIdRef = useRef(createSyncTabId());
 
   const selectedSong = useMemo(
     () => BUILT_IN_SONGS.find((song) => song.id === selectedSongId) ?? BUILT_IN_SONGS[0],
@@ -122,6 +144,124 @@ export function AngklungSystemProvider({ children }: { children: ReactNode }) {
   );
   const instruments = useMemo(() => buildFullAngklungRack(), []);
   const totalDuration = schedule?.timing.total_duration_seconds ?? 0;
+
+  useEffect(() => {
+    const storedSnapshot = readStoredSystemSnapshot();
+    if (storedSnapshot) {
+      applySyncedSnapshot(storedSnapshot);
+    }
+
+    const controller = createSystemSyncController(tabIdRef.current, applySyncedSnapshot);
+    const syncAvailable = controller.broadcastAvailable || controller.storageAvailable;
+    syncControllerRef.current = controller;
+    setSyncState((current) => ({
+      available: syncAvailable,
+      lastSyncedAt: storedSnapshot?.updatedAt ?? current.lastSyncedAt,
+      status: syncAvailable ? "synced" : "local_only",
+    }));
+
+    return () => {
+      controller.close();
+      syncControllerRef.current = null;
+    };
+  }, []);
+
+  useEffect(() => {
+    if (!syncControllerRef.current) {
+      return;
+    }
+
+    if (applyingSyncedSnapshotRef.current) {
+      applyingSyncedSnapshotRef.current = false;
+      return;
+    }
+
+    const now = Date.now();
+    if (playbackState === "playing" && now - lastPublishedAtRef.current < 250) {
+      return;
+    }
+
+    const snapshot = createSnapshot(now);
+    latestSnapshotAtRef.current = snapshot.updatedAt;
+    lastPublishedAtRef.current = snapshot.updatedAt;
+    syncControllerRef.current.publish(snapshot);
+    setSyncState((current) => ({
+      ...current,
+      lastSyncedAt: snapshot.updatedAt,
+      status: current.available ? "synced" : "local_only",
+    }));
+  }, [
+    activeCommandIds,
+    activeInstrumentIds,
+    chatMessages,
+    elapsedSeconds,
+    generatedNotes,
+    latestUserRequest,
+    playbackState,
+    safetyReport,
+    schedule,
+    selectedSongId,
+    sourceLabel,
+    sourceMode,
+    systemStatus,
+    workflowStatus,
+    youtubeFallbackActive,
+  ]);
+
+  function createSnapshot(updatedAt: number): SyncedSystemSnapshot {
+    return {
+      activeCommandIds: Array.from(activeCommandIds),
+      activeInstrumentIds: Array.from(activeInstrumentIds),
+      chatMessages,
+      elapsedSeconds,
+      generatedNotes,
+      latestUserRequest,
+      playbackState,
+      safetyReport,
+      schedule,
+      selectedSongId,
+      sourceLabel,
+      sourceMode,
+      sourceTabId: tabIdRef.current,
+      systemStatus,
+      updatedAt,
+      workflowStatus,
+      youtubeFallbackActive,
+    };
+  }
+
+  function applySyncedSnapshot(snapshot: SyncedSystemSnapshot) {
+    if (snapshot.updatedAt <= latestSnapshotAtRef.current) {
+      return;
+    }
+
+    applyingSyncedSnapshotRef.current = true;
+    latestSnapshotAtRef.current = snapshot.updatedAt;
+    engineRef.current?.stop();
+    engineRef.current = null;
+
+    setActiveCommandIds(new Set(snapshot.activeCommandIds));
+    setActiveInstrumentIds(new Set(snapshot.activeInstrumentIds));
+    setChatMessages(snapshot.chatMessages.length > 0 ? snapshot.chatMessages : INITIAL_CHAT_MESSAGES);
+    setElapsedSeconds(snapshot.elapsedSeconds);
+    setErrors([]);
+    setGeneratedNotes(snapshot.generatedNotes);
+    setLatestUserRequest(snapshot.latestUserRequest);
+    setPlaybackState(snapshot.playbackState);
+    setSafetyReport(snapshot.safetyReport);
+    setSchedule(snapshot.schedule);
+    setSelectedSongId(snapshot.selectedSongId);
+    setSourceLabel(snapshot.sourceLabel);
+    setSourceMode(snapshot.sourceMode);
+    setSystemStatus(snapshot.systemStatus);
+    setWorkflowStatus(snapshot.workflowStatus);
+    setYoutubeFallbackActive(snapshot.youtubeFallbackActive);
+    setSyncState((current) => ({
+      ...current,
+      lastSyncedAt: snapshot.updatedAt,
+      status: current.available ? "synced" : "local_only",
+    }));
+  }
 
   function generateScheduleForSong(song: BuiltInSong): SafetyReport | null {
     stopPlayback();
@@ -431,7 +571,7 @@ export function AngklungSystemProvider({ children }: { children: ReactNode }) {
   return (
     <AngklungSystemContext.Provider value={value}>
       <div className="min-h-screen">
-        <SystemNavigation pathname={pathname} status={systemStatus} />
+        <SystemNavigation pathname={pathname} status={systemStatus} syncState={syncState} />
         {children}
       </div>
     </AngklungSystemContext.Provider>
@@ -450,7 +590,7 @@ export function displaySongTitle(title: string): string {
   return title.replace(/\s+[^a-zA-Z0-9\s]+?\s+Layered Angklung$/, "");
 }
 
-function SystemNavigation({ pathname, status }: { pathname: string; status: SystemStatus }) {
+function SystemNavigation({ pathname, status, syncState }: { pathname: string; status: SystemStatus; syncState: SyncState }) {
   const modeLabel = pathname.startsWith("/control")
     ? "Operator-facing system monitor and simulator"
     : pathname.startsWith("/display")
@@ -468,6 +608,9 @@ function SystemNavigation({ pathname, status }: { pathname: string; status: Syst
           <NavLink active={pathname.startsWith("/guest")} href="/guest" label="Guest Interface" />
           <NavLink active={pathname.startsWith("/control")} href="/control" label="Control Panel" />
           <NavLink active={pathname.startsWith("/display")} href="/display" label="Display Screen" />
+          <span className="rounded border border-white/10 bg-white/5 px-3 py-2 text-sm font-semibold text-slate-300 shadow-[inset_0_1px_0_rgba(255,255,255,0.06)]">
+            {formatSyncState(syncState)}
+          </span>
           <span className="rounded border border-emerald-400/30 bg-emerald-400/10 px-3 py-2 text-sm font-semibold text-emerald-200 shadow-[inset_0_1px_0_rgba(255,255,255,0.08)]">
             {formatSystemStatus(status)}
           </span>
@@ -475,6 +618,20 @@ function SystemNavigation({ pathname, status }: { pathname: string; status: Syst
       </div>
     </header>
   );
+}
+
+function formatSyncState(syncState: SyncState): string {
+  if (syncState.status === "waiting") {
+    return "Waiting for sync";
+  }
+  if (syncState.status === "local_only") {
+    return "Local only";
+  }
+  if (!syncState.lastSyncedAt) {
+    return "Synced across screens";
+  }
+  const ageSeconds = Math.max(0, Math.round((Date.now() - syncState.lastSyncedAt) / 1000));
+  return ageSeconds <= 1 ? "Synced across screens" : `Last sync: ${ageSeconds}s ago`;
 }
 
 function NavLink({ active, href, label }: { active: boolean; href: string; label: string }) {

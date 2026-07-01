@@ -27,8 +27,9 @@ The current implementation:
 - Imports a YouTube URL through a mocked transcription pipeline.
 - Converts mocked transcription notes into internal song JSON.
 - Exports official `actuator_schedule.v1` JSON.
-- Provides a two-screen website: a visitor-facing Guest Interface and an operator-facing Control Panel.
-- Shares song requests, schedule generation, validation, playback state, and rack animation between the two screens.
+- Provides a three-screen website: a visitor-facing Guest Interface, an operator-facing Control Panel, and an audience-facing Display Screen.
+- Shares song requests, schedule generation, validation, playback state, and rack animation between the screens.
+- Uses browser-based `BroadcastChannel` plus `localStorage` sync so multiple same-browser tabs can stay aligned during Phase 1 demos without a backend database.
 - Uses placeholder actuator functions that print which note should be played and when.
 - Rejects unsupported song requests safely instead of claiming arbitrary-song playback.
 
@@ -113,6 +114,9 @@ Open the local Next.js URL. `/` redirects to the visitor-facing Guest Interface:
 
 - `/guest`: chatbot-style screen for visitors requesting songs.
 - `/control`: technical console showing schedule generation, validation, playback, virtual rack behavior, timeline, JSON preview, and advanced upload.
+- `/display`: presentation screen for an audience monitor, showing assistant status, current request, now-playing state, and a decorative music sheet preview.
+
+During Phase 1, these screens use browser-tab synchronization through `BroadcastChannel` with `localStorage` hydration. A tab opened after a song is selected can restore the latest request, schedule, validation, playback status, and display state. The tab that starts playback owns the browser audio; other tabs mirror visual playback state to avoid multiple screens playing sound at once.
 
 The Guest Interface can accept chatbot-style song requests:
 
