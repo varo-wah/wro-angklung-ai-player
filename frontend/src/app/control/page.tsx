@@ -11,9 +11,9 @@ import { PlaybackControls } from "@/components/PlaybackControls";
 import { ScheduleJsonViewer } from "@/components/ScheduleJsonViewer";
 import { ScheduleUploader } from "@/components/ScheduleUploader";
 import { TimelineView } from "@/components/TimelineView";
-import type { BuiltInSongNote } from "@/lib/builtInSongs";
 import type { ArrangementSettings } from "@/lib/scheduleBuilder";
 import type { SafetyReport } from "@/lib/safetyValidator";
+import type { LoadedSong, SongNote } from "@/lib/songTypes";
 import type { PlaybackState } from "@/lib/types";
 
 export default function ControlPage() {
@@ -53,6 +53,7 @@ export default function ControlPage() {
         <section className="grid gap-4 xl:grid-cols-[360px_minmax(0,1fr)]">
           <div className="flex flex-col gap-4">
             <SongSourcePanel />
+            <ArrangementStatusPanel report={system.safetyReport} song={system.selectedSong} />
             <ArrangementSettingsPanel />
             <PlaybackControls
               disabled={!system.schedule || system.workflowStatus.readyForSimulation === false}
@@ -249,6 +250,87 @@ function CandidateYoutubePanel({ active }: { active: boolean }) {
   );
 }
 
+function ArrangementStatusPanel({ report, song }: { report: SafetyReport | null; song: LoadedSong }) {
+  const warningCount = report?.checks.filter((check) => check.status === "warning").length ?? 0;
+  const failedCount = report?.checks.filter((check) => check.status === "failed").length ?? 0;
+
+  return (
+    <section className="rounded-lg border border-lime-300/20 bg-lime-300/[0.07] p-4 shadow-[0_20px_70px_rgba(0,0,0,0.35)]">
+      <div className="mb-3 flex items-start justify-between gap-3">
+        <div>
+          <h2 className="text-lg font-semibold text-slate-50">Arrangement Status</h2>
+          <p className="mt-1 text-xs text-slate-400">Phase 2 test library metadata</p>
+        </div>
+        <span className="rounded border border-lime-300/30 bg-lime-300/10 px-2 py-1 text-xs font-bold text-lime-200">Draft arrangement</span>
+      </div>
+      <div className="grid gap-2 text-sm">
+        <StatusRow label="Song" value={song.title} />
+        <StatusRow label="Rack map" value={song.physical_rack_map ?? "G3-C6"} />
+        <StatusRow label="Arrangement status" value={formatArrangementStatus(song.arrangement_status)} />
+        <StatusRow label="Melody register" value={formatRegister(song.melody_register)} />
+        <StatusRow label="Melody range" value={song.melody_target_range ?? "Not specified"} />
+        <StatusRow label="Accompaniment register" value={formatRegister(song.accompaniment_register)} />
+        <StatusRow label="Accompaniment range" value={song.accompaniment_target_range ?? "Not specified"} />
+        <StatusRow label="Demo safe" value={song.demo_safe ? "Yes" : "No"} />
+        <StatusRow label="Notes count" value={String(song.notes.length)} />
+        <StatusRow label="Validation result" value={report?.overall ?? "Not run"} />
+        <StatusRow label="Warnings / errors" value={`${warningCount} warning${warningCount === 1 ? "" : "s"} / ${failedCount} error${failedCount === 1 ? "" : "s"}`} />
+      </div>
+      {song.reason && <p className="mt-3 rounded border border-white/10 bg-black/25 p-3 text-xs leading-relaxed text-slate-300">{song.reason}</p>}
+    </section>
+  );
+}
+
+function StatusRow({ label, value }: { label: string; value: string }) {
+  return (
+    <div className="grid grid-cols-[minmax(0,0.9fr)_minmax(0,1.1fr)] items-center gap-3 rounded border border-white/10 bg-black/25 px-3 py-2">
+      <span className="min-w-0 text-slate-400">{label}</span>
+      <span className="min-w-0 text-right font-semibold leading-snug text-slate-100 [overflow-wrap:anywhere]">{value}</span>
+    </div>
+  );
+}
+
+function formatArrangementStatus(status: string | undefined): string {
+  if (status === "draft_layered_from_midi_needs_simplification") {
+    return "Layered MIDI draft / needs simplification";
+  }
+  if (status === "draft_layered_from_midi_lower_pitch_needs_review") {
+    return "Layered MIDI draft / lower-pitch / needs review";
+  }
+  if (status === "draft_layered_from_midi_g3_c6_upper_melody_needs_review") {
+    return "G3-C6 layered MIDI draft / needs review";
+  }
+  if (status === "draft_layered_from_midi_g3_c6_lower_pitch_needs_review") {
+    return "G3-C6 layered MIDI draft / lower pitch / needs review";
+  }
+  if (status === "needs_remap_to_g3_c6") {
+    return "Needs remap to G3-C6";
+  }
+  if (status === "draft_from_midi_needs_simplification") {
+    return "Draft from MIDI / needs simplification";
+  }
+  return status ?? "Unknown";
+}
+
+function formatRegister(register: string | undefined): string {
+  if (!register) {
+    return "Not specified";
+  }
+  if (register === "middle_lower") {
+    return "Middle/lower";
+  }
+  if (register === "upper_physical") {
+    return "Upper physical register";
+  }
+  if (register === "upper_physical_lowered_pitch") {
+    return "G4-C6";
+  }
+  if (register === "lower_physical") {
+    return "G3-F4";
+  }
+  return register.charAt(0).toUpperCase() + register.slice(1);
+}
+
 function ArrangementSettingsPanel() {
   const system = useAngklungSystem();
 
@@ -280,7 +362,10 @@ function ArrangementSettingsPanel() {
         />
       </div>
       <p className="mt-3 text-xs text-slate-400">Strength controls simulator volume now and actuator intensity later.</p>
-      <div className="mt-4 rounded border border-white/10 bg-white/5 px-3 py-2 text-sm font-semibold text-slate-200">Range: 2.5-octave angklung</div>
+      <div className="mt-4 rounded border border-white/10 bg-white/5 px-3 py-2 text-sm font-semibold text-slate-200">Rack map: G3-C6 physical angklung assumption</div>
+      <p className="mt-3 rounded border border-lime-300/20 bg-lime-300/10 px-3 py-2 text-xs leading-relaxed text-lime-100">
+        Software rack map is now G3-C6 based on the current angklung assumption. Final note labels should still be checked with a tuner.
+      </p>
     </section>
   );
 }
@@ -414,7 +499,7 @@ function ValidationPanel({ report, errors }: { report: SafetyReport | null; erro
   );
 }
 
-function NotesPreview({ notes }: { notes: BuiltInSongNote[] }) {
+function NotesPreview({ notes }: { notes: SongNote[] }) {
   return (
     <section className="rounded-lg border border-white/10 bg-slate-950/78 p-4 shadow-[0_20px_70px_rgba(0,0,0,0.35)]">
       <h2 className="mb-3 text-lg font-semibold text-slate-50">Notes Preview</h2>

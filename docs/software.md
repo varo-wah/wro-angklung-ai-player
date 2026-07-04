@@ -24,6 +24,8 @@ The YouTube path is architecture preparation only. It validates source input and
 
 The reliable path is the preloaded supported song library. If a requested song is not preloaded, the frontend must show a limitation message and the future YouTube approval placeholder. It must not imply that every arbitrary song can be played.
 
+The active Phase 2 test library currently keeps `A Whole New World` and `Perfect MuseScore Ver.` playable on the corrected G3-C6 rack. `Perfect` remains in the catalog as inactive because its draft still uses the old G4-C7 rack and needs remapping. The active arrangements are layered G3-C6 drafts with upper melody notes and lower physical accompaniment. They are playable in the simulator, but remain `demo_safe: false` until listening review, simplification, and hardware validation are complete.
+
 ## Song Format
 
 Songs are JSON objects with metadata and a list of notes:
@@ -65,9 +67,9 @@ Instrument mappings are stored in `config/instrument_map.json`.
 The current physical range is modeled as 18 diatonic notes:
 
 ```text
+G3 A3 B3 C4 D4 E4 F4
 G4 A4 B4 C5 D5 E5 F5
-G5 A5 B5 C6 D6 E6 F6
-G6 A6 B6 C7
+G5 A5 B5 C6
 ```
 
 Each playable note must resolve to:
@@ -77,7 +79,7 @@ Each playable note must resolve to:
 
 Playback fails before scheduling if any song note is missing from the map. Partial playback is not allowed at this stage.
 
-The frontend mirrors this as the current 2.5-octave rack in `frontend/src/lib/instrumentMap.ts`. Future conversion must reject unsupported notes such as sharps/flats unless they can be simplified safely into the supported range.
+The frontend mirrors this as the current G3-C6 rack in `frontend/src/lib/instrumentMap.ts`. Future conversion must reject unsupported notes such as sharps/flats unless they can be simplified safely into the supported range.
 
 ## Actuator Schedule Export
 
@@ -105,7 +107,9 @@ The screens share frontend state during the browser session. A supported request
 
 For Phase 1 multi-screen demos, browser tabs synchronize through `BroadcastChannel` with `localStorage` as a hydration backup. No backend database is required yet. The tab that starts playback controls audio, while the other tabs mirror playback status and progress visually.
 
-The assistant can match supported song requests against the built-in library, generate `actuator_schedule.v1`, run validation, and prepare simulation playback. Unsupported requests show that YouTube Piano Reference Mode is coming later, would require user approval, and that no audio download or transcription is currently running.
+The Phase 2 active song library is currently reset to one test arrangement: `Perfect`. It is loaded from `frontend/public/songs/arrangements/perfect.json` through `frontend/public/songs/catalog.json`, and is marked as a MIDI-derived draft that still needs simplification. It is not demo-safe.
+
+The assistant can match supported song requests against the active library, generate `actuator_schedule.v1`, run validation, and prepare simulation playback when validation does not fail. Unsupported requests show that YouTube Piano Reference Mode is coming later, would require user approval, and that no audio download or transcription is currently running.
 
 Run it with:
 

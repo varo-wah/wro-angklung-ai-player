@@ -4,16 +4,20 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { createContext, useContext, useEffect, useMemo, useRef, useState, type ReactNode } from "react";
 import { AudioEngine } from "@/lib/audioEngine";
-import { BUILT_IN_SONGS, type BuiltInSong, type BuiltInSongNote } from "@/lib/builtInSongs";
 import { buildFullAngklungRack } from "@/lib/instrumentMap";
 import { PlaybackEngine } from "@/lib/playbackEngine";
 import { type ArrangementSettings, buildScheduleFromBuiltInSong, scaleNotes } from "@/lib/scheduleBuilder";
 import { type SafetyReport, validateMotorSafety } from "@/lib/safetyValidator";
 import { validateSchedulePayload } from "@/lib/scheduleValidator";
+import { getActiveCatalogSongs, getVisibleCatalogSongs, loadSongCatalog } from "@/lib/songCatalog";
+import { loadSongArrangement } from "@/lib/songLoader";
+import { findCatalogSong } from "@/lib/songMatcher";
+import type { LoadedSong, SongCatalogEntry, SongNote } from "@/lib/songTypes";
 import {
   createSyncTabId,
   createSystemSyncController,
   readStoredSystemSnapshot,
+  SYSTEM_SYNC_LIBRARY_VERSION,
   type SyncedSystemSnapshot,
 } from "@/lib/systemSync";
 import type { ActuatorCommand, ActuatorSchedule, PlaybackState, RackInstrument } from "@/lib/types";
@@ -49,18 +53,18 @@ type AngklungSystemContextValue = {
   chatMessages: ChatMessage[];
   elapsedSeconds: number;
   errors: string[];
-  generatedNotes: BuiltInSongNote[];
+  generatedNotes: SongNote[];
   instruments: RackInstrument[];
   latestUserRequest: string;
   playbackState: PlaybackState;
   safetyReport: SafetyReport | null;
   schedule: ActuatorSchedule | null;
-  selectedSong: BuiltInSong;
+  selectedSong: LoadedSong;
   selectedSongId: string;
   settings: ArrangementSettings;
   sourceLabel: string;
   sourceMode: SourceMode;
-  supportedSongs: BuiltInSong[];
+  supportedSongs: SongCatalogEntry[];
   systemStatus: SystemStatus;
   totalDuration: number;
   workflowStatus: WorkflowStatus;
@@ -102,16 +106,33 @@ const INITIAL_WORKFLOW_STATUS: WorkflowStatus = {
   readyForSimulation: false,
 };
 
+const EMPTY_SELECTED_SONG: LoadedSong = {
+  id: "",
+  title: "Loading song catalog",
+  aliases: [],
+  arrangement_status: "not_loaded",
+  demo_safe: false,
+  has_validated_notes: false,
+  active: false,
+  physical_rack_map: "G3-C6",
+  playable: false,
+  tempo_bpm: 120,
+  time_signature: "4/4",
+  notes: [],
+};
+
 const AngklungSystemContext = createContext<AngklungSystemContextValue | null>(null);
 
 export function AngklungSystemProvider({ children }: { children: ReactNode }) {
   const pathname = usePathname();
-  const [selectedSongId, setSelectedSongId] = useState(BUILT_IN_SONGS[0].id);
+  const [songCatalog, setSongCatalog] = useState<SongCatalogEntry[]>([]);
+  const [selectedSongId, setSelectedSongIdState] = useState("");
+  const [selectedSong, setSelectedSong] = useState<LoadedSong>(EMPTY_SELECTED_SONG);
   const [youtubeUrl, setYoutubeUrl] = useState("");
   const [settings, setSettings] = useState<ArrangementSettings>(DEFAULT_SETTINGS);
   const [schedule, setSchedule] = useState<ActuatorSchedule | null>(null);
-  const [generatedNotes, setGeneratedNotes] = useState<BuiltInSongNote[]>([]);
-  const [sourceLabel, setSourceLabel] = useState<string>("Built-in song ready");
+  const [generatedNotes, setGeneratedNotes] = useState<SongNote[]>([]);
+  const [sourceLabel, setSourceLabel] = useState<string>("Loading song catalog");
   const [sourceMode, setSourceMode] = useState<SourceMode>("library");
   const [latestUserRequest, setLatestUserRequest] = useState("");
   const [errors, setErrors] = useState<string[]>([]);
@@ -137,13 +158,51 @@ export function AngklungSystemProvider({ children }: { children: ReactNode }) {
   const latestSnapshotAtRef = useRef(0);
   const syncControllerRef = useRef<ReturnType<typeof createSystemSyncController> | null>(null);
   const tabIdRef = useRef(createSyncTabId());
+  const songCatalogRef = useRef<SongCatalogEntry[]>([]);
+  const loadedSongsRef = useRef(new Map<string, LoadedSong>());
 
-  const selectedSong = useMemo(
-    () => BUILT_IN_SONGS.find((song) => song.id === selectedSongId) ?? BUILT_IN_SONGS[0],
-    [selectedSongId],
-  );
+  const supportedSongs = useMemo(() => getVisibleCatalogSongs(songCatalog), [songCatalog]);
   const instruments = useMemo(() => buildFullAngklungRack(), []);
   const totalDuration = schedule?.timing.total_duration_seconds ?? 0;
+
+  useEffect(() => {
+    let cancelled = false;
+
+    async function loadCatalog() {
+      try {
+        const catalog = await loadSongCatalog();
+        if (cancelled) {
+          return;
+        }
+        songCatalogRef.current = catalog;
+        setSongCatalog(catalog);
+        const activeSongs = getActiveCatalogSongs(catalog);
+        if (activeSongs.length === 0) {
+          setErrors(["Song catalog failed to load"]);
+          setSourceLabel("Song catalog failed to load");
+          return;
+        }
+
+        const storedSelectedId = readStoredSystemSnapshot()?.selectedSongId;
+        const candidateSelectedId = selectedSongId || storedSelectedId;
+        const nextSelectedId = candidateSelectedId && activeSongs.some((song) => song.id === candidateSelectedId) ? candidateSelectedId : activeSongs[0].id;
+        setSelectedSongIdState(nextSelectedId);
+        void loadSelectedSong(nextSelectedId, catalog);
+      } catch (error) {
+        if (cancelled) {
+          return;
+        }
+        setErrors([error instanceof Error ? error.message : "Song catalog failed to load"]);
+        setSourceLabel("Song catalog failed to load");
+      }
+    }
+
+    void loadCatalog();
+
+    return () => {
+      cancelled = true;
+    };
+  }, []);
 
   useEffect(() => {
     const storedSnapshot = readStoredSystemSnapshot();
@@ -216,6 +275,7 @@ export function AngklungSystemProvider({ children }: { children: ReactNode }) {
       elapsedSeconds,
       generatedNotes,
       latestUserRequest,
+      libraryVersion: SYSTEM_SYNC_LIBRARY_VERSION,
       playbackState,
       safetyReport,
       schedule,
@@ -234,6 +294,10 @@ export function AngklungSystemProvider({ children }: { children: ReactNode }) {
     if (snapshot.updatedAt <= latestSnapshotAtRef.current) {
       return;
     }
+    const activeSongs = getActiveCatalogSongs(songCatalogRef.current);
+    if (snapshot.sourceMode === "library" && activeSongs.length > 0 && !activeSongs.some((song) => song.id === snapshot.selectedSongId)) {
+      return;
+    }
 
     applyingSyncedSnapshotRef.current = true;
     latestSnapshotAtRef.current = snapshot.updatedAt;
@@ -250,7 +314,10 @@ export function AngklungSystemProvider({ children }: { children: ReactNode }) {
     setPlaybackState(snapshot.playbackState);
     setSafetyReport(snapshot.safetyReport);
     setSchedule(snapshot.schedule);
-    setSelectedSongId(snapshot.selectedSongId);
+    setSelectedSongIdState(snapshot.selectedSongId);
+    if (snapshot.selectedSongId) {
+      void loadSelectedSong(snapshot.selectedSongId);
+    }
     setSourceLabel(snapshot.sourceLabel);
     setSourceMode(snapshot.sourceMode);
     setSystemStatus(snapshot.systemStatus);
@@ -263,7 +330,41 @@ export function AngklungSystemProvider({ children }: { children: ReactNode }) {
     }));
   }
 
-  function generateScheduleForSong(song: BuiltInSong): SafetyReport | null {
+  async function loadSelectedSong(songId: string, catalogOverride?: SongCatalogEntry[]): Promise<LoadedSong | null> {
+    const catalog = catalogOverride ?? songCatalogRef.current;
+    const catalogEntry = getActiveCatalogSongs(catalog).find((song) => song.id === songId);
+    if (!catalogEntry) {
+      setErrors(["Arrangement file failed to load"]);
+      return null;
+    }
+
+    const cachedSong = loadedSongsRef.current.get(catalogEntry.id);
+    if (cachedSong) {
+      setSelectedSong(cachedSong);
+      setSourceLabel(cachedSong.title);
+      return cachedSong;
+    }
+
+    try {
+      const loadedSong = await loadSongArrangement(catalogEntry);
+      loadedSongsRef.current.set(catalogEntry.id, loadedSong);
+      setSelectedSong(loadedSong);
+      setSourceLabel(loadedSong.title);
+      setErrors((current) => current.filter((error) => error !== "Arrangement file failed to load"));
+      return loadedSong;
+    } catch (error) {
+      setErrors([error instanceof Error ? error.message : "Arrangement file failed to load"]);
+      setSourceLabel("Arrangement file failed to load");
+      return null;
+    }
+  }
+
+  function setSelectedSongId(songId: string) {
+    setSelectedSongIdState(songId);
+    void loadSelectedSong(songId);
+  }
+
+  function generateScheduleForSong(song: LoadedSong): SafetyReport | null {
     stopPlayback();
     try {
       const nextSchedule = buildScheduleFromBuiltInSong(song, settings);
@@ -313,11 +414,24 @@ export function AngklungSystemProvider({ children }: { children: ReactNode }) {
   }
 
   function generateBuiltInSchedule() {
-    setLatestUserRequest(selectedSong.title);
-    generateScheduleForSong(selectedSong);
+    void generateSelectedSongSchedule();
+  }
+
+  async function generateSelectedSongSchedule(): Promise<SafetyReport | null> {
+    const loadedSong = selectedSong.id === selectedSongId && selectedSong.notes.length > 0 ? selectedSong : await loadSelectedSong(selectedSongId);
+    if (!loadedSong) {
+      return null;
+    }
+
+    setLatestUserRequest(loadedSong.title);
+    return generateScheduleForSong(loadedSong);
   }
 
   function requestSong(request: string) {
+    void handleSongRequest(request);
+  }
+
+  async function handleSongRequest(request: string) {
     const trimmedRequest = request.trim();
     if (!trimmedRequest) {
       return;
@@ -328,7 +442,7 @@ export function AngklungSystemProvider({ children }: { children: ReactNode }) {
       { id: timestamp, speaker: "user", text: trimmedRequest },
       { id: timestamp + 1, speaker: "assistant", text: "Checking the supported song library..." },
     ];
-    const matchedSong = findBuiltInSong(trimmedRequest);
+    const matchedCatalogEntry = findCatalogSong(trimmedRequest, songCatalogRef.current);
 
     setChatInput("");
     setLatestUserRequest(trimmedRequest);
@@ -336,13 +450,13 @@ export function AngklungSystemProvider({ children }: { children: ReactNode }) {
     setWorkflowStatus({
       requestReceived: true,
       libraryChecked: true,
-      songFound: Boolean(matchedSong),
+      songFound: Boolean(matchedCatalogEntry),
       scheduleGenerated: false,
       validationPassed: false,
       readyForSimulation: false,
     });
 
-    if (!matchedSong) {
+    if (!matchedCatalogEntry) {
       stopPlayback();
       setYoutubeFallbackActive(true);
       setSourceMode("youtube_placeholder");
@@ -371,20 +485,53 @@ export function AngklungSystemProvider({ children }: { children: ReactNode }) {
         {
           id: timestamp + 5,
           speaker: "assistant",
-          text: "This song is not currently supported. Future YouTube Piano Reference Mode will only continue if the melody fits our 2.5-octave angklung rack.",
+          text: "This song is not currently supported. Future YouTube Piano Reference Mode will only continue if the melody fits our G3-C6 angklung rack.",
         },
       );
       setChatMessages((current) => [...current, ...nextMessages]);
       return;
     }
 
-    setSelectedSongId(matchedSong.id);
+    setSelectedSongIdState(matchedCatalogEntry.id);
+    const matchedSong = await loadSelectedSong(matchedCatalogEntry.id);
+    if (!matchedSong) {
+      nextMessages.push(
+        {
+          id: timestamp + 2,
+          speaker: "assistant",
+          text: "Arrangement file failed to load.",
+        },
+        {
+          id: timestamp + 3,
+          speaker: "assistant",
+          text: "This arrangement is not playable yet. The operator should review the Control Panel.",
+        },
+      );
+      setChatMessages((current) => [...current, ...nextMessages]);
+      return;
+    }
+
     const report = generateScheduleForSong(matchedSong);
+    const hasWarnings = Boolean(report?.checks.some((check) => check.status === "warning"));
+    const isDraftArrangement =
+      matchedSong.arrangement_status === "draft_from_midi_needs_simplification" ||
+      matchedSong.arrangement_status === "draft_layered_from_midi_needs_simplification" ||
+      matchedSong.arrangement_status === "draft_layered_from_midi_lower_pitch_needs_review" ||
+      matchedSong.arrangement_status === "draft_layered_from_midi_g3_c6_upper_melody_needs_review" ||
+      matchedSong.arrangement_status === "draft_layered_from_midi_g3_c6_lower_pitch_needs_review" ||
+      matchedSong.demo_safe === false;
+    const draftFoundText =
+      matchedSong.arrangement_status === "draft_layered_from_midi_g3_c6_upper_melody_needs_review" ||
+      matchedSong.arrangement_status === "draft_layered_from_midi_g3_c6_lower_pitch_needs_review"
+        ? `I found a G3-C6 draft layered arrangement: ${matchedSong.title}.`
+        : matchedSong.arrangement_status === "draft_layered_from_midi_lower_pitch_needs_review"
+        ? `I found a draft layered arrangement: ${matchedSong.title}.`
+        : `I found a draft test arrangement: ${matchedSong.title}.`;
     nextMessages.push(
       {
         id: timestamp + 2,
         speaker: "assistant",
-        text: `I found a supported arrangement: ${matchedSong.title}.`,
+        text: isDraftArrangement ? draftFoundText : `I found a supported arrangement: ${matchedSong.title}.`,
       },
       {
         id: timestamp + 3,
@@ -394,7 +541,14 @@ export function AngklungSystemProvider({ children }: { children: ReactNode }) {
       {
         id: timestamp + 4,
         speaker: "assistant",
-        text: report?.overall === "PASSED" ? "Validation passed. Ready to play." : "Validation did not pass. The operator should review the control panel.",
+        text:
+          report?.overall === "PASSED" && hasWarnings
+            ? "This draft arrangement has warnings. The operator should review the Control Panel before demo use."
+            : report?.overall === "PASSED"
+              ? isDraftArrangement
+                ? "Validation passed. Ready to test playback."
+                : "Validation passed. Ready to play."
+              : "This arrangement is not playable yet. The operator should review the Control Panel.",
       },
     );
     setChatMessages((current) => [...current, ...nextMessages]);
@@ -549,7 +703,7 @@ export function AngklungSystemProvider({ children }: { children: ReactNode }) {
     settings,
     sourceLabel,
     sourceMode,
-    supportedSongs: BUILT_IN_SONGS,
+    supportedSongs,
     systemStatus,
     totalDuration,
     workflowStatus,
@@ -660,31 +814,4 @@ function formatSystemStatus(status: SystemStatus): string {
     unsupported: "Unsupported",
   };
   return labels[status];
-}
-
-function findBuiltInSong(request: string): BuiltInSong | null {
-  const normalizedRequest = normalizeSongText(request);
-  if (!normalizedRequest) {
-    return null;
-  }
-
-  return (
-    BUILT_IN_SONGS.find((song) => {
-      const normalizedTitle = normalizeSongText(song.title);
-      const aliases = song.aliases ?? [];
-
-      return (
-        normalizedTitle.includes(normalizedRequest) ||
-        normalizedRequest.includes(normalizedTitle) ||
-        aliases.some((alias) => {
-          const normalizedAlias = normalizeSongText(alias);
-          return normalizedAlias.includes(normalizedRequest) || normalizedRequest.includes(normalizedAlias);
-        })
-      );
-    }) ?? null
-  );
-}
-
-function normalizeSongText(value: string): string {
-  return value.toLowerCase().replace(/[^a-z0-9]+/g, " ").trim();
 }

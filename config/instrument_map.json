@@ -1,73 +1,73 @@
 {
-  "G4": {
+  "G3": {
     "instrument_id": "angklung_01",
     "actuator_channel": 0
   },
-  "A4": {
+  "A3": {
     "instrument_id": "angklung_02",
     "actuator_channel": 1
   },
-  "B4": {
+  "B3": {
     "instrument_id": "angklung_03",
     "actuator_channel": 2
   },
-  "C5": {
+  "C4": {
     "instrument_id": "angklung_04",
     "actuator_channel": 3
   },
-  "D5": {
+  "D4": {
     "instrument_id": "angklung_05",
     "actuator_channel": 4
   },
-  "E5": {
+  "E4": {
     "instrument_id": "angklung_06",
     "actuator_channel": 5
   },
-  "F5": {
+  "F4": {
     "instrument_id": "angklung_07",
     "actuator_channel": 6
   },
-  "G5": {
+  "G4": {
     "instrument_id": "angklung_08",
     "actuator_channel": 7
   },
-  "A5": {
+  "A4": {
     "instrument_id": "angklung_09",
     "actuator_channel": 8
   },
-  "B5": {
+  "B4": {
     "instrument_id": "angklung_10",
     "actuator_channel": 9
   },
-  "C6": {
+  "C5": {
     "instrument_id": "angklung_11",
     "actuator_channel": 10
   },
-  "D6": {
+  "D5": {
     "instrument_id": "angklung_12",
     "actuator_channel": 11
   },
-  "E6": {
+  "E5": {
     "instrument_id": "angklung_13",
     "actuator_channel": 12
   },
-  "F6": {
+  "F5": {
     "instrument_id": "angklung_14",
     "actuator_channel": 13
   },
-  "G6": {
+  "G5": {
     "instrument_id": "angklung_15",
     "actuator_channel": 14
   },
-  "A6": {
+  "A5": {
     "instrument_id": "angklung_16",
     "actuator_channel": 15
   },
-  "B6": {
+  "B5": {
     "instrument_id": "angklung_17",
     "actuator_channel": 16
   },
-  "C7": {
+  "C6": {
     "instrument_id": "angklung_18",
     "actuator_channel": 17
   }

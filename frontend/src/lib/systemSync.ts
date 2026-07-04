@@ -1,8 +1,9 @@
-import type { BuiltInSongNote } from "./builtInSongs";
+import type { SongNote } from "./songTypes";
 import type { SafetyReport } from "./safetyValidator";
 import type { ActuatorSchedule, PlaybackState } from "./types";
 
 export const SYSTEM_SYNC_CHANNEL = "wro-angklung-system";
+export const SYSTEM_SYNC_LIBRARY_VERSION = "phase2-g3-c6-perfect-musescore";
 export const SYSTEM_SYNC_STORAGE_KEY = "wro-angklung-system-snapshot";
 
 export type SyncedChatMessage = {
@@ -28,8 +29,9 @@ export type SyncedSystemSnapshot = {
   activeInstrumentIds: string[];
   chatMessages: SyncedChatMessage[];
   elapsedSeconds: number;
-  generatedNotes: BuiltInSongNote[];
+  generatedNotes: SongNote[];
   latestUserRequest: string;
+  libraryVersion: string;
   playbackState: PlaybackState;
   safetyReport: SafetyReport | null;
   schedule: ActuatorSchedule | null;
@@ -127,6 +129,9 @@ function normalizeSnapshot(candidate: unknown): SyncedSystemSnapshot | null {
   if (typeof snapshot.updatedAt !== "number" || typeof snapshot.sourceTabId !== "string") {
     return null;
   }
+  if (snapshot.libraryVersion !== SYSTEM_SYNC_LIBRARY_VERSION) {
+    return null;
+  }
   if (typeof snapshot.selectedSongId !== "string" || typeof snapshot.sourceLabel !== "string") {
     return null;
   }
@@ -138,6 +143,7 @@ function normalizeSnapshot(candidate: unknown): SyncedSystemSnapshot | null {
     elapsedSeconds: typeof snapshot.elapsedSeconds === "number" ? snapshot.elapsedSeconds : 0,
     generatedNotes: Array.isArray(snapshot.generatedNotes) ? snapshot.generatedNotes : [],
     latestUserRequest: typeof snapshot.latestUserRequest === "string" ? snapshot.latestUserRequest : "",
+    libraryVersion: snapshot.libraryVersion,
     playbackState: isPlaybackState(snapshot.playbackState) ? snapshot.playbackState : "idle",
     safetyReport: snapshot.safetyReport ?? null,
     schedule: snapshot.schedule ?? null,

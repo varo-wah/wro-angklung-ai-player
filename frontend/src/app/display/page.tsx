@@ -2,7 +2,7 @@
 
 import { useMemo } from "react";
 import { displaySongTitle, useAngklungSystem, type SourceMode, type SystemStatus } from "@/components/AngklungSystemProvider";
-import type { BuiltInSongNote } from "@/lib/builtInSongs";
+import type { SongNote } from "@/lib/songTypes";
 import type { PlaybackState } from "@/lib/types";
 
 export default function DisplayPage() {
@@ -27,6 +27,11 @@ export default function DisplayPage() {
             <div>
               <p className="text-sm font-bold uppercase tracking-[0.24em] text-lime-300">AI Angklung Performance System</p>
               <h2 className="mt-3 max-w-3xl text-4xl font-semibold text-slate-50 sm:text-5xl lg:text-6xl">Live performance display</h2>
+              {system.sourceMode === "library" && system.selectedSong.demo_safe === false && (
+                <p className="mt-3 inline-flex rounded-full border border-lime-300/25 bg-lime-300/10 px-4 py-2 text-sm font-semibold text-lime-100">
+                  {getArrangementLabel(system.selectedSong.arrangement_status)}
+                </p>
+              )}
             </div>
             <StatusPill label={status.label} tone={status.tone} />
           </div>
@@ -53,9 +58,11 @@ export default function DisplayPage() {
 
         <section className="grid flex-1 gap-6 xl:grid-cols-[minmax(0,1fr)_380px]">
           <MusicSheetPreview
+            arrangementStatus={system.selectedSong.arrangement_status}
             elapsedSeconds={system.elapsedSeconds}
             notes={system.generatedNotes}
             playbackState={system.playbackState}
+            selectedSongTitle={selectedSongTitle}
             totalDuration={system.totalDuration}
           />
 
@@ -172,14 +179,18 @@ function NowPlayingPanel({
 }
 
 function MusicSheetPreview({
+  arrangementStatus,
   elapsedSeconds,
   notes,
   playbackState,
+  selectedSongTitle,
   totalDuration,
 }: {
+  arrangementStatus?: string;
   elapsedSeconds: number;
-  notes: BuiltInSongNote[];
+  notes: SongNote[];
   playbackState: PlaybackState;
+  selectedSongTitle: string;
   totalDuration: number;
 }) {
   const previewNotes = notes.slice(0, 28);
@@ -190,11 +201,16 @@ function MusicSheetPreview({
       <div className="mb-6 flex flex-wrap items-center justify-between gap-3">
         <div>
           <p className="text-xs font-bold uppercase tracking-[0.2em] text-lime-300">Music Sheet Preview</p>
-          <h3 className="mt-2 text-3xl font-semibold text-slate-50">Angklung melody map</h3>
+          <h3 className="mt-2 text-3xl font-semibold text-slate-50">{selectedSongTitle}</h3>
+          <p className="mt-2 text-sm font-medium text-slate-400">{getArrangementLabel(arrangementStatus)}</p>
         </div>
-        <span className="rounded-full border border-white/10 bg-white/8 px-4 py-2 text-sm font-semibold text-slate-300">
-          {notes.length} notes
-        </span>
+        <div className="flex flex-wrap items-center justify-end gap-2">
+          <span className="rounded-full border border-lime-300/30 bg-lime-300/10 px-3 py-1.5 text-xs font-semibold text-lime-100">Melody</span>
+          <span className="rounded-full border border-cyan-300/30 bg-cyan-300/10 px-3 py-1.5 text-xs font-semibold text-cyan-100">Accompaniment</span>
+          <span className="rounded-full border border-white/10 bg-white/8 px-4 py-2 text-sm font-semibold text-slate-300">
+            {notes.length} notes
+          </span>
+        </div>
       </div>
 
       <div className="relative h-64 rounded-3xl border border-white/10 bg-black/35 px-5 py-8">
@@ -212,16 +228,22 @@ function MusicSheetPreview({
           const left = totalDuration > 0 ? Math.min((note.start / totalDuration) * 92 + 2, 94) : (index / Math.max(previewNotes.length - 1, 1)) * 90 + 3;
           const top = getNoteTop(note.note);
           const active = playbackState === "playing" && elapsedSeconds >= note.start && elapsedSeconds <= note.start + note.duration;
+          const accompaniment = note.role === "accompaniment" || note.register === "lower";
+          const idleClass = accompaniment
+            ? "border-cyan-300/30 bg-cyan-300/15 text-cyan-100"
+            : "border-lime-300/30 bg-lime-300/15 text-lime-100";
+          const activeClass = accompaniment
+            ? "border-cyan-100 bg-cyan-300 text-slate-950"
+            : "border-lime-200 bg-lime-300 text-slate-950";
 
           return (
             <div
               className={`absolute -translate-x-1/2 rounded-full border px-3 py-1 text-sm font-bold shadow-[0_12px_30px_rgba(0,0,0,0.3)] ${
-                active
-                  ? "border-lime-200 bg-lime-300 text-slate-950"
-                  : "border-lime-300/30 bg-lime-300/15 text-lime-100"
+                active ? activeClass : idleClass
               }`}
-              key={`${note.start}-${note.note}-${index}`}
+              key={`${note.start}-${note.note}-${note.role ?? "note"}-${index}`}
               style={{ left: `${left}%`, top: `${top}px` }}
+              title={accompaniment ? "Lower accompaniment" : "Upper melody"}
             >
               {note.note}
             </div>
@@ -246,7 +268,7 @@ function YoutubePlaceholder() {
       <h3 className="mt-3 text-2xl font-semibold text-slate-50">Simple piano version placeholder</h3>
       <p className="mt-3 text-sm leading-relaxed text-red-50/90">
         This song is not currently supported. Future YouTube Piano Reference Mode will search for a simple piano version, ask for approval,
-        and only continue if the melody fits the 2.5-octave angklung rack.
+        and only continue if the melody fits the G3-C6 angklung rack.
       </p>
       <div className="mt-4 rounded-2xl border border-white/10 bg-black/25 px-4 py-3 text-sm font-semibold text-slate-200">
         Approval required before conversion - Coming in Phase 3
@@ -290,8 +312,24 @@ function formatPlaybackState(playbackState: PlaybackState): string {
   return labels[playbackState];
 }
 
+function getArrangementLabel(status: string | undefined): string {
+  if (status === "draft_layered_from_midi_lower_pitch_needs_review") {
+    return "Layered lower-pitch draft";
+  }
+  if (status === "draft_layered_from_midi_g3_c6_upper_melody_needs_review") {
+    return "G3-C6 layered draft";
+  }
+  if (status === "draft_layered_from_midi_g3_c6_lower_pitch_needs_review") {
+    return "G3-C6 layered lower-pitch draft";
+  }
+  if (status === "draft_layered_from_midi_needs_simplification") {
+    return "Layered draft arrangement";
+  }
+  return "Draft arrangement";
+}
+
 function getNoteTop(note: string): number {
-  const order = ["G4", "A4", "B4", "C5", "D5", "E5", "F5", "G5", "A5", "B5", "C6", "D6", "E6", "F6", "G6", "C7"];
+  const order = ["G3", "A3", "B3", "C4", "D4", "E4", "F4", "G4", "A4", "B4", "C5", "D5", "E5", "F5", "G5", "A5", "B5", "C6"];
   const index = Math.max(order.indexOf(note), 0);
   return 184 - (index % 9) * 18;
 }

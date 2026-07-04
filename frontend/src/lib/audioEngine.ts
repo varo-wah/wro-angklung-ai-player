@@ -67,7 +67,7 @@ export class AudioEngine {
   }
 }
 
-export function noteToFrequency(note: string): number {
+export function noteToFrequency(note: string, octaveShift = 0): number {
   const match = /^([A-G](?:#|b)?)(-?\d+)$/.exec(note.trim());
   if (!match) {
     return 440;
@@ -80,7 +80,7 @@ export function noteToFrequency(note: string): number {
     return 440;
   }
 
-  const semitonesFromA4 = semitoneOffset + (octave - 4) * 12;
+  const semitonesFromA4 = semitoneOffset + (octave + octaveShift - 4) * 12;
   return 440 * 2 ** (semitonesFromA4 / 12);
 }
 

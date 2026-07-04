@@ -33,7 +33,7 @@ export default function GuestPage() {
               {system.sourceMode === "youtube_placeholder" && (
                 <SystemNotice>
                   This song is not currently supported. Future YouTube Piano Reference Mode will search for a simple piano version, ask for
-                  approval, and only continue if the melody fits the 2.5-octave angklung rack.
+                  approval, and only continue if the melody fits the G3-C6 angklung rack.
                 </SystemNotice>
               )}
             </div>
