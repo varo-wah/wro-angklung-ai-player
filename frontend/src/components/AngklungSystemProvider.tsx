@@ -667,7 +667,11 @@ export function AngklungSystemProvider({ children }: { children: ReactNode }) {
   }
 
   function triggerCommand(command: ActuatorCommand) {
-    audioRef.current?.playNote(command.note, command.duration_seconds, command.strength);
+    try {
+      audioRef.current?.playNote(command.note, command.duration_seconds, command.strength);
+    } catch (error) {
+      setErrors([error instanceof Error ? error.message : "Audio playback failed. Check browser audio permissions and output volume."]);
+    }
     setActiveCommandIds((current) => new Set(current).add(command.command_id));
     setActiveInstrumentIds((current) => new Set(current).add(command.instrument_id));
 

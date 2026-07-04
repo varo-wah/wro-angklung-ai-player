@@ -36,6 +36,11 @@ export default function GuestPage() {
                   approval, and only continue if the melody fits the G3-C6 angklung rack.
                 </SystemNotice>
               )}
+              {system.errors.length > 0 && (
+                <SystemNotice tone="error">
+                  {system.errors[0]}
+                </SystemNotice>
+              )}
             </div>
           </div>
 
@@ -151,9 +156,14 @@ function Avatar({ label }: { label: string }) {
   );
 }
 
-function SystemNotice({ children }: { children: ReactNode }) {
+function SystemNotice({ children, tone = "info" }: { children: ReactNode; tone?: "info" | "error" }) {
+  const classes =
+    tone === "error"
+      ? "border-red-300/30 bg-red-400/10 text-red-100"
+      : "border-lime-300/30 bg-lime-300/10 text-lime-100";
+
   return (
-    <div className="mx-auto max-w-2xl rounded-3xl border border-lime-300/30 bg-lime-300/10 px-5 py-4 text-sm leading-relaxed text-lime-100">
+    <div className={`mx-auto max-w-2xl rounded-3xl border px-5 py-4 text-sm leading-relaxed ${classes}`}>
       {children}
     </div>
   );
