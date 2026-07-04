@@ -66,5 +66,87 @@
     "accompaniment_register": "lower_physical",
     "accompaniment_target_range": "G3-F4",
     "path": "/songs/arrangements/perfect_musescore_ver.json"
+  },
+  {
+    "id": "viva_la_vida",
+    "title": "Viva La Vida",
+    "aliases": [
+      "viva la vida",
+      "coldplay viva la vida",
+      "viva",
+      "coldplay"
+    ],
+    "category": "pop",
+    "difficulty": "medium_hard",
+    "priority": "medium",
+    "verdict": "Good simulator test",
+    "reason": "Famous and recognizable. This is a dense one-track MIDI conversion with upper-register melody and lower-register accompaniment for G3-C6 simulator testing.",
+    "arrangement_status": "draft_layered_from_midi_g3_c6_lower_pitch_needs_review",
+    "playable": true,
+    "demo_safe": false,
+    "has_validated_notes": true,
+    "active": true,
+    "visible_in_guest": true,
+    "physical_rack_map": "G3-C6",
+    "melody_register": "upper_physical",
+    "melody_target_range": "G4-C6",
+    "accompaniment_register": "lower_physical",
+    "accompaniment_target_range": "G3-F4",
+    "path": "/songs/arrangements/viva_la_vida.json"
+  },
+  {
+    "id": "count_on_me",
+    "title": "Count on Me",
+    "aliases": [
+    "count on me",
+    "bruno mars count on me",
+    "count on me bruno mars"
+    ],
+    "category": "pop",
+    "difficulty": "medium",
+    "priority": "high",
+    "verdict": "Very good test candidate",
+    "reason": "Simple, bright, school-friendly, and likely to work well on angklung. This is a G3-C6 layered MIDI draft for simulator testing.",
+    "arrangement_status": "draft_layered_from_midi_g3_c6_needs_review",
+    "playable": true,
+    "demo_safe": false,
+    "has_validated_notes": true,
+    "active": true,
+    "visible_in_guest": true,
+    "physical_rack_map": "G3-C6",
+    "melody_register": "upper_physical",
+    "melody_target_range": "G4-C6",
+    "accompaniment_register": "lower_physical",
+    "accompaniment_target_range": "G3-F4",
+    "path": "/songs/arrangements/count_on_me.json"
+  },
+  {
+    "id": "see_you_again",
+    "title": "See You Again",
+    "aliases": [
+      "see you again",
+      "charlie puth see you again",
+      "wiz khalifa see you again",
+      "see you again charlie puth",
+      "see you again wiz khalifa"
+    ],
+    "category": "pop",
+    "difficulty": "hard",
+    "priority": "medium",
+    "verdict": "Usable simulator test",
+    "reason": "Recognizable song, but the MIDI source is a dense single-track piano arrangement, so melody/accompaniment separation may need review.",
+    "arrangement_status": "draft_layered_from_dense_midi_g3_c6_needs_review",
+    "playable": true,
+    "demo_safe": false,
+    "has_validated_notes": true,
+    "active": true,
+    "visible_in_guest": true,
+    "physical_rack_map": "G3-C6s",
+    "melody_register": "upper_physical",
+    "melody_target_range": "G4-C6",
+    "accompaniment_register": "lower_physical",
+    "accompaniment_target_range": "G3-F4",
+    "path": "/songs/arrangements/see_you_again.json"
   }
 ]
+
