@@ -4,6 +4,15 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { createContext, useContext, useEffect, useMemo, useRef, useState, type ReactNode } from "react";
 import { AudioEngine } from "@/lib/audioEngine";
+import {
+  normalizeAiSongRequestResult,
+  toAiCatalogEntry,
+  type AiAssistantMode,
+  type AiConversationState,
+  type AiSongRequestIntent,
+  type AiSongRequestResult,
+} from "@/lib/aiSongRequest";
+import { createLocalFallbackSongRequestResult } from "@/lib/ai/localFallbackMatcher";
 import { buildFullAngklungRack } from "@/lib/instrumentMap";
 import { PlaybackEngine } from "@/lib/playbackEngine";
 import { type ArrangementSettings, buildScheduleFromBuiltInSong, scaleNotes } from "@/lib/scheduleBuilder";
@@ -11,7 +20,6 @@ import { type SafetyReport, validateMotorSafety } from "@/lib/safetyValidator";
 import { validateSchedulePayload } from "@/lib/scheduleValidator";
 import { getActiveCatalogSongs, getVisibleCatalogSongs, loadSongCatalog } from "@/lib/songCatalog";
 import { loadSongArrangement } from "@/lib/songLoader";
-import { findCatalogSong } from "@/lib/songMatcher";
 import type { LoadedSong, SongCatalogEntry, SongNote } from "@/lib/songTypes";
 import {
   createSyncTabId,
@@ -49,6 +57,14 @@ type SyncState = {
 type AngklungSystemContextValue = {
   activeCommandIds: Set<string>;
   activeInstrumentIds: Set<string>;
+  aiAssistantMode: AiAssistantMode;
+  aiConfidence: number;
+  aiIntent: AiSongRequestIntent;
+  aiMatchedSongId: string | null;
+  aiNeedsOperatorReview: boolean;
+  aiConversationState: AiConversationState;
+  aiPendingSongId: string | null;
+  aiFallbackReason: string | null;
   chatInput: string;
   chatMessages: ChatMessage[];
   elapsedSeconds: number;
@@ -145,6 +161,14 @@ export function AngklungSystemProvider({ children }: { children: ReactNode }) {
   const [elapsedSeconds, setElapsedSeconds] = useState(0);
   const [activeCommandIds, setActiveCommandIds] = useState<Set<string>>(new Set());
   const [activeInstrumentIds, setActiveInstrumentIds] = useState<Set<string>>(new Set());
+  const [aiAssistantMode, setAiAssistantMode] = useState<AiAssistantMode>("local_fallback");
+  const [aiConfidence, setAiConfidence] = useState(0);
+  const [aiIntent, setAiIntent] = useState<AiSongRequestIntent>("unknown");
+  const [aiMatchedSongId, setAiMatchedSongId] = useState<string | null>(null);
+  const [aiNeedsOperatorReview, setAiNeedsOperatorReview] = useState(false);
+  const [aiConversationState, setAiConversationState] = useState<AiConversationState>("idle");
+  const [aiPendingSongId, setAiPendingSongId] = useState<string | null>(null);
+  const [aiFallbackReason, setAiFallbackReason] = useState<string | null>(null);
   const [systemStatus, setSystemStatus] = useState<SystemStatus>("idle");
   const [syncState, setSyncState] = useState<SyncState>({
     available: false,
@@ -252,6 +276,14 @@ export function AngklungSystemProvider({ children }: { children: ReactNode }) {
   }, [
     activeCommandIds,
     activeInstrumentIds,
+    aiAssistantMode,
+    aiConfidence,
+    aiConversationState,
+    aiFallbackReason,
+    aiIntent,
+    aiMatchedSongId,
+    aiNeedsOperatorReview,
+    aiPendingSongId,
     chatMessages,
     elapsedSeconds,
     generatedNotes,
@@ -271,6 +303,14 @@ export function AngklungSystemProvider({ children }: { children: ReactNode }) {
     return {
       activeCommandIds: Array.from(activeCommandIds),
       activeInstrumentIds: Array.from(activeInstrumentIds),
+      aiAssistantMode,
+      aiConfidence,
+      aiIntent,
+      aiMatchedSongId,
+      aiNeedsOperatorReview,
+      aiConversationState,
+      aiPendingSongId,
+      aiFallbackReason,
       chatMessages,
       elapsedSeconds,
       generatedNotes,
@@ -306,6 +346,14 @@ export function AngklungSystemProvider({ children }: { children: ReactNode }) {
 
     setActiveCommandIds(new Set(snapshot.activeCommandIds));
     setActiveInstrumentIds(new Set(snapshot.activeInstrumentIds));
+    setAiAssistantMode(snapshot.aiAssistantMode);
+    setAiConfidence(snapshot.aiConfidence);
+    setAiIntent(snapshot.aiIntent);
+    setAiMatchedSongId(snapshot.aiMatchedSongId);
+    setAiNeedsOperatorReview(snapshot.aiNeedsOperatorReview);
+    setAiConversationState(snapshot.aiConversationState);
+    setAiPendingSongId(snapshot.aiPendingSongId);
+    setAiFallbackReason(snapshot.aiFallbackReason);
     setChatMessages(snapshot.chatMessages.length > 0 ? snapshot.chatMessages : INITIAL_CHAT_MESSAGES);
     setElapsedSeconds(snapshot.elapsedSeconds);
     setErrors([]);
@@ -438,76 +486,77 @@ export function AngklungSystemProvider({ children }: { children: ReactNode }) {
     }
 
     const timestamp = Date.now();
-    const nextMessages: ChatMessage[] = [
-      { id: timestamp, speaker: "user", text: trimmedRequest },
-      { id: timestamp + 1, speaker: "assistant", text: "Checking the supported song library..." },
-    ];
-    const matchedCatalogEntry = findCatalogSong(trimmedRequest, songCatalogRef.current);
+    const openingMessages: ChatMessage[] = [{ id: timestamp, speaker: "user", text: trimmedRequest }];
 
     setChatInput("");
     setLatestUserRequest(trimmedRequest);
     setSystemStatus("request_received");
+    setChatMessages((current) => [...current, ...openingMessages]);
     setWorkflowStatus({
       requestReceived: true,
-      libraryChecked: true,
-      songFound: Boolean(matchedCatalogEntry),
+      libraryChecked: false,
+      songFound: null,
       scheduleGenerated: false,
       validationPassed: false,
       readyForSimulation: false,
     });
 
-    if (!matchedCatalogEntry) {
+    const aiResult = await requestAiSongInterpretation(trimmedRequest);
+    const matchedCatalogEntry = aiResult.matched_song_id
+      ? getVisibleCatalogSongs(songCatalogRef.current).find((song) => song.id === aiResult.matched_song_id) ?? null
+      : null;
+
+    applyAiResult(aiResult);
+    const libraryWasChecked = shouldShowLibraryCheck(aiResult);
+    setWorkflowStatus((current) => ({
+      ...current,
+      libraryChecked: libraryWasChecked,
+      songFound: Boolean(matchedCatalogEntry),
+    }));
+    const responseMessages: ChatMessage[] = [
+      ...(libraryWasChecked ? [{ id: timestamp + 1, speaker: "assistant" as const, text: "Checking the supported song library..." }] : []),
+      { id: timestamp + 2, speaker: "assistant", text: aiResult.assistant_message },
+    ];
+    setChatMessages((current) => [...current, ...responseMessages]);
+
+    if (!aiResult.should_generate_schedule || !matchedCatalogEntry) {
+      if (isPassiveConversationIntent(aiResult.intent)) {
+        setYoutubeFallbackActive(false);
+        setSourceMode("library");
+        setErrors([]);
+        setSystemStatus("idle");
+        return;
+      }
+
       stopPlayback();
-      setYoutubeFallbackActive(true);
-      setSourceMode("youtube_placeholder");
+      const unsupported = aiResult.intent === "unsupported_song";
+      setYoutubeFallbackActive(unsupported);
+      setSourceMode(unsupported ? "youtube_placeholder" : "library");
       setSchedule(null);
       setGeneratedNotes([]);
-      setSourceLabel("Unsupported song request");
+      setSourceLabel(unsupported ? "Unsupported song request" : "Awaiting guest confirmation");
       setErrors([]);
       setSafetyReport(null);
-      setSystemStatus("unsupported");
-      nextMessages.push(
-        {
-          id: timestamp + 2,
-          speaker: "assistant",
-          text: "I could not find a supported arrangement for that song yet.",
-        },
-        {
-          id: timestamp + 3,
-          speaker: "assistant",
-          text: "In the future, I can search for a simple piano YouTube reference and ask for approval before conversion.",
-        },
-        {
-          id: timestamp + 4,
-          speaker: "assistant",
-          text: "For now, please choose a supported song from the list.",
-        },
-        {
-          id: timestamp + 5,
-          speaker: "assistant",
-          text: "This song is not currently supported. Future YouTube Piano Reference Mode will only continue if the melody fits our G3-C6 angklung rack.",
-        },
-      );
-      setChatMessages((current) => [...current, ...nextMessages]);
+      setSystemStatus(unsupported ? "unsupported" : "idle");
       return;
     }
 
     setSelectedSongIdState(matchedCatalogEntry.id);
     const matchedSong = await loadSelectedSong(matchedCatalogEntry.id);
     if (!matchedSong) {
-      nextMessages.push(
+      setChatMessages((current) => [
+        ...current,
         {
-          id: timestamp + 2,
+          id: timestamp + 3,
           speaker: "assistant",
           text: "Arrangement file failed to load.",
         },
         {
-          id: timestamp + 3,
+          id: timestamp + 4,
           speaker: "assistant",
           text: "This arrangement is not playable yet. The operator should review the Control Panel.",
         },
-      );
-      setChatMessages((current) => [...current, ...nextMessages]);
+      ]);
       return;
     }
 
@@ -520,19 +569,8 @@ export function AngklungSystemProvider({ children }: { children: ReactNode }) {
       matchedSong.arrangement_status === "draft_layered_from_midi_g3_c6_upper_melody_needs_review" ||
       matchedSong.arrangement_status === "draft_layered_from_midi_g3_c6_lower_pitch_needs_review" ||
       matchedSong.demo_safe === false;
-    const draftFoundText =
-      matchedSong.arrangement_status === "draft_layered_from_midi_g3_c6_upper_melody_needs_review" ||
-      matchedSong.arrangement_status === "draft_layered_from_midi_g3_c6_lower_pitch_needs_review"
-        ? `I found a G3-C6 draft layered arrangement: ${matchedSong.title}.`
-        : matchedSong.arrangement_status === "draft_layered_from_midi_lower_pitch_needs_review"
-        ? `I found a draft layered arrangement: ${matchedSong.title}.`
-        : `I found a draft test arrangement: ${matchedSong.title}.`;
-    nextMessages.push(
-      {
-        id: timestamp + 2,
-        speaker: "assistant",
-        text: isDraftArrangement ? draftFoundText : `I found a supported arrangement: ${matchedSong.title}.`,
-      },
+    setChatMessages((current) => [
+      ...current,
       {
         id: timestamp + 3,
         speaker: "assistant",
@@ -550,8 +588,79 @@ export function AngklungSystemProvider({ children }: { children: ReactNode }) {
                 : "Validation passed. Ready to play."
               : "This arrangement is not playable yet. The operator should review the Control Panel.",
       },
+    ]);
+  }
+
+  async function requestAiSongInterpretation(message: string): Promise<AiSongRequestResult> {
+    const catalog = songCatalogRef.current.map(toAiCatalogEntry);
+    const pendingSongTitle = aiPendingSongId ? getVisibleCatalogSongs(songCatalogRef.current).find((song) => song.id === aiPendingSongId)?.title ?? null : null;
+    try {
+      const response = await fetch("/api/ai/song-request", {
+        body: JSON.stringify({
+          catalog,
+          context: {
+            conversation_state: aiConversationState,
+            pending_song_id: aiPendingSongId,
+            pending_song_title: pendingSongTitle,
+            recent_messages: chatMessages.slice(-6).map((chatMessage) => ({
+              speaker: chatMessage.speaker,
+              text: chatMessage.text,
+            })),
+          },
+          message,
+        }),
+        headers: { "Content-Type": "application/json" },
+        method: "POST",
+      });
+      if (!response.ok) {
+        throw new Error("AI route unavailable");
+      }
+      const payload = (await response.json()) as Partial<AiSongRequestResult>;
+      const normalized = normalizeAiSongRequestResult(payload, catalog, payload.provider ?? "local_fallback", payload.fallback_reason);
+      if (!normalized) {
+        throw new Error("AI route returned invalid JSON");
+      }
+      return normalized;
+    } catch {
+      return createLocalFallbackSongRequestResult(
+        message,
+        catalog,
+        {
+          conversation_state: aiConversationState,
+          pending_song_id: aiPendingSongId,
+          pending_song_title: pendingSongTitle,
+          recent_messages: chatMessages.slice(-6).map((chatMessage) => ({
+            speaker: chatMessage.speaker,
+            text: chatMessage.text,
+          })),
+        },
+        "AI route unavailable.",
+      );
+    }
+  }
+
+  function applyAiResult(result: AiSongRequestResult) {
+    setAiAssistantMode(result.provider);
+    setAiConfidence(result.confidence);
+    setAiConversationState(result.next_state);
+    setAiFallbackReason(result.fallback_reason ?? null);
+    setAiIntent(result.intent);
+    setAiMatchedSongId(result.matched_song_id);
+    setAiNeedsOperatorReview(result.needs_operator_review);
+    setAiPendingSongId(result.needs_confirmation ? result.matched_song_id : null);
+  }
+
+  function shouldShowLibraryCheck(result: AiSongRequestResult): boolean {
+    return (
+      result.intent === "play_song" ||
+      result.intent === "suggest_song" ||
+      result.intent === "unsupported_song" ||
+      result.intent === "confirm_playback"
     );
-    setChatMessages((current) => [...current, ...nextMessages]);
+  }
+
+  function isPassiveConversationIntent(intent: AiSongRequestIntent): boolean {
+    return intent === "smalltalk" || intent === "ask_capabilities" || intent === "reject_suggestion" || intent === "cancel" || intent === "unknown";
   }
 
   function loadSchedule(fileText: string, uploadedFileName: string) {
@@ -692,6 +801,14 @@ export function AngklungSystemProvider({ children }: { children: ReactNode }) {
   const value: AngklungSystemContextValue = {
     activeCommandIds,
     activeInstrumentIds,
+    aiAssistantMode,
+    aiConfidence,
+    aiConversationState,
+    aiFallbackReason,
+    aiIntent,
+    aiMatchedSongId,
+    aiNeedsOperatorReview,
+    aiPendingSongId,
     chatInput,
     chatMessages,
     elapsedSeconds,

@@ -11,6 +11,7 @@ import { PlaybackControls } from "@/components/PlaybackControls";
 import { ScheduleJsonViewer } from "@/components/ScheduleJsonViewer";
 import { ScheduleUploader } from "@/components/ScheduleUploader";
 import { TimelineView } from "@/components/TimelineView";
+import type { AiAssistantMode, AiConversationState, AiSongRequestIntent } from "@/lib/aiSongRequest";
 import type { ArrangementSettings } from "@/lib/scheduleBuilder";
 import type { SafetyReport } from "@/lib/safetyValidator";
 import type { LoadedSong, SongNote } from "@/lib/songTypes";
@@ -40,6 +41,14 @@ export default function ControlPage() {
         </section>
 
         <GuestRequestMonitor
+          aiAssistantMode={system.aiAssistantMode}
+          aiConfidence={system.aiConfidence}
+          aiConversationState={system.aiConversationState}
+          aiFallbackReason={system.aiFallbackReason}
+          aiIntent={system.aiIntent}
+          aiMatchedSongId={system.aiMatchedSongId}
+          aiNeedsOperatorReview={system.aiNeedsOperatorReview}
+          aiPendingSongId={system.aiPendingSongId}
           latestUserRequest={system.latestUserRequest}
           playbackState={system.playbackState}
           safetyReport={system.safetyReport}
@@ -103,6 +112,14 @@ function Metric({ label, value }: { label: string; value: string }) {
 }
 
 function GuestRequestMonitor({
+  aiAssistantMode,
+  aiConfidence,
+  aiConversationState,
+  aiFallbackReason,
+  aiIntent,
+  aiMatchedSongId,
+  aiNeedsOperatorReview,
+  aiPendingSongId,
   latestUserRequest,
   playbackState,
   safetyReport,
@@ -110,6 +127,14 @@ function GuestRequestMonitor({
   sourceMode,
   systemStatus,
 }: {
+  aiAssistantMode: AiAssistantMode;
+  aiConfidence: number;
+  aiConversationState: AiConversationState;
+  aiFallbackReason: string | null;
+  aiIntent: AiSongRequestIntent;
+  aiMatchedSongId: string | null;
+  aiNeedsOperatorReview: boolean;
+  aiPendingSongId: string | null;
   latestUserRequest: string;
   playbackState: PlaybackState;
   safetyReport: SafetyReport | null;
@@ -137,6 +162,14 @@ function GuestRequestMonitor({
         <MonitorItem label="Workflow status" value={formatSystemStatus(systemStatus)} />
         <MonitorItem label="Validation status" value={safetyReport?.overall ?? "Not run"} />
         <MonitorItem label="Playback status" value={formatPlaybackState(playbackState)} />
+        <MonitorItem label="AI mode" value={formatAiAssistantMode(aiAssistantMode)} />
+        <MonitorItem label="AI intent" value={formatAiIntent(aiIntent)} />
+        <MonitorItem label="AI matched ID" value={aiMatchedSongId ?? "None"} />
+        <MonitorItem label="AI confidence" value={`${Math.round(aiConfidence * 100)}%`} />
+        <MonitorItem label="Conversation state" value={formatAiConversationState(aiConversationState)} />
+        <MonitorItem label="Pending song" value={aiPendingSongId ?? "None"} />
+        <MonitorItem label="Fallback status" value={aiFallbackReason ?? "Primary provider"} />
+        <MonitorItem label="Operator review" value={aiNeedsOperatorReview ? "Needed" : "Not needed"} />
       </div>
     </section>
   );
@@ -181,6 +214,41 @@ function formatPlaybackState(playbackState: PlaybackState): string {
     stopped: "Stopped",
   };
   return labels[playbackState];
+}
+
+function formatAiAssistantMode(mode: AiAssistantMode): string {
+  const labels: Record<AiAssistantMode, string> = {
+    local_fallback: "Local fallback",
+    local_ollama: "Local Ollama",
+    openai_optional: "OpenAI optional",
+  };
+  return labels[mode];
+}
+
+function formatAiIntent(intent: AiSongRequestIntent): string {
+  const labels: Record<AiSongRequestIntent, string> = {
+    ask_capabilities: "Ask capabilities",
+    cancel: "Cancel",
+    confirm_playback: "Confirm playback",
+    play_song: "Play song",
+    reject_suggestion: "Reject suggestion",
+    suggest_song: "Suggest song",
+    smalltalk: "Smalltalk",
+    unknown: "Unknown",
+    unsupported_song: "Unsupported song",
+  };
+  return labels[intent];
+}
+
+function formatAiConversationState(state: AiConversationState): string {
+  const labels: Record<AiConversationState, string> = {
+    awaiting_confirmation: "Awaiting confirmation",
+    awaiting_song: "Awaiting song",
+    idle: "Idle",
+    ready_to_play: "Ready to play",
+    unsupported: "Unsupported",
+  };
+  return labels[state];
 }
 
 function SongSourcePanel() {

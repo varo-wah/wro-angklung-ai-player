@@ -1,6 +1,7 @@
 import type { SongNote } from "./songTypes";
 import type { SafetyReport } from "./safetyValidator";
 import type { ActuatorSchedule, PlaybackState } from "./types";
+import type { AiAssistantMode, AiConversationState, AiSongRequestIntent } from "./aiSongRequest";
 
 export const SYSTEM_SYNC_CHANNEL = "wro-angklung-system";
 export const SYSTEM_SYNC_LIBRARY_VERSION = "phase2-g3-c6-perfect-musescore";
@@ -27,6 +28,14 @@ export type SyncedWorkflowStatus = {
 export type SyncedSystemSnapshot = {
   activeCommandIds: string[];
   activeInstrumentIds: string[];
+  aiAssistantMode: AiAssistantMode;
+  aiConfidence: number;
+  aiConversationState: AiConversationState;
+  aiFallbackReason: string | null;
+  aiIntent: AiSongRequestIntent;
+  aiMatchedSongId: string | null;
+  aiNeedsOperatorReview: boolean;
+  aiPendingSongId: string | null;
   chatMessages: SyncedChatMessage[];
   elapsedSeconds: number;
   generatedNotes: SongNote[];
@@ -139,6 +148,14 @@ function normalizeSnapshot(candidate: unknown): SyncedSystemSnapshot | null {
   return {
     activeCommandIds: Array.isArray(snapshot.activeCommandIds) ? snapshot.activeCommandIds.filter(isString) : [],
     activeInstrumentIds: Array.isArray(snapshot.activeInstrumentIds) ? snapshot.activeInstrumentIds.filter(isString) : [],
+    aiAssistantMode: isAiAssistantMode(snapshot.aiAssistantMode) ? snapshot.aiAssistantMode : "local_fallback",
+    aiConfidence: typeof snapshot.aiConfidence === "number" ? Math.max(0, Math.min(1, snapshot.aiConfidence)) : 0,
+    aiConversationState: isConversationState(snapshot.aiConversationState) ? snapshot.aiConversationState : "idle",
+    aiFallbackReason: typeof snapshot.aiFallbackReason === "string" ? snapshot.aiFallbackReason : null,
+    aiIntent: isAiIntent(snapshot.aiIntent) ? snapshot.aiIntent : "unknown",
+    aiMatchedSongId: typeof snapshot.aiMatchedSongId === "string" ? snapshot.aiMatchedSongId : null,
+    aiNeedsOperatorReview: Boolean(snapshot.aiNeedsOperatorReview),
+    aiPendingSongId: typeof snapshot.aiPendingSongId === "string" ? snapshot.aiPendingSongId : null,
     chatMessages: Array.isArray(snapshot.chatMessages) ? snapshot.chatMessages.filter(isChatMessage) : [],
     elapsedSeconds: typeof snapshot.elapsedSeconds === "number" ? snapshot.elapsedSeconds : 0,
     generatedNotes: Array.isArray(snapshot.generatedNotes) ? snapshot.generatedNotes : [],
@@ -169,6 +186,28 @@ function normalizeSnapshot(candidate: unknown): SyncedSystemSnapshot | null {
 
 function isString(value: unknown): value is string {
   return typeof value === "string";
+}
+
+function isAiAssistantMode(value: unknown): value is AiAssistantMode {
+  return value === "local_ollama" || value === "openai_optional" || value === "local_fallback";
+}
+
+function isAiIntent(value: unknown): value is AiSongRequestIntent {
+  return (
+    value === "play_song" ||
+    value === "suggest_song" ||
+    value === "ask_capabilities" ||
+    value === "unsupported_song" ||
+    value === "confirm_playback" ||
+    value === "reject_suggestion" ||
+    value === "cancel" ||
+    value === "smalltalk" ||
+    value === "unknown"
+  );
+}
+
+function isConversationState(value: unknown): value is AiConversationState {
+  return value === "idle" || value === "awaiting_song" || value === "awaiting_confirmation" || value === "ready_to_play" || value === "unsupported";
 }
 
 function isChatMessage(value: unknown): value is SyncedChatMessage {

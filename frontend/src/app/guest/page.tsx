@@ -7,6 +7,7 @@ export default function GuestPage() {
   const system = useAngklungSystem();
   const ready = Boolean(system.schedule && system.workflowStatus.readyForSimulation);
   const showPlaybackActions = Boolean(system.schedule);
+  const pendingSongTitle = system.aiPendingSongId ? system.supportedSongs.find((song) => song.id === system.aiPendingSongId)?.title ?? null : null;
 
   return (
     <main className="min-h-[calc(100vh-88px)] px-4 py-6 sm:px-6 lg:px-8">
@@ -18,7 +19,11 @@ export default function GuestPage() {
                 <p className="text-xs font-bold uppercase tracking-[0.18em] text-lime-300">Guest Interface</p>
                 <h2 className="mt-2 text-2xl font-semibold text-slate-50 sm:text-3xl">AI Angklung Song Assistant</h2>
               </div>
-              <StatusPill ready={ready} playbackState={system.playbackState} sourceMode={system.sourceMode} />
+              <div className="flex flex-wrap items-center gap-2">
+                <AiModeBadge mode={system.aiAssistantMode} />
+                <AiStateBadge state={system.aiConversationState} />
+                <StatusPill ready={ready} playbackState={system.playbackState} sourceMode={system.sourceMode} />
+              </div>
             </div>
             <p className="mt-3 max-w-2xl text-sm leading-relaxed text-slate-300">
               Ask for a supported song. I will check the library, prepare a safe angklung schedule, and let you play it when validation passes.
@@ -88,7 +93,11 @@ export default function GuestPage() {
               <div>
                 <div className="font-semibold text-slate-100">{system.schedule?.song.title ?? system.sourceLabel}</div>
                 <div className="mt-0.5 text-xs text-slate-400">
-                  {ready ? "Validation passed. Ready to play." : getVisitorStatus(system.sourceMode, system.workflowStatus.validationPassed)}
+                  {system.aiConversationState === "awaiting_confirmation"
+                    ? `Waiting for confirmation: ${displaySongTitle(pendingSongTitle ?? "selected song")}. Reply yes or no.`
+                    : ready
+                      ? "Validation passed. Ready to play."
+                      : getVisitorStatus(system.sourceMode, system.workflowStatus.validationPassed)}
                 </div>
               </div>
               <div className="flex gap-2">
@@ -189,6 +198,40 @@ function StatusPill({
           : "border-white/10 bg-white/[0.06] text-slate-300";
 
   return <span className={`rounded-full border px-4 py-2 text-sm font-semibold ${color}`}>{label}</span>;
+}
+
+function AiModeBadge({ mode }: { mode: "local_ollama" | "openai_optional" | "local_fallback" }) {
+  const labels = {
+    local_fallback: "Local fallback",
+    local_ollama: "Local Ollama",
+    openai_optional: "OpenAI",
+  };
+  const isFullAi = mode === "local_ollama" || mode === "openai_optional";
+  return (
+    <span
+      className={`rounded-full border px-4 py-2 text-sm font-semibold ${
+        isFullAi ? "border-emerald-300/40 bg-emerald-300/10 text-emerald-100" : "border-white/10 bg-white/[0.06] text-slate-300"
+      }`}
+    >
+      AI mode: {labels[mode]}
+    </span>
+  );
+}
+
+function AiStateBadge({ state }: { state: "idle" | "awaiting_song" | "awaiting_confirmation" | "ready_to_play" | "unsupported" }) {
+  const labels = {
+    awaiting_confirmation: "Awaiting confirmation",
+    awaiting_song: "Awaiting song",
+    idle: "Idle",
+    ready_to_play: "Ready",
+    unsupported: "Unsupported",
+  };
+
+  return (
+    <span className="rounded-full border border-white/10 bg-white/[0.06] px-4 py-2 text-sm font-semibold text-slate-300">
+      State: {labels[state]}
+    </span>
+  );
 }
 
 function getVisitorStatus(sourceMode: string, validationPassed: boolean): string {
