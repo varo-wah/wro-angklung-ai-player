@@ -173,7 +173,7 @@
     "accompaniment_register": "lower_physical",
     "accompaniment_target_range": "G3-F4",
     "path": "/songs/arrangements/memories_maroon5.json"
-  }
+  },
 
   {
     "id": "fireflies_owl_city",
@@ -304,6 +304,5 @@
     "accompaniment_register": "lower_physical",
     "accompaniment_target_range": "G3-F4",
     "path": "/songs/arrangements/cant_help_falling_in_love.json"
-  }s
+  }
 ]
-
