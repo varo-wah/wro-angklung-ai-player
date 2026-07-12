@@ -1,15 +1,18 @@
 "use client";
 
-import { AngklungRack } from "@/components/AngklungRack";
+import { useState } from "react";
+
 import {
   useAngklungSystem,
   type SourceMode,
   type SystemStatus,
   type WorkflowStatus,
 } from "@/components/AngklungSystemProvider";
+import { FloatingAngklungRack } from "@/components/FloatingAngklungRack";
 import { PlaybackControls } from "@/components/PlaybackControls";
 import { ScheduleJsonViewer } from "@/components/ScheduleJsonViewer";
 import { ScheduleUploader } from "@/components/ScheduleUploader";
+import { SongLibraryPicker } from "@/components/SongLibraryPicker";
 import { TimelineView } from "@/components/TimelineView";
 import type { AiAssistantMode, AiConversationState, AiSongRequestIntent } from "@/lib/aiSongRequest";
 import type { ArrangementSettings } from "@/lib/scheduleBuilder";
@@ -21,18 +24,15 @@ export default function ControlPage() {
   const system = useAngklungSystem();
 
   return (
-    <main className="min-h-screen px-5 py-6 lg:px-8">
-      <div className="mx-auto flex max-w-7xl flex-col gap-5">
-        <section className="flex flex-wrap items-end justify-between gap-4 border-b border-white/10 pb-4">
+    <main className="min-h-screen px-4 py-4 pb-24 lg:px-6">
+      <div className="mx-auto flex max-w-[1600px] flex-col gap-4">
+        <section className="grid gap-4 border-b border-white/10 pb-4 lg:grid-cols-[minmax(0,1fr)_minmax(520px,0.9fr)] lg:items-end">
           <div>
-            <p className="text-sm font-semibold uppercase tracking-[0.18em] text-lime-300">Control Panel</p>
-            <h2 className="mt-1 text-3xl font-bold text-slate-50">Operator System Monitor</h2>
-            <p className="mt-2 max-w-2xl text-sm text-slate-300">
-              This page shows what the computer is doing behind the scenes: selected song, schedule generation, validation,
-              actuator timeline, virtual rack, JSON preview, and playback state.
-            </p>
+            <p className="text-xs font-semibold uppercase tracking-[0.18em] text-lime-300">Control Panel</p>
+            <h2 className="mt-1 text-2xl font-bold text-slate-50">Operator Workspace</h2>
+            <p className="mt-1 text-sm text-slate-400">Configure, validate, and run the angklung simulator from one desktop console.</p>
           </div>
-          <div className="grid min-w-[280px] grid-cols-2 gap-2 rounded-lg border border-white/10 bg-white/5 p-3 text-sm text-slate-300">
+          <div className="grid grid-cols-2 gap-2 text-sm text-slate-300 sm:grid-cols-4">
             <Metric label="Source" value={system.sourceLabel} />
             <Metric label="Duration" value={`${system.totalDuration.toFixed(2)}s`} />
             <Metric label="Commands" value={String(system.schedule?.commands.length ?? 0)} />
@@ -57,47 +57,21 @@ export default function ControlPage() {
           systemStatus={system.systemStatus}
         />
 
-        <AngklungRack instruments={system.instruments} activeInstrumentIds={system.activeInstrumentIds} />
-
-        <section className="grid gap-4 xl:grid-cols-[360px_minmax(0,1fr)]">
-          <div className="flex flex-col gap-4">
+        <section className="grid items-start gap-4 xl:grid-cols-[440px_minmax(0,1fr)]">
+          <div className="flex min-w-0 flex-col gap-4">
             <SongSourcePanel />
-            <ArrangementStatusPanel report={system.safetyReport} song={system.selectedSong} />
             <ArrangementSettingsPanel />
-            <PlaybackControls
-              disabled={!system.schedule || system.workflowStatus.readyForSimulation === false}
-              playbackState={system.playbackState}
-              elapsedSeconds={system.elapsedSeconds}
-              totalDurationSeconds={system.totalDuration}
-              onPlay={system.playSchedule}
-              onPause={system.pausePlayback}
-              onStop={system.stopPlayback}
-              onReset={system.resetPlayback}
-              onEmergencyStop={system.resetPlayback}
-            />
             <CandidateYoutubePanel active={system.youtubeFallbackActive} />
-            <section className="rounded-lg border border-white/10 bg-slate-950/78 p-4 shadow-[0_20px_70px_rgba(0,0,0,0.35)]">
-              <h2 className="mb-3 text-lg font-semibold text-slate-50">Advanced Upload</h2>
-              <p className="mb-3 text-sm text-slate-300">
-                Upload an existing actuator_schedule.v1 JSON file for debugging or replay.
-              </p>
-              <ScheduleUploader onLoad={system.loadSchedule} />
-            </section>
+            <AdvancedUploadPanel />
           </div>
 
-          <div className="flex flex-col gap-4">
-            <section className="grid gap-4 lg:grid-cols-2">
-              <WorkflowStatusPanel status={system.workflowStatus} />
-              <ValidationPanel report={system.safetyReport} errors={system.errors} />
-            </section>
-            <section className="grid gap-4 2xl:grid-cols-[minmax(0,0.85fr)_minmax(0,1.15fr)]">
-              <NotesPreview notes={system.generatedNotes} />
-              <TimelineView commands={system.schedule?.commands ?? []} activeCommandIds={system.activeCommandIds} />
-            </section>
-            <ScheduleJsonViewer schedule={system.schedule} />
+          <div className="flex min-w-0 flex-col gap-4">
+            <AnalysisWorkspace />
+            <ArrangementStatusPanel report={system.safetyReport} song={system.selectedSong} />
           </div>
         </section>
       </div>
+      <FloatingAngklungRack activeInstrumentIds={system.activeInstrumentIds} instruments={system.instruments} />
     </main>
   );
 }
@@ -108,6 +82,52 @@ function Metric({ label, value }: { label: string; value: string }) {
       <div className="text-[10px] font-bold uppercase tracking-[0.12em] text-slate-500">{label}</div>
       <div className="mt-1 truncate text-sm font-semibold text-slate-100">{value}</div>
     </div>
+  );
+}
+
+type AnalysisTab = "overview" | "notes" | "timeline" | "json";
+
+function AnalysisWorkspace() {
+  const system = useAngklungSystem();
+  const [activeTab, setActiveTab] = useState<AnalysisTab>("overview");
+  const tabs: Array<[AnalysisTab, string, string]> = [
+    ["overview", "Overview", system.safetyReport?.overall ?? "Not run"],
+    ["notes", "Notes", String(system.generatedNotes.length)],
+    ["timeline", "Timeline", String(system.schedule?.commands.length ?? 0)],
+    ["json", "JSON", system.schedule ? "Ready" : "Empty"],
+  ];
+
+  return (
+    <section aria-label="Analysis workspace">
+      <div className="mb-4 flex min-w-0 gap-1 overflow-x-auto rounded-lg border border-white/10 bg-black/25 p-1">
+        {tabs.map(([tabId, label, detail]) => (
+          <button
+            aria-pressed={activeTab === tabId}
+            className={`min-w-[110px] flex-1 rounded px-3 py-2 text-left transition-all duration-200 ${
+              activeTab === tabId ? "bg-lime-300 text-slate-950 shadow-[0_0_24px_rgba(190,242,100,0.16)]" : "text-slate-300 hover:bg-white/[0.06] hover:text-white"
+            }`}
+            key={tabId}
+            onClick={() => setActiveTab(tabId)}
+            type="button"
+          >
+            <span className="block text-sm font-bold">{label}</span>
+            <span className={`block truncate text-[10px] ${activeTab === tabId ? "text-slate-800" : "text-slate-500"}`}>{detail}</span>
+          </button>
+        ))}
+      </div>
+
+      <div className="animate-panel-in" key={activeTab}>
+        {activeTab === "overview" ? (
+          <div className="grid gap-4 2xl:grid-cols-2">
+            <WorkflowStatusPanel status={system.workflowStatus} />
+            <ValidationPanel errors={system.errors} report={system.safetyReport} />
+          </div>
+        ) : null}
+        {activeTab === "notes" ? <NotesPreview notes={system.generatedNotes} /> : null}
+        {activeTab === "timeline" ? <TimelineView activeCommandIds={system.activeCommandIds} commands={system.schedule?.commands ?? []} /> : null}
+        {activeTab === "json" ? <ScheduleJsonViewer schedule={system.schedule} /> : null}
+      </div>
+    </section>
   );
 }
 
@@ -145,32 +165,37 @@ function GuestRequestMonitor({
   const matchedSong = selectedSongTitle || (sourceMode === "youtube_placeholder" ? "No supported match" : "No song selected");
 
   return (
-    <section className="rounded-xl border border-lime-300/20 bg-lime-300/[0.07] p-4 shadow-[0_20px_70px_rgba(0,0,0,0.35)]">
-      <div className="mb-3 flex flex-wrap items-center justify-between gap-3">
+    <section className="rounded-lg border border-lime-300/20 bg-lime-300/[0.06] p-3 shadow-[0_16px_50px_rgba(0,0,0,0.28)]">
+      <div className="mb-2 flex flex-wrap items-center justify-between gap-3">
         <div>
-          <p className="text-xs font-bold uppercase tracking-[0.18em] text-lime-300">Guest Request Monitor</p>
-          <h2 className="mt-1 text-xl font-semibold text-slate-50">Visitor request handoff</h2>
+          <p className="text-[10px] font-bold uppercase tracking-[0.16em] text-lime-300">Guest Request Monitor</p>
+          <h2 className="mt-0.5 text-base font-semibold text-slate-50">Visitor request handoff</h2>
         </div>
-        <span className="rounded-full border border-emerald-300/30 bg-emerald-300/10 px-3 py-1 text-sm font-semibold text-emerald-100">
+        <span className="rounded border border-emerald-300/30 bg-emerald-300/10 px-2.5 py-1 text-xs font-semibold text-emerald-100">
           {formatSystemStatus(systemStatus)}
         </span>
       </div>
-      <div className="grid gap-2 md:grid-cols-2 xl:grid-cols-3">
+      <div className="grid gap-2 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6">
         <MonitorItem label="Latest request" value={latestUserRequest ? `“${latestUserRequest}”` : "No guest request yet"} />
         <MonitorItem label="Matched song" value={matchedSong} />
         <MonitorItem label="Source mode" value={formatSourceMode(sourceMode)} />
-        <MonitorItem label="Workflow status" value={formatSystemStatus(systemStatus)} />
         <MonitorItem label="Validation status" value={safetyReport?.overall ?? "Not run"} />
         <MonitorItem label="Playback status" value={formatPlaybackState(playbackState)} />
-        <MonitorItem label="AI mode" value={formatAiAssistantMode(aiAssistantMode)} />
-        <MonitorItem label="AI intent" value={formatAiIntent(aiIntent)} />
-        <MonitorItem label="AI matched ID" value={aiMatchedSongId ?? "None"} />
         <MonitorItem label="AI confidence" value={`${Math.round(aiConfidence * 100)}%`} />
-        <MonitorItem label="Conversation state" value={formatAiConversationState(aiConversationState)} />
-        <MonitorItem label="Pending song" value={aiPendingSongId ?? "None"} />
-        <MonitorItem label="Fallback status" value={aiFallbackReason ?? "Primary provider"} />
-        <MonitorItem label="Operator review" value={aiNeedsOperatorReview ? "Needed" : "Not needed"} />
       </div>
+      <details className="mt-2 border-t border-white/10 pt-2">
+        <summary className="cursor-pointer text-xs font-semibold text-slate-400 hover:text-slate-200">AI diagnostic details</summary>
+        <div className="mt-2 grid gap-2 sm:grid-cols-2 lg:grid-cols-4">
+          <MonitorItem label="Workflow status" value={formatSystemStatus(systemStatus)} />
+          <MonitorItem label="AI mode" value={formatAiAssistantMode(aiAssistantMode)} />
+          <MonitorItem label="AI intent" value={formatAiIntent(aiIntent)} />
+          <MonitorItem label="AI matched ID" value={aiMatchedSongId ?? "None"} />
+          <MonitorItem label="Conversation state" value={formatAiConversationState(aiConversationState)} />
+          <MonitorItem label="Pending song" value={aiPendingSongId ?? "None"} />
+          <MonitorItem label="Fallback status" value={aiFallbackReason ?? "Primary provider"} />
+          <MonitorItem label="Operator review" value={aiNeedsOperatorReview ? "Needed" : "Not needed"} />
+        </div>
+      </details>
     </section>
   );
 }
@@ -257,20 +282,11 @@ function SongSourcePanel() {
   return (
     <section className="rounded-lg border border-white/10 bg-slate-950/78 p-4 shadow-[0_20px_70px_rgba(0,0,0,0.35)]">
       <h2 className="mb-3 text-lg font-semibold text-slate-50">Song Source</h2>
-      <label className="block text-sm font-semibold text-slate-200">
-        Built-in Song
-        <select
-          className="mt-2 w-full rounded border border-white/10 bg-black/45 px-3 py-2 text-sm text-slate-100 outline-none focus:border-lime-300/70"
-          value={system.selectedSongId}
-          onChange={(event) => system.setSelectedSongId(event.target.value)}
-        >
-          {system.supportedSongs.map((song) => (
-            <option key={song.id} value={song.id}>
-              {song.title}
-            </option>
-          ))}
-        </select>
-      </label>
+      <SongLibraryPicker
+        onSelect={system.setSelectedSongId}
+        selectedSongId={system.selectedSongId}
+        songs={system.supportedSongs}
+      />
       <label className="mt-4 block text-sm font-semibold text-slate-200">
         YouTube Piano Link
         <input
@@ -282,24 +298,30 @@ function SongSourcePanel() {
         />
       </label>
       <p className="mt-2 text-xs text-slate-400">YouTube conversion remains Phase 3. No download or transcription runs here.</p>
-      <button
-        className="mt-4 w-full rounded bg-lime-300 px-4 py-2 text-sm font-semibold text-slate-950 hover:bg-lime-200"
-        onClick={system.generateBuiltInSchedule}
-        type="button"
-      >
-        Generate
-      </button>
+      <PlaybackControls
+        disabled={!system.schedule || system.workflowStatus.readyForSimulation === false}
+        embedded
+        elapsedSeconds={system.elapsedSeconds}
+        onEmergencyStop={system.resetPlayback}
+        onGenerate={system.generateBuiltInSchedule}
+        onPause={system.pausePlayback}
+        onPlay={system.playSchedule}
+        onReset={system.resetPlayback}
+        onStop={system.stopPlayback}
+        playbackState={system.playbackState}
+        totalDurationSeconds={system.totalDuration}
+      />
     </section>
   );
 }
 
 function CandidateYoutubePanel({ active }: { active: boolean }) {
   return (
-    <section className={`rounded-lg border p-4 shadow-[0_20px_70px_rgba(0,0,0,0.35)] ${active ? "border-lime-300/40 bg-lime-300/10" : "border-white/10 bg-slate-950/78"}`}>
-      <div className="flex items-center justify-between gap-3">
-        <h2 className="text-lg font-semibold text-slate-50">Candidate YouTube Reference</h2>
-        <span className="rounded border border-lime-300/30 bg-lime-300/10 px-2 py-1 text-xs font-bold text-lime-200">Coming in Phase 3</span>
-      </div>
+    <details className={`rounded-lg border p-4 shadow-[0_20px_70px_rgba(0,0,0,0.35)] ${active ? "border-lime-300/40 bg-lime-300/10" : "border-white/10 bg-slate-950/78"}`}>
+      <summary className="flex cursor-pointer list-none items-center justify-between gap-3">
+        <span className="text-sm font-semibold text-slate-50">YouTube Reference</span>
+        <span className="rounded border border-lime-300/30 bg-lime-300/10 px-2 py-1 text-[10px] font-bold text-lime-200">Phase 3</span>
+      </summary>
       <div className="mt-3 space-y-1 text-sm text-slate-300">
         <div>Video title: Simple piano reference placeholder</div>
         <div>Video URL: No candidate selected</div>
@@ -314,7 +336,21 @@ function CandidateYoutubePanel({ active }: { active: boolean }) {
           Reject
         </button>
       </div>
-    </section>
+    </details>
+  );
+}
+
+function AdvancedUploadPanel() {
+  const system = useAngklungSystem();
+
+  return (
+    <details className="rounded-lg border border-white/10 bg-slate-950/78 p-4 shadow-[0_20px_70px_rgba(0,0,0,0.35)]">
+      <summary className="cursor-pointer text-sm font-semibold text-slate-50">Advanced JSON Upload</summary>
+      <p className="mb-3 mt-3 text-xs leading-relaxed text-slate-400">
+        Load an existing actuator_schedule.v1 file for debugging or replay.
+      </p>
+      <ScheduleUploader onLoad={system.loadSchedule} />
+    </details>
   );
 }
 
@@ -331,10 +367,10 @@ function ArrangementStatusPanel({ report, song }: { report: SafetyReport | null;
         </div>
         <span className="rounded border border-lime-300/30 bg-lime-300/10 px-2 py-1 text-xs font-bold text-lime-200">Draft arrangement</span>
       </div>
-      <div className="grid gap-2 text-sm">
+      <div className="grid gap-2 text-sm md:grid-cols-2 xl:grid-cols-4">
         <StatusRow label="Song" value={song.title} />
         <StatusRow label="Rack map" value={song.physical_rack_map ?? "G3-C6"} />
-        <StatusRow label="Arrangement status" value={formatArrangementStatus(song.arrangement_status)} />
+        <StatusRow label="Arrangement status" value={formatArrangementStatus(song.arrangement_status)} wide />
         <StatusRow label="Melody register" value={formatRegister(song.melody_register)} />
         <StatusRow label="Melody range" value={song.melody_target_range ?? "Not specified"} />
         <StatusRow label="Accompaniment register" value={formatRegister(song.accompaniment_register)} />
@@ -349,9 +385,9 @@ function ArrangementStatusPanel({ report, song }: { report: SafetyReport | null;
   );
 }
 
-function StatusRow({ label, value }: { label: string; value: string }) {
+function StatusRow({ label, value, wide = false }: { label: string; value: string; wide?: boolean }) {
   return (
-    <div className="grid grid-cols-[minmax(0,0.9fr)_minmax(0,1.1fr)] items-center gap-3 rounded border border-white/10 bg-black/25 px-3 py-2">
+    <div className={`grid grid-cols-[minmax(0,0.9fr)_minmax(0,1.1fr)] items-center gap-3 rounded border border-white/10 bg-black/25 px-3 py-2 ${wide ? "md:col-span-2" : ""}`}>
       <span className="min-w-0 text-slate-400">{label}</span>
       <span className="min-w-0 text-right font-semibold leading-snug text-slate-100 [overflow-wrap:anywhere]">{value}</span>
     </div>
@@ -366,6 +402,9 @@ function formatArrangementStatus(status: string | undefined): string {
     return "Layered MIDI draft / lower-pitch / needs review";
   }
   if (status === "draft_layered_from_midi_g3_c6_upper_melody_needs_review") {
+    return "G3-C6 layered MIDI draft / needs review";
+  }
+  if (status === "draft_layered_from_midi_g3_c6_needs_review") {
     return "G3-C6 layered MIDI draft / needs review";
   }
   if (status === "draft_layered_from_midi_g3_c6_lower_pitch_needs_review") {
@@ -429,10 +468,8 @@ function ArrangementSettingsPanel() {
           onChange={(value) => system.setSettings({ ...system.settings, mode: value as ArrangementSettings["mode"] })}
         />
       </div>
-      <p className="mt-3 text-xs text-slate-400">Strength controls simulator volume now and actuator intensity later.</p>
-      <div className="mt-4 rounded border border-white/10 bg-white/5 px-3 py-2 text-sm font-semibold text-slate-200">Rack map: G3-C6 physical angklung assumption</div>
-      <p className="mt-3 rounded border border-lime-300/20 bg-lime-300/10 px-3 py-2 text-xs leading-relaxed text-lime-100">
-        Software rack map is now G3-C6 based on the current angklung assumption. Final note labels should still be checked with a tuner.
+      <p className="mt-3 text-xs leading-relaxed text-slate-400">
+        Strength controls simulator volume now and actuator intensity later. Rack map: G3-C6; verify final note labels with a tuner.
       </p>
     </section>
   );
@@ -571,7 +608,7 @@ function NotesPreview({ notes }: { notes: SongNote[] }) {
   return (
     <section className="rounded-lg border border-white/10 bg-slate-950/78 p-4 shadow-[0_20px_70px_rgba(0,0,0,0.35)]">
       <h2 className="mb-3 text-lg font-semibold text-slate-50">Notes Preview</h2>
-      <div className="max-h-48 overflow-auto rounded border border-white/10 bg-black/55 p-4 font-mono text-sm text-slate-100">
+      <div className="h-[clamp(360px,52vh,620px)] overflow-auto rounded border border-white/10 bg-black/55 p-4 font-mono text-sm text-slate-100">
         {notes.length === 0
           ? "Generate a built-in song to preview notes."
           : notes.map((note) => (

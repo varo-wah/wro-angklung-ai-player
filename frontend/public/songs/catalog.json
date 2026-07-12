@@ -188,7 +188,7 @@
     "priority": "medium",
     "verdict": "Usable simulator test",
     "reason": "Iconic synth intro and lead melody are retained, with bass simplified into the lower rack.",
-    "arrangement_status": "draft_layered_from_midi_g3_c6_needs_review",
+    "arrangement_status": "draft_intro_contour_fixed_from_midi_g3_c6_needs_review",
     "playable": true,
     "demo_safe": false,
     "has_validated_notes": true,

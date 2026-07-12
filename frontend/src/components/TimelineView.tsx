@@ -11,7 +11,7 @@ export function TimelineView({ commands, activeCommandIds }: TimelineViewProps) 
   return (
     <section className="rounded-lg border border-white/10 bg-slate-950/78 p-4 shadow-[0_20px_70px_rgba(0,0,0,0.35)]">
       <h2 className="mb-3 text-lg font-semibold text-slate-50">Timeline</h2>
-      <div className="max-h-72 overflow-auto rounded border border-white/10">
+      <div className="h-[clamp(360px,52vh,620px)] overflow-auto rounded border border-white/10">
         <table className="w-full min-w-[620px] border-collapse text-left text-xs">
           <thead className="sticky top-0 bg-black text-slate-100">
             <tr>
