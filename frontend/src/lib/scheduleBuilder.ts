@@ -1,5 +1,5 @@
 import type { ActuatorCommand, ActuatorSchedule } from "./types";
-import type { BuiltInSong, BuiltInSongNote } from "./builtInSongs";
+import type { LoadedSong, SongNote } from "./songTypes";
 import { ANGKLUNG_RANGE_NOTES, FRONTEND_INSTRUMENT_MAP } from "./instrumentMap";
 
 export type ArrangementSettings = {
@@ -10,7 +10,7 @@ export type ArrangementSettings = {
 
 const SLOWER_TEMPO_SCALE = 1.25;
 
-export function buildScheduleFromBuiltInSong(song: BuiltInSong, settings: ArrangementSettings): ActuatorSchedule {
+export function buildScheduleFromBuiltInSong(song: LoadedSong, settings: ArrangementSettings): ActuatorSchedule {
   const scale = settings.tempo === "slower" ? SLOWER_TEMPO_SCALE : 1;
   const notes = scaleNotes(song.notes, scale);
   const commands = buildCommands(notes, settings);
@@ -26,7 +26,7 @@ export function buildScheduleFromBuiltInSong(song: BuiltInSong, settings: Arrang
     song: {
       title: song.title,
       tempo_bpm: settings.tempo === "slower" ? Math.round(song.tempo_bpm / SLOWER_TEMPO_SCALE) : song.tempo_bpm,
-      time_signature: "4/4",
+      time_signature: song.time_signature ?? "4/4",
     },
     generated_at: new Date().toISOString(),
     timing: {
@@ -48,7 +48,7 @@ export function buildScheduleFromBuiltInSong(song: BuiltInSong, settings: Arrang
   };
 }
 
-export function scaleNotes(notes: BuiltInSongNote[], scale: number): BuiltInSongNote[] {
+export function scaleNotes(notes: SongNote[], scale: number): SongNote[] {
   return notes.map((note) => ({
     ...note,
     start: roundSeconds(note.start * scale),
@@ -56,7 +56,7 @@ export function scaleNotes(notes: BuiltInSongNote[], scale: number): BuiltInSong
   }));
 }
 
-function buildCommands(notes: BuiltInSongNote[], settings: ArrangementSettings): ActuatorCommand[] {
+function buildCommands(notes: SongNote[], settings: ArrangementSettings): ActuatorCommand[] {
   const commands: ActuatorCommand[] = [];
 
   for (const note of notes) {
@@ -82,7 +82,7 @@ function buildCommands(notes: BuiltInSongNote[], settings: ArrangementSettings):
   return commands.sort((left, right) => left.start_time_seconds - right.start_time_seconds || left.actuator_channel - right.actuator_channel);
 }
 
-function createCommand(note: BuiltInSongNote, commandNumber: number, settings: ArrangementSettings, strengthOverride?: number): ActuatorCommand {
+function createCommand(note: SongNote, commandNumber: number, settings: ArrangementSettings, strengthOverride?: number): ActuatorCommand {
   const mapping = FRONTEND_INSTRUMENT_MAP[note.note];
   if (!mapping) {
     throw new Error(`No frontend instrument mapping exists for note ${note.note}.`);

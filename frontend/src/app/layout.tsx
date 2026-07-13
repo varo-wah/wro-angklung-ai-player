@@ -1,9 +1,10 @@
 import type { Metadata } from "next";
+import { AngklungSystemProvider } from "@/components/AngklungSystemProvider";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: "WRO Angklung Simulator",
-  description: "Browser simulator for actuator_schedule.v1 angklung playback.",
+  title: "AI Angklung Performance System",
+  description: "Guest song assistant and operator console for actuator_schedule.v1 angklung playback.",
 };
 
 export default function RootLayout({
@@ -13,7 +14,9 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body>{children}</body>
+      <body>
+        <AngklungSystemProvider>{children}</AngklungSystemProvider>
+      </body>
     </html>
   );
 }

@@ -6,3 +6,10 @@ __pycache__/
 outputs/
 hatch-pet-runs/
 .idea/
+
+# Frontend build / deploy output
+frontend/.next/
+frontend/out/
+frontend/.firebase/
+frontend/.agents/
+frontend/skills-lock.json

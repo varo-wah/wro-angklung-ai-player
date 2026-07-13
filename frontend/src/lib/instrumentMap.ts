@@ -5,6 +5,13 @@ export type FrontendInstrumentMapping = {
 };
 
 export const ANGKLUNG_RANGE_NOTES = [
+  "G3",
+  "A3",
+  "B3",
+  "C4",
+  "D4",
+  "E4",
+  "F4",
   "G4",
   "A4",
   "B4",
@@ -16,13 +23,6 @@ export const ANGKLUNG_RANGE_NOTES = [
   "A5",
   "B5",
   "C6",
-  "D6",
-  "E6",
-  "F6",
-  "G6",
-  "A6",
-  "B6",
-  "C7",
 ] as const;
 
 export const FRONTEND_INSTRUMENT_MAP: Record<string, FrontendInstrumentMapping> = Object.fromEntries(

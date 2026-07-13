@@ -1,4 +1,5 @@
 import type { ActuatorCommand, ActuatorSchedule } from "./types";
+import { FRONTEND_INSTRUMENT_MAP } from "./instrumentMap";
 
 const REQUIRED_COMMAND_FIELDS: Array<keyof ActuatorCommand> = [
   "command_id",
@@ -81,6 +82,21 @@ export function validateSchedulePayload(payload: unknown): ValidationResult {
 
     if (typeof command.note !== "string" || command.note.trim() === "") {
       errors.push(`commands[${index}].note must be a non-empty string.`);
+    } else {
+      const mapping = FRONTEND_INSTRUMENT_MAP[command.note];
+      if (!mapping) {
+        errors.push(`commands[${index}].note ${command.note} is outside the G3-C6 angklung rack.`);
+      } else {
+        if (typeof command.instrument_id === "string" && command.instrument_id !== mapping.instrument_id) {
+          errors.push(`commands[${index}].instrument_id does not match ${command.note}.`);
+        }
+        if (Number.isInteger(command.actuator_channel) && command.actuator_channel !== mapping.actuator_channel) {
+          errors.push(`commands[${index}].actuator_channel does not match ${command.note}.`);
+        }
+      }
+      if (/[#b]/.test(command.note)) {
+        errors.push(`commands[${index}].note ${command.note} contains a sharp or flat that the current rack cannot play.`);
+      }
     }
 
     if (typeof command.instrument_id !== "string" || command.instrument_id.trim() === "") {

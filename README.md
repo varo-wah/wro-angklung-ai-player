@@ -1,17 +1,18 @@
 # WRO Angklung AI Player
 
-This repository contains the software foundation for a WRO robotics project: an AI-assisted angklung player.
+This repository contains the software foundation for a WRO robotics project: a website-based AI Angklung Performance Console.
 
 The official build order is now:
 
-1. Phase 1: Angklung Website / Control UI first.
-2. Phase 2: Simple built-in songs playback.
-3. Phase 3: YouTube link piano-to-angklung converter.
-4. Phase 4: Optional automatic YouTube search later.
+1. Phase 1: Website/control UI and chatbot-style assistant.
+2. Phase 2: Reliable preloaded song library and simple song playback.
+3. Phase 3: YouTube Piano Reference Mode with user approval.
+4. Phase 4: Optional automatic YouTube search plus camera/voice interaction.
+5. Phase 5: Hardware driver using the same `actuator_schedule.v1` format.
 
-The project still targets direct YouTube Piano Reference Mode later: a user or judge provides a simple piano reference link, the system normalizes it into internal song JSON, exports `actuator_schedule.v1`, and later sends that schedule to the website simulator or real robot.
+The project claim is deliberately narrow: preloaded supported songs are reliable. If a request is not preloaded, future YouTube Piano Reference Mode may search for a simple piano reference, ask the user to approve it, and attempt conversion only if the melody fits the current angklung rack.
 
-For now, YouTube search, real YouTube audio download, and real audio transcription are not implemented. The current source pipeline uses mocked transcription so the architecture can be tested before adding fragile external audio dependencies.
+For now, YouTube search, real YouTube audio download, real audio transcription, camera detection, voice input, and hardware motor control are not implemented. The website shows that path as a disabled/mock workflow so the product direction is visible without pretending the conversion is ready.
 
 ## Current Milestone
 
@@ -21,13 +22,20 @@ The current implementation:
 
 - Loads songs from JSON files.
 - Validates note timing and duration.
-- Models the physical rack as 18 diatonic angklung notes from `G4` through `C7`.
+- Models the physical rack as 18 diatonic angklung notes from `G3` through `C6`.
 - Converts relative note timings into scheduled playback events.
 - Imports a YouTube URL through a mocked transcription pipeline.
 - Converts mocked transcription notes into internal song JSON.
 - Exports official `actuator_schedule.v1` JSON.
-- Provides a website performance console with built-in songs, schedule generation, validation, simulation playback, and advanced JSON upload.
+- Provides a three-screen website: a visitor-facing Guest Interface, an operator-facing Control Panel, and an audience-facing Display Screen.
+- Shares song requests, schedule generation, validation, playback state, and rack animation between the screens.
+- Uses browser-based `BroadcastChannel` plus `localStorage` sync so multiple same-browser tabs can stay aligned during Phase 1 demos without a backend database.
 - Uses placeholder actuator functions that print which note should be played and when.
+- Rejects unsupported song requests safely instead of claiming arbitrary-song playback.
+
+Phase 2 testing currently uses `A Whole New World` and `Perfect MuseScore Ver.` as active G3-C6 draft arrangements. `Perfect` remains in the catalog as an inactive draft because it still uses the old G4-C7 software rack and must be remapped before playback.
+
+The modeled frontend rack is the G3-C6 diatonic range defined in `frontend/src/lib/instrumentMap.ts`. Songs containing unsupported notes such as sharps/flats must be rejected unless a future simplification step can convert them safely into that range.
 
 Hardware-specific control is not implemented yet. That boundary is deliberate; actuator logic should only be added after the parser and scheduler are proven stable.
 
@@ -104,11 +112,28 @@ npm install
 npm run dev
 ```
 
-Open the local Next.js URL. The Phase 1 console can generate and play built-in songs directly:
+Open the local Next.js URL. `/` redirects to the visitor-facing Guest Interface:
 
-- Twinkle Twinkle
-- Happy Birthday
-- Ode to Joy
+- `/guest`: chatbot-style screen for visitors requesting songs.
+- `/control`: technical console showing schedule generation, validation, playback, virtual rack behavior, timeline, JSON preview, and advanced upload.
+- `/display`: presentation screen for an audience monitor, showing assistant status, current request, now-playing state, and a decorative music sheet preview.
+
+During Phase 1, these screens use browser-tab synchronization through `BroadcastChannel` with `localStorage` hydration. A tab opened after a song is selected can restore the latest request, schedule, validation, playback status, and display state. The tab that starts playback owns the browser audio; other tabs mirror visual playback state to avoid multiple screens playing sound at once.
+
+The Guest Interface can accept chatbot-style song requests:
+
+- A Whole New World
+- Perfect MuseScore Ver.
+
+The workflow is:
+
+```text
+guest requests A Whole New World -> system checks supported library -> G3-C6 layered MIDI-derived draft is loaded -> actuator_schedule.v1 is generated -> validation runs -> guest can test playback if validation does not fail
+```
+
+Unsupported song requests show the Phase 3 YouTube Piano Reference Mode placeholder. No download, search, transcription, or motor command is started from that placeholder.
+
+The active catalog is `frontend/public/songs/catalog.json`. Current arrangement source files are `frontend/public/songs/arrangements/perfect.json`, `frontend/public/songs/arrangements/a_whole_new_world.json`, and `frontend/public/songs/arrangements/perfect_musescore_ver.json`. `Perfect` is marked inactive with `arrangement_status: needs_remap_to_g3_c6`. `A Whole New World` and `Perfect MuseScore Ver.` are marked `demo_safe: false` and remain draft arrangements for simulator and display testing only.
 
 The advanced upload section still accepts `outputs/example_schedule.json`.
 
