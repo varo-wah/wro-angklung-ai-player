@@ -46,7 +46,7 @@ export function PlaybackControls({
         <button className="rounded bg-lime-300 px-2 py-2 text-xs font-semibold text-slate-950 hover:bg-lime-200 disabled:bg-slate-800 disabled:text-slate-500" disabled={disabled || playbackState !== "playing"} onClick={onPause}>
           Pause
         </button>
-        <button className="rounded border border-white/15 bg-white/8 px-2 py-2 text-xs font-semibold text-slate-100 hover:border-white/30 disabled:text-slate-600" disabled={disabled} onClick={onStop}>
+        <button className="rounded border border-white/15 bg-white/8 px-2 py-2 text-xs font-semibold text-slate-100 hover:border-white/30 disabled:text-slate-600" disabled={disabled && playbackState !== "playing"} onClick={onStop}>
           Stop
         </button>
       </div>
@@ -66,7 +66,7 @@ export function PlaybackControls({
         <button className="rounded border border-white/10 bg-white/5 px-2 py-2 text-[11px] font-semibold text-slate-500" disabled title="Future hardware control">
           Play on Robot
         </button>
-        <button className="rounded bg-red-500 px-2 py-2 text-[11px] font-semibold text-white hover:bg-red-400 disabled:bg-slate-800 disabled:text-slate-500" disabled={disabled} onClick={onEmergencyStop ?? onReset}>
+        <button className="rounded bg-red-500 px-2 py-2 text-[11px] font-semibold text-white hover:bg-red-400" onClick={onEmergencyStop ?? onReset}>
           E-Stop
         </button>
       </div>

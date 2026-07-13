@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { useState } from "react";
 
 import {
@@ -14,7 +15,7 @@ import { ScheduleJsonViewer } from "@/components/ScheduleJsonViewer";
 import { ScheduleUploader } from "@/components/ScheduleUploader";
 import { SongLibraryPicker } from "@/components/SongLibraryPicker";
 import { TimelineView } from "@/components/TimelineView";
-import type { AiAssistantMode, AiConversationState, AiSongRequestIntent } from "@/lib/aiSongRequest";
+import type { AiAssistantMode, AiConversationState, AiPreRouterDecision, AiSongRequestIntent } from "@/lib/aiSongRequest";
 import type { ArrangementSettings } from "@/lib/scheduleBuilder";
 import type { SafetyReport } from "@/lib/safetyValidator";
 import type { LoadedSong, SongNote } from "@/lib/songTypes";
@@ -27,10 +28,18 @@ export default function ControlPage() {
     <main className="min-h-screen px-4 py-4 pb-24 lg:px-6">
       <div className="mx-auto flex max-w-[1600px] flex-col gap-4">
         <section className="grid gap-4 border-b border-white/10 pb-4 lg:grid-cols-[minmax(0,1fr)_minmax(520px,0.9fr)] lg:items-end">
-          <div>
-            <p className="text-xs font-semibold uppercase tracking-[0.18em] text-lime-300">Control Panel</p>
-            <h2 className="mt-1 text-2xl font-bold text-slate-50">Operator Workspace</h2>
-            <p className="mt-1 text-sm text-slate-400">Configure, validate, and run the angklung simulator from one desktop console.</p>
+          <div className="flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between lg:block">
+            <div>
+              <p className="text-xs font-semibold uppercase tracking-[0.18em] text-lime-300">Control Panel</p>
+              <h2 className="mt-1 text-2xl font-bold text-slate-50">Operator Workspace</h2>
+              <p className="mt-1 text-sm text-slate-400">Configure, validate, and run the angklung simulator from one desktop console.</p>
+            </div>
+            <Link
+              className="mt-3 inline-flex w-fit rounded-md border border-lime-300/30 bg-lime-300/10 px-3 py-2 text-xs font-bold text-lime-100 hover:border-lime-300/50 hover:bg-lime-300/15 lg:mt-3"
+              href="/control/library-builder"
+            >
+              Open Library Builder
+            </Link>
           </div>
           <div className="grid grid-cols-2 gap-2 text-sm text-slate-300 sm:grid-cols-4">
             <Metric label="Source" value={system.sourceLabel} />
@@ -46,9 +55,15 @@ export default function ControlPage() {
           aiConversationState={system.aiConversationState}
           aiFallbackReason={system.aiFallbackReason}
           aiIntent={system.aiIntent}
+          aiKnowledgeSections={system.aiKnowledgeSections}
+          aiLastUnsupportedRequest={system.aiLastUnsupportedRequest}
           aiMatchedSongId={system.aiMatchedSongId}
           aiNeedsOperatorReview={system.aiNeedsOperatorReview}
           aiPendingSongId={system.aiPendingSongId}
+          aiPreRouterDecision={system.aiPreRouterDecision}
+          aiRawProviderResult={system.aiRawProviderResult}
+          aiShouldSearchCatalog={system.aiShouldSearchCatalog}
+          aiSuggestedSongIds={system.aiSuggestedSongIds}
           latestUserRequest={system.latestUserRequest}
           playbackState={system.playbackState}
           safetyReport={system.safetyReport}
@@ -137,9 +152,15 @@ function GuestRequestMonitor({
   aiConversationState,
   aiFallbackReason,
   aiIntent,
+  aiKnowledgeSections,
+  aiLastUnsupportedRequest,
   aiMatchedSongId,
   aiNeedsOperatorReview,
   aiPendingSongId,
+  aiPreRouterDecision,
+  aiRawProviderResult,
+  aiShouldSearchCatalog,
+  aiSuggestedSongIds,
   latestUserRequest,
   playbackState,
   safetyReport,
@@ -152,9 +173,15 @@ function GuestRequestMonitor({
   aiConversationState: AiConversationState;
   aiFallbackReason: string | null;
   aiIntent: AiSongRequestIntent;
+  aiKnowledgeSections: string[];
+  aiLastUnsupportedRequest: string | null;
   aiMatchedSongId: string | null;
   aiNeedsOperatorReview: boolean;
   aiPendingSongId: string | null;
+  aiPreRouterDecision: AiPreRouterDecision | null;
+  aiRawProviderResult: string | null;
+  aiShouldSearchCatalog: boolean;
+  aiSuggestedSongIds: string[];
   latestUserRequest: string;
   playbackState: PlaybackState;
   safetyReport: SafetyReport | null;
@@ -189,9 +216,15 @@ function GuestRequestMonitor({
           <MonitorItem label="Workflow status" value={formatSystemStatus(systemStatus)} />
           <MonitorItem label="AI mode" value={formatAiAssistantMode(aiAssistantMode)} />
           <MonitorItem label="AI intent" value={formatAiIntent(aiIntent)} />
+          <MonitorItem label="Knowledge sections" value={aiKnowledgeSections.join(", ") || "None"} />
           <MonitorItem label="AI matched ID" value={aiMatchedSongId ?? "None"} />
           <MonitorItem label="Conversation state" value={formatAiConversationState(aiConversationState)} />
           <MonitorItem label="Pending song" value={aiPendingSongId ?? "None"} />
+          <MonitorItem label="Pre-router decision" value={aiPreRouterDecision ? formatPreRouterDecision(aiPreRouterDecision) : "Passed to provider"} />
+          <MonitorItem label="Raw provider result" value={aiRawProviderResult ?? "Not called"} />
+          <MonitorItem label="Catalog search" value={aiShouldSearchCatalog ? "Yes" : "No"} />
+          <MonitorItem label="Suggested IDs" value={aiSuggestedSongIds.join(", ") || "None"} />
+          <MonitorItem label="Last unsupported" value={aiLastUnsupportedRequest ?? "None"} />
           <MonitorItem label="Fallback status" value={aiFallbackReason ?? "Primary provider"} />
           <MonitorItem label="Operator review" value={aiNeedsOperatorReview ? "Needed" : "Not needed"} />
         </div>
@@ -204,9 +237,13 @@ function MonitorItem({ label, value }: { label: string; value: string }) {
   return (
     <div className="rounded-lg border border-white/10 bg-black/30 px-3 py-2">
       <div className="text-[10px] font-bold uppercase tracking-[0.12em] text-slate-500">{label}</div>
-      <div className="mt-1 truncate text-sm font-semibold text-slate-100">{value}</div>
+      <div className="mt-1 truncate text-sm font-semibold text-slate-100" title={value}>{value}</div>
     </div>
   );
+}
+
+function formatPreRouterDecision(decision: AiPreRouterDecision): string {
+  return decision.replaceAll("_", " ").replace(/^./, (letter) => letter.toUpperCase());
 }
 
 function formatSourceMode(sourceMode: SourceMode): string {
@@ -253,10 +290,18 @@ function formatAiAssistantMode(mode: AiAssistantMode): string {
 function formatAiIntent(intent: AiSongRequestIntent): string {
   const labels: Record<AiSongRequestIntent, string> = {
     ask_capabilities: "Ask capabilities",
-    cancel: "Cancel",
-    confirm_playback: "Confirm playback",
-    play_song: "Play song",
-    reject_suggestion: "Reject suggestion",
+    artist_request: "Artist request",
+    confirmation_no: "Confirmation no",
+    confirmation_yes: "Confirmation yes",
+    explain_limitation: "Explain limitation",
+    general_chat: "General chat",
+    genre_request: "Genre request",
+    greeting: "Greeting",
+    list_songs: "List songs",
+    mood_request: "Mood request",
+    question_about_angklung: "Angklung question",
+    question_about_machine: "Machine question",
+    song_request: "Song request",
     suggest_song: "Suggest song",
     smalltalk: "Smalltalk",
     unknown: "Unknown",
@@ -302,7 +347,7 @@ function SongSourcePanel() {
         disabled={!system.schedule || system.workflowStatus.readyForSimulation === false}
         embedded
         elapsedSeconds={system.elapsedSeconds}
-        onEmergencyStop={system.resetPlayback}
+        onEmergencyStop={system.emergencyStopPlayback}
         onGenerate={system.generateBuiltInSchedule}
         onPause={system.pausePlayback}
         onPlay={system.playSchedule}

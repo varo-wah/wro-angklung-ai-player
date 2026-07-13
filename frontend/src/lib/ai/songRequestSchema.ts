@@ -1,13 +1,21 @@
 import type { SongCatalogEntry } from "../songTypes";
 
 export type AiSongRequestIntent =
-  | "play_song"
-  | "suggest_song"
+  | "greeting"
+  | "general_chat"
+  | "question_about_machine"
+  | "question_about_angklung"
   | "ask_capabilities"
+  | "list_songs"
+  | "song_request"
+  | "artist_request"
+  | "genre_request"
+  | "mood_request"
+  | "suggest_song"
+  | "confirmation_yes"
+  | "confirmation_no"
   | "unsupported_song"
-  | "confirm_playback"
-  | "reject_suggestion"
-  | "cancel"
+  | "explain_limitation"
   | "smalltalk"
   | "unknown";
 
@@ -15,18 +23,36 @@ export type AiAssistantMode = "local_ollama" | "openai_optional" | "local_fallba
 
 export type AiConversationState = "idle" | "awaiting_song" | "awaiting_confirmation" | "ready_to_play" | "unsupported";
 
+export type AiPreRouterDecision =
+  | "confirmation"
+  | "exact_catalog_match"
+  | "list_songs"
+  | "machine_question"
+  | "angklung_question"
+  | "catalog_recommendation"
+  | "unsupported_song"
+  | "limitation_explanation";
+
 export type AiSongRequestResult = {
   intent: AiSongRequestIntent;
   matched_song_id: string | null;
   confidence: number;
   spoken_response: string;
+  speech_text: string;
   assistant_message: string;
+  should_search_catalog: boolean;
   should_generate_schedule: boolean;
   needs_confirmation: boolean;
   needs_operator_review: boolean;
   next_state: AiConversationState;
+  suggested_song_ids: string[];
+  last_unsupported_request: string | null;
   provider: AiAssistantMode;
-  fallback_reason?: string;
+  fallback_reason: string | null;
+  model: string | null;
+  pre_router_decision: AiPreRouterDecision | null;
+  raw_provider_result: string | null;
+  knowledge_sections: string[];
 };
 
 export type AiCatalogEntry = Pick<
@@ -50,6 +76,7 @@ export type AiSongRequestContext = {
   conversation_state?: AiConversationState;
   pending_song_id?: string | null;
   pending_song_title?: string | null;
+  last_unsupported_request?: string | null;
   recent_messages?: Array<{ speaker: "assistant" | "user"; text: string }>;
 };
 
@@ -57,14 +84,33 @@ export const SAFE_AI_SONG_REQUEST_FALLBACK: AiSongRequestResult = {
   intent: "unknown",
   matched_song_id: null,
   confidence: 0,
-  spoken_response: "I could not process that request clearly. Try asking for one supported song by name.",
-  assistant_message: "I could not process that request clearly. Try asking for one supported song by name.",
+  spoken_response: "I did not understand that clearly. You can ask about Angklobot, angklung, or the songs I can play.",
+  speech_text: "I did not understand that clearly. You can ask about Angklobot, angklung, or the songs I can play.",
+  assistant_message: "I did not understand that clearly. You can ask about Angklobot, angklung, or the songs I can play.",
+  should_search_catalog: false,
   should_generate_schedule: false,
   needs_confirmation: false,
-  needs_operator_review: true,
+  needs_operator_review: false,
   next_state: "awaiting_song",
+  suggested_song_ids: [],
+  last_unsupported_request: null,
   provider: "local_fallback",
+  fallback_reason: null,
+  model: null,
+  pre_router_decision: null,
+  raw_provider_result: null,
+  knowledge_sections: [],
 };
+
+const PASSIVE_INTENTS: AiSongRequestIntent[] = [
+  "greeting",
+  "general_chat",
+  "question_about_machine",
+  "question_about_angklung",
+  "smalltalk",
+  "explain_limitation",
+  "unknown",
+];
 
 export function toAiCatalogEntry(song: SongCatalogEntry): AiCatalogEntry {
   return {
@@ -88,7 +134,8 @@ export function normalizeAiSongRequestResult(
   candidate: unknown,
   catalog: AiCatalogEntry[],
   provider: AiAssistantMode,
-  fallbackReason?: string,
+  fallbackReason?: string | null,
+  context: AiSongRequestContext = {},
 ): AiSongRequestResult | null {
   if (!candidate || typeof candidate !== "object") {
     return null;
@@ -99,63 +146,123 @@ export function normalizeAiSongRequestResult(
     return null;
   }
 
-  const matchedSongId = typeof result.matched_song_id === "string" ? result.matched_song_id : null;
-  const matchedSong = matchedSongId ? catalog.find((song) => song.id === matchedSongId) : null;
-  const activeVisibleMatchedSong =
-    matchedSong && matchedSong.active !== false && matchedSong.playable !== false && matchedSong.visible_in_guest !== false ? matchedSong : null;
-  const confirmedPlayback = result.intent === "confirm_playback";
-  const canGenerate = Boolean(
-    activeVisibleMatchedSong && confirmedPlayback && result.should_generate_schedule && result.needs_confirmation !== true,
+  const activeSongs = catalog.filter(isActiveVisibleSong);
+  const activeIds = new Set(activeSongs.map((song) => song.id));
+  const requestedMatchedId = typeof result.matched_song_id === "string" ? result.matched_song_id : null;
+  const shouldSearchCatalog = PASSIVE_INTENTS.includes(result.intent) ? false : Boolean(result.should_search_catalog);
+  const matchedSong = shouldSearchCatalog && requestedMatchedId ? activeSongs.find((song) => song.id === requestedMatchedId) ?? null : null;
+  const suggestedSongIds = shouldSearchCatalog && Array.isArray(result.suggested_song_ids)
+    ? result.suggested_song_ids.filter((id): id is string => typeof id === "string" && activeIds.has(id)).slice(0, 5)
+    : [];
+  const pendingSongIsValid = Boolean(
+    context.pending_song_id && matchedSong?.id === context.pending_song_id && activeIds.has(context.pending_song_id),
   );
+  const confirmedPlayback = result.intent === "confirmation_yes" && pendingSongIsValid;
+  const canGenerate = Boolean(confirmedPlayback && result.should_generate_schedule && result.needs_confirmation !== true);
   const needsConfirmation = Boolean(
-    activeVisibleMatchedSong && !canGenerate && (result.intent === "play_song" || result.intent === "suggest_song" || result.needs_confirmation),
+    matchedSong && !canGenerate && (isMusicRequestIntent(result.intent) || result.intent === "suggest_song" || result.needs_confirmation),
   );
-  const assistantMessage =
-    needsConfirmation && activeVisibleMatchedSong
-      ? `I can play ${activeVisibleMatchedSong.title}. Do you want me to play it?`
+  const invalidPlayableClaim = Boolean(requestedMatchedId && !matchedSong) || Boolean(result.should_generate_schedule && !canGenerate);
+  const normalizedIntent: AiSongRequestIntent = invalidPlayableClaim ? "unsupported_song" : result.intent;
+  const safeBlockedMessage =
+    "I cannot play that selection because it is not a validated active song. Please choose a song from my available library.";
+  const assistantMessage = invalidPlayableClaim
+    ? safeBlockedMessage
+    : needsConfirmation && matchedSong
+      ? `I can play ${matchedSong.title}. Do you want me to play it?`
       : result.assistant_message;
 
   return {
     assistant_message: assistantMessage,
     confidence: clampConfidence(typeof result.confidence === "number" ? result.confidence : 0),
-    fallback_reason: fallbackReason,
-    intent: activeVisibleMatchedSong || !matchedSongId ? result.intent : "unsupported_song",
-    matched_song_id: activeVisibleMatchedSong?.id ?? null,
+    fallback_reason: fallbackReason ?? null,
+    intent: normalizedIntent,
+    last_unsupported_request:
+      typeof result.last_unsupported_request === "string" ? result.last_unsupported_request : context.last_unsupported_request ?? null,
+    matched_song_id: matchedSong?.id ?? null,
     needs_confirmation: needsConfirmation,
-    needs_operator_review: Boolean(result.needs_operator_review),
-    next_state: activeVisibleMatchedSong || !matchedSongId
-      ? isConversationState(result.next_state)
-        ? needsConfirmation
-          ? "awaiting_confirmation"
-          : result.next_state
+    needs_operator_review: Boolean(result.needs_operator_review) || invalidPlayableClaim,
+    next_state: invalidPlayableClaim
+      ? "unsupported"
+      : needsConfirmation
+        ? "awaiting_confirmation"
         : canGenerate
           ? "ready_to_play"
-          : needsConfirmation
-            ? "awaiting_confirmation"
-          : "awaiting_song"
-      : "unsupported",
+          : isConversationState(result.next_state)
+            ? result.next_state
+            : "awaiting_song",
     provider,
+    model: typeof result.model === "string" ? result.model : null,
+    pre_router_decision: isPreRouterDecision(result.pre_router_decision) ? result.pre_router_decision : null,
+    raw_provider_result: typeof result.raw_provider_result === "string" ? result.raw_provider_result.slice(0, 4000) : null,
+    knowledge_sections: Array.isArray(result.knowledge_sections)
+      ? result.knowledge_sections.filter((section): section is string => typeof section === "string").slice(0, 8)
+      : [],
     should_generate_schedule: canGenerate,
-    spoken_response: typeof result.spoken_response === "string" ? result.spoken_response : assistantMessage,
+    should_search_catalog: shouldSearchCatalog,
+    spoken_response:
+      typeof result.spoken_response === "string" && result.spoken_response.trim() && !invalidPlayableClaim
+        ? result.spoken_response
+        : assistantMessage,
+    speech_text:
+      typeof result.speech_text === "string" && result.speech_text.trim() && !invalidPlayableClaim
+        ? result.speech_text
+        : typeof result.spoken_response === "string" && result.spoken_response.trim() && !invalidPlayableClaim
+          ? result.spoken_response
+          : assistantMessage,
+    suggested_song_ids: suggestedSongIds,
   };
+}
+
+export function isPreRouterDecision(value: unknown): value is AiPreRouterDecision {
+  return (
+    value === "confirmation" ||
+    value === "exact_catalog_match" ||
+    value === "list_songs" ||
+    value === "machine_question" ||
+    value === "angklung_question" ||
+    value === "catalog_recommendation" ||
+    value === "unsupported_song" ||
+    value === "limitation_explanation"
+  );
 }
 
 export function isConversationState(value: unknown): value is AiConversationState {
   return value === "idle" || value === "awaiting_song" || value === "awaiting_confirmation" || value === "ready_to_play" || value === "unsupported";
 }
 
-function isIntent(value: unknown): value is AiSongRequestIntent {
+export function isPassiveConversationIntent(intent: AiSongRequestIntent): boolean {
+  return PASSIVE_INTENTS.includes(intent) || intent === "confirmation_no";
+}
+
+export function isMusicRequestIntent(intent: AiSongRequestIntent): boolean {
+  return ["song_request", "artist_request", "genre_request", "mood_request"].includes(intent);
+}
+
+export function isIntent(value: unknown): value is AiSongRequestIntent {
   return (
-    value === "play_song" ||
-    value === "suggest_song" ||
+    value === "greeting" ||
+    value === "general_chat" ||
+    value === "question_about_machine" ||
+    value === "question_about_angklung" ||
     value === "ask_capabilities" ||
+    value === "list_songs" ||
+    value === "song_request" ||
+    value === "artist_request" ||
+    value === "genre_request" ||
+    value === "mood_request" ||
+    value === "suggest_song" ||
+    value === "confirmation_yes" ||
+    value === "confirmation_no" ||
     value === "unsupported_song" ||
-    value === "confirm_playback" ||
-    value === "reject_suggestion" ||
-    value === "cancel" ||
+    value === "explain_limitation" ||
     value === "smalltalk" ||
     value === "unknown"
   );
+}
+
+function isActiveVisibleSong(song: AiCatalogEntry): boolean {
+  return song.active !== false && song.playable !== false && song.visible_in_guest !== false;
 }
 
 function clampConfidence(value: number): number {

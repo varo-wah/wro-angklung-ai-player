@@ -1,10 +1,10 @@
 import type { SongNote } from "./songTypes";
 import type { SafetyReport } from "./safetyValidator";
 import type { ActuatorSchedule, PlaybackState } from "./types";
-import type { AiAssistantMode, AiConversationState, AiSongRequestIntent } from "./aiSongRequest";
+import { isPreRouterDecision, type AiAssistantMode, type AiConversationState, type AiPreRouterDecision, type AiSongRequestIntent } from "./aiSongRequest";
 
 export const SYSTEM_SYNC_CHANNEL = "wro-angklung-system";
-export const SYSTEM_SYNC_LIBRARY_VERSION = "phase2-g3-c6-perfect-musescore";
+export const SYSTEM_SYNC_LIBRARY_VERSION = "phase5-angklobot-knowledge";
 export const SYSTEM_SYNC_STORAGE_KEY = "wro-angklung-system-snapshot";
 
 export type SyncedChatMessage = {
@@ -32,10 +32,16 @@ export type SyncedSystemSnapshot = {
   aiConfidence: number;
   aiConversationState: AiConversationState;
   aiFallbackReason: string | null;
+  aiLastUnsupportedRequest: string | null;
   aiIntent: AiSongRequestIntent;
+  aiKnowledgeSections: string[];
   aiMatchedSongId: string | null;
   aiNeedsOperatorReview: boolean;
   aiPendingSongId: string | null;
+  aiPreRouterDecision: AiPreRouterDecision | null;
+  aiRawProviderResult: string | null;
+  aiShouldSearchCatalog: boolean;
+  aiSuggestedSongIds: string[];
   chatMessages: SyncedChatMessage[];
   elapsedSeconds: number;
   generatedNotes: SongNote[];
@@ -152,10 +158,16 @@ function normalizeSnapshot(candidate: unknown): SyncedSystemSnapshot | null {
     aiConfidence: typeof snapshot.aiConfidence === "number" ? Math.max(0, Math.min(1, snapshot.aiConfidence)) : 0,
     aiConversationState: isConversationState(snapshot.aiConversationState) ? snapshot.aiConversationState : "idle",
     aiFallbackReason: typeof snapshot.aiFallbackReason === "string" ? snapshot.aiFallbackReason : null,
+    aiLastUnsupportedRequest: typeof snapshot.aiLastUnsupportedRequest === "string" ? snapshot.aiLastUnsupportedRequest : null,
     aiIntent: isAiIntent(snapshot.aiIntent) ? snapshot.aiIntent : "unknown",
+    aiKnowledgeSections: Array.isArray(snapshot.aiKnowledgeSections) ? snapshot.aiKnowledgeSections.filter(isString).slice(0, 8) : [],
     aiMatchedSongId: typeof snapshot.aiMatchedSongId === "string" ? snapshot.aiMatchedSongId : null,
     aiNeedsOperatorReview: Boolean(snapshot.aiNeedsOperatorReview),
     aiPendingSongId: typeof snapshot.aiPendingSongId === "string" ? snapshot.aiPendingSongId : null,
+    aiPreRouterDecision: isPreRouterDecision(snapshot.aiPreRouterDecision) ? snapshot.aiPreRouterDecision : null,
+    aiRawProviderResult: typeof snapshot.aiRawProviderResult === "string" ? snapshot.aiRawProviderResult.slice(0, 4000) : null,
+    aiShouldSearchCatalog: Boolean(snapshot.aiShouldSearchCatalog),
+    aiSuggestedSongIds: Array.isArray(snapshot.aiSuggestedSongIds) ? snapshot.aiSuggestedSongIds.filter(isString) : [],
     chatMessages: Array.isArray(snapshot.chatMessages) ? snapshot.chatMessages.filter(isChatMessage) : [],
     elapsedSeconds: typeof snapshot.elapsedSeconds === "number" ? snapshot.elapsedSeconds : 0,
     generatedNotes: Array.isArray(snapshot.generatedNotes) ? snapshot.generatedNotes : [],
@@ -194,13 +206,21 @@ function isAiAssistantMode(value: unknown): value is AiAssistantMode {
 
 function isAiIntent(value: unknown): value is AiSongRequestIntent {
   return (
-    value === "play_song" ||
-    value === "suggest_song" ||
+    value === "greeting" ||
+    value === "general_chat" ||
+    value === "question_about_machine" ||
+    value === "question_about_angklung" ||
     value === "ask_capabilities" ||
+    value === "list_songs" ||
+    value === "song_request" ||
+    value === "artist_request" ||
+    value === "genre_request" ||
+    value === "mood_request" ||
+    value === "suggest_song" ||
+    value === "confirmation_yes" ||
+    value === "confirmation_no" ||
     value === "unsupported_song" ||
-    value === "confirm_playback" ||
-    value === "reject_suggestion" ||
-    value === "cancel" ||
+    value === "explain_limitation" ||
     value === "smalltalk" ||
     value === "unknown"
   );

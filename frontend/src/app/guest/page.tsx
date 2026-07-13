@@ -1,6 +1,6 @@
 "use client";
 
-import type { ReactNode } from "react";
+import { useState, type ReactNode } from "react";
 import { displaySongTitle, useAngklungSystem } from "@/components/AngklungSystemProvider";
 
 export default function GuestPage() {
@@ -8,6 +8,16 @@ export default function GuestPage() {
   const ready = Boolean(system.schedule && system.workflowStatus.readyForSimulation);
   const showPlaybackActions = Boolean(system.schedule);
   const pendingSongTitle = system.aiPendingSongId ? system.supportedSongs.find((song) => song.id === system.aiPendingSongId)?.title ?? null : null;
+  const [isRefreshingAi, setIsRefreshingAi] = useState(false);
+
+  async function refreshAi(): Promise<void> {
+    setIsRefreshingAi(true);
+    try {
+      await system.refreshAiAssistant();
+    } finally {
+      setIsRefreshingAi(false);
+    }
+  }
 
   return (
     <main className="min-h-[calc(100vh-88px)] px-4 py-6 sm:px-6 lg:px-8">
@@ -20,13 +30,22 @@ export default function GuestPage() {
                 <h2 className="mt-2 text-2xl font-semibold text-slate-50 sm:text-3xl">AI Angklung Song Assistant</h2>
               </div>
               <div className="flex flex-wrap items-center gap-2">
+                <button
+                  className="rounded-full border border-white/15 bg-white/[0.06] px-4 py-2 text-sm font-semibold text-slate-200 hover:border-lime-300/60 hover:text-lime-100 disabled:cursor-wait disabled:opacity-60"
+                  disabled={isRefreshingAi || system.supportedSongs.length === 0}
+                  onClick={() => void refreshAi()}
+                  title="Clear the saved conversation and recheck the live AI provider"
+                  type="button"
+                >
+                  {isRefreshingAi ? "Refreshing AI..." : "Refresh AI"}
+                </button>
                 <AiModeBadge mode={system.aiAssistantMode} />
                 <AiStateBadge state={system.aiConversationState} />
                 <StatusPill ready={ready} playbackState={system.playbackState} sourceMode={system.sourceMode} />
               </div>
             </div>
             <p className="mt-3 max-w-2xl text-sm leading-relaxed text-slate-300">
-              Ask for a supported song. I will check the library, prepare a safe angklung schedule, and let you play it when validation passes.
+              Talk with Angklobot or ask for music by song, artist, mood, or genre. Playback always uses a validated library arrangement.
             </p>
           </div>
 
@@ -43,7 +62,7 @@ export default function GuestPage() {
               )}
               {system.errors.length > 0 && (
                 <SystemNotice tone="error">
-                  {system.errors[0]}
+                  I could not complete that action. Please try another request or ask the operator for help.
                 </SystemNotice>
               )}
             </div>

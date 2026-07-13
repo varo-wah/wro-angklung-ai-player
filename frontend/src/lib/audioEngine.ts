@@ -22,6 +22,8 @@ export class AudioEngine {
   private context: AudioContext | null = null;
   private toneCache = new Map<string, string>();
   private useHtmlAudioFallback = false;
+  private activeOscillators = new Set<OscillatorNode>();
+  private activeHtmlAudio = new Set<HTMLAudioElement>();
 
   async ensureReady(): Promise<void> {
     const AudioContextClass = window.AudioContext ?? window.webkitAudioContext;
@@ -64,8 +66,31 @@ export class AudioEngine {
 
     oscillator.connect(gain);
     gain.connect(context.destination);
+    this.activeOscillators.add(oscillator);
+    oscillator.addEventListener("ended", () => this.activeOscillators.delete(oscillator), { once: true });
     oscillator.start(now);
     oscillator.stop(now + toneDuration + 0.04);
+  }
+
+  stopAll(): void {
+    for (const oscillator of this.activeOscillators) {
+      try {
+        oscillator.stop();
+      } catch {
+        // Oscillators may already have ended; emergency stop remains idempotent.
+      }
+    }
+    this.activeOscillators.clear();
+
+    for (const audio of this.activeHtmlAudio) {
+      try {
+        audio.pause();
+        audio.currentTime = 0;
+      } catch {
+        // A detached fallback audio element is already silent.
+      }
+    }
+    this.activeHtmlAudio.clear();
   }
 
   private getContext(AudioContextClass = window.AudioContext ?? window.webkitAudioContext): AudioContext {
@@ -93,13 +118,22 @@ export class AudioEngine {
     gain.gain.setValueAtTime(0.0001, now);
     oscillator.connect(gain);
     gain.connect(context.destination);
+    this.activeOscillators.add(oscillator);
+    oscillator.addEventListener("ended", () => this.activeOscillators.delete(oscillator), { once: true });
     oscillator.start(now);
     oscillator.stop(now + 0.02);
   }
 
   private async playHtmlTone(frequency: number, durationSeconds: number, level: number): Promise<void> {
     const audio = new Audio(this.getToneDataUrl(frequency, durationSeconds, level));
-    await audio.play();
+    this.activeHtmlAudio.add(audio);
+    audio.addEventListener("ended", () => this.activeHtmlAudio.delete(audio), { once: true });
+    try {
+      await audio.play();
+    } catch (error) {
+      this.activeHtmlAudio.delete(audio);
+      throw error;
+    }
   }
 
   private getToneDataUrl(frequency: number, durationSeconds: number, level: number): string {

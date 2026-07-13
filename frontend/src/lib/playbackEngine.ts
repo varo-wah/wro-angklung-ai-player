@@ -11,6 +11,7 @@ export class PlaybackEngine {
   private startedAtMs = 0;
   private elapsedBeforeStartMs = 0;
   private frameId: number | null = null;
+  private sessionId = 0;
 
   constructor(
     private readonly commands: ActuatorCommand[],
@@ -19,6 +20,7 @@ export class PlaybackEngine {
   ) {}
 
   play(fromSeconds: number) {
+    const sessionId = ++this.sessionId;
     this.clearTimers();
     this.elapsedBeforeStartMs = fromSeconds * 1000;
     this.startedAtMs = performance.now();
@@ -31,7 +33,9 @@ export class PlaybackEngine {
       }
 
       const timer = window.setTimeout(() => {
-        this.callbacks.onCommand(command);
+        if (sessionId === this.sessionId) {
+          this.callbacks.onCommand(command);
+        }
       }, commandMs - fromMs);
       this.timers.push(timer);
     }
@@ -39,31 +43,38 @@ export class PlaybackEngine {
     const completeMs = Math.max(0, this.totalDurationSeconds * 1000 - fromMs);
     this.timers.push(
       window.setTimeout(() => {
-        this.callbacks.onTimeUpdate(this.totalDurationSeconds);
-        this.callbacks.onComplete();
+        if (sessionId === this.sessionId) {
+          this.callbacks.onTimeUpdate(this.totalDurationSeconds);
+          this.callbacks.onComplete();
+        }
       }, completeMs),
     );
 
-    this.tick();
+    this.tick(sessionId);
   }
 
   pause(): number {
     const elapsedMs = this.currentElapsedMs();
+    this.sessionId += 1;
     this.clearTimers();
     this.stopFrame();
     return elapsedMs / 1000;
   }
 
   stop() {
+    this.sessionId += 1;
     this.clearTimers();
     this.stopFrame();
     this.elapsedBeforeStartMs = 0;
     this.callbacks.onTimeUpdate(0);
   }
 
-  private tick() {
+  private tick(sessionId: number) {
+    if (sessionId !== this.sessionId) {
+      return;
+    }
     this.callbacks.onTimeUpdate(Math.min(this.currentElapsedMs() / 1000, this.totalDurationSeconds));
-    this.frameId = window.requestAnimationFrame(() => this.tick());
+    this.frameId = window.requestAnimationFrame(() => this.tick(sessionId));
   }
 
   private currentElapsedMs(): number {

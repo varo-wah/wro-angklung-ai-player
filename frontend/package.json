@@ -9,6 +9,7 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@tonejs/midi": "^2.0.28",
     "next": "^15.0.0",
     "openai": "^6.45.0",
     "react": "^19.0.0",
