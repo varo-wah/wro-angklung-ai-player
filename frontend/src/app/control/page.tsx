@@ -485,6 +485,7 @@ function formatRegister(register: string | undefined): string {
 
 function ArrangementSettingsPanel() {
   const system = useAngklungSystem();
+  const isHardwareTrial = system.selectedSong.category === "hardware_trial";
 
   return (
     <section className="rounded-lg border border-white/10 bg-slate-950/78 p-4 shadow-[0_20px_70px_rgba(0,0,0,0.35)]">
@@ -494,24 +495,33 @@ function ArrangementSettingsPanel() {
           value={system.settings.strength}
           onChange={(strength) => system.setSettings({ ...system.settings, strength })}
         />
-        <SegmentedControl
-          label="Tempo"
-          value={system.settings.tempo}
-          options={[
-            ["normal", "Normal"],
-            ["slower", "Slower"],
-          ]}
-          onChange={(value) => system.setSettings({ ...system.settings, tempo: value as ArrangementSettings["tempo"] })}
-        />
-        <SegmentedControl
-          label="Mode"
-          value={system.settings.mode}
-          options={[
-            ["melody", "Melody only"],
-            ["harmony", "Melody + simple harmony"],
-          ]}
-          onChange={(value) => system.setSettings({ ...system.settings, mode: value as ArrangementSettings["mode"] })}
-        />
+        {isHardwareTrial ? (
+          <div className="rounded border border-amber-300/20 bg-amber-300/[0.06] px-3 py-2.5">
+            <div className="text-xs font-bold uppercase tracking-[0.12em] text-amber-200">Fixed trial timing</div>
+            <div className="mt-1 text-sm text-slate-200">Normal tempo · exact arrangement notes only</div>
+          </div>
+        ) : (
+          <>
+            <SegmentedControl
+              label="Tempo"
+              value={system.settings.tempo}
+              options={[
+                ["normal", "Normal"],
+                ["slower", "Slower"],
+              ]}
+              onChange={(value) => system.setSettings({ ...system.settings, tempo: value as ArrangementSettings["tempo"] })}
+            />
+            <SegmentedControl
+              label="Mode"
+              value={system.settings.mode}
+              options={[
+                ["melody", "Melody only"],
+                ["harmony", "Melody + simple harmony"],
+              ]}
+              onChange={(value) => system.setSettings({ ...system.settings, mode: value as ArrangementSettings["mode"] })}
+            />
+          </>
+        )}
       </div>
       <p className="mt-3 text-xs leading-relaxed text-slate-400">
         Strength controls simulator volume now and actuator intensity later. Rack map: G3-C6; verify final note labels with a tuner.

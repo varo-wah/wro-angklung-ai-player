@@ -11,9 +11,11 @@ export type ArrangementSettings = {
 const SLOWER_TEMPO_SCALE = 1.25;
 
 export function buildScheduleFromBuiltInSong(song: LoadedSong, settings: ArrangementSettings): ActuatorSchedule {
-  const scale = settings.tempo === "slower" ? SLOWER_TEMPO_SCALE : 1;
+  const effectiveSettings: ArrangementSettings =
+    song.category === "hardware_trial" ? { ...settings, tempo: "normal", mode: "melody" } : settings;
+  const scale = effectiveSettings.tempo === "slower" ? SLOWER_TEMPO_SCALE : 1;
   const notes = scaleNotes(song.notes, scale);
-  const commands = buildCommands(notes, settings);
+  const commands = buildCommands(notes, effectiveSettings);
 
   const totalDurationSeconds = commands.reduce(
     (max, command) => Math.max(max, command.start_time_seconds + command.duration_seconds),
@@ -25,7 +27,7 @@ export function buildScheduleFromBuiltInSong(song: LoadedSong, settings: Arrange
     project: "wro-angklung-ai-player",
     song: {
       title: song.title,
-      tempo_bpm: settings.tempo === "slower" ? Math.round(song.tempo_bpm / SLOWER_TEMPO_SCALE) : song.tempo_bpm,
+      tempo_bpm: effectiveSettings.tempo === "slower" ? Math.round(song.tempo_bpm / SLOWER_TEMPO_SCALE) : song.tempo_bpm,
       time_signature: song.time_signature ?? "4/4",
     },
     generated_at: new Date().toISOString(),
