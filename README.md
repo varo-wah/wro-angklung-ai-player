@@ -7,12 +7,12 @@ The official build order is now:
 1. Phase 1: Website/control UI and chatbot-style assistant.
 2. Phase 2: Reliable preloaded song library and simple song playback.
 3. Phase 3: YouTube Piano Reference Mode with user approval.
-4. Phase 4: Optional automatic YouTube search plus camera/voice interaction.
+4. Phase 4: Local Safari voice interaction, followed by optional automatic YouTube search and camera interaction.
 5. Phase 5: Hardware driver using the same `actuator_schedule.v1` format.
 
 The project claim is deliberately narrow: preloaded supported songs are reliable. If a request is not preloaded, future YouTube Piano Reference Mode may search for a simple piano reference, ask the user to approve it, and attempt conversion only if the melody fits the current angklung rack.
 
-For now, YouTube search, real YouTube audio download, real audio transcription, camera detection, voice input, and hardware motor control are not implemented. The website shows that path as a disabled/mock workflow so the product direction is visible without pretending the conversion is ready.
+For now, YouTube search, real YouTube audio download, song-audio transcription, camera detection, and hardware motor control are not implemented. Guest conversation voice input is available through a Mac-local `whisper.cpp` service; it does not turn arbitrary recordings into playable songs.
 
 ## Current Milestone
 
@@ -32,6 +32,7 @@ The current implementation:
 - Uses browser-based `BroadcastChannel` plus `localStorage` sync so multiple same-browser tabs can stay aligned during Phase 1 demos without a backend database.
 - Uses placeholder actuator functions that print which note should be played and when.
 - Rejects unsupported song requests safely instead of claiming arbitrary-song playback.
+- Accepts English or Indonesian guest speech in Safari and speaks the assistant's final response using macOS voices.
 
 Phase 2 testing currently uses `A Whole New World` and `Perfect MuseScore Ver.` as active G3-C6 draft arrangements. `Perfect` remains in the catalog as an inactive draft because it still uses the old G4-C7 software rack and must be remapped before playback.
 
@@ -119,6 +120,55 @@ Open the local Next.js URL. `/` redirects to the visitor-facing Guest Interface:
 - `/display`: presentation screen for an audience monitor, showing assistant status, current request, now-playing state, and a decorative music sheet preview.
 
 During Phase 1, these screens use browser-tab synchronization through `BroadcastChannel` with `localStorage` hydration. A tab opened after a song is selected can restore the latest request, schedule, validation, playback status, and display state. The tab that starts playback owns the browser audio; other tabs mirror visual playback state to avoid multiple screens playing sound at once.
+
+## MacBook Safari Voice Setup
+
+Voice input uses Safari microphone capture and a loopback-only `whisper.cpp` server. Audio is normalized to a short 16 kHz WAV recording in the browser, sent only to `127.0.0.1`, transcribed, and discarded. Spoken replies use Safari's built-in speech synthesis.
+
+Requirements:
+
+- macOS with Safari 14.1 or newer; a current Safari release is recommended.
+- `git` and `cmake` available in Terminal.
+- About 500 MB of free memory and 150 MB of model storage for the default multilingual `base` model.
+
+Install the pinned local voice engine once:
+
+```bash
+scripts/setup_voice_macos.sh
+```
+
+Start the transcription service in one Terminal window:
+
+```bash
+scripts/start_voice_macos.sh
+```
+
+Start the website in a second Terminal window:
+
+```bash
+cd frontend
+npm run dev
+```
+
+Open `http://localhost:3000/guest` in Safari, select English or Bahasa Indonesia, and press **Mic**. Allow microphone access when Safari asks. The control stops automatically after roughly 1.2 seconds of silence or after 15 seconds.
+
+Important operating behavior:
+
+- Starting the microphone cancels speech output and pauses simulated music to prevent feedback.
+- Music does not automatically resume after a voice request.
+- Voice transcripts use the same catalog, confirmation, schedule validation, and playback-command routes as typed requests.
+- Typed chat remains available when the microphone or local transcription service is unavailable.
+- When serving the site from anything other than `localhost`, Safari requires HTTPS for microphone access.
+
+Optional configuration:
+
+```bash
+ANGKLOBOT_WHISPER_MODEL=small scripts/setup_voice_macos.sh
+ANGKLOBOT_WHISPER_MODEL=small scripts/start_voice_macos.sh
+ANGKLOBOT_WHISPER_THREADS=6 scripts/start_voice_macos.sh
+```
+
+The multilingual `small` model is a larger optional accuracy upgrade. Both models should be tested for Indonesian accuracy and latency in the actual competition environment. The local service URL defaults to `http://127.0.0.1:8080` and can be changed for the Next.js server with `WHISPER_SERVER_URL`.
 
 The Guest Interface can accept chatbot-style song requests:
 

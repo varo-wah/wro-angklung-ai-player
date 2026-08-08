@@ -2,6 +2,8 @@
 
 import { useState, type ReactNode } from "react";
 import { displaySongTitle, useAngklungSystem } from "@/components/AngklungSystemProvider";
+import { useVoiceAssistant } from "@/hooks/useVoiceAssistant";
+import { VOICE_LANGUAGE_LABELS, type VoiceState } from "@/lib/voice";
 
 export default function GuestPage() {
   const system = useAngklungSystem();
@@ -9,6 +11,19 @@ export default function GuestPage() {
   const showPlaybackActions = Boolean(system.schedule);
   const pendingSongTitle = system.aiPendingSongId ? system.supportedSongs.find((song) => song.id === system.aiPendingSongId)?.title ?? null : null;
   const [isRefreshingAi, setIsRefreshingAi] = useState(false);
+  const voice = useVoiceAssistant({
+    onBeforeListen: () => {
+      if (system.playbackState === "playing") {
+        system.pausePlayback();
+      }
+    },
+    onTranscript: system.requestSong,
+  });
+
+  async function submitWithSpeech(request: string): Promise<void> {
+    const response = await system.requestSong(request);
+    voice.speak(response);
+  }
 
   async function refreshAi(): Promise<void> {
     setIsRefreshingAi(true);
@@ -74,7 +89,7 @@ export default function GuestPage() {
                 <button
                   className="rounded-full border border-white/10 bg-white/[0.06] px-4 py-2 text-sm font-medium text-slate-200 hover:border-lime-300/60 hover:bg-lime-300/10 hover:text-lime-100"
                   key={song.id}
-                  onClick={() => system.requestSong(song.title)}
+                  onClick={() => void submitWithSpeech(song.title)}
                   type="button"
                 >
                   {displaySongTitle(song.title)}
@@ -86,7 +101,7 @@ export default function GuestPage() {
               className="flex items-center gap-2 rounded-full border border-white/10 bg-slate-900/95 p-2 shadow-[inset_0_1px_0_rgba(255,255,255,0.05)] focus-within:border-lime-300/60"
               onSubmit={(event) => {
                 event.preventDefault();
-                system.requestSong(system.chatInput);
+                void submitWithSpeech(system.chatInput);
               }}
             >
               <input
@@ -96,17 +111,76 @@ export default function GuestPage() {
                 value={system.chatInput}
               />
               <button
-                className="grid h-11 w-11 place-items-center rounded-full border border-white/10 bg-white/5 text-sm font-semibold text-slate-500"
-                disabled
-                title="Voice input coming later"
+                aria-label={voice.state === "listening" ? "Stop listening" : "Start voice input"}
+                className={`grid h-11 min-w-11 place-items-center rounded-full border px-3 text-xs font-bold transition ${
+                  voice.state === "listening"
+                    ? "animate-pulse border-red-300/70 bg-red-400/20 text-red-100"
+                    : "border-lime-300/40 bg-lime-300/10 text-lime-100 hover:bg-lime-300/20"
+                } disabled:cursor-wait disabled:opacity-50`}
+                disabled={voice.state === "transcribing" || voice.state === "thinking"}
+                onClick={() => void voice.startListening()}
+                title={voice.state === "listening" ? "Tap to stop and transcribe" : "Tap to talk"}
                 type="button"
               >
-                Mic
+                {voice.state === "listening" ? "Stop" : "Mic"}
               </button>
               <button className="grid h-11 w-11 place-items-center rounded-full bg-lime-300 text-sm font-bold text-slate-950 hover:bg-lime-200" type="submit">
                 Send
               </button>
             </form>
+
+            <div className="mt-3 flex flex-wrap items-center gap-2 text-xs">
+              <label className="flex items-center gap-2 rounded-full border border-white/10 bg-white/[0.04] px-3 py-2 text-slate-300">
+                Voice language
+                <select
+                  className="bg-transparent font-semibold text-lime-200 outline-none"
+                  disabled={voice.state === "listening" || voice.state === "transcribing"}
+                  onChange={(event) => voice.setLanguage(event.target.value === "id" ? "id" : "en")}
+                  value={voice.language}
+                >
+                  {Object.entries(VOICE_LANGUAGE_LABELS).map(([value, label]) => (
+                    <option className="bg-slate-900 text-slate-100" key={value} value={value}>
+                      {label}
+                    </option>
+                  ))}
+                </select>
+              </label>
+              <button
+                className="rounded-full border border-white/10 bg-white/[0.04] px-3 py-2 font-semibold text-slate-300 hover:border-lime-300/50"
+                onClick={() => voice.setMuted(!voice.muted)}
+                type="button"
+              >
+                {voice.muted ? "Voice muted" : "Voice on"}
+              </button>
+              {voice.state === "speaking" && (
+                <button
+                  className="rounded-full border border-white/10 bg-white/[0.04] px-3 py-2 font-semibold text-slate-300 hover:border-red-300/50"
+                  onClick={voice.stopSpeech}
+                  type="button"
+                >
+                  Stop speaking
+                </button>
+              )}
+              {voice.state === "listening" && (
+                <button
+                  className="rounded-full border border-white/10 bg-white/[0.04] px-3 py-2 font-semibold text-slate-300 hover:border-red-300/50"
+                  onClick={voice.cancelListening}
+                  type="button"
+                >
+                  Cancel
+                </button>
+              )}
+              <span className="text-slate-400">{getVoiceStatus(voice.state)}</span>
+            </div>
+            {(voice.transcript || voice.error) && (
+              <div
+                className={`mt-3 rounded-2xl border px-4 py-3 text-sm ${
+                  voice.error ? "border-red-300/30 bg-red-400/10 text-red-100" : "border-lime-300/20 bg-lime-300/5 text-slate-300"
+                }`}
+              >
+                {voice.error ? voice.error : `Heard: “${voice.transcript}”`}
+              </div>
+            )}
 
             <div className="mt-4 flex flex-wrap items-center justify-between gap-3 rounded-2xl border border-white/10 bg-white/[0.04] px-4 py-3 text-sm">
               <div>
@@ -143,7 +217,9 @@ export default function GuestPage() {
               </div>
             </div>
 
-            <p className="mt-3 text-center text-xs text-slate-500">Voice input and spoken response are coming later.</p>
+            <p className="mt-3 text-center text-xs text-slate-500">
+              Voice stays on this Mac. Safari sends a short WAV recording only to the local Angklobot transcription service.
+            </p>
           </div>
         </section>
       </div>
@@ -261,4 +337,16 @@ function getVisitorStatus(sourceMode: string, validationPassed: boolean): string
     return "Validation passed. Ready to play.";
   }
   return "Choose or request a supported song to begin.";
+}
+
+function getVoiceStatus(state: VoiceState): string {
+  const labels: Record<VoiceState, string> = {
+    error: "Voice needs attention",
+    idle: "Tap Mic to talk",
+    listening: "Listening — tap Stop or pause briefly",
+    speaking: "Angklobot is speaking",
+    thinking: "Angklobot is thinking",
+    transcribing: "Transcribing locally",
+  };
+  return labels[state];
 }
