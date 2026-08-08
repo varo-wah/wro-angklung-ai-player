@@ -1,0 +1,25 @@
+{
+  "format_version": "angklung_song.v1",
+  "id": "trial_c5",
+  "title": "Trial: Do / C5",
+  "aliases": ["do trial", "c5 trial", "test c5 actuator"],
+  "category": "hardware_trial",
+  "difficulty": "easy",
+  "tempo_bpm": 120,
+  "time_signature": "4/4",
+  "physical_rack_map": "G3-C6",
+  "allowed_note_set": ["C5"],
+  "range": {"lowest": "C5", "highest": "C5", "unique_notes": ["C5"]},
+  "arrangement_status": "hardware_trial_requires_physical_review",
+  "playable": true,
+  "demo_safe": false,
+  "has_validated_notes": true,
+  "metadata": {
+    "purpose": "Supervised octave-5 single-actuator trial",
+    "expected_actuator_channel": 10,
+    "hardware_note": "Software-valid only. Keep emergency stop available."
+  },
+  "notes": [
+    {"note": "C5", "start": 1.0, "duration": 0.5, "velocity": 56, "role": "hardware_trial", "register": "upper_physical"}
+  ]
+}

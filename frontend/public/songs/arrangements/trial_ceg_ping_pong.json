@@ -1,18 +1,18 @@
 {
   "format_version": "angklung_song.v1",
   "id": "trial_ceg_ping_pong",
-  "title": "Trial: C-E-G Ping-Pong",
-  "aliases": ["c e g ping pong", "c e g e c trial", "alternating angklung trial"],
+  "title": "Trial: C5-E5-G5 Ping-Pong",
+  "aliases": ["c5 e5 g5 ping pong", "do mi sol mi do trial", "alternating angklung trial"],
   "category": "hardware_trial",
   "difficulty": "easy",
   "tempo_bpm": 120,
   "time_signature": "4/4",
   "physical_rack_map": "G3-C6",
-  "allowed_note_set": ["C4", "E4", "G4"],
+  "allowed_note_set": ["C5", "E5", "G5"],
   "range": {
-    "lowest": "C4",
-    "highest": "G4",
-    "unique_notes": ["C4", "E4", "G4"]
+    "lowest": "C5",
+    "highest": "G5",
+    "unique_notes": ["C5", "E5", "G5"]
   },
   "arrangement_status": "hardware_trial_requires_physical_review",
   "playable": true,
@@ -20,16 +20,16 @@
   "has_validated_notes": true,
   "metadata": {
     "purpose": "Supervised Arduino directional sequence trial",
-    "sequence": "C4-E4-G4-E4-C4",
-    "expected_actuator_channels": [3, 5, 7, 5, 3],
-    "timing_note": "One command starts every 2.5 seconds from 5.000 through 15.000 seconds.",
+    "sequence": "C5-E5-G5-E5-C5",
+    "expected_actuator_channels": [10, 12, 14, 12, 10],
+    "timing_note": "One command starts every 1.5 seconds from 1.000 through 7.000 seconds.",
     "hardware_note": "Software-valid only. Test the single-note tracks first and keep emergency stop available."
   },
   "notes": [
-    {"note": "C4", "start": 5.0, "duration": 0.5, "velocity": 64, "role": "hardware_trial", "register": "lower_physical"},
-    {"note": "E4", "start": 7.5, "duration": 0.5, "velocity": 64, "role": "hardware_trial", "register": "lower_physical"},
-    {"note": "G4", "start": 10.0, "duration": 0.5, "velocity": 64, "role": "hardware_trial", "register": "lower_physical"},
-    {"note": "E4", "start": 12.5, "duration": 0.5, "velocity": 64, "role": "hardware_trial", "register": "lower_physical"},
-    {"note": "C4", "start": 15.0, "duration": 0.5, "velocity": 64, "role": "hardware_trial", "register": "lower_physical"}
+    {"note": "C5", "start": 1.0, "duration": 0.5, "velocity": 56, "role": "hardware_trial", "register": "upper_physical"},
+    {"note": "E5", "start": 2.5, "duration": 0.5, "velocity": 56, "role": "hardware_trial", "register": "upper_physical"},
+    {"note": "G5", "start": 4.0, "duration": 0.5, "velocity": 56, "role": "hardware_trial", "register": "upper_physical"},
+    {"note": "E5", "start": 5.5, "duration": 0.5, "velocity": 56, "role": "hardware_trial", "register": "upper_physical"},
+    {"note": "C5", "start": 7.0, "duration": 0.5, "velocity": 56, "role": "hardware_trial", "register": "upper_physical"}
   ]
 }

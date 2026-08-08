@@ -1,0 +1,25 @@
+{
+  "format_version": "angklung_song.v1",
+  "id": "trial_g5",
+  "title": "Trial: Sol / G5",
+  "aliases": ["sol trial", "g5 trial", "test g5 actuator"],
+  "category": "hardware_trial",
+  "difficulty": "easy",
+  "tempo_bpm": 120,
+  "time_signature": "4/4",
+  "physical_rack_map": "G3-C6",
+  "allowed_note_set": ["G5"],
+  "range": {"lowest": "G5", "highest": "G5", "unique_notes": ["G5"]},
+  "arrangement_status": "hardware_trial_requires_physical_review",
+  "playable": true,
+  "demo_safe": false,
+  "has_validated_notes": true,
+  "metadata": {
+    "purpose": "Supervised octave-5 single-actuator trial",
+    "expected_actuator_channel": 14,
+    "hardware_note": "Software-valid only. Keep emergency stop available."
+  },
+  "notes": [
+    {"note": "G5", "start": 1.0, "duration": 0.5, "velocity": 56, "role": "hardware_trial", "register": "upper_physical"}
+  ]
+}
