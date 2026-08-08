@@ -100,7 +100,7 @@ type AngklungSystemContextValue = {
   pausePlayback: () => void;
   playSchedule: () => Promise<void>;
   refreshAiAssistant: () => Promise<void>;
-  requestSong: (request: string) => void;
+  requestSong: (request: string) => Promise<string | null>;
   resetPlayback: () => void;
   setChatInput: (value: string) => void;
   setSelectedSongId: (songId: string) => void;
@@ -533,19 +533,22 @@ export function AngklungSystemProvider({ children }: { children: ReactNode }) {
     return generateScheduleForSong(loadedSong);
   }
 
-  function requestSong(request: string) {
-    void handleSongRequest(request);
+  function requestSong(request: string): Promise<string | null> {
+    return handleSongRequest(request);
   }
 
-  async function handleSongRequest(request: string) {
+  async function handleSongRequest(request: string): Promise<string | null> {
     const trimmedRequest = request.trim();
     if (!trimmedRequest) {
-      return;
+      return null;
     }
 
     const playbackCommand = routePlaybackChatCommand(trimmedRequest);
-    if (playbackCommand && handlePlaybackChatCommand(playbackCommand, trimmedRequest)) {
-      return;
+    if (playbackCommand) {
+      const playbackResponse = handlePlaybackChatCommand(playbackCommand, trimmedRequest);
+      if (playbackResponse) {
+        return playbackResponse;
+      }
     }
 
     const playbackSession = playbackSessionRef.current;
@@ -568,7 +571,7 @@ export function AngklungSystemProvider({ children }: { children: ReactNode }) {
 
     const aiResult = await requestAiSongInterpretation(trimmedRequest);
     if (playbackSession !== playbackSessionRef.current) {
-      return;
+      return null;
     }
     const matchedCatalogEntry = aiResult.matched_song_id
       ? getVisibleCatalogSongs(songCatalogRef.current).find((song) => song.id === aiResult.matched_song_id) ?? null
@@ -593,7 +596,7 @@ export function AngklungSystemProvider({ children }: { children: ReactNode }) {
         setSourceMode("library");
         setErrors([]);
         setSystemStatus("idle");
-        return;
+        return aiResult.speech_text;
       }
 
       stopPlaybackMedia();
@@ -606,13 +609,13 @@ export function AngklungSystemProvider({ children }: { children: ReactNode }) {
       setErrors([]);
       setSafetyReport(null);
       setSystemStatus(unsupported ? "unsupported" : "idle");
-      return;
+      return aiResult.speech_text;
     }
 
     setSelectedSongIdState(matchedCatalogEntry.id);
     const matchedSong = await loadSelectedSong(matchedCatalogEntry.id);
     if (playbackSession !== playbackSessionRef.current) {
-      return;
+      return null;
     }
     if (!matchedSong) {
       setChatMessages((current) => [
@@ -628,7 +631,7 @@ export function AngklungSystemProvider({ children }: { children: ReactNode }) {
           text: "This arrangement is not playable yet. The operator should review the Control Panel.",
         },
       ]);
-      return;
+      return "This arrangement is not playable yet. The operator should review the Control Panel.";
     }
 
     const report = generateScheduleForSong(matchedSong);
@@ -640,6 +643,14 @@ export function AngklungSystemProvider({ children }: { children: ReactNode }) {
       matchedSong.arrangement_status === "draft_layered_from_midi_g3_c6_upper_melody_needs_review" ||
       matchedSong.arrangement_status === "draft_layered_from_midi_g3_c6_lower_pitch_needs_review" ||
       matchedSong.demo_safe === false;
+    const finalResponse =
+      report?.overall === "PASSED" && hasWarnings
+        ? "This draft arrangement has warnings. The operator should review the Control Panel before demo use."
+        : report?.overall === "PASSED"
+          ? isDraftArrangement
+            ? "Validation passed. Ready to test playback."
+            : "Validation passed. Ready to play."
+          : "This arrangement is not playable yet. The operator should review the Control Panel.";
     setChatMessages((current) => [
       ...current,
       {
@@ -650,21 +661,15 @@ export function AngklungSystemProvider({ children }: { children: ReactNode }) {
       {
         id: timestamp + 4,
         speaker: "assistant",
-        text:
-          report?.overall === "PASSED" && hasWarnings
-            ? "This draft arrangement has warnings. The operator should review the Control Panel before demo use."
-            : report?.overall === "PASSED"
-              ? isDraftArrangement
-                ? "Validation passed. Ready to test playback."
-                : "Validation passed. Ready to play."
-              : "This arrangement is not playable yet. The operator should review the Control Panel.",
+        text: finalResponse,
       },
     ]);
+    return finalResponse;
   }
 
-  function handlePlaybackChatCommand(command: PlaybackChatCommand, request: string): boolean {
+  function handlePlaybackChatCommand(command: PlaybackChatCommand, request: string): string | null {
     if (command === "resume" && (!schedule || (playbackState !== "paused" && playbackState !== "stopped"))) {
-      return false;
+      return null;
     }
 
     const timestamp = Date.now();
@@ -675,18 +680,18 @@ export function AngklungSystemProvider({ children }: { children: ReactNode }) {
     if (command === "stop") {
       emergencyStopPlayback();
       setChatMessages((current) => [...current, { id: timestamp + 1, speaker: "assistant", text: "Stopped playback." }]);
-      return true;
+      return "Stopped playback.";
     }
 
     if (command === "pause") {
       pausePlayback();
       setChatMessages((current) => [...current, { id: timestamp + 1, speaker: "assistant", text: "Paused playback." }]);
-      return true;
+      return "Paused playback.";
     }
 
     setChatMessages((current) => [...current, { id: timestamp + 1, speaker: "assistant", text: "Resuming playback." }]);
     void playSchedule();
-    return true;
+    return "Resuming playback.";
   }
 
   async function requestAiSongInterpretation(message: string): Promise<AiSongRequestResult> {
