@@ -1,0 +1,36 @@
+{
+  "format_version": "angklung_song.v1",
+  "id": "trial_ceg_slow_cycle",
+  "title": "Trial: C-E-G Slow Cycle",
+  "aliases": ["slow c e g cycle", "alternate c e g every five seconds", "slow angklung cycle"],
+  "category": "hardware_trial",
+  "difficulty": "easy",
+  "tempo_bpm": 120,
+  "time_signature": "4/4",
+  "physical_rack_map": "G3-C6",
+  "allowed_note_set": ["C4", "E4", "G4"],
+  "range": {
+    "lowest": "C4",
+    "highest": "G4",
+    "unique_notes": ["C4", "E4", "G4"]
+  },
+  "arrangement_status": "hardware_trial_requires_physical_review",
+  "playable": true,
+  "demo_safe": false,
+  "has_validated_notes": true,
+  "metadata": {
+    "purpose": "Supervised Arduino alternating-actuator trial",
+    "sequence": "C4-E4-G4-C4-E4-G4",
+    "expected_actuator_channels": [3, 5, 7, 3, 5, 7],
+    "timing_note": "One command starts every 5 seconds from 5.000 through 30.000 seconds.",
+    "hardware_note": "Software-valid only. Test the single-note tracks first and keep emergency stop available."
+  },
+  "notes": [
+    {"note": "C4", "start": 5.0, "duration": 0.5, "velocity": 64, "role": "hardware_trial", "register": "lower_physical"},
+    {"note": "E4", "start": 10.0, "duration": 0.5, "velocity": 64, "role": "hardware_trial", "register": "lower_physical"},
+    {"note": "G4", "start": 15.0, "duration": 0.5, "velocity": 64, "role": "hardware_trial", "register": "lower_physical"},
+    {"note": "C4", "start": 20.0, "duration": 0.5, "velocity": 64, "role": "hardware_trial", "register": "lower_physical"},
+    {"note": "E4", "start": 25.0, "duration": 0.5, "velocity": 64, "role": "hardware_trial", "register": "lower_physical"},
+    {"note": "G4", "start": 30.0, "duration": 0.5, "velocity": 64, "role": "hardware_trial", "register": "lower_physical"}
+  ]
+}
