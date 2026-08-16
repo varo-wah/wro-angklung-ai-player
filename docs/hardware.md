@@ -2,9 +2,9 @@
 
 ## Current Status
 
-Hardware-specific control is not implemented.
+The Python pipeline still uses placeholder actuator functions. The website now has a narrow Web Serial trial driver for Do/C5, Mi/E5, and Sol/G5 only. It sends the existing validated `actuator_schedule.v1` commands to the Arduino fallback firmware and commands all outputs off for Pause, Stop, completion, and disconnect. E-Stop also disarms firmware output.
 
-The software currently uses placeholder actuator functions that print the note and scheduled playback time. This allows timing and song logic to be tested without risking hardware damage or hiding software defects behind mechanical issues.
+The current logical-to-pin-pair mapping is C5 channel 10 to pins 11+12, E5 channel 12 to pins 9+10, and G5 channel 14 to pins 3+5. The firmware drives pins 11, 9, and 3 with PWM while holding pins 12, 10, and 5 LOW. Full-rack hardware control and physical certification remain incomplete.
 
 ## Expected Hardware Direction
 
@@ -17,7 +17,7 @@ Future hardware work may include:
 
 ## Hardware Boundary
 
-Hardware code should enter through `src/actuator_controller.py`.
+Python hardware code should enter through `src/actuator_controller.py`. Browser-operated trial code enters through `frontend/src/lib/arduinoSerial.ts` and the versioned serial protocol in `hardware/arduino/do_mi_sol_fallback/do_mi_sol_fallback.ino`.
 
 The rest of the system should not know whether a note is played by:
 

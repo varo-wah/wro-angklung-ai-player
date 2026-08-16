@@ -1,8 +1,10 @@
 "use client";
 
+import type { ArduinoConnectionState } from "@/lib/arduinoSerial";
 import type { PlaybackState } from "@/lib/types";
 
 type PlaybackControlsProps = {
+  arduinoConnection: ArduinoConnectionState;
   disabled: boolean;
   playbackState: PlaybackState;
   elapsedSeconds: number;
@@ -12,11 +14,14 @@ type PlaybackControlsProps = {
   onStop: () => void;
   onReset: () => void;
   onEmergencyStop?: () => void;
+  onConnectArduino: () => void;
+  onDisconnectArduino: () => void;
   onGenerate?: () => void;
   embedded?: boolean;
 };
 
 export function PlaybackControls({
+  arduinoConnection,
   disabled,
   playbackState,
   elapsedSeconds,
@@ -26,22 +31,37 @@ export function PlaybackControls({
   onStop,
   onReset,
   onEmergencyStop,
+  onConnectArduino,
+  onDisconnectArduino,
   onGenerate,
   embedded = false,
 }: PlaybackControlsProps) {
   const progress = totalDurationSeconds > 0 ? Math.min((elapsedSeconds / totalDurationSeconds) * 100, 100) : 0;
+  const arduinoConnected = arduinoConnection.status === "connected";
+  const arduinoBusy = arduinoConnection.status === "connecting";
+  const arduinoUnsupported = arduinoConnection.status === "unsupported";
+  const playLabel = arduinoConnected
+    ? arduinoConnection.outputMode === "active"
+      ? "Play + Arduino"
+      : "Play + Arduino (Dry Run)"
+    : "Play Simulation";
 
   const controls = (
     <>
       <div className="mb-3 flex items-center justify-between gap-3">
-        <h3 className="text-sm font-semibold text-slate-200">Simulation</h3>
+        <div>
+          <h3 className="text-sm font-semibold text-slate-200">Playback</h3>
+          <p className={`mt-0.5 text-[10px] font-semibold ${arduinoConnected ? (arduinoConnection.outputMode === "active" ? "text-emerald-300" : "text-amber-200") : "text-slate-500"}`}>
+            {arduinoConnection.message}
+          </p>
+        </div>
         <div className="text-xs font-medium text-slate-400">
           {elapsedSeconds.toFixed(2)}s / {totalDurationSeconds.toFixed(2)}s
         </div>
       </div>
       <div className="grid grid-cols-3 gap-2">
         <button className="rounded bg-emerald-400 px-2 py-2 text-xs font-semibold text-slate-950 hover:bg-emerald-300 disabled:bg-slate-800 disabled:text-slate-500" disabled={disabled || playbackState === "playing"} onClick={onPlay}>
-          Play Simulation
+          {playLabel}
         </button>
         <button className="rounded bg-lime-300 px-2 py-2 text-xs font-semibold text-slate-950 hover:bg-lime-200 disabled:bg-slate-800 disabled:text-slate-500" disabled={disabled || playbackState !== "playing"} onClick={onPause}>
           Pause
@@ -63,8 +83,14 @@ export function PlaybackControls({
         <button className="rounded border border-white/15 bg-white/5 px-2 py-2 text-[11px] font-semibold text-slate-200 hover:border-white/30 disabled:text-slate-600" disabled={disabled} onClick={onReset}>
           Reset
         </button>
-        <button className="rounded border border-white/10 bg-white/5 px-2 py-2 text-[11px] font-semibold text-slate-500" disabled title="Future hardware control">
-          Play on Robot
+        <button
+          className={`rounded border px-2 py-2 text-[11px] font-semibold ${arduinoConnected ? "border-emerald-300/40 bg-emerald-300/10 text-emerald-100" : "border-white/15 bg-white/5 text-slate-200 hover:border-white/30"}`}
+          disabled={arduinoBusy || arduinoUnsupported}
+          onClick={arduinoConnected ? onDisconnectArduino : onConnectArduino}
+          title={arduinoUnsupported ? arduinoConnection.message : undefined}
+          type="button"
+        >
+          {arduinoBusy ? "Connecting…" : arduinoConnected ? "Disconnect Arduino" : "Connect Arduino"}
         </button>
         <button className="rounded bg-red-500 px-2 py-2 text-[11px] font-semibold text-white hover:bg-red-400" onClick={onEmergencyStop ?? onReset}>
           E-Stop

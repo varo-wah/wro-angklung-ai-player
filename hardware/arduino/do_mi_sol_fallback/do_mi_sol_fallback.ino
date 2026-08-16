@@ -1,243 +1,588 @@
 #include <Arduino.h>
+#include <stdlib.h>
+#include <string.h>
 
-// IMPORTANT: These pins must connect to suitable driver inputs, not directly
-// to motors or solenoids. Confirm the driver, external power, common ground,
-// flyback protection, and physical emergency stop before changing this to true.
-constexpr bool HARDWARE_CONFIGURATION_CONFIRMED = false;
+// ======================================================
+// PIN SETUP
+// ======================================================
 
-enum class PairDriveMode : uint8_t {
-  // Use when both pins are independent active-HIGH driver inputs for one note.
-  DUAL_ACTIVE_HIGH,
-  // Use when the pair is IN1/IN2 on an H-bridge and HIGH/LOW drives forward.
-  HBRIDGE_FORWARD,
-};
+int sol1 = 3;
+int sol2 = 5;
 
-constexpr PairDriveMode PAIR_DRIVE_MODE = PairDriveMode::DUAL_ACTIVE_HIGH;
-constexpr unsigned long SERIAL_BAUD = 115200;
-constexpr unsigned long PULSE_DURATION_MS = 180;
-constexpr size_t COMMAND_BUFFER_SIZE = 24;
+int mi1 = 9;
+int mi2 = 10;
 
-struct PinPair {
-  uint8_t first;
-  uint8_t second;
-};
+int do1 = 11;
+int do2 = 12;
 
-constexpr PinPair SOL_PINS = {3, 5};
-constexpr PinPair MI_PINS = {9, 10};
-constexpr PinPair DO_PINS = {11, 12};
 
-enum NoteMask : uint8_t {
-  NOTE_NONE = 0,
-  NOTE_DO = 1 << 0,
-  NOTE_MI = 1 << 1,
-  NOTE_SOL = 1 << 2,
-};
+// ======================================================
+// SETTINGS
+// ======================================================
 
-struct RoutineStep {
-  unsigned long startOffsetMs;
-  uint8_t noteMask;
-  const char *label;
-};
+const int MOTOR_POWER = 100;        // 0-255
+const unsigned long PULSE_MS = 180;
 
-// Matches the website trial: Do, Mi, Sol, then the full octave-5 chord.
-constexpr RoutineStep ROUTINE[] = {
-    {1000, NOTE_DO, "Do / C5"},
-    {2000, NOTE_MI, "Mi / E5"},
-    {3000, NOTE_SOL, "Sol / G5"},
-    {5000, NOTE_DO | NOTE_MI | NOTE_SOL, "C5 + E5 + G5 chord"},
-};
-constexpr size_t ROUTINE_STEP_COUNT = sizeof(ROUTINE) / sizeof(ROUTINE[0]);
+const unsigned long SERIAL_BAUD = 115200;
 
-bool armed = false;
+const int COMMAND_BUFFER_SIZE = 64;
+
+
+// ======================================================
+// SERIAL COMMAND BUFFER
+// ======================================================
+
+char commandBuffer[COMMAND_BUFFER_SIZE];
+int commandLength = 0;
+
+
+// ======================================================
+// PULSE TIMERS
+// ======================================================
+
+bool doActive = false;
+bool miActive = false;
+bool solActive = false;
+
+unsigned long doEndTime = 0;
+unsigned long miEndTime = 0;
+unsigned long solEndTime = 0;
+
+
+// ======================================================
+// ROUTINE
+// ======================================================
+
 bool routineRunning = false;
-bool pulseActive = false;
-unsigned long routineStartedAtMs = 0;
-unsigned long pulseEndsAtMs = 0;
-size_t nextRoutineStep = 0;
-char commandBuffer[COMMAND_BUFFER_SIZE] = {};
-size_t commandLength = 0;
+unsigned long routineStart = 0;
+int routineStep = 0;
+bool armed = false;
 
-void setPairActive(const PinPair &pins) {
-  if (PAIR_DRIVE_MODE == PairDriveMode::DUAL_ACTIVE_HIGH) {
-    digitalWrite(pins.first, HIGH);
-    digitalWrite(pins.second, HIGH);
-    return;
-  }
 
-  // Set the inactive side first to avoid a brief high/high transition.
-  digitalWrite(pins.second, LOW);
-  digitalWrite(pins.first, HIGH);
+// ======================================================
+// MOTOR CONTROL
+// ======================================================
+
+void stopDo() {
+  analogWrite(do1, 0);
+  digitalWrite(do2, LOW);
+
+  doActive = false;
 }
 
-void setPairInactive(const PinPair &pins) {
-  digitalWrite(pins.first, LOW);
-  digitalWrite(pins.second, LOW);
+void stopMi() {
+  analogWrite(mi1, 0);
+  digitalWrite(mi2, LOW);
+
+  miActive = false;
 }
 
-void allOutputsOff() {
-  setPairInactive(DO_PINS);
-  setPairInactive(MI_PINS);
-  setPairInactive(SOL_PINS);
-  pulseActive = false;
+void stopSol() {
+  analogWrite(sol1, 0);
+  digitalWrite(sol2, LOW);
+
+  solActive = false;
 }
 
-void startPulse(uint8_t noteMask, const char *label) {
-  if (!armed || !HARDWARE_CONFIGURATION_CONFIRMED) {
-    Serial.println(F("REJECTED: outputs are not armed."));
-    return;
-  }
-
-  allOutputsOff();
-  if ((noteMask & NOTE_DO) != 0) {
-    setPairActive(DO_PINS);
-  }
-  if ((noteMask & NOTE_MI) != 0) {
-    setPairActive(MI_PINS);
-  }
-  if ((noteMask & NOTE_SOL) != 0) {
-    setPairActive(SOL_PINS);
-  }
-
-  pulseActive = true;
-  pulseEndsAtMs = millis() + PULSE_DURATION_MS;
-  Serial.print(F("PLAY: "));
-  Serial.println(label);
+void allOff() {
+  stopDo();
+  stopMi();
+  stopSol();
 }
 
-void emergencyStop() {
-  allOutputsOff();
-  routineRunning = false;
-  nextRoutineStep = 0;
-  Serial.println(F("STOPPED: all outputs LOW."));
+
+// ======================================================
+// PLAY NOTES
+// ======================================================
+
+void playDo(unsigned long duration, int power = MOTOR_POWER) {
+
+  digitalWrite(do2, LOW);
+  analogWrite(do1, power);
+
+  doActive = true;
+  doEndTime = millis() + duration;
+
+  Serial.println("PLAY: DO");
 }
+
+void playMi(unsigned long duration, int power = MOTOR_POWER) {
+
+  digitalWrite(mi2, LOW);
+  analogWrite(mi1, power);
+
+  miActive = true;
+  miEndTime = millis() + duration;
+
+  Serial.println("PLAY: MI");
+}
+
+void playSol(unsigned long duration, int power = MOTOR_POWER) {
+
+  digitalWrite(sol2, LOW);
+  analogWrite(sol1, power);
+
+  solActive = true;
+  solEndTime = millis() + duration;
+
+  Serial.println("PLAY: SOL");
+}
+
+
+// ======================================================
+// PLAY CHORD
+// ======================================================
+
+void playChord(unsigned long duration) {
+
+  playDo(duration);
+  playMi(duration);
+  playSol(duration);
+
+  Serial.println("PLAY: DO + MI + SOL");
+}
+
+
+// ======================================================
+// UPDATE MOTOR TIMERS
+// ======================================================
+
+void updateMotors() {
+
+  unsigned long now = millis();
+
+  if (doActive && (long)(now - doEndTime) >= 0) {
+    stopDo();
+  }
+
+  if (miActive && (long)(now - miEndTime) >= 0) {
+    stopMi();
+  }
+
+  if (solActive && (long)(now - solEndTime) >= 0) {
+    stopSol();
+  }
+}
+
+
+// ======================================================
+// ROUTINE
+//
+// DO  = 1 second
+// MI  = 2 seconds
+// SOL = 3 seconds
+// CHORD = 5 seconds
+// ======================================================
 
 void startRoutine() {
-  if (!armed || !HARDWARE_CONFIGURATION_CONFIRMED) {
-    Serial.println(F("REJECTED: send ARM after confirming the hardware configuration."));
-    return;
-  }
 
-  allOutputsOff();
+  allOff();
+
   routineRunning = true;
-  nextRoutineStep = 0;
-  routineStartedAtMs = millis();
-  Serial.println(F("RUNNING: Do at 1s, Mi at 2s, Sol at 3s, chord at 5s."));
-}
+  routineStart = millis();
+  routineStep = 0;
 
-void printStatus() {
-  Serial.print(F("configuration_confirmed="));
-  Serial.println(HARDWARE_CONFIGURATION_CONFIRMED ? F("true") : F("false"));
-  Serial.print(F("armed="));
-  Serial.println(armed ? F("true") : F("false"));
-  Serial.print(F("routine="));
-  Serial.println(routineRunning ? F("running") : F("stopped"));
-  Serial.print(F("pair_mode="));
-  Serial.println(PAIR_DRIVE_MODE == PairDriveMode::DUAL_ACTIVE_HIGH ? F("DUAL_ACTIVE_HIGH") : F("HBRIDGE_FORWARD"));
-}
-
-void handleCommand(char *command) {
-  for (char *cursor = command; *cursor != '\0'; ++cursor) {
-    if (*cursor >= 'a' && *cursor <= 'z') {
-      *cursor = static_cast<char>(*cursor - ('a' - 'A'));
-    }
-  }
-
-  if (strcmp(command, "STOP") == 0 || strcmp(command, "ESTOP") == 0) {
-    emergencyStop();
-  } else if (strcmp(command, "DISARM") == 0) {
-    emergencyStop();
-    armed = false;
-    Serial.println(F("DISARMED."));
-  } else if (strcmp(command, "ARM") == 0) {
-    if (!HARDWARE_CONFIGURATION_CONFIRMED) {
-      Serial.println(F("REJECTED: set HARDWARE_CONFIGURATION_CONFIRMED=true only after hardware review."));
-      return;
-    }
-    armed = true;
-    Serial.println(F("ARMED. Use DO, MI, SOL, CHORD, RUN, STOP, or DISARM."));
-  } else if (strcmp(command, "RUN") == 0) {
-    startRoutine();
-  } else if (strcmp(command, "DO") == 0) {
-    routineRunning = false;
-    startPulse(NOTE_DO, "Do / C5");
-  } else if (strcmp(command, "MI") == 0) {
-    routineRunning = false;
-    startPulse(NOTE_MI, "Mi / E5");
-  } else if (strcmp(command, "SOL") == 0) {
-    routineRunning = false;
-    startPulse(NOTE_SOL, "Sol / G5");
-  } else if (strcmp(command, "CHORD") == 0) {
-    routineRunning = false;
-    startPulse(NOTE_DO | NOTE_MI | NOTE_SOL, "C5 + E5 + G5 chord");
-  } else if (strcmp(command, "STATUS") == 0) {
-    printStatus();
-  } else if (*command != '\0') {
-    Serial.println(F("UNKNOWN: use ARM, DO, MI, SOL, CHORD, RUN, STOP, DISARM, or STATUS."));
-  }
-}
-
-void readSerialCommands() {
-  while (Serial.available() > 0) {
-    const char incoming = static_cast<char>(Serial.read());
-    if (incoming == '\n' || incoming == '\r') {
-      if (commandLength > 0) {
-        commandBuffer[commandLength] = '\0';
-        handleCommand(commandBuffer);
-        commandLength = 0;
-      }
-      continue;
-    }
-
-    if (commandLength < COMMAND_BUFFER_SIZE - 1) {
-      commandBuffer[commandLength++] = incoming;
-    } else {
-      commandLength = 0;
-      Serial.println(F("REJECTED: command is too long."));
-    }
-  }
-}
-
-void updatePulse() {
-  if (pulseActive && static_cast<long>(millis() - pulseEndsAtMs) >= 0) {
-    allOutputsOff();
-  }
+  Serial.println("ROUTINE STARTED");
 }
 
 void updateRoutine() {
-  if (!routineRunning || pulseActive) {
+
+  if (!routineRunning) {
     return;
   }
 
-  if (nextRoutineStep >= ROUTINE_STEP_COUNT) {
+  unsigned long elapsed = millis() - routineStart;
+
+
+  if (routineStep == 0 && elapsed >= 1000) {
+
+    playDo(PULSE_MS);
+
+    routineStep = 1;
+  }
+
+
+  if (routineStep == 1 && elapsed >= 2000) {
+
+    playMi(PULSE_MS);
+
+    routineStep = 2;
+  }
+
+
+  if (routineStep == 2 && elapsed >= 3000) {
+
+    playSol(PULSE_MS);
+
+    routineStep = 3;
+  }
+
+
+  if (routineStep == 3 && elapsed >= 5000) {
+
+    playChord(PULSE_MS);
+
+    routineStep = 4;
+  }
+
+
+  if (routineStep == 4 && elapsed >= 5500) {
+
     routineRunning = false;
-    Serial.println(F("COMPLETE: routine finished; outputs are LOW."));
-    return;
-  }
 
-  const unsigned long elapsedMs = millis() - routineStartedAtMs;
-  const RoutineStep &step = ROUTINE[nextRoutineStep];
-  if (elapsedMs >= step.startOffsetMs) {
-    startPulse(step.noteMask, step.label);
-    ++nextRoutineStep;
+    Serial.println("ROUTINE COMPLETE");
   }
 }
+
+
+// ======================================================
+// WEBSITE CHANNEL MAPPING
+//
+// Channel 10 = DO
+// Channel 12 = MI
+// Channel 14 = SOL
+//
+// Website command:
+//
+// NOTE,10,180,1000
+//
+// channel,duration,strength
+// ======================================================
+
+void handleWebsiteNote(
+  int channel,
+  unsigned long duration,
+  int strength
+) {
+
+  if (!armed) {
+    Serial.println("ERROR,NOT_ARMED");
+    return;
+  }
+
+  if (duration > PULSE_MS) {
+    duration = PULSE_MS;
+  }
+
+  if (duration < 1) {
+    return;
+  }
+
+
+  // Website strength is 0-1000
+  // Arduino PWM is 0-255
+
+  strength = constrain(strength, 0, 1000);
+
+  int pwm = map(strength, 0, 1000, 0, 100);
+
+
+  if (channel == 10) {
+
+    playDo(duration, pwm);
+
+  }
+
+  else if (channel == 12) {
+
+    playMi(duration, pwm);
+
+  }
+
+  else if (channel == 14) {
+
+    playSol(duration, pwm);
+
+  }
+
+  else {
+
+    Serial.println("ERROR,UNMAPPED_CHANNEL");
+
+    return;
+  }
+
+
+  Serial.print("ACK,NOTE,");
+  Serial.println(channel);
+}
+
+
+// ======================================================
+// COMMAND HANDLER
+// ======================================================
+
+
+
+void handleCommand(char *command) {
+
+  // Convert lowercase commands to uppercase
+
+  for (int i = 0; command[i] != '\0'; i++) {
+
+    if (command[i] >= 'a' && command[i] <= 'z') {
+
+      command[i] =
+        command[i] - ('a' - 'A');
+    }
+  }
+
+
+  // ==================================================
+  // WEBSITE CONNECTION
+  // ==================================================
+
+  if (strcmp(command, "HELLO,1") == 0) {
+
+    Serial.println("READY,1,ACTIVE");
+
+    return;
+  }
+
+  if (strncmp(command, "HELLO,", 6) == 0) {
+
+    Serial.println("ERROR,PROTOCOL_VERSION");
+
+    return;
+  }
+
+
+  // ==================================================
+  // WEBSITE NOTE COMMAND
+  // ==================================================
+
+  if (strncmp(command, "NOTE,", 5) == 0) {
+
+    char *channelText =
+      strtok(command + 5, ",");
+
+    char *durationText =
+      strtok(NULL, ",");
+
+    char *strengthText =
+      strtok(NULL, ",");
+
+
+    if (
+      channelText == NULL ||
+      durationText == NULL ||
+      strengthText == NULL
+    ) {
+
+      Serial.println("ERROR,INVALID_NOTE");
+
+      return;
+    }
+
+
+    int channel = atoi(channelText);
+
+    unsigned long duration =
+      strtoul(durationText, NULL, 10);
+
+    int strength =
+      atoi(strengthText);
+
+
+    handleWebsiteNote(
+      channel,
+      duration,
+      strength
+    );
+
+    return;
+  }
+
+
+  // ==================================================
+  // EMERGENCY STOP
+  // ==================================================
+
+  if (strcmp(command, "ESTOP") == 0 || strcmp(command, "DISARM") == 0) {
+
+    routineRunning = false;
+    armed = false;
+    allOff();
+    Serial.println("ACK,DISARM");
+
+    return;
+  }
+
+  if (strcmp(command, "STOP") == 0 || strcmp(command, "ALL_OFF") == 0) {
+
+    routineRunning = false;
+
+    allOff();
+
+    Serial.println("ACK,ALL_OFF");
+
+    return;
+  }
+
+  if (strcmp(command, "ARM") == 0) {
+
+    allOff();
+    armed = true;
+    Serial.println("ACK,ARM");
+
+    return;
+  }
+
+
+  // ==================================================
+  // MANUAL TEST COMMANDS
+  // ==================================================
+
+  if (
+    !armed &&
+    (
+      strcmp(command, "DO") == 0 ||
+      strcmp(command, "MI") == 0 ||
+      strcmp(command, "SOL") == 0 ||
+      strcmp(command, "CHORD") == 0 ||
+      strcmp(command, "RUN") == 0
+    )
+  ) {
+
+    Serial.println("ERROR,NOT_ARMED");
+
+    return;
+  }
+
+  if (strcmp(command, "DO") == 0) {
+
+    playDo(PULSE_MS);
+
+    return;
+  }
+
+
+  if (strcmp(command, "MI") == 0) {
+
+    playMi(PULSE_MS);
+
+    return;
+  }
+
+
+  if (strcmp(command, "SOL") == 0) {
+
+    playSol(PULSE_MS);
+
+    return;
+  }
+
+
+  if (strcmp(command, "CHORD") == 0) {
+
+    playChord(PULSE_MS);
+
+    return;
+  }
+
+
+  if (strcmp(command, "RUN") == 0) {
+
+    startRoutine();
+
+    return;
+  }
+
+
+  if (strcmp(command, "STATUS") == 0) {
+
+    Serial.print("STATUS: READY, armed=");
+    Serial.println(armed ? "true" : "false");
+
+    return;
+  }
+
+
+  Serial.println("ERROR,UNKNOWN_COMMAND");
+}
+
+
+// ======================================================
+// SERIAL READER
+// ======================================================
+
+void readSerial() {
+
+  while (Serial.available() > 0) {
+
+    char incoming = Serial.read();
+
+
+    if (
+      incoming == '\n' ||
+      incoming == '\r'
+    ) {
+
+      if (commandLength > 0) {
+
+        commandBuffer[commandLength] = '\0';
+
+        handleCommand(commandBuffer);
+
+        commandLength = 0;
+      }
+
+      continue;
+    }
+
+
+    if (commandLength < COMMAND_BUFFER_SIZE - 1) {
+
+      commandBuffer[commandLength] = incoming;
+
+      commandLength++;
+    }
+
+    else {
+
+      commandLength = 0;
+
+      Serial.println("ERROR,COMMAND_TOO_LONG");
+    }
+  }
+}
+
+
+// ======================================================
+// SETUP
+// ======================================================
 
 void setup() {
-  pinMode(DO_PINS.first, OUTPUT);
-  pinMode(DO_PINS.second, OUTPUT);
-  pinMode(MI_PINS.first, OUTPUT);
-  pinMode(MI_PINS.second, OUTPUT);
-  pinMode(SOL_PINS.first, OUTPUT);
-  pinMode(SOL_PINS.second, OUTPUT);
-  allOutputsOff();
+
+  pinMode(sol1, OUTPUT);
+  pinMode(sol2, OUTPUT);
+
+  pinMode(mi1, OUTPUT);
+  pinMode(mi2, OUTPUT);
+
+  pinMode(do1, OUTPUT);
+  pinMode(do2, OUTPUT);
+
+
+  allOff();
+
 
   Serial.begin(SERIAL_BAUD);
-  Serial.println(F("Angklobot Do-Mi-Sol fallback ready. Outputs are LOW and disarmed."));
-  printStatus();
+
+  Serial.println("ANGKLUNG CONTROLLER READY; OUTPUTS DISARMED");
+  Serial.println("Commands: ARM DO MI SOL CHORD RUN STOP DISARM");
 }
 
+
+// ======================================================
+// LOOP
+// ======================================================
+
 void loop() {
-  readSerialCommands();
-  updatePulse();
+
+  readSerial();
+
+  updateMotors();
+
   updateRoutine();
 }

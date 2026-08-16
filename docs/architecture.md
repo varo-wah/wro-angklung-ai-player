@@ -38,6 +38,10 @@ Responsibilities:
 - Print which angklung note should be played.
 - Preserve the control boundary where hardware-specific code will later be added.
 
+### Arduino Web Serial Trial
+
+The operator Control page can optionally connect to the Do/Mi/Sol Arduino firmware over USB. The browser playback engine remains the schedule owner and sends only validated channel 10, 12, and 14 note pulses. The Arduino firmware owns low-level pin-pair activation and non-blocking pulse shutoff. Pause, Stop, completion, and disconnect send `ALL_OFF`; E-Stop also sends `DISARM`.
+
 ### Main Entry Point
 
 `src/main.py` wires the parser, scheduler, and actuator controller together for local playback simulation.

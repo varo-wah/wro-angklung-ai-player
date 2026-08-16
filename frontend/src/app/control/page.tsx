@@ -344,10 +344,13 @@ function SongSourcePanel() {
       </label>
       <p className="mt-2 text-xs text-slate-400">YouTube conversion remains Phase 3. No download or transcription runs here.</p>
       <PlaybackControls
+        arduinoConnection={system.arduinoConnection}
         disabled={!system.schedule || system.workflowStatus.readyForSimulation === false}
         embedded
         elapsedSeconds={system.elapsedSeconds}
         onEmergencyStop={system.emergencyStopPlayback}
+        onConnectArduino={system.connectArduino}
+        onDisconnectArduino={system.disconnectArduino}
         onGenerate={system.generateBuiltInSchedule}
         onPause={system.pausePlayback}
         onPlay={system.playSchedule}
