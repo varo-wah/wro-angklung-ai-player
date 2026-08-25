@@ -40,7 +40,7 @@ Responsibilities:
 
 ### Arduino Web Serial Trial
 
-The operator Control page can optionally connect to the Do/Mi/Sol Arduino firmware over USB. The browser playback engine remains the schedule owner and sends only validated channel 10, 12, and 14 note pulses. The Arduino firmware owns low-level pin-pair activation and non-blocking pulse shutoff. Pause, Stop, completion, and disconnect send `ALL_OFF`; E-Stop also sends `DISARM`.
+The operator Control page can optionally connect to the four-note Arduino Mega firmware over USB. The browser playback engine remains the schedule owner and sends only validated G3/B3/D4/F4 channel 0, 2, 4, and 6 note pulses. The Arduino firmware owns low-level pin-pair activation and non-blocking pulse shutoff. Pause, Stop, completion, and disconnect send `ALL_OFF`; E-Stop also sends `DISARM`.
 
 ### Main Entry Point
 

@@ -1,0 +1,39 @@
+{
+  "format_version": "angklung_song.v1",
+  "id": "trial_low_5724_cross_pattern",
+  "title": "Trial: Low 5-2-7-4 Cross Pattern",
+  "aliases": ["5 2 7 4 pattern", "low angklung cross pattern", "g3 d4 b3 f4 trial"],
+  "category": "hardware_trial",
+  "difficulty": "medium",
+  "tempo_bpm": 120,
+  "time_signature": "4/4",
+  "physical_rack_map": "G3-C6",
+  "allowed_note_set": ["G3", "B3", "D4", "F4"],
+  "range": {
+    "lowest": "G3",
+    "highest": "F4",
+    "unique_notes": ["G3", "B3", "D4", "F4"]
+  },
+  "arrangement_status": "hardware_trial_requires_physical_review",
+  "playable": true,
+  "demo_safe": false,
+  "has_validated_notes": true,
+  "metadata": {
+    "purpose": "Supervised Arduino Mega alternating response trial",
+    "numbered_notes": [5, 2, 7, 4, 5, 2, 7, 4],
+    "sequence": "G3-D4-B3-F4-G3-D4-B3-F4",
+    "expected_actuator_channels": [0, 4, 2, 6, 0, 4, 2, 6],
+    "timing_note": "One command starts every 1 second from 1.000 through 8.000 seconds.",
+    "hardware_note": "Run only after the slow and ping-pong trials pass physically. All commands remain single-actuator."
+  },
+  "notes": [
+    {"note": "G3", "start": 1.0, "duration": 0.35, "velocity": 48, "role": "hardware_trial", "register": "lower_physical"},
+    {"note": "D4", "start": 2.0, "duration": 0.35, "velocity": 48, "role": "hardware_trial", "register": "lower_physical"},
+    {"note": "B3", "start": 3.0, "duration": 0.35, "velocity": 48, "role": "hardware_trial", "register": "lower_physical"},
+    {"note": "F4", "start": 4.0, "duration": 0.35, "velocity": 48, "role": "hardware_trial", "register": "lower_physical"},
+    {"note": "G3", "start": 5.0, "duration": 0.35, "velocity": 48, "role": "hardware_trial", "register": "lower_physical"},
+    {"note": "D4", "start": 6.0, "duration": 0.35, "velocity": 48, "role": "hardware_trial", "register": "lower_physical"},
+    {"note": "B3", "start": 7.0, "duration": 0.35, "velocity": 48, "role": "hardware_trial", "register": "lower_physical"},
+    {"note": "F4", "start": 8.0, "duration": 0.35, "velocity": 48, "role": "hardware_trial", "register": "lower_physical"}
+  ]
+}

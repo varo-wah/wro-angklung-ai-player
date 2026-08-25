@@ -2,7 +2,7 @@ import type { ActuatorCommand } from "./types";
 
 export const ANGKLOBOT_SERIAL_PROTOCOL_VERSION = 1;
 export const ANGKLOBOT_SERIAL_BAUD_RATE = 115_200;
-export const ANGKLOBOT_TRIAL_CHANNELS = [10, 12, 14] as const;
+export const ANGKLOBOT_TRIAL_CHANNELS = [0, 2, 4, 6] as const;
 const ARDUINO_HANDSHAKE_TIMEOUT_MS = 5_000;
 const ARDUINO_HANDSHAKE_RETRY_MS = 500;
 
@@ -159,7 +159,7 @@ export class ArduinoSerialController {
     );
     if (unsupportedChannels.length > 0) {
       throw new Error(
-        `Connected Arduino is limited to Do/Mi/Sol channels 10, 12, and 14. Schedule also contains: ${unsupportedChannels.join(", ")}.`,
+        `Connected Arduino is limited to low-register G3/B3/D4/F4 channels 0, 2, 4, and 6. Schedule also contains: ${unsupportedChannels.join(", ")}.`,
       );
     }
     for (const command of commands) {

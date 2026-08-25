@@ -1,0 +1,35 @@
+{
+  "format_version": "angklung_song.v1",
+  "id": "trial_low_5724_cycle",
+  "title": "Trial: Low 5-7-2-4 Cycle (G3-B3-D4-F4)",
+  "aliases": ["low 5 7 2 4", "g3 b3 d4 f4 cycle", "four angklung slow trial"],
+  "category": "hardware_trial",
+  "difficulty": "easy",
+  "tempo_bpm": 120,
+  "time_signature": "4/4",
+  "physical_rack_map": "G3-C6",
+  "allowed_note_set": ["G3", "B3", "D4", "F4"],
+  "range": {
+    "lowest": "G3",
+    "highest": "F4",
+    "unique_notes": ["G3", "B3", "D4", "F4"]
+  },
+  "arrangement_status": "hardware_trial_requires_physical_review",
+  "playable": true,
+  "demo_safe": false,
+  "has_validated_notes": true,
+  "metadata": {
+    "purpose": "Supervised Arduino Mega four-actuator bring-up",
+    "numbered_notes": [5, 7, 2, 4],
+    "sequence": "G3-B3-D4-F4",
+    "expected_actuator_channels": [0, 2, 4, 6],
+    "timing_note": "One command starts every 2 seconds from 1.000 through 7.000 seconds.",
+    "hardware_note": "Pitch names are inferred from the G3-C6 rack. Verify the physical numbered labels before energizing actuators."
+  },
+  "notes": [
+    {"note": "G3", "start": 1.0, "duration": 0.5, "velocity": 52, "role": "hardware_trial", "register": "lower_physical"},
+    {"note": "B3", "start": 3.0, "duration": 0.5, "velocity": 52, "role": "hardware_trial", "register": "lower_physical"},
+    {"note": "D4", "start": 5.0, "duration": 0.5, "velocity": 52, "role": "hardware_trial", "register": "lower_physical"},
+    {"note": "F4", "start": 7.0, "duration": 0.5, "velocity": 52, "role": "hardware_trial", "register": "lower_physical"}
+  ]
+}

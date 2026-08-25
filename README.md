@@ -12,7 +12,7 @@ The official build order is now:
 
 The project claim is deliberately narrow: preloaded supported songs are reliable. If a request is not preloaded, future YouTube Piano Reference Mode may search for a simple piano reference, ask the user to approve it, and attempt conversion only if the melody fits the current angklung rack.
 
-For now, YouTube search, real YouTube audio download, song-audio transcription, and camera detection are not implemented. A supervised Do/Mi/Sol Arduino trial can receive the website's validated schedule over Web Serial; full-rack hardware control is not implemented. Guest conversation voice input is available through a Mac-local `whisper.cpp` service; it does not turn arbitrary recordings into playable songs.
+For now, YouTube search, real YouTube audio download, song-audio transcription, and camera detection are not implemented. A supervised four-note Arduino Mega trial can receive the website's validated schedule over Web Serial; full-rack hardware control is not implemented. Guest conversation voice input is available through a Mac-local `whisper.cpp` service; it does not turn arbitrary recordings into playable songs.
 
 ## Current Milestone
 
@@ -38,16 +38,16 @@ Phase 2 testing currently uses `A Whole New World` and `Perfect MuseScore Ver.` 
 
 The modeled frontend rack is the G3-C6 diatonic range defined in `frontend/src/lib/instrumentMap.ts`. Songs containing unsupported notes such as sharps/flats must be rejected unless a future simplification step can convert them safely into that range.
 
-Hardware-specific control remains limited to the supervised C5/E5/G5 trial. The Control page can connect to `hardware/arduino/do_mi_sol_fallback/do_mi_sol_fallback.ino` over USB and send validated commands to the supplied pin pairs. This does not certify the external drivers, actuator power, or physical emergency stop and does not enable the other 15 rack channels.
+Hardware-specific control remains limited to the supervised low-register G3/B3/D4/F4 trial. The Control page can connect to `hardware/arduino/mega_low_5724_trial/mega_low_5724_trial.ino` over USB and send validated commands to the supplied Arduino Mega pin pairs. This does not certify the external drivers, actuator power, or physical emergency stop and does not enable the other 14 rack channels.
 
 ## Arduino Website Trial
 
-1. Upload `hardware/arduino/do_mi_sol_fallback/do_mi_sol_fallback.ino` at 115200 baud.
+1. Upload `hardware/arduino/mega_low_5724_trial/mega_low_5724_trial.ino` to the Arduino Mega at 115200 baud.
 2. Close Arduino Serial Monitor so it releases the USB port.
 3. Start the website on `localhost` and open `/control` in Chrome or Edge.
-4. Select **Connect Arduino**, choose the board, generate a C5/E5/G5 hardware trial, and use the main Play control.
+4. Select **Connect Arduino**, choose the board, load one of the low 5-7-2-4 hardware trials, and use the main Play control.
 
-The configured website mapping is Do/C5 channel 10 to pins 11+12, Mi/E5 channel 12 to pins 9+10, and Sol/G5 channel 14 to pins 3+5. Pause, Stop, completion, and disconnect command all outputs LOW; E-Stop also disarms firmware output. See `hardware/arduino/README.md` for protocol and supervised bring-up details.
+The configured mapping is numbered 5/G3 channel 0 to pins 6+7, 7/B3 channel 2 to pins 8+9, 2/D4 channel 4 to pins 10+11, and 4/F4 channel 6 to pins 12+13. Pause, Stop, completion, and disconnect command all outputs LOW; E-Stop also disarms firmware output. See `hardware/arduino/README.md` for protocol and supervised bring-up details.
 
 ## Project Layout
 
