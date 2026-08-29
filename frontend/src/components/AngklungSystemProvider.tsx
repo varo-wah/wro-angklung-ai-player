@@ -5,6 +5,11 @@ import { usePathname } from "next/navigation";
 import { createContext, useContext, useEffect, useMemo, useRef, useState, type ReactNode } from "react";
 import { AudioEngine } from "@/lib/audioEngine";
 import {
+  ArduinoSerialController,
+  getInitialArduinoConnectionState,
+  type ArduinoConnectionState,
+} from "@/lib/arduinoSerial";
+import {
   normalizeAiSongRequestResult,
   toAiCatalogEntry,
   type AiAssistantMode,
@@ -59,6 +64,7 @@ type SyncState = {
 type AngklungSystemContextValue = {
   activeCommandIds: Set<string>;
   activeInstrumentIds: Set<string>;
+  arduinoConnection: ArduinoConnectionState;
   aiAssistantMode: AiAssistantMode;
   aiConfidence: number;
   aiIntent: AiSongRequestIntent;
@@ -95,6 +101,8 @@ type AngklungSystemContextValue = {
   workflowStatus: WorkflowStatus;
   youtubeFallbackActive: boolean;
   youtubeUrl: string;
+  connectArduino: () => Promise<void>;
+  disconnectArduino: () => Promise<void>;
   generateBuiltInSchedule: () => void;
   loadSchedule: (fileText: string, uploadedFileName: string) => void;
   pausePlayback: () => void;
@@ -191,8 +199,14 @@ export function AngklungSystemProvider({ children }: { children: ReactNode }) {
     lastSyncedAt: null,
     status: "waiting",
   });
+  const [arduinoConnection, setArduinoConnection] = useState<ArduinoConnectionState>({
+    status: "disconnected",
+    outputMode: "unknown",
+    message: "Checking browser support…",
+  });
   const engineRef = useRef<PlaybackEngine | null>(null);
   const audioRef = useRef<AudioEngine | null>(null);
+  const arduinoRef = useRef<ArduinoSerialController | null>(null);
   const applyingSyncedSnapshotRef = useRef(false);
   const lastPublishedAtRef = useRef(0);
   const latestSnapshotAtRef = useRef(0);
@@ -207,6 +221,15 @@ export function AngklungSystemProvider({ children }: { children: ReactNode }) {
   const supportedSongs = useMemo(() => getVisibleCatalogSongs(songCatalog), [songCatalog]);
   const instruments = useMemo(() => buildFullAngklungRack(), []);
   const totalDuration = schedule?.timing.total_duration_seconds ?? 0;
+
+  useEffect(() => {
+    setArduinoConnection(getInitialArduinoConnectionState());
+    return () => {
+      if (arduinoRef.current?.connected) {
+        void arduinoRef.current.disconnect();
+      }
+    };
+  }, []);
 
   useEffect(() => {
     let cancelled = false;
@@ -890,6 +913,22 @@ export function AngklungSystemProvider({ children }: { children: ReactNode }) {
     }
   }
 
+  function getArduinoController(): ArduinoSerialController {
+    arduinoRef.current ??= new ArduinoSerialController(setArduinoConnection);
+    return arduinoRef.current;
+  }
+
+  async function connectArduino() {
+    await getArduinoController().connect();
+  }
+
+  async function disconnectArduino() {
+    if (playbackState === "playing") {
+      stopPlaybackMedia();
+    }
+    await arduinoRef.current?.disconnect();
+  }
+
   async function playSchedule() {
     if (!schedule || playbackState === "playing") {
       return;
@@ -917,6 +956,17 @@ export function AngklungSystemProvider({ children }: { children: ReactNode }) {
       return;
     }
 
+    try {
+      await arduinoRef.current?.preparePlayback(schedule.commands);
+    } catch (error) {
+      setErrors([error instanceof Error ? error.message : "Arduino did not accept the playback preparation command."]);
+      return;
+    }
+
+    if (playbackSession !== playbackSessionRef.current) {
+      return;
+    }
+
     engineRef.current?.stop();
     const engine = new PlaybackEngine(schedule.commands, totalDuration, {
       onCommand: (command) => {
@@ -931,6 +981,7 @@ export function AngklungSystemProvider({ children }: { children: ReactNode }) {
         setSystemStatus("stopped");
         setActiveCommandIds(new Set());
         setActiveInstrumentIds(new Set());
+        void sendArduinoAllOff();
       },
     });
     engineRef.current = engine;
@@ -950,16 +1001,18 @@ export function AngklungSystemProvider({ children }: { children: ReactNode }) {
     setActiveInstrumentIds(new Set());
     setPlaybackState("paused");
     setSystemStatus("stopped");
+    void sendArduinoAllOff();
   }
 
   function stopPlayback() {
-    emergencyStopPlayback();
-  }
-
-  function emergencyStopPlayback() {
     stopPlaybackMedia();
     setAiConversationState("awaiting_song");
     setAiPendingSongId(null);
+  }
+
+  function emergencyStopPlayback() {
+    stopPlayback();
+    void sendArduinoDisarm();
   }
 
   function stopPlaybackMedia() {
@@ -973,6 +1026,7 @@ export function AngklungSystemProvider({ children }: { children: ReactNode }) {
     setActiveCommandIds(new Set());
     setActiveInstrumentIds(new Set());
     setSystemStatus("stopped");
+    void sendArduinoAllOff();
   }
 
   function resetPlayback() {
@@ -988,6 +1042,12 @@ export function AngklungSystemProvider({ children }: { children: ReactNode }) {
     }
     setActiveCommandIds((current) => new Set(current).add(command.command_id));
     setActiveInstrumentIds((current) => new Set(current).add(command.instrument_id));
+    if (arduinoRef.current?.connected) {
+      void arduinoRef.current.sendNote(command).catch((error) => {
+        setErrors([error instanceof Error ? error.message : "Arduino command transmission failed; playback was stopped."]);
+        stopPlaybackMedia();
+      });
+    }
 
     const timeoutId = window.setTimeout(() => {
       activeCommandTimeoutsRef.current.delete(timeoutId);
@@ -1005,6 +1065,22 @@ export function AngklungSystemProvider({ children }: { children: ReactNode }) {
     activeCommandTimeoutsRef.current.add(timeoutId);
   }
 
+  async function sendArduinoAllOff() {
+    try {
+      await arduinoRef.current?.allOff();
+    } catch (error) {
+      setErrors([error instanceof Error ? error.message : "Arduino ALL_OFF command failed. Use the physical emergency stop."]);
+    }
+  }
+
+  async function sendArduinoDisarm() {
+    try {
+      await arduinoRef.current?.disarm();
+    } catch (error) {
+      setErrors([error instanceof Error ? error.message : "Arduino DISARM command failed. Use the physical emergency stop."]);
+    }
+  }
+
   function clearActiveCommandTimeouts() {
     for (const timeoutId of activeCommandTimeoutsRef.current) {
       window.clearTimeout(timeoutId);
@@ -1015,6 +1091,7 @@ export function AngklungSystemProvider({ children }: { children: ReactNode }) {
   const value: AngklungSystemContextValue = {
     activeCommandIds,
     activeInstrumentIds,
+    arduinoConnection,
     aiAssistantMode,
     aiConfidence,
     aiConversationState,
@@ -1051,6 +1128,8 @@ export function AngklungSystemProvider({ children }: { children: ReactNode }) {
     workflowStatus,
     youtubeFallbackActive,
     youtubeUrl,
+    connectArduino,
+    disconnectArduino,
     generateBuiltInSchedule,
     loadSchedule,
     pausePlayback,
