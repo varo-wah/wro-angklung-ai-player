@@ -53,7 +53,7 @@ int main() {
   assertAllOutputsLow();
 
   sendCommand("CAL,0");
-  assert(Serial.output == "CAL,0,G3,POWER=35,PULSE=140,IN1=8,IN2=9\n");
+  assert(Serial.output == "CAL,0,ANGKLUNG=6,POWER=35,PULSE=140,IN1=8,IN2=9\n");
 
   sendCommand("ARM");
   assert(Serial.output == "ACK,ARM\n");
@@ -94,8 +94,8 @@ int main() {
   sendCommand("CALALL");
   assertAllOutputsLow();
   assert(armed);
-  assert(Serial.output.find("CAL,0,G3,POWER=35,PULSE=140,IN1=8,IN2=9\n") == 0);
-  assert(Serial.output.find("CAL,17,C6,POWER=20,PULSE=120,IN1=44,IN2=45\n") != std::string::npos);
+  assert(Serial.output.find("CAL,0,ANGKLUNG=6,POWER=35,PULSE=140,IN1=8,IN2=9\n") == 0);
+  assert(Serial.output.find("CAL,17,ANGKLUNG=7,POWER=20,PULSE=120,IN1=44,IN2=45\n") != std::string::npos);
   assert(std::count(Serial.output.begin(), Serial.output.end(), '\n') == CHANNEL_COUNT);
 
   sendCommand("DISARM");

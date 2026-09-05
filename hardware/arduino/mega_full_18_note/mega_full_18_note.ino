@@ -9,9 +9,8 @@ const uint8_t IN1_PINS[CHANNEL_COUNT] = {
 const uint8_t IN2_PINS[CHANNEL_COUNT] = {
   9, 7, 5, 3, 29, 27, 33, 31, 13, 11, 25, 23, 39, 37, 43, 41, 47, 45
 };
-const char NOTE_LABELS[CHANNEL_COUNT][3] = {
-  "G3", "A3", "B3", "C4", "D4", "E4", "F4", "G4", "A4",
-  "B4", "C5", "D5", "E5", "F5", "G5", "A5", "B5", "C6"
+const uint8_t PHYSICAL_ANGKLUNG_NUMBERS[CHANNEL_COUNT] = {
+  6, 5, 1, 7, 3, 2, 5, 4, 7, 6, 2, 1, 4, 3, 6, 5, 1, 7
 };
 
 // RAM-only calibration values. Copy proven values back here before the final
@@ -278,8 +277,8 @@ void handlePulseCommand(char *command) {
 void printCalibration(uint8_t channel) {
   Serial.print(F("CAL,"));
   Serial.print(channel);
-  Serial.print(',');
-  Serial.print(NOTE_LABELS[channel]);
+  Serial.print(F(",ANGKLUNG="));
+  Serial.print(PHYSICAL_ANGKLUNG_NUMBERS[channel]);
   Serial.print(F(",POWER="));
   Serial.print(motorPowerPercent[channel]);
   Serial.print(F(",PULSE="));

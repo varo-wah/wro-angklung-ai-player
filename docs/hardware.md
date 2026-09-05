@@ -2,9 +2,9 @@
 
 ## Current Status
 
-The Python pipeline still uses placeholder actuator functions. The website Web Serial driver now supports the complete 18-note G3-C6 rack. It sends validated `actuator_schedule.v1` commands to the Arduino Mega firmware and commands all outputs off for Pause, Stop, completion, and disconnect. E-Stop also disarms firmware output.
+The Python pipeline still uses placeholder actuator functions. The website Web Serial driver supports channels 0-17 and sends validated `actuator_schedule.v1` commands to the Arduino Mega firmware. Pause, Stop, completion, and disconnect command all outputs off; E-Stop also disarms firmware output.
 
-The canonical mapping and bring-up procedure are in `hardware/arduino/README.md`. Firmware uses non-blocking software PWM on the first pin of every driver pair, so ordinary Mega digital pins remain power-adjustable. The implementation is software-validated only until the exact wiring, drivers, power system, firmware upload, and each physical actuator are tested.
+The canonical physical angklung-number and pin mapping is in `hardware/arduino/README.md`. Firmware uses non-blocking software PWM on the first pin of every driver pair, so ordinary Mega digital pins remain power-adjustable. The former G3-C6 website pitch labels have not been physically revalidated against the corrected adjacent-pair assignments. The implementation is software-validated only until the exact wiring, drivers, power system, firmware upload, pitch identity, and each physical actuator are tested.
 
 ## Expected Hardware Direction
 
