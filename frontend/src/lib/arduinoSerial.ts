@@ -2,7 +2,8 @@ import type { ActuatorCommand } from "./types";
 
 export const ANGKLOBOT_SERIAL_PROTOCOL_VERSION = 1;
 export const ANGKLOBOT_SERIAL_BAUD_RATE = 115_200;
-export const ANGKLOBOT_TRIAL_CHANNELS = [0, 2, 4, 6] as const;
+export const ANGKLOBOT_MIN_CHANNEL = 0;
+export const ANGKLOBOT_MAX_CHANNEL = 17;
 const ARDUINO_HANDSHAKE_TIMEOUT_MS = 5_000;
 const ARDUINO_HANDSHAKE_RETRY_MS = 500;
 
@@ -60,7 +61,11 @@ export function getInitialArduinoConnectionState(): ArduinoConnectionState {
 }
 
 export function encodeArduinoNoteCommand(command: ActuatorCommand): string {
-  if (!Number.isInteger(command.actuator_channel) || command.actuator_channel < 0 || command.actuator_channel > 17) {
+  if (
+    !Number.isInteger(command.actuator_channel) ||
+    command.actuator_channel < ANGKLOBOT_MIN_CHANNEL ||
+    command.actuator_channel > ANGKLOBOT_MAX_CHANNEL
+  ) {
     throw new Error(`Arduino channel ${command.actuator_channel} is outside the supported 0-17 rack range.`);
   }
 
@@ -154,14 +159,6 @@ export class ArduinoSerialController {
       return;
     }
 
-    const unsupportedChannels = [...new Set(commands.map((command) => command.actuator_channel))].filter(
-      (channel) => !ANGKLOBOT_TRIAL_CHANNELS.includes(channel as (typeof ANGKLOBOT_TRIAL_CHANNELS)[number]),
-    );
-    if (unsupportedChannels.length > 0) {
-      throw new Error(
-        `Connected Arduino is limited to low-register G3/B3/D4/F4 channels 0, 2, 4, and 6. Schedule also contains: ${unsupportedChannels.join(", ")}.`,
-      );
-    }
     for (const command of commands) {
       encodeArduinoNoteCommand(command);
     }

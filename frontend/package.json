@@ -6,7 +6,8 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "test:arduino": "node --test tests/arduino-full-rack.test.cjs"
   },
   "dependencies": {
     "@tonejs/midi": "^2.0.28",
