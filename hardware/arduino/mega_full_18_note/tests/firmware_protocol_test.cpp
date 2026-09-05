@@ -53,7 +53,7 @@ int main() {
   assertAllOutputsLow();
 
   sendCommand("CAL,0");
-  assert(Serial.output == "CAL,0,ANGKLUNG=6,POWER=35,PULSE=140,IN1=8,IN2=9\n");
+  assert(Serial.output == "CAL,0,G3,ANGKLUNG=5,POWER=35,PULSE=140,IN1=6,IN2=7\n");
 
   sendCommand("ARM");
   assert(Serial.output == "ACK,ARM\n");
@@ -67,7 +67,7 @@ int main() {
   assert(motors[0].active);
   assert(motors[0].dutyPermille == 350);
   updateSoftwarePwm();
-  assert(fakePinValues[8] == HIGH);
+  assert(fakePinValues[6] == HIGH);
   for (uint8_t channel = 1; channel < CHANNEL_COUNT; channel++) {
     assert(fakePinValues[IN1_PINS[channel]] == LOW);
   }
@@ -83,8 +83,8 @@ int main() {
   assert(motors[17].active);
   assert(motors[17].dutyPermille == 160);
   updateSoftwarePwm();
-  assert(fakePinValues[44] == HIGH);
-  assert(fakePinValues[45] == LOW);
+  assert(fakePinValues[46] == HIGH);
+  assert(fakePinValues[47] == LOW);
 
   sendCommand("NOTE,18,180,800");
   assert(Serial.output == "ERROR,INVALID_CHANNEL\n");
@@ -94,8 +94,8 @@ int main() {
   sendCommand("CALALL");
   assertAllOutputsLow();
   assert(armed);
-  assert(Serial.output.find("CAL,0,ANGKLUNG=6,POWER=35,PULSE=140,IN1=8,IN2=9\n") == 0);
-  assert(Serial.output.find("CAL,17,ANGKLUNG=7,POWER=20,PULSE=120,IN1=44,IN2=45\n") != std::string::npos);
+  assert(Serial.output.find("CAL,0,G3,ANGKLUNG=5,POWER=35,PULSE=140,IN1=6,IN2=7\n") == 0);
+  assert(Serial.output.find("CAL,17,C6,ANGKLUNG=1,POWER=20,PULSE=120,IN1=46,IN2=47\n") != std::string::npos);
   assert(std::count(Serial.output.begin(), Serial.output.end(), '\n') == CHANNEL_COUNT);
 
   sendCommand("DISARM");

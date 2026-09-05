@@ -6,28 +6,28 @@ The Control website sends validated `actuator_schedule.v1` commands directly to 
 
 Upload `mega_full_18_note/mega_full_18_note.ino` for the physical 18-angklung rack. The older `mega_low_5724_trial/` sketch remains as a historical four-note fallback and is not the current rack firmware.
 
-| Channel | Physical angklung number | IN1 / software PWM | IN2 / LOW |
-| ---: | ---: | ---: | ---: |
-| 0 | 6 | 8 | 9 |
-| 1 | 5 | 6 | 7 |
-| 2 | 1 | 4 | 5 |
-| 3 | 7 | 2 | 3 |
-| 4 | 3 | 28 | 29 |
-| 5 | 2 | 26 | 27 |
-| 6 | 5 | 32 | 33 |
-| 7 | 4 | 30 | 31 |
-| 8 | 7 | 12 | 13 |
-| 9 | 6 | 10 | 11 |
-| 10 | 2 | 24 | 25 |
-| 11 | 1 | 22 | 23 |
-| 12 | 4 | 38 | 39 |
-| 13 | 3 | 36 | 37 |
-| 14 | 6 | 42 | 43 |
-| 15 | 5 | 40 | 41 |
-| 16 | 1 | 46 | 47 |
-| 17 | 7 | 44 | 45 |
+| Channel | Note | Angklung number | IN1 / software PWM | IN2 / LOW |
+| ---: | --- | ---: | ---: | ---: |
+| 0 | G3 | 5 | 6 | 7 |
+| 1 | A3 | 6 | 8 | 9 |
+| 2 | B3 | 7 | 2 | 3 |
+| 3 | C4 | 1 | 4 | 5 |
+| 4 | D4 | 2 | 26 | 27 |
+| 5 | E4 | 3 | 28 | 29 |
+| 6 | F4 | 4 | 30 | 31 |
+| 7 | G4 | 5 | 32 | 33 |
+| 8 | A4 | 6 | 10 | 11 |
+| 9 | B4 | 7 | 12 | 13 |
+| 10 | C5 | 1 | 22 | 23 |
+| 11 | D5 | 2 | 24 | 25 |
+| 12 | E5 | 3 | 36 | 37 |
+| 13 | F5 | 4 | 38 | 39 |
+| 14 | G5 | 5 | 40 | 41 |
+| 15 | A5 | 6 | 42 | 43 |
+| 16 | B5 | 7 | 44 | 45 |
+| 17 | C6 | 1 | 46 | 47 |
 
-Repeated traditional numbers are labels, not hardware addresses. Website and firmware control always use the unique actuator channel `0` through `17`. The former G3-C6 channel labels are not treated as physically verified; confirm the actual pitch of each channel before relying on pitch-based website playback.
+Repeated traditional numbers are labels, not hardware addresses. Website and firmware control always use the unique actuator channel `0` through `17`. Each complete two-pin pair is assigned to the matching logical note and angklung above; IN1 and IN2 are not reversed within a pair.
 
 The first pin is driven by software PWM with an approximately 1000 microsecond period; the second remains LOW during forward activation. Stopped motors have both pins LOW. The editable `motorPowerPercent[18]` and `motorPulseMs[18]` arrays start every channel at 20% and 120 ms. Runtime calibration changes stay in RAM and reset to these compiled defaults whenever the Mega restarts.
 
@@ -58,7 +58,7 @@ Supported commands:
 - `TEST,<channel>`: while armed, activates exactly one channel with its current calibrated power and pulse duration. It responds `ACK,TEST,<channel>,POWER=<percent>,PULSE=<ms>`.
 - `POWER,<channel>,<percent>`: changes one RAM-only power ceiling without activating a motor. Accepted range: 0-60%.
 - `PULSE,<channel>,<milliseconds>`: changes one RAM-only TEST duration without activating a motor. Accepted range: 50-180 ms; the earlier 180 ms safety cap is intentionally stricter than the proposed 250 ms calibration ceiling.
-- `CAL,<channel>`: prints that channel's physical angklung number, live power, live pulse, IN1, and IN2 values.
+- `CAL,<channel>`: prints that channel's note, angklung number, live power, live pulse, IN1, and IN2 values.
 - `CALALL`: first stops all active pulses, then prints all 18 calibration records in channel order for copying back into source. It retains the armed state.
 - `ALL_OFF` (or compatibility alias `STOP`): immediately forces both pins LOW on every channel while retaining the armed state.
 - `DISARM` (or compatibility alias `ESTOP`): immediately forces all pins LOW and rejects further NOTE/TEST commands until ARM.

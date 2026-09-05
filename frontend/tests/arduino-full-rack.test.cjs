@@ -57,13 +57,16 @@ test("channels outside 0-17 are rejected", () => {
   assert.throws(() => encodeArduinoNoteCommand(command(18)), /outside the supported 0-17 rack range/);
 });
 
-test("the website retains 18 unique logical channels while physical pitch identity awaits validation", () => {
-  assert.equal(ANGKLUNG_RANGE_NOTES.length, 18);
-  assert.deepEqual(
-    Array.from(buildFullAngklungRack(), ({ actuator_channel }) => actuator_channel),
-    Array.from({ length: 18 }, (_, actuator_channel) => actuator_channel),
+test("the website retains the intended G3-C6 logical channel order", () => {
+  const expectedNotes = ["G3", "A3", "B3", "C4", "D4", "E4", "F4", "G4", "A4", "B4", "C5", "D5", "E5", "F5", "G5", "A5", "B5", "C6"];
+  assert.deepEqual(Array.from(ANGKLUNG_RANGE_NOTES), expectedNotes);
+  assert.equal(
+    JSON.stringify(buildFullAngklungRack().map(({ note, actuator_channel }) => ({ note, actuator_channel }))),
+    JSON.stringify(expectedNotes.map((note, actuator_channel) => ({ note, actuator_channel }))),
   );
-  assert.equal(new Set(Object.values(FRONTEND_INSTRUMENT_MAP).map(({ actuator_channel }) => actuator_channel)).size, 18);
+  for (const [actuator_channel, note] of expectedNotes.entries()) {
+    assert.equal(FRONTEND_INSTRUMENT_MAP[note].actuator_channel, actuator_channel);
+  }
 });
 
 test("the obsolete four-channel frontend gate is absent", () => {
@@ -83,9 +86,9 @@ test("full-rack firmware preserves the exact pin map and uses non-blocking softw
     return match[1].split(",").map((value) => Number(value.trim()));
   };
 
-  assert.deepEqual(readPinArray("IN1_PINS"), [8, 6, 4, 2, 28, 26, 32, 30, 12, 10, 24, 22, 38, 36, 42, 40, 46, 44]);
-  assert.deepEqual(readPinArray("IN2_PINS"), [9, 7, 5, 3, 29, 27, 33, 31, 13, 11, 25, 23, 39, 37, 43, 41, 47, 45]);
-  assert.deepEqual(readPinArray("PHYSICAL_ANGKLUNG_NUMBERS"), [6, 5, 1, 7, 3, 2, 5, 4, 7, 6, 2, 1, 4, 3, 6, 5, 1, 7]);
+  assert.deepEqual(readPinArray("IN1_PINS"), [6, 8, 2, 4, 26, 28, 30, 32, 10, 12, 22, 24, 36, 38, 40, 42, 44, 46]);
+  assert.deepEqual(readPinArray("IN2_PINS"), [7, 9, 3, 5, 27, 29, 31, 33, 11, 13, 23, 25, 37, 39, 41, 43, 45, 47]);
+  assert.deepEqual(readPinArray("PHYSICAL_ANGKLUNG_NUMBERS"), [5, 6, 7, 1, 2, 3, 4, 5, 6, 7, 1, 2, 3, 4, 5, 6, 7, 1]);
   assert.match(firmware, /const uint16_t PWM_PERIOD_US = 1000;/);
   assert.match(firmware, /uint8_t motorPowerPercent\[18\]/);
   assert.match(firmware, /uint16_t motorPulseMs\[18\]/);
