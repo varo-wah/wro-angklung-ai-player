@@ -1,8 +1,8 @@
 {
   "format_version": "angklung_song.v1",
   "id": "trial_low_5724_ping_pong",
-  "title": "Trial: Low 5-7-2-4 Ping-Pong",
-  "aliases": ["5 7 2 4 2 7 5", "low angklung ping pong", "g3 b3 d4 f4 ping pong"],
+  "title": "5-7-2-4 Ping-Pong",
+  "aliases": ["5 7 2 4 2 7 5", "low angklung ping pong", "g3 b3 d4 f4 ping pong", "trial low 5 7 2 4 ping pong"],
   "category": "hardware_trial",
   "difficulty": "easy",
   "tempo_bpm": 120,

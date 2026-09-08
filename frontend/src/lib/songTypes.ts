@@ -1,3 +1,4 @@
+import type { SongPerformanceProfile } from "./songPerformanceProfiles";
 export type ArrangementNoteRole = "melody" | "accompaniment" | "support" | string;
 
 export type SongCatalogEntry = {
@@ -34,6 +35,10 @@ export type ArrangementNote = {
   track?: string;
   source_track?: string;
   velocity?: number;
+  /** Musical strength relative to motor calibration; omitted means 1. */
+  playback_strength_multiplier?: number;
+  /** Motor articulation only; omitted means full scored duration. */
+  playback_duration_multiplier?: number;
 };
 
 export type ArrangementTrack = {
@@ -77,9 +82,13 @@ export type SongNote = {
   register?: string;
   role?: ArrangementNoteRole;
   sourceTrack?: string;
+  playback_strength_multiplier?: number;
+  /** Motor articulation only; omitted means full scored duration. */
+  playback_duration_multiplier?: number;
 };
 
 export type LoadedSong = {
+  performance_profile?: SongPerformanceProfile;
   id: string;
   title: string;
   aliases?: string[];
