@@ -1,3 +1,4 @@
+import { SONG_PERFORMANCE_PROFILES } from "./songPerformanceProfiles";
 import type { AngklungArrangement, ArrangementNote, LoadedSong, SongCatalogEntry, SongNote } from "./songTypes";
 
 export async function loadSongArrangement(catalogEntry: SongCatalogEntry): Promise<LoadedSong> {
@@ -27,6 +28,7 @@ export async function loadSongArrangement(catalogEntry: SongCatalogEntry): Promi
 
   return {
     id: catalogEntry.id,
+    performance_profile: SONG_PERFORMANCE_PROFILES[catalogEntry.id],
     title: catalogEntry.title,
     aliases: catalogEntry.aliases ?? arrangement.aliases,
     arrangement_status: catalogEntry.arrangement_status ?? arrangement.arrangement_status,
@@ -58,7 +60,7 @@ export async function loadSongArrangement(catalogEntry: SongCatalogEntry): Promi
 function flattenArrangementNotes(arrangement: AngklungArrangement, tempoBpm: number): SongNote[] {
   const trackNotes =
     arrangement.tracks?.flatMap((track) =>
-      track.notes.map((note) => ({
+      (track.notes ?? []).map((note) => ({
         ...note,
         role: note.role ?? track.role,
         register: note.register ?? track.register,
@@ -72,6 +74,8 @@ function flattenArrangementNotes(arrangement: AngklungArrangement, tempoBpm: num
 function toTimedNote(note: ArrangementNote, tempoBpm: number): SongNote {
   if (typeof note.start === "number" && typeof note.duration === "number") {
     return {
+      playback_strength_multiplier: note.playback_strength_multiplier,
+      playback_duration_multiplier: note.playback_duration_multiplier,
       note: note.note,
       start: roundSeconds(note.start),
       duration: roundSeconds(note.duration),
@@ -87,6 +91,8 @@ function toTimedNote(note: ArrangementNote, tempoBpm: number): SongNote {
 
   const secondsPerBeat = 60 / tempoBpm;
   return {
+    playback_strength_multiplier: note.playback_strength_multiplier,
+    playback_duration_multiplier: note.playback_duration_multiplier,
     note: note.note,
     start: roundSeconds(note.beat * secondsPerBeat),
     duration: roundSeconds(note.duration_beats * secondsPerBeat),

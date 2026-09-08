@@ -1,8 +1,8 @@
 {
   "format_version": "angklung_song.v1",
   "id": "trial_low_5724_cross_pattern",
-  "title": "Trial: Low 5-2-7-4 Cross Pattern",
-  "aliases": ["5 2 7 4 pattern", "low angklung cross pattern", "g3 d4 b3 f4 trial"],
+  "title": "Cross Pattern",
+  "aliases": ["5 2 7 4 pattern", "low angklung cross pattern", "g3 d4 b3 f4 trial", "trial low 5 2 7 4 cross pattern"],
   "category": "hardware_trial",
   "difficulty": "medium",
   "tempo_bpm": 120,

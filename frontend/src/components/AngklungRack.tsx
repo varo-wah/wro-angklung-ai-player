@@ -17,7 +17,7 @@ export function AngklungRack({ instruments, activeInstrumentIds, compact = false
       {!compact ? <div className="mb-4 flex flex-wrap items-center justify-between gap-3">
         <div>
           <h2 className="text-lg font-semibold text-slate-50">Virtual Angklung Rack</h2>
-          <p className="mt-1 text-xs text-slate-400">18-note G3-C6 physical rack map, arranged as a compact actuator board.</p>
+          <p className="mt-1 text-xs text-slate-400">Sustained preview follows note hold and relative strength. Physical loudness remains approximate.</p>
         </div>
         <div className="flex items-center gap-2">
           <span className="rounded border border-lime-300/30 bg-lime-300/10 px-2 py-1 text-sm font-semibold text-lime-100">

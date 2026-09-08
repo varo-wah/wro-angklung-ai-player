@@ -1,8 +1,8 @@
 {
   "format_version": "angklung_song.v1",
   "id": "trial_low_5724_cycle",
-  "title": "Trial: Low 5-7-2-4 Cycle (G3-B3-D4-F4)",
-  "aliases": ["low 5 7 2 4", "g3 b3 d4 f4 cycle", "four angklung slow trial"],
+  "title": "5-7-2-4 Cycle",
+  "aliases": ["low 5 7 2 4", "g3 b3 d4 f4 cycle", "four angklung slow trial", "trial low 5 7 2 4 cycle"],
   "category": "hardware_trial",
   "difficulty": "easy",
   "tempo_bpm": 120,

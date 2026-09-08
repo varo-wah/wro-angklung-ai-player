@@ -4,10 +4,10 @@
 
 const uint8_t CHANNEL_COUNT = 18;
 const uint8_t IN1_PINS[CHANNEL_COUNT] = {
-  6, 8, 2, 4, 26, 28, 30, 32, 10, 12, 22, 24, 36, 38, 40, 42, 44, 46
+  6, 8, 2, 4, 28, 26, 32, 30, 12, 10, 24, 22, 36, 34, 41, 38, 44, 42
 };
 const uint8_t IN2_PINS[CHANNEL_COUNT] = {
-  7, 9, 3, 5, 27, 29, 31, 33, 11, 13, 23, 25, 37, 39, 41, 43, 45, 47
+  7, 9, 3, 5, 29, 27, 33, 31, 14, 11, 25, 23, 37, 35, 42, 39, 45, 43
 };
 const char NOTE_LABELS[CHANNEL_COUNT][3] = {
   "G3", "A3", "B3", "C4", "D4", "E4", "F4", "G4", "A4",
@@ -20,12 +20,12 @@ const uint8_t PHYSICAL_ANGKLUNG_NUMBERS[CHANNEL_COUNT] = {
 // RAM-only calibration values. Copy proven values back here before the final
 // firmware build. Tune only one actuator at a time under supervised power.
 uint8_t motorPowerPercent[18] = {
-  20, 20, 20, 20, 20, 20, 20, 20, 20,
-  20, 20, 20, 20, 20, 20, 20, 20, 20
+  30, 30, 30, 30, 30, 30, 30, 30, 30,
+  30, 30, 30, 30, 30, 30, 30, 30, 30
 };
 uint16_t motorPulseMs[18] = {
-  120, 120, 120, 120, 120, 120, 120, 120, 120,
-  120, 120, 120, 120, 120, 120, 120, 120, 120
+  300, 300, 300, 300, 300, 300, 300, 300, 300,
+  300, 300, 300, 300, 300, 300, 300, 300, 300
 };
 
 const uint8_t PROTOCOL_VERSION = 1;
@@ -51,6 +51,8 @@ char commandBuffer[COMMAND_BUFFER_SIZE];
 uint8_t commandLength = 0;
 bool discardCommandUntilNewline = false;
 bool armed = false;
+bool sweepActive = false;
+uint8_t sweepChannel = 0;
 
 void writeMotorPinsLow(uint8_t channel) {
   digitalWrite(IN1_PINS[channel], LOW);
@@ -65,6 +67,7 @@ void stopMotor(uint8_t channel) {
 }
 
 void allOff() {
+  sweepActive = false;
   for (uint8_t channel = 0; channel < CHANNEL_COUNT; channel++) {
     stopMotor(channel);
   }
@@ -97,6 +100,21 @@ void updateMotorPulseExpiry() {
   }
 }
 
+void updateSweep() {
+  if (!sweepActive || motors[sweepChannel].active) {
+    return;
+  }
+
+  if (sweepChannel + 1 >= CHANNEL_COUNT) {
+    sweepActive = false;
+    Serial.println(F("ACK,SWEEP,DONE"));
+    return;
+  }
+
+  sweepChannel++;
+  startMotorPulse(sweepChannel, motorPulseMs[sweepChannel], 1000);
+}
+
 void updateSoftwarePwm() {
   const unsigned long nowUs = micros();
   for (uint8_t channel = 0; channel < CHANNEL_COUNT; channel++) {
@@ -125,6 +143,7 @@ void enforceDisarmedState() {
   if (armed) {
     return;
   }
+  sweepActive = false;
   for (uint8_t channel = 0; channel < CHANNEL_COUNT; channel++) {
     if (motors[channel].active || motors[channel].outputHigh) {
       stopMotor(channel);
@@ -193,6 +212,9 @@ void handleNoteCommand(char *command) {
     return;
   }
 
+  if (sweepActive) {
+    allOff();
+  }
   startMotorPulse((uint8_t)channel, (unsigned long)durationMs, (uint16_t)strength);
   Serial.print(F("ACK,NOTE,"));
   Serial.println(channel);
@@ -224,6 +246,19 @@ void handleTestCommand(char *command) {
   Serial.print(motorPowerPercent[channel]);
   Serial.print(F(",PULSE="));
   Serial.println(motorPulseMs[channel]);
+}
+
+void handleSweepCommand() {
+  if (!armed) {
+    Serial.println(F("ERROR,NOT_ARMED"));
+    return;
+  }
+
+  allOff();
+  sweepChannel = 0;
+  sweepActive = true;
+  startMotorPulse(sweepChannel, motorPulseMs[sweepChannel], 1000);
+  Serial.println(F("ACK,SWEEP"));
 }
 
 void handlePowerCommand(char *command) {
@@ -332,6 +367,10 @@ void handleCommand(char *command) {
     handleTestCommand(command);
     return;
   }
+  if (strcmp(command, "SWEEP") == 0) {
+    handleSweepCommand();
+    return;
+  }
   if (strncmp(command, "POWER,", 6) == 0) {
     handlePowerCommand(command);
     return;
@@ -410,6 +449,8 @@ void readSerial() {
 
 void setup() {
   armed = false;
+  sweepActive = false;
+  sweepChannel = 0;
   for (uint8_t channel = 0; channel < CHANNEL_COUNT; channel++) {
     digitalWrite(IN1_PINS[channel], LOW);
     digitalWrite(IN2_PINS[channel], LOW);
@@ -426,6 +467,7 @@ void setup() {
   Serial.println(F("ALL_OFF"));
   Serial.println(F("STATUS"));
   Serial.println(F("TEST,<0-17>"));
+  Serial.println(F("SWEEP"));
   Serial.println(F("POWER,<channel>,<0-60>"));
   Serial.println(F("PULSE,<channel>,<50-180>"));
   Serial.println(F("CAL,<channel>"));
@@ -435,6 +477,7 @@ void setup() {
 void loop() {
   readSerial();
   updateMotorPulseExpiry();
+  updateSweep();
   updateSoftwarePwm();
   enforceDisarmedState();
 }

@@ -1,0 +1,49 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="theme-color" content="#07130f" />
+    <title>Angklobot Status</title>
+    <meta name="description" content="Check whether the local Angklobot voice system is available." />
+    <link rel="stylesheet" href="/styles.css" />
+  </head>
+  <body>
+    <main class="shell">
+      <header class="brand">
+        <div class="mark" aria-hidden="true">A</div>
+        <div>
+          <p class="eyebrow">WRO Angklobot</p>
+          <h1>Local system status</h1>
+        </div>
+      </header>
+
+      <section class="status-card" aria-labelledby="status-title">
+        <div class="status-heading">
+          <span id="status-dot" class="status-dot checking" aria-hidden="true"></span>
+          <div>
+            <p class="eyebrow">Current availability</p>
+            <h2 id="status-title">Checking the Mac…</h2>
+          </div>
+        </div>
+        <p id="status-message" class="status-message">Connecting to the local Angklobot server.</p>
+
+        <div class="service-grid" aria-label="Local service status">
+          <article class="service"><span>Website server</span><strong id="website-status">Checking</strong></article>
+          <article class="service"><span>Whisper</span><strong id="whisper-status">Checking</strong></article>
+          <article class="service"><span>Ollama</span><strong id="ollama-status">Checking</strong></article>
+        </div>
+
+        <div class="actions">
+          <a id="open-guest" class="primary disabled" href="#" aria-disabled="true">Open Angklobot</a>
+          <button id="refresh-status" type="button">Check again</button>
+        </div>
+        <p id="last-checked" class="last-checked" aria-live="polite"></p>
+      </section>
+
+      <p class="note">Voice and AI run locally on the Angklobot Mac. This page does not process microphone audio.</p>
+    </main>
+    <script src="/runtime-config.js"></script>
+    <script src="/status.js"></script>
+  </body>
+</html>

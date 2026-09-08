@@ -14,7 +14,10 @@ function load(relativePath) {
       module: ts.ModuleKind.CommonJS,
     },
   }).outputText;
-  vm.runInNewContext(output, { exports, require, URL, Error, Promise, setTimeout, clearTimeout });
+  vm.runInNewContext(output, {
+    exports, require, URL, Error, Promise, setTimeout, clearTimeout, TextEncoder,
+    navigator: {}, window: {isSecureContext: true, setTimeout, clearTimeout},
+  });
   return exports;
 }
 
@@ -24,6 +27,7 @@ const {
   ANGKLOBOT_SERIAL_BAUD_RATE,
   ANGKLOBOT_SERIAL_PROTOCOL_VERSION,
   encodeArduinoNoteCommand,
+  ArduinoSerialController,
 } = load("src/lib/arduinoSerial.ts");
 const { ANGKLUNG_RANGE_NOTES, FRONTEND_INSTRUMENT_MAP, buildFullAngklungRack } = load("src/lib/instrumentMap.ts");
 
@@ -77,7 +81,7 @@ test("the obsolete four-channel frontend gate is absent", () => {
 
 test("full-rack firmware preserves the exact pin map and uses non-blocking software PWM", () => {
   const firmware = fs.readFileSync(
-    path.resolve(__dirname, "../../hardware/arduino/mega_full_18_note/mega_full_18_note.ino"),
+    path.resolve(__dirname, "../../hardware/arduino/mega_full_18_note_web_serial/mega_full_18_note_web_serial.ino"),
     "utf8",
   );
   const readPinArray = (name) => {
@@ -86,12 +90,12 @@ test("full-rack firmware preserves the exact pin map and uses non-blocking softw
     return match[1].split(",").map((value) => Number(value.trim()));
   };
 
-  assert.deepEqual(readPinArray("IN1_PINS"), [6, 8, 2, 4, 26, 28, 30, 32, 10, 12, 22, 24, 36, 38, 40, 42, 44, 46]);
-  assert.deepEqual(readPinArray("IN2_PINS"), [7, 9, 3, 5, 27, 29, 31, 33, 11, 13, 23, 25, 37, 39, 41, 43, 45, 47]);
+  assert.deepEqual(readPinArray("IN1_PINS"), [6, 8, 2, 4, 28, 26, 32, 30, 12, 10, 24, 22, 36, 34, 41, 38, 44, 42]);
+  assert.deepEqual(readPinArray("IN2_PINS"), [7, 9, 3, 5, 29, 27, 33, 31, 14, 11, 25, 23, 37, 35, 42, 39, 45, 43]);
   assert.deepEqual(readPinArray("PHYSICAL_ANGKLUNG_NUMBERS"), [5, 6, 7, 1, 2, 3, 4, 5, 6, 7, 1, 2, 3, 4, 5, 6, 7, 1]);
   assert.match(firmware, /const uint16_t PWM_PERIOD_US = 1000;/);
-  assert.match(firmware, /uint8_t motorPowerPercent\[18\]/);
-  assert.match(firmware, /uint16_t motorPulseMs\[18\]/);
+  assert.match(firmware, /uint8_t motorPowerPercent\[CHANNEL_COUNT\]/);
+  assert.match(firmware, /uint16_t motorPulseMs\[CHANNEL_COUNT\]/);
   assert.match(firmware, /void updateSoftwarePwm\(\)/);
   assert.doesNotMatch(firmware, /\banalogWrite\s*\(/);
   assert.doesNotMatch(firmware, /\bdelay(?:Microseconds)?\s*\(/);
@@ -99,22 +103,70 @@ test("full-rack firmware preserves the exact pin map and uses non-blocking softw
 
 test("firmware starts with conservative live calibration and exposes safe debug commands", () => {
   const firmware = fs.readFileSync(
-    path.resolve(__dirname, "../../hardware/arduino/mega_full_18_note/mega_full_18_note.ino"),
+    path.resolve(__dirname, "../../hardware/arduino/mega_full_18_note_web_serial/mega_full_18_note_web_serial.ino"),
     "utf8",
   );
   const readCalibrationArray = (type, name) => {
-    const match = firmware.match(new RegExp(`${type} ${name}\\[18\\] = \\{([^}]+)\\}`));
+    const match = firmware.match(new RegExp(`${type} ${name}\\[(?:18|CHANNEL_COUNT)\\] = \\{([^}]+)\\}`));
     assert.ok(match, `${name} must exist`);
     return match[1].split(",").map((value) => Number(value.trim()));
   };
 
-  assert.deepEqual(readCalibrationArray("uint8_t", "motorPowerPercent"), Array(18).fill(20));
-  assert.deepEqual(readCalibrationArray("uint16_t", "motorPulseMs"), Array(18).fill(120));
+  assert.deepEqual(readCalibrationArray("uint8_t", "motorPowerPercent"), [30, 30, 30, 30, 30, 30, 35, 35, 25, 15, 35, 20, 20, 25, 25, 25, 25, 25]);
+  assert.deepEqual(readCalibrationArray("uint16_t", "motorPulseMs"), Array(18).fill(550));
   assert.match(firmware, /MAX_CALIBRATION_POWER_PERCENT = 60/);
   assert.match(firmware, /MIN_CALIBRATION_PULSE_MS = 50/);
-  assert.match(firmware, /MAX_PULSE_DURATION_MS = 180/);
-  for (const commandName of ["TEST", "POWER", "PULSE", "CAL", "CALALL"]) {
+  assert.match(firmware, /MAX_PULSE_DURATION_MS = 5000/);
+  for (const commandName of ["TEST", "SWEEP", "POWER", "PULSE", "CAL", "CALALL"]) {
     assert.match(firmware, new RegExp(commandName));
   }
-  assert.match(firmware, /STATUS,READY,PROTOCOL=1,MODE=FULL18,ARMED=/);
+  assert.match(firmware, /F\("STATUS,READY,PROTOCOL="\)/);
+  assert.match(firmware, /F\(",MODE="\)/);
+  assert.match(firmware, /F\(",ARMED="\)/);
+});
+
+test("NOTE conversion validates raw strength and rounds seconds to milliseconds", () => {
+  assert.equal(encodeArduinoNoteCommand(command(17, {duration_seconds: 0.5504, strength: 0.5})), "NOTE,17,550,500");
+  for (const strength of [-0.0001, 1.0001, NaN, Infinity]) {
+    assert.throws(() => encodeArduinoNoteCommand(command(0, {strength})), /strength/);
+  }
+  for (const duration_seconds of [0, -1, 5.001, NaN, Infinity]) {
+    assert.throws(() => encodeArduinoNoteCommand(command(0, {duration_seconds})), /duration/);
+  }
+  assert.throws(() => encodeArduinoNoteCommand(command(1.5)), /channel/);
+});
+
+function connectedController() {
+  const controller = new ArduinoSerialController(() => {});
+  const lines = [];
+  controller.state = {status: "connected", outputMode: "active", message: "test"};
+  controller.writer = {write: async (bytes) => lines.push(new TextDecoder().decode(bytes).trim()), releaseLock() {}};
+  return {controller, lines};
+}
+
+test("preparation validates all 18 channels before ARM and ALL_OFF", async () => {
+  const {controller, lines} = connectedController();
+  await controller.preparePlayback(Array.from({length: 18}, (_, channel) => command(channel)));
+  assert.deepEqual(lines, ["ARM", "ALL_OFF"]);
+  for (let channel = 0; channel < 18; channel++) await controller.sendNote(command(channel));
+  assert.equal(lines[19], "NOTE,17,180,800");
+  lines.length = 0;
+  await assert.rejects(controller.preparePlayback([command(0), command(18)]), /channel/);
+  assert.deepEqual(lines, []);
+});
+
+test("wake greeting uses the firmware sweep protocol and disarms after completion", async () => {
+  const {controller, lines} = connectedController();
+  const greeting = controller.runWakeSweep();
+  for (let index = 0; index < 20 && lines.length < 3; index++) await new Promise(resolve => setImmediate(resolve));
+  controller.handleLine("ACK,SWEEP,DONE");
+  assert.equal(await greeting, true);
+  assert.deepEqual(lines, ["ARM", "CALIBRATE", "SWEEP", "CALDONE", "DISARM"]);
+});
+
+test("disconnect shuts down and disarms before releasing serial", async () => {
+  const {controller, lines} = connectedController();
+  await controller.disconnect();
+  assert.deepEqual(lines, ["ALL_OFF", "DISARM"]);
+  assert.equal(controller.connected, false);
 });

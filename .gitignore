@@ -5,6 +5,7 @@ __pycache__/
 .pytest_cache/
 outputs/
 hatch-pet-runs/
+.worktrees/
 .voice/
 .idea/
 

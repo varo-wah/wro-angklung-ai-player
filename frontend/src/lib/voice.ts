@@ -28,20 +28,23 @@ export class VoiceCaptureError extends Error {
 
 export class BrowserVoiceRecorder {
   private audioContext: AudioContext | null = null;
-  private chunks: Blob[] = [];
   private intervalId: number | null = null;
-  private mediaRecorder: MediaRecorder | null = null;
+  private pcmChunks: Float32Array[] = [];
+  private pcmSampleRate = 0;
+  private processor: ScriptProcessorNode | null = null;
   private rejectRecording: ((reason: Error) => void) | null = null;
+  private resolveRecording: ((recording: Blob) => void) | null = null;
   private speechDetected = false;
   private stream: MediaStream | null = null;
+  private cancelled = false;
 
-  async recordUntilSilence(): Promise<Blob> {
-    if (!navigator.mediaDevices?.getUserMedia || typeof MediaRecorder === "undefined") {
+  async recordUntilSilence(options: { maxRecordingMs?: number; silenceDurationMs?: number } = {}): Promise<Blob> {
+    if (!navigator.mediaDevices?.getUserMedia || typeof window.AudioContext === "undefined") {
       throw new VoiceCaptureError("Voice input is not supported by this browser.", "unsupported");
     }
 
     try {
-      this.stream = await navigator.mediaDevices.getUserMedia({
+      const stream = await navigator.mediaDevices.getUserMedia({
         audio: {
           autoGainControl: true,
           channelCount: 1,
@@ -50,83 +53,101 @@ export class BrowserVoiceRecorder {
         },
         video: false,
       });
+      if (this.cancelled) {
+        stream.getTracks().forEach((track) => track.stop());
+        throw new VoiceCaptureError("Voice capture cancelled.", "cancelled");
+      }
+      this.stream = stream;
     } catch (error) {
+      if (error instanceof VoiceCaptureError) throw error;
       const name = error instanceof DOMException ? error.name : "";
       if (name === "NotAllowedError" || name === "SecurityError") {
-        throw new VoiceCaptureError("Microphone permission was denied. Allow microphone access in Safari and try again.", "permission_denied");
+        throw new VoiceCaptureError("Microphone permission was denied. Allow microphone access in your browser and try again.", "permission_denied");
       }
       if (name === "NotFoundError") {
         throw new VoiceCaptureError("No microphone was detected.", "no_microphone");
       }
-      throw new VoiceCaptureError("Safari could not start the microphone.", "recording_failed");
+      throw new VoiceCaptureError("Your browser could not start the microphone.", "recording_failed");
     }
 
-    const mimeType = selectRecordingMimeType();
-    this.mediaRecorder = mimeType ? new MediaRecorder(this.stream, { mimeType }) : new MediaRecorder(this.stream);
-    this.chunks = [];
-    this.speechDetected = false;
+    try {
+      this.pcmChunks = [];
+      this.speechDetected = false;
 
-    const AudioContextConstructor = window.AudioContext;
-    this.audioContext = new AudioContextConstructor();
-    const source = this.audioContext.createMediaStreamSource(this.stream);
-    const analyser = this.audioContext.createAnalyser();
-    analyser.fftSize = 1024;
-    source.connect(analyser);
-    const samples = new Float32Array(analyser.fftSize);
-    const startedAt = performance.now();
-    let lastSpeechAt = startedAt;
-
-    return new Promise<Blob>((resolve, reject) => {
-      this.rejectRecording = reject;
-
-      this.mediaRecorder!.ondataavailable = (event) => {
-        if (event.data.size > 0) {
-          this.chunks.push(event.data);
-        }
+      const AudioContextConstructor = window.AudioContext;
+      this.audioContext = new AudioContextConstructor();
+      await this.audioContext.resume();
+      if (this.cancelled) throw new VoiceCaptureError("Voice capture cancelled.", "cancelled");
+      const source = this.audioContext.createMediaStreamSource(this.stream);
+      const analyser = this.audioContext.createAnalyser();
+      analyser.fftSize = 1024;
+      source.connect(analyser);
+      this.processor = this.audioContext.createScriptProcessor(4096, 1, 1);
+      this.pcmSampleRate = this.audioContext.sampleRate;
+      this.processor.onaudioprocess = (event) => {
+        const input = event.inputBuffer.getChannelData(0);
+        this.pcmChunks.push(new Float32Array(input));
+        event.outputBuffer.getChannelData(0).fill(0);
       };
-      this.mediaRecorder!.onerror = () => {
-        this.cleanup();
-        reject(new VoiceCaptureError("The microphone recording failed.", "recording_failed"));
-      };
-      this.mediaRecorder!.onstop = () => {
-        const blob = new Blob(this.chunks, { type: this.mediaRecorder?.mimeType || mimeType || "audio/mp4" });
-        const heardSpeech = this.speechDetected;
-        this.cleanup();
-        if (!heardSpeech || blob.size === 0) {
-          reject(new VoiceCaptureError("I did not hear any speech. Please try again.", "no_speech"));
-          return;
-        }
-        resolve(blob);
-      };
+      source.connect(this.processor);
+      this.processor.connect(this.audioContext.destination);
+      const samples = new Float32Array(analyser.fftSize);
+      const startedAt = performance.now();
+      let lastSpeechAt = startedAt;
 
-      this.mediaRecorder!.start(250);
-      this.intervalId = window.setInterval(() => {
-        analyser.getFloatTimeDomainData(samples);
-        const rms = calculateRms(samples);
-        const now = performance.now();
-        if (rms >= SILENCE_THRESHOLD) {
-          this.speechDetected = true;
-          lastSpeechAt = now;
-        }
-        if ((this.speechDetected && now - lastSpeechAt >= SILENCE_DURATION_MS) || now - startedAt >= MAX_RECORDING_MS) {
-          this.stop();
-        }
-      }, 100);
-    });
+      return await new Promise<Blob>((resolve, reject) => {
+        this.rejectRecording = reject;
+        this.resolveRecording = resolve;
+        this.stream!.getTracks().forEach((track) => {
+          track.onended = () => {
+            const pendingReject = this.rejectRecording;
+            this.rejectRecording = null;
+            this.resolveRecording = null;
+            this.cancel();
+            pendingReject?.(new VoiceCaptureError("Microphone access ended. Check permission and input device.", "recording_failed"));
+          };
+        });
+
+        this.intervalId = window.setInterval(() => {
+          analyser.getFloatTimeDomainData(samples);
+          const rms = calculateRms(samples);
+          const now = performance.now();
+          if (rms >= SILENCE_THRESHOLD) {
+            this.speechDetected = true;
+            lastSpeechAt = now;
+          }
+          if ((this.speechDetected && now - lastSpeechAt >= (options.silenceDurationMs ?? SILENCE_DURATION_MS)) || now - startedAt >= (options.maxRecordingMs ?? MAX_RECORDING_MS)) {
+            this.stop();
+          }
+        }, 100);
+      });
+    } catch (error) {
+      this.cleanup();
+      throw error;
+    }
   }
 
   stop(): void {
-    if (this.mediaRecorder?.state === "recording") {
-      this.mediaRecorder.stop();
+    const resolve = this.resolveRecording;
+    const reject = this.rejectRecording;
+    if (!resolve || !reject) return;
+    this.resolveRecording = null;
+    this.rejectRecording = null;
+    const heardSpeech = this.speechDetected;
+    const recording = heardSpeech ? encodeCapturedPcm(this.pcmChunks, this.pcmSampleRate, 16000) : null;
+    this.cleanup();
+    if (!recording || recording.size === 0) {
+      reject(new VoiceCaptureError("I did not hear any speech. Please try again.", "no_speech"));
+      return;
     }
+    resolve(recording);
   }
 
   cancel(): void {
+    this.cancelled = true;
     const reject = this.rejectRecording;
-    if (this.mediaRecorder?.state === "recording") {
-      this.mediaRecorder.onstop = null;
-      this.mediaRecorder.stop();
-    }
+    this.resolveRecording = null;
+    this.rejectRecording = null;
     this.cleanup();
     reject?.(new VoiceCaptureError("Voice capture cancelled.", "cancelled"));
   }
@@ -136,29 +157,39 @@ export class BrowserVoiceRecorder {
       window.clearInterval(this.intervalId);
       this.intervalId = null;
     }
-    this.stream?.getTracks().forEach((track) => track.stop());
+    if (this.processor) {
+      this.processor.onaudioprocess = null;
+      this.processor.disconnect();
+      this.processor = null;
+    }
+    this.stream?.getTracks().forEach((track) => { track.onended = null; track.stop(); });
     this.stream = null;
     if (this.audioContext && this.audioContext.state !== "closed") {
       void this.audioContext.close();
     }
     this.audioContext = null;
-    this.mediaRecorder = null;
+    this.pcmChunks = [];
+    this.pcmSampleRate = 0;
     this.rejectRecording = null;
+    this.resolveRecording = null;
   }
 }
 
-export async function transcribeVoiceRecording(blob: Blob, language: VoiceLanguage): Promise<string> {
-  const wavBlob = await convertRecordingToWav(blob);
+export async function transcribeVoiceRecording(blob: Blob, language: VoiceLanguage, signal?: AbortSignal, purpose?: "wake"): Promise<string> {
+  const wavBlob = blob.type === "audio/wav" || blob.type === "audio/x-wav" ? blob : await convertRecordingToWav(blob);
   const formData = new FormData();
   formData.append("audio", wavBlob, "angklobot-voice.wav");
   formData.append("language", language);
+  if (purpose) formData.append("purpose", purpose);
 
   const response = await fetch("/api/speech/transcribe", {
     body: formData,
     method: "POST",
+    signal,
   });
   const payload = (await response.json().catch(() => null)) as { error?: unknown; text?: unknown } | null;
   if (!response.ok) {
+    if (response.status === 422) throw new VoiceCaptureError("No speech was recognized. Please try again.", "no_speech");
     throw new Error(typeof payload?.error === "string" ? payload.error : "Local speech transcription is unavailable.");
   }
   const text = typeof payload?.text === "string" ? payload.text.trim() : "";
@@ -209,7 +240,7 @@ async function convertRecordingToWav(blob: Blob): Promise<Blob> {
     const samples = resampleToMono(decoded, 16000);
     return new Blob([encodePcm16Wav(samples, 16000)], { type: "audio/wav" });
   } catch {
-    throw new Error("Safari recorded audio in a format that could not be decoded.");
+    throw new Error("Your browser recorded audio in a format that could not be decoded.");
   } finally {
     await audioContext.close();
   }
@@ -259,15 +290,33 @@ function encodePcm16Wav(samples: Float32Array, sampleRate: number): ArrayBuffer 
   return buffer;
 }
 
+function encodeCapturedPcm(chunks: Float32Array[], sourceRate: number, targetRate: number): Blob | null {
+  const sourceLength = chunks.reduce((total, chunk) => total + chunk.length, 0);
+  if (sourceLength === 0 || sourceRate <= 0) return null;
+  const source = new Float32Array(sourceLength);
+  let offset = 0;
+  for (const chunk of chunks) {
+    source.set(chunk, offset);
+    offset += chunk.length;
+  }
+
+  const outputLength = Math.max(1, Math.round((source.length * targetRate) / sourceRate));
+  const output = new Float32Array(outputLength);
+  const ratio = sourceRate / targetRate;
+  for (let outputIndex = 0; outputIndex < outputLength; outputIndex += 1) {
+    const sourcePosition = outputIndex * ratio;
+    const lowerIndex = Math.min(source.length - 1, Math.floor(sourcePosition));
+    const upperIndex = Math.min(source.length - 1, lowerIndex + 1);
+    const fraction = sourcePosition - lowerIndex;
+    output[outputIndex] = source[lowerIndex] + (source[upperIndex] - source[lowerIndex]) * fraction;
+  }
+  return new Blob([encodePcm16Wav(output, targetRate)], { type: "audio/wav" });
+}
+
 function writeAscii(view: DataView, offset: number, value: string): void {
   for (let index = 0; index < value.length; index += 1) {
     view.setUint8(offset + index, value.charCodeAt(index));
   }
-}
-
-function selectRecordingMimeType(): string | undefined {
-  const candidates = ["audio/mp4", "audio/webm;codecs=opus", "audio/webm"];
-  return candidates.find((candidate) => MediaRecorder.isTypeSupported(candidate));
 }
 
 function calculateRms(samples: Float32Array): number {

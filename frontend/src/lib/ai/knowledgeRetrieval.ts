@@ -9,7 +9,8 @@ export type AngklobotKnowledgeSection =
   | "rack-and-validation"
   | "song-library-rules"
   | "midi-conversion-process"
-  | "wro-demo-explanation";
+  | "wro-demo-explanation"
+  | "website-guide";
 
 export type AngklobotKnowledgeContext = {
   content: string;
@@ -24,14 +25,20 @@ const SECTION_FILES: Record<AngklobotKnowledgeSection, string> = {
   "song-library-rules": "song-library-rules.md",
   "midi-conversion-process": "midi-conversion-process.md",
   "wro-demo-explanation": "wro-demo-explanation.md",
+  "website-guide": "website-guide.md",
 };
 
 export async function retrieveAngklobotKnowledge(
   message: string,
   preRouterDecision: AiPreRouterDecision | null,
+  currentPage?: "guest" | "voice" | "control" | "display" | "library-builder",
 ): Promise<AngklobotKnowledgeContext> {
   const normalized = message.toLowerCase();
   const sections = new Set<AngklobotKnowledgeSection>(["angklobot-persona"]);
+
+  if (/website|page|screen|button|control panel|voice mode|guest|display|library builder|where|how (can|do) i|what can i do here/.test(normalized)) {
+    sections.add("website-guide");
+  }
 
   if (/\bangklung\b|bamboo instrument|traditional instrument/.test(normalized)) sections.add("angklung-basics");
   if (/machine|robot|angklobot|how (do|does)|architecture|motor|actuator|system work/.test(normalized)) sections.add("machine-architecture");
@@ -49,26 +56,19 @@ export async function retrieveAngklobotKnowledge(
   }
   if (
     /song|music|play|library|catalog|recommend|suggest|genre|mood|artist/.test(normalized) ||
-    preRouterDecision === "exact_catalog_match" ||
+    preRouterDecision === "high_confidence_song_match" ||
     preRouterDecision === "list_songs" ||
-    preRouterDecision === "catalog_recommendation" ||
-    preRouterDecision === "unsupported_song"
+    preRouterDecision === "ambiguous_song_match" ||
+    preRouterDecision === "reference"
   ) {
     sections.add("song-library-rules");
   }
-  if (preRouterDecision === "machine_question") sections.add("machine-architecture");
-  if (preRouterDecision === "angklung_question") sections.add("angklung-basics");
-  if (preRouterDecision === "limitation_explanation") {
-    sections.add("rack-and-validation");
-    sections.add("song-library-rules");
-  }
-
-  const selected = Array.from(sections).slice(0, 4);
+  const selected = Array.from(sections).slice(0, 5);
   const entries = await Promise.all(selected.map(async (section) => ({ section, text: await loadKnowledgeSection(section) })));
   const content = entries
     .map(({ section, text }) => `## ${section}\n${text.slice(0, 2200)}`)
     .join("\n\n")
-    .slice(0, 7000);
+    .slice(0, 10_000);
 
   return { content, sections: selected };
 }

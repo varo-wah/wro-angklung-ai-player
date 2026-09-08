@@ -509,11 +509,15 @@ function ArrangementSettingsPanel() {
               label="Tempo"
               value={system.settings.tempo}
               options={[
-                ["normal", "Normal"],
+                ["normal", system.selectedSong.performance_profile ? "Tuned default" : "Normal"],
                 ["slower", "Slower"],
               ]}
               onChange={(value) => system.setSettings({ ...system.settings, tempo: value as ArrangementSettings["tempo"] })}
             />
+            <p className="text-xs text-slate-400">
+              {Math.round((system.selectedSong.performance_profile?.tempo_bpm ?? system.selectedSong.tempo_bpm) / (system.settings.tempo === "slower" ? 1.25 : 1))} BPM
+              {system.selectedSong.performance_profile ? " · clearer note releases · Generate to apply" : ""}
+            </p>
             <SegmentedControl
               label="Mode"
               value={system.settings.mode}
@@ -527,7 +531,7 @@ function ArrangementSettingsPanel() {
         )}
       </div>
       <p className="mt-3 text-xs leading-relaxed text-slate-400">
-        Strength controls simulator volume now and actuator intensity later. Rack map: G3-C6; verify final note labels with a tuner.
+        Strength controls both preview level and connected motor intensity. Preview holds follow the schedule; physical loudness is approximate.
       </p>
     </section>
   );

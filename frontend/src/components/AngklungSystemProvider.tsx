@@ -19,6 +19,7 @@ import {
   type AiSongRequestResult,
 } from "@/lib/aiSongRequest";
 import { createLocalFallbackSongRequestResult } from "@/lib/ai/localFallbackMatcher";
+import { normalizeVisitorInput } from "@/lib/ai/inputNormalization";
 import { buildFullAngklungRack } from "@/lib/instrumentMap";
 import { PlaybackEngine } from "@/lib/playbackEngine";
 import { routePlaybackChatCommand, type PlaybackChatCommand } from "@/lib/playbackCommandRouter";
@@ -28,6 +29,7 @@ import { validateSchedulePayload } from "@/lib/scheduleValidator";
 import { getActiveCatalogSongs, getVisibleCatalogSongs, loadSongCatalog } from "@/lib/songCatalog";
 import { loadSongArrangement } from "@/lib/songLoader";
 import type { LoadedSong, SongCatalogEntry, SongNote } from "@/lib/songTypes";
+import type { VoiceLanguage } from "@/lib/voice";
 import {
   createSyncTabId,
   createSystemSyncController,
@@ -89,6 +91,7 @@ type AngklungSystemContextValue = {
   latestUserRequest: string;
   playbackState: PlaybackState;
   safetyReport: SafetyReport | null;
+  showSafetyNotices: boolean;
   schedule: ActuatorSchedule | null;
   selectedSong: LoadedSong;
   selectedSongId: string;
@@ -106,13 +109,19 @@ type AngklungSystemContextValue = {
   generateBuiltInSchedule: () => void;
   loadSchedule: (fileText: string, uploadedFileName: string) => void;
   pausePlayback: () => void;
-  playSchedule: () => Promise<void>;
+  playSchedule: () => Promise<boolean>;
+  prepareUserModeAudio: () => Promise<boolean>;
   refreshAiAssistant: () => Promise<void>;
-  requestSong: (request: string) => Promise<string | null>;
+  clearChat: () => void;
+  cancelConversationRequest: () => void;
+  requestSong: (request: string, language?: VoiceLanguage) => Promise<string | null>;
+  runWakeGreeting: () => Promise<void>;
+  startPendingUserModePlayback: () => Promise<boolean>;
   resetPlayback: () => void;
   setChatInput: (value: string) => void;
   setSelectedSongId: (songId: string) => void;
   setSettings: (settings: ArrangementSettings) => void;
+  setShowSafetyNotices: (show: boolean) => void;
   setYoutubeUrl: (url: string) => void;
   stopPlayback: () => void;
 };
@@ -159,6 +168,15 @@ const AngklungSystemContext = createContext<AngklungSystemContextValue | null>(n
 
 export function AngklungSystemProvider({ children }: { children: ReactNode }) {
   const pathname = usePathname();
+  useEffect(() => {
+    if (pathname !== "/guest" && pathname !== "/voice") return;
+    const viewport = window.visualViewport;
+    const resize = () => document.documentElement.style.setProperty("--visitor-height", `${viewport?.height ?? window.innerHeight}px`);
+    resize();
+    viewport?.addEventListener("resize", resize);
+    window.addEventListener("resize", resize);
+    return () => { viewport?.removeEventListener("resize", resize); window.removeEventListener("resize", resize); document.documentElement.style.removeProperty("--visitor-height"); };
+  }, [pathname]);
   const [songCatalog, setSongCatalog] = useState<SongCatalogEntry[]>([]);
   const [selectedSongId, setSelectedSongIdState] = useState("");
   const [selectedSong, setSelectedSong] = useState<LoadedSong>(EMPTY_SELECTED_SONG);
@@ -171,6 +189,7 @@ export function AngklungSystemProvider({ children }: { children: ReactNode }) {
   const [latestUserRequest, setLatestUserRequest] = useState("");
   const [errors, setErrors] = useState<string[]>([]);
   const [safetyReport, setSafetyReport] = useState<SafetyReport | null>(null);
+  const [showSafetyNotices, setShowSafetyNoticesState] = useState(true);
   const [workflowStatus, setWorkflowStatus] = useState<WorkflowStatus>(INITIAL_WORKFLOW_STATUS);
   const [chatInput, setChatInput] = useState("");
   const [chatMessages, setChatMessages] = useState<ChatMessage[]>(INITIAL_CHAT_MESSAGES);
@@ -206,6 +225,7 @@ export function AngklungSystemProvider({ children }: { children: ReactNode }) {
   });
   const engineRef = useRef<PlaybackEngine | null>(null);
   const audioRef = useRef<AudioEngine | null>(null);
+  const latestRackCommandRef = useRef(new Map<string, string>());
   const arduinoRef = useRef<ArduinoSerialController | null>(null);
   const applyingSyncedSnapshotRef = useRef(false);
   const lastPublishedAtRef = useRef(0);
@@ -216,11 +236,25 @@ export function AngklungSystemProvider({ children }: { children: ReactNode }) {
   const loadedSongsRef = useRef(new Map<string, LoadedSong>());
   const hasCheckedAiProviderRef = useRef(false);
   const playbackSessionRef = useRef(0);
+  const conversationEpoch = useRef(0);
+  const generatedScheduleRef = useRef<ActuatorSchedule | null>(null);
+  const pendingUserModeScheduleRef = useRef<{ epoch: number; schedule: ActuatorSchedule } | null>(null);
   const activeCommandTimeoutsRef = useRef(new Set<number>());
 
   const supportedSongs = useMemo(() => getVisibleCatalogSongs(songCatalog), [songCatalog]);
   const instruments = useMemo(() => buildFullAngklungRack(), []);
   const totalDuration = schedule?.timing.total_duration_seconds ?? 0;
+
+  useEffect(() => {
+    try { setShowSafetyNoticesState(window.localStorage.getItem("angklobot.safety-notices") !== "false"); }
+    catch { /* Private browsing may disable storage. */ }
+  }, []);
+
+  function setShowSafetyNotices(show: boolean) {
+    setShowSafetyNoticesState(show);
+    try { window.localStorage.setItem("angklobot.safety-notices", String(show)); }
+    catch { /* The preference remains valid for this page session. */ }
+  }
 
   useEffect(() => {
     setArduinoConnection(getInitialArduinoConnectionState());
@@ -434,7 +468,7 @@ export function AngklungSystemProvider({ children }: { children: ReactNode }) {
     setAiLastUnsupportedRequest(snapshot.aiLastUnsupportedRequest);
     setAiShouldSearchCatalog(snapshot.aiShouldSearchCatalog);
     setAiSuggestedSongIds(snapshot.aiSuggestedSongIds);
-    setChatMessages(snapshot.chatMessages.length > 0 ? snapshot.chatMessages : INITIAL_CHAT_MESSAGES);
+    setChatMessages(snapshot.chatMessages);
     setElapsedSeconds(snapshot.elapsedSeconds);
     setErrors([]);
     setGeneratedNotes(snapshot.generatedNotes);
@@ -458,7 +492,7 @@ export function AngklungSystemProvider({ children }: { children: ReactNode }) {
     }));
   }
 
-  async function loadSelectedSong(songId: string, catalogOverride?: SongCatalogEntry[]): Promise<LoadedSong | null> {
+  async function loadSelectedSong(songId: string, catalogOverride?: SongCatalogEntry[], isCurrent = () => true): Promise<LoadedSong | null> {
     const catalog = catalogOverride ?? songCatalogRef.current;
     const catalogEntry = getActiveCatalogSongs(catalog).find((song) => song.id === songId);
     if (!catalogEntry) {
@@ -475,12 +509,14 @@ export function AngklungSystemProvider({ children }: { children: ReactNode }) {
 
     try {
       const loadedSong = await loadSongArrangement(catalogEntry);
+      if (!isCurrent()) return null;
       loadedSongsRef.current.set(catalogEntry.id, loadedSong);
       setSelectedSong(loadedSong);
       setSourceLabel(loadedSong.title);
       setErrors((current) => current.filter((error) => error !== "Arrangement file failed to load"));
       return loadedSong;
     } catch (error) {
+      if (!isCurrent()) return null;
       setErrors([error instanceof Error ? error.message : "Arrangement file failed to load"]);
       setSourceLabel("Arrangement file failed to load");
       return null;
@@ -493,6 +529,7 @@ export function AngklungSystemProvider({ children }: { children: ReactNode }) {
   }
 
   function generateScheduleForSong(song: LoadedSong): SafetyReport | null {
+    generatedScheduleRef.current = null;
     stopPlaybackMedia();
     try {
       const nextSchedule = buildScheduleFromBuiltInSong(song, settings);
@@ -516,6 +553,7 @@ export function AngklungSystemProvider({ children }: { children: ReactNode }) {
       }
 
       const validationPassed = nextSafetyReport.overall === "PASSED";
+      generatedScheduleRef.current = validationResult.schedule;
       setSchedule(validationResult.schedule);
       setGeneratedNotes(scaleNotes(song.notes, settings.tempo === "slower" ? 1.25 : 1));
       setSafetyReport(nextSafetyReport);
@@ -556,25 +594,28 @@ export function AngklungSystemProvider({ children }: { children: ReactNode }) {
     return generateScheduleForSong(loadedSong);
   }
 
-  function requestSong(request: string): Promise<string | null> {
-    return handleSongRequest(request);
+  function requestSong(request: string, language: VoiceLanguage = "en"): Promise<string | null> {
+    return handleSongRequest(request, language);
   }
 
-  async function handleSongRequest(request: string): Promise<string | null> {
-    const trimmedRequest = request.trim();
+  async function handleSongRequest(request: string, language: VoiceLanguage): Promise<string | null> {
+    const trimmedRequest = normalizeVisitorInput(request);
     if (!trimmedRequest) {
       return null;
     }
+    pendingUserModeScheduleRef.current = null;
 
     const playbackCommand = routePlaybackChatCommand(trimmedRequest);
     if (playbackCommand) {
-      const playbackResponse = handlePlaybackChatCommand(playbackCommand, trimmedRequest);
+      const playbackResponse = await handlePlaybackChatCommand(playbackCommand, trimmedRequest);
       if (playbackResponse) {
         return playbackResponse;
       }
     }
 
     const playbackSession = playbackSessionRef.current;
+    const epoch = ++conversationEpoch.current;
+    const isCurrent = () => epoch === conversationEpoch.current && playbackSession === playbackSessionRef.current;
 
     const timestamp = Date.now();
     const openingMessages: ChatMessage[] = [{ id: timestamp, speaker: "user", text: trimmedRequest }];
@@ -592,8 +633,8 @@ export function AngklungSystemProvider({ children }: { children: ReactNode }) {
       readyForSimulation: false,
     });
 
-    const aiResult = await requestAiSongInterpretation(trimmedRequest);
-    if (playbackSession !== playbackSessionRef.current) {
+    const aiResult = await requestAiSongInterpretation(trimmedRequest, language);
+    if (!isCurrent()) {
       return null;
     }
     const matchedCatalogEntry = aiResult.matched_song_id
@@ -607,13 +648,8 @@ export function AngklungSystemProvider({ children }: { children: ReactNode }) {
       libraryChecked: libraryWasChecked,
       songFound: Boolean(matchedCatalogEntry),
     }));
-    const responseMessages: ChatMessage[] = [
-      ...(libraryWasChecked ? [{ id: timestamp + 1, speaker: "assistant" as const, text: "Checking the supported song library..." }] : []),
-      { id: timestamp + 2, speaker: "assistant", text: aiResult.assistant_message },
-    ];
-    setChatMessages((current) => [...current, ...responseMessages]);
-
     if (!aiResult.should_generate_schedule || !matchedCatalogEntry) {
+      setChatMessages((current) => [...current, { id: timestamp + 2, speaker: "assistant", text: aiResult.assistant_message }]);
       if (isPassiveConversationIntent(aiResult.intent)) {
         setYoutubeFallbackActive(false);
         setSourceMode("library");
@@ -628,7 +664,7 @@ export function AngklungSystemProvider({ children }: { children: ReactNode }) {
       setSourceMode(unsupported ? "youtube_placeholder" : "library");
       setSchedule(null);
       setGeneratedNotes([]);
-      setSourceLabel(unsupported ? "Unsupported song request" : "Awaiting guest confirmation");
+      setSourceLabel(unsupported ? "Unsupported song request" : "Choose a song");
       setErrors([]);
       setSafetyReport(null);
       setSystemStatus(unsupported ? "unsupported" : "idle");
@@ -636,8 +672,8 @@ export function AngklungSystemProvider({ children }: { children: ReactNode }) {
     }
 
     setSelectedSongIdState(matchedCatalogEntry.id);
-    const matchedSong = await loadSelectedSong(matchedCatalogEntry.id);
-    if (playbackSession !== playbackSessionRef.current) {
+    const matchedSong = await loadSelectedSong(matchedCatalogEntry.id, undefined, isCurrent);
+    if (!isCurrent()) {
       return null;
     }
     if (!matchedSong) {
@@ -666,31 +702,34 @@ export function AngklungSystemProvider({ children }: { children: ReactNode }) {
       matchedSong.arrangement_status === "draft_layered_from_midi_g3_c6_upper_melody_needs_review" ||
       matchedSong.arrangement_status === "draft_layered_from_midi_g3_c6_lower_pitch_needs_review" ||
       matchedSong.demo_safe === false;
-    const finalResponse =
+    let started = false;
+    let queuedForUserMode = false;
+    const isUserMode = pathname === "/guest" || pathname === "/voice";
+    const canStartInUserMode = isUserMode && report?.overall === "PASSED" && !aiResult.needs_operator_review && generatedScheduleRef.current;
+    const canStartInOperatorMode = !isUserMode && report?.overall === "PASSED" && !hasWarnings && !isDraftArrangement && !aiResult.needs_operator_review && generatedScheduleRef.current;
+    if (canStartInUserMode && generatedScheduleRef.current) {
+      pendingUserModeScheduleRef.current = { epoch, schedule: generatedScheduleRef.current };
+      queuedForUserMode = true;
+    } else if (canStartInOperatorMode && generatedScheduleRef.current) {
+      started = await startSchedule(generatedScheduleRef.current, 0, () => epoch === conversationEpoch.current);
+      if (epoch !== conversationEpoch.current) return null;
+    }
+    const finalResponse = started || queuedForUserMode ? `Playing ${matchedSong.title}.` :
       report?.overall === "PASSED" && hasWarnings
-        ? "This draft arrangement has warnings. The operator should review the Control Panel before demo use."
+        ? showSafetyNotices
+          ? "This draft arrangement has warnings. The operator should review the Control Panel before demo use."
+          : `Ready to test ${matchedSong.title}.`
         : report?.overall === "PASSED"
           ? isDraftArrangement
-            ? "Validation passed. Ready to test playback."
-            : "Validation passed. Ready to play."
+            ? showSafetyNotices ? "Validation passed. Ready to test playback." : `Ready to test ${matchedSong.title}.`
+            : "Validation passed. Use Play to start when audio is available."
           : "This arrangement is not playable yet. The operator should review the Control Panel.";
-    setChatMessages((current) => [
-      ...current,
-      {
-        id: timestamp + 3,
-        speaker: "assistant",
-        text: "Generating the angklung schedule...",
-      },
-      {
-        id: timestamp + 4,
-        speaker: "assistant",
-        text: finalResponse,
-      },
-    ]);
+    setChatMessages((current) => [...current, { id: timestamp + 4, speaker: "assistant", text: finalResponse }]);
     return finalResponse;
   }
 
-  function handlePlaybackChatCommand(command: PlaybackChatCommand, request: string): string | null {
+  async function handlePlaybackChatCommand(command: PlaybackChatCommand, request: string): Promise<string | null> {
+    if (command === "play" && !schedule) return null;
     if (command === "resume" && (!schedule || (playbackState !== "paused" && playbackState !== "stopped"))) {
       return null;
     }
@@ -699,6 +738,15 @@ export function AngklungSystemProvider({ children }: { children: ReactNode }) {
     setChatInput("");
     setLatestUserRequest(request);
     setChatMessages((current) => [...current, { id: timestamp, speaker: "user", text: request }]);
+
+    if (command === "play") {
+      const started = playbackState === "playing" || await playSchedule();
+      const response = playbackState === "playing"
+        ? `${selectedSong.title} is already playing.`
+        : started ? `Playing ${selectedSong.title}.` : "Playback could not start. Check the validation details in the Control Panel.";
+      setChatMessages((current) => [...current, { id: timestamp + 1, speaker: "assistant", text: response }]);
+      return response;
+    }
 
     if (command === "stop") {
       emergencyStopPlayback();
@@ -712,12 +760,13 @@ export function AngklungSystemProvider({ children }: { children: ReactNode }) {
       return "Paused playback.";
     }
 
-    setChatMessages((current) => [...current, { id: timestamp + 1, speaker: "assistant", text: "Resuming playback." }]);
-    void playSchedule();
-    return "Resuming playback.";
+    const resumed = await playSchedule();
+    const response = resumed ? "Resuming playback." : "Playback could not resume. Check the validation details in the Control Panel.";
+    setChatMessages((current) => [...current, { id: timestamp + 1, speaker: "assistant", text: response }]);
+    return response;
   }
 
-  async function requestAiSongInterpretation(message: string): Promise<AiSongRequestResult> {
+  async function requestAiSongInterpretation(message: string, language: VoiceLanguage): Promise<AiSongRequestResult> {
     const catalog = songCatalogRef.current.map(toAiCatalogEntry);
     const pendingSongTitle = aiPendingSongId ? getVisibleCatalogSongs(songCatalogRef.current).find((song) => song.id === aiPendingSongId)?.title ?? null : null;
     try {
@@ -725,11 +774,18 @@ export function AngklungSystemProvider({ children }: { children: ReactNode }) {
         body: JSON.stringify({
           catalog,
           context: {
+            current_page: pathname === "/voice" ? "voice" : "guest",
             conversation_state: aiConversationState,
+            current_song_id: selectedSongId || null,
             last_unsupported_request: aiLastUnsupportedRequest,
+            language,
+            most_recent_assistant_intent: aiIntent,
+            most_recent_candidate_song_id: aiMatchedSongId,
             pending_song_id: aiPendingSongId,
             pending_song_title: pendingSongTitle,
-            recent_messages: chatMessages.slice(-6).map((chatMessage) => ({
+            playback_state: playbackState,
+            recent_suggested_song_ids: aiSuggestedSongIds,
+            recent_messages: chatMessages.slice(-10).map((chatMessage) => ({
               speaker: chatMessage.speaker,
               text: chatMessage.text,
             })),
@@ -744,10 +800,17 @@ export function AngklungSystemProvider({ children }: { children: ReactNode }) {
       }
       const payload = (await response.json()) as Partial<AiSongRequestResult>;
       const normalized = normalizeAiSongRequestResult(payload, catalog, payload.provider ?? "local_fallback", payload.fallback_reason, {
+        current_page: pathname === "/voice" ? "voice" : "guest",
         conversation_state: aiConversationState,
+        current_song_id: selectedSongId || null,
         last_unsupported_request: aiLastUnsupportedRequest,
+        language,
+        most_recent_assistant_intent: aiIntent,
+        most_recent_candidate_song_id: aiMatchedSongId,
         pending_song_id: aiPendingSongId,
         pending_song_title: pendingSongTitle,
+        playback_state: playbackState,
+        recent_suggested_song_ids: aiSuggestedSongIds,
       });
       if (!normalized) {
         throw new Error("AI route returned invalid JSON");
@@ -758,11 +821,18 @@ export function AngklungSystemProvider({ children }: { children: ReactNode }) {
         message,
         catalog,
         {
+          current_page: pathname === "/voice" ? "voice" : "guest",
           conversation_state: aiConversationState,
+          current_song_id: selectedSongId || null,
           last_unsupported_request: aiLastUnsupportedRequest,
+          language,
+          most_recent_assistant_intent: aiIntent,
+          most_recent_candidate_song_id: aiMatchedSongId,
           pending_song_id: aiPendingSongId,
           pending_song_title: pendingSongTitle,
-          recent_messages: chatMessages.slice(-6).map((chatMessage) => ({
+          playback_state: playbackState,
+          recent_suggested_song_ids: aiSuggestedSongIds,
+          recent_messages: chatMessages.slice(-10).map((chatMessage) => ({
             speaker: chatMessage.speaker,
             text: chatMessage.text,
           })),
@@ -772,15 +842,46 @@ export function AngklungSystemProvider({ children }: { children: ReactNode }) {
     }
   }
 
+  function cancelConversationRequest() {
+    ++conversationEpoch.current;
+    pendingUserModeScheduleRef.current = null;
+  }
+
+  function clearChat() {
+    cancelConversationRequest();
+    setChatMessages([]);
+    setChatInput("");
+    setLatestUserRequest("");
+    setAiConversationState("idle");
+    setAiPendingSongId(null);
+    setAiMatchedSongId(null);
+    setAiLastUnsupportedRequest(null);
+    setAiSuggestedSongIds([]);
+    setAiIntent("unknown");
+    setAiConfidence(0);
+    setAiKnowledgeSections([]);
+    setAiPreRouterDecision(null);
+    setAiRawProviderResult(null);
+    setAiShouldSearchCatalog(false);
+    setAiNeedsOperatorReview(false);
+    setYoutubeFallbackActive(false);
+    setYoutubeUrl("");
+    setSourceMode(sourceMode === "youtube_placeholder" ? "library" : sourceMode);
+    if (!schedule) { setErrors([]); setWorkflowStatus(INITIAL_WORKFLOW_STATUS); }
+    if (!schedule) setSourceLabel(selectedSong.title);
+    if (playbackState !== "playing") setSystemStatus("idle");
+  }
+
   async function refreshAiAssistant(): Promise<void> {
     const catalog = songCatalogRef.current.map(toAiCatalogEntry);
-    setChatInput("");
-    setChatMessages(INITIAL_CHAT_MESSAGES);
-    setLatestUserRequest("");
+    clearChat();
+    const epoch = conversationEpoch.current;
 
     try {
-      applyAiResult(await probeAiAssistant(catalog));
+      const result = await probeAiAssistant(catalog);
+      if (epoch === conversationEpoch.current) applyAiResult(result);
     } catch (error) {
+      if (epoch !== conversationEpoch.current) return;
       const reason = error instanceof Error ? error.message : "AI refresh failed";
       applyAiResult(createLocalFallbackSongRequestResult("Hello", catalog, {}, reason));
     }
@@ -929,10 +1030,47 @@ export function AngklungSystemProvider({ children }: { children: ReactNode }) {
     await arduinoRef.current?.disconnect();
   }
 
-  async function playSchedule() {
-    if (!schedule || playbackState === "playing") {
-      return;
+  async function runWakeGreeting(): Promise<void> {
+    const controller = getArduinoController();
+    if (!controller.connected) await controller.reconnectAuthorized();
+    if (!controller.connected) return;
+    try {
+      await controller.runWakeSweep();
+    } catch (error) {
+      setErrors([error instanceof Error ? error.message : "Angklobot greeting sweep failed."]);
     }
+  }
+
+  async function playSchedule(): Promise<boolean> {
+    if (playbackState === "playing") return true;
+    return schedule ? startSchedule(schedule, elapsedSeconds) : false;
+  }
+
+  async function startPendingUserModePlayback(): Promise<boolean> {
+    const pending = pendingUserModeScheduleRef.current;
+    pendingUserModeScheduleRef.current = null;
+    if (!pending || pending.epoch !== conversationEpoch.current) return false;
+    return startSchedule(pending.schedule, 0, () => pending.epoch === conversationEpoch.current);
+  }
+
+  async function prepareUserModeAudio(): Promise<boolean> {
+    audioRef.current ??= new AudioEngine();
+    try {
+      await audioRef.current.ensureReady();
+      setErrors([]);
+      return true;
+    } catch (error) {
+      setErrors([error instanceof Error ? error.message : "Browser audio could not be enabled."]);
+      return false;
+    }
+  }
+
+  async function startSchedule(nextSchedule: ActuatorSchedule, offset = 0, isCurrent = () => true): Promise<boolean> {
+    if (!validateSchedulePayload(nextSchedule).ok || validateMotorSafety(nextSchedule).overall !== "PASSED") {
+      setErrors(["Schedule validation failed. Playback is blocked."]);
+      return false;
+    }
+    const duration = nextSchedule.timing.total_duration_seconds;
 
     const playbackSession = playbackSessionRef.current + 1;
     playbackSessionRef.current = playbackSession;
@@ -940,35 +1078,35 @@ export function AngklungSystemProvider({ children }: { children: ReactNode }) {
     audioRef.current ??= new AudioEngine();
     try {
       await audioRef.current.ensureReady();
-      if (playbackSession !== playbackSessionRef.current) {
-        return;
+      if (playbackSession !== playbackSessionRef.current || !isCurrent()) {
+        return false;
       }
       setErrors([]);
     } catch (error) {
-      if (playbackSession !== playbackSessionRef.current) {
-        return;
+      if (playbackSession !== playbackSessionRef.current || !isCurrent()) {
+        return false;
       }
       setErrors([error instanceof Error ? error.message : "Audio could not start. Check browser audio permissions and output volume."]);
-      return;
+      return false;
     }
 
-    if (playbackSession !== playbackSessionRef.current) {
-      return;
+    if (playbackSession !== playbackSessionRef.current || !isCurrent()) {
+      return false;
     }
 
     try {
-      await arduinoRef.current?.preparePlayback(schedule.commands);
+      await arduinoRef.current?.preparePlayback(nextSchedule.commands);
     } catch (error) {
       setErrors([error instanceof Error ? error.message : "Arduino did not accept the playback preparation command."]);
-      return;
+      return false;
     }
 
-    if (playbackSession !== playbackSessionRef.current) {
-      return;
+    if (playbackSession !== playbackSessionRef.current || !isCurrent()) {
+      return false;
     }
 
     engineRef.current?.stop();
-    const engine = new PlaybackEngine(schedule.commands, totalDuration, {
+    const engine = new PlaybackEngine(nextSchedule.commands, duration, {
       onCommand: (command) => {
         if (playbackSession === playbackSessionRef.current) triggerCommand(command);
       },
@@ -976,10 +1114,11 @@ export function AngklungSystemProvider({ children }: { children: ReactNode }) {
         if (playbackSession === playbackSessionRef.current) setElapsedSeconds(elapsed);
       },
       onComplete: () => {
-        if (playbackSession !== playbackSessionRef.current) return;
+        if (playbackSession !== playbackSessionRef.current || !isCurrent()) return;
         setPlaybackState("stopped");
         setSystemStatus("stopped");
         setActiveCommandIds(new Set());
+        latestRackCommandRef.current.clear();
         setActiveInstrumentIds(new Set());
         void sendArduinoAllOff();
       },
@@ -987,7 +1126,8 @@ export function AngklungSystemProvider({ children }: { children: ReactNode }) {
     engineRef.current = engine;
     setPlaybackState("playing");
     setSystemStatus("playing");
-    engine.play(elapsedSeconds >= totalDuration ? 0 : elapsedSeconds);
+    engine.play(offset >= duration ? 0 : offset);
+    return true;
   }
 
   function pausePlayback() {
@@ -998,6 +1138,7 @@ export function AngklungSystemProvider({ children }: { children: ReactNode }) {
     audioRef.current?.stopAll();
     clearActiveCommandTimeouts();
     setActiveCommandIds(new Set());
+    latestRackCommandRef.current.clear();
     setActiveInstrumentIds(new Set());
     setPlaybackState("paused");
     setSystemStatus("stopped");
@@ -1024,6 +1165,7 @@ export function AngklungSystemProvider({ children }: { children: ReactNode }) {
     setPlaybackState("stopped");
     setElapsedSeconds(0);
     setActiveCommandIds(new Set());
+    latestRackCommandRef.current.clear();
     setActiveInstrumentIds(new Set());
     setSystemStatus("stopped");
     void sendArduinoAllOff();
@@ -1041,7 +1183,13 @@ export function AngklungSystemProvider({ children }: { children: ReactNode }) {
       setErrors([error instanceof Error ? error.message : "Audio playback failed. Check browser audio permissions and output volume."]);
     }
     setActiveCommandIds((current) => new Set(current).add(command.command_id));
-    setActiveInstrumentIds((current) => new Set(current).add(command.instrument_id));
+    latestRackCommandRef.current.set(command.instrument_id, command.command_id);
+    setActiveInstrumentIds((current) => {
+      const next = new Set(current);
+      if (command.strength > 0) next.add(command.instrument_id);
+      else next.delete(command.instrument_id);
+      return next;
+    });
     if (arduinoRef.current?.connected) {
       void arduinoRef.current.sendNote(command).catch((error) => {
         setErrors([error instanceof Error ? error.message : "Arduino command transmission failed; playback was stopped."]);
@@ -1056,12 +1204,14 @@ export function AngklungSystemProvider({ children }: { children: ReactNode }) {
         next.delete(command.command_id);
         return next;
       });
+      if (latestRackCommandRef.current.get(command.instrument_id) !== command.command_id) return;
+      latestRackCommandRef.current.delete(command.instrument_id);
       setActiveInstrumentIds((current) => {
         const next = new Set(current);
         next.delete(command.instrument_id);
         return next;
       });
-    }, Math.max(120, command.duration_seconds * 1000));
+    }, command.duration_seconds * 1000);
     activeCommandTimeoutsRef.current.add(timeoutId);
   }
 
@@ -1116,6 +1266,7 @@ export function AngklungSystemProvider({ children }: { children: ReactNode }) {
     latestUserRequest,
     playbackState,
     safetyReport,
+    showSafetyNotices,
     schedule,
     selectedSong,
     selectedSongId,
@@ -1134,19 +1285,25 @@ export function AngklungSystemProvider({ children }: { children: ReactNode }) {
     loadSchedule,
     pausePlayback,
     playSchedule,
+    prepareUserModeAudio,
     refreshAiAssistant,
+    clearChat,
+    cancelConversationRequest,
     requestSong,
+    runWakeGreeting,
+    startPendingUserModePlayback,
     resetPlayback,
     setChatInput,
     setSelectedSongId,
     setSettings,
+    setShowSafetyNotices,
     setYoutubeUrl,
     stopPlayback,
   };
 
   return (
     <AngklungSystemContext.Provider value={value}>
-      <div className="min-h-screen">
+      <div className={pathname === "/guest" || pathname === "/voice" ? "visitor-shell" : "min-h-screen"}>
         <SystemNavigation pathname={pathname} status={systemStatus} syncState={syncState} />
         {children}
       </div>
@@ -1167,6 +1324,16 @@ export function displaySongTitle(title: string): string {
 }
 
 function SystemNavigation({ pathname, status, syncState }: { pathname: string; status: SystemStatus; syncState: SyncState }) {
+  if (pathname === "/guest" || pathname === "/voice") return (
+    <header className="visitor-nav">
+      <Link href="/guest" className="font-bold tracking-[0.16em] text-lime-200">ANGKLOBOT</Link>
+      <nav aria-label="Visitor mode" className="flex items-center gap-1">
+        <NavLink active={pathname === "/guest"} href="/guest" label="Normal Chat" />
+        <NavLink active={pathname === "/voice"} href="/voice" label="Voice Mode" />
+        <NavLink active={false} href="/control" label="Control Panel" />
+      </nav>
+    </header>
+  );
   const modeLabel = pathname.startsWith("/control")
     ? "Operator-facing system monitor and simulator"
     : pathname.startsWith("/display")

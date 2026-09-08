@@ -1,5 +1,15 @@
 {
   "projects": {
     "default": "angklobot-control-panel"
-  }
+  },
+  "targets": {
+    "angklobot-control-panel": {
+      "hosting": {
+        "status": [
+          "angklobot"
+        ]
+      }
+    }
+  },
+  "etags": {}
 }

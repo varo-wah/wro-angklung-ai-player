@@ -4,7 +4,7 @@
 
 The Python pipeline still uses placeholder actuator functions. The website Web Serial driver supports channels 0-17 and sends validated `actuator_schedule.v1` commands to the Arduino Mega firmware. Pause, Stop, completion, and disconnect command all outputs off; E-Stop also disarms firmware output.
 
-The canonical channel, G3-C6 note, angklung-number, and corrected pin-pair mapping is in `hardware/arduino/README.md`. Firmware uses non-blocking software PWM on the first pin of every driver pair, so ordinary Mega digital pins remain power-adjustable. The complete two-pin pair is swapped between each adjacent logical channel without reversing IN1 and IN2 inside a pair. The implementation is software-validated only until the exact wiring, drivers, power system, firmware upload, and each physical actuator are tested.
+The canonical channel, G3-C6 note, angklung-number, and latest physically sweep-tested pin-pair mapping is in `hardware/arduino/README.md`. Firmware uses non-blocking software PWM on the first pin of every driver pair, so ordinary Mega digital pins remain power-adjustable. Every two-pin motor pair remains intact and IN1/IN2 are not reversed. Channel 13 remains assigned to pins 38,39 pending separate diagnosis of its missing physical hit. The corrected firmware compiles successfully but must still be uploaded before this mapping controls the rack.
 
 ## Expected Hardware Direction
 

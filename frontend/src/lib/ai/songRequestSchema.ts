@@ -24,14 +24,17 @@ export type AiAssistantMode = "local_ollama" | "openai_optional" | "local_fallba
 export type AiConversationState = "idle" | "awaiting_song" | "awaiting_confirmation" | "ready_to_play" | "unsupported";
 
 export type AiPreRouterDecision =
+  | "greeting"
+  | "smalltalk"
   | "confirmation"
-  | "exact_catalog_match"
+  | "high_confidence_song_match"
+  | "ambiguous_song_match"
+  | "reference"
   | "list_songs"
-  | "machine_question"
-  | "angklung_question"
-  | "catalog_recommendation"
-  | "unsupported_song"
-  | "limitation_explanation";
+  | "genre"
+  | "out_of_scope"
+  | "protected_internal_request"
+  | "transport_command";
 
 export type AiSongRequestResult = {
   intent: AiSongRequestIntent;
@@ -73,10 +76,17 @@ export type AiCatalogEntry = Pick<
 >;
 
 export type AiSongRequestContext = {
+  current_page?: "guest" | "voice" | "control" | "display" | "library-builder";
   conversation_state?: AiConversationState;
   pending_song_id?: string | null;
   pending_song_title?: string | null;
   last_unsupported_request?: string | null;
+  current_song_id?: string | null;
+  recent_suggested_song_ids?: string[];
+  most_recent_candidate_song_id?: string | null;
+  most_recent_assistant_intent?: AiSongRequestIntent | null;
+  playback_state?: "idle" | "playing" | "paused" | "stopped";
+  language?: "en" | "id";
   recent_messages?: Array<{ speaker: "assistant" | "user"; text: string }>;
 };
 
@@ -146,6 +156,13 @@ export function normalizeAiSongRequestResult(
     return null;
   }
 
+  const assistantText = safeVisitorText(result.assistant_message);
+  const spokenText = safeVisitorText(result.spoken_response);
+  const speechText = safeVisitorText(result.speech_text);
+  if (!assistantText || hasInternalLeakage(result.spoken_response) || hasInternalLeakage(result.speech_text)) {
+    return null;
+  }
+
   const activeSongs = catalog.filter(isActiveVisibleSong);
   const activeIds = new Set(activeSongs.map((song) => song.id));
   const requestedMatchedId = typeof result.matched_song_id === "string" ? result.matched_song_id : null;
@@ -158,7 +175,9 @@ export function normalizeAiSongRequestResult(
     context.pending_song_id && matchedSong?.id === context.pending_song_id && activeIds.has(context.pending_song_id),
   );
   const confirmedPlayback = result.intent === "confirmation_yes" && pendingSongIsValid;
-  const canGenerate = Boolean(confirmedPlayback && result.should_generate_schedule && result.needs_confirmation !== true);
+  const confidentRequest = result.intent === "song_request" && Boolean(matchedSong) &&
+    typeof result.confidence === "number" && result.confidence >= 0.9;
+  const canGenerate = Boolean((confirmedPlayback || confidentRequest) && result.should_generate_schedule && result.needs_confirmation !== true);
   const needsConfirmation = Boolean(
     matchedSong && !canGenerate && (isMusicRequestIntent(result.intent) || result.intent === "suggest_song" || result.needs_confirmation),
   );
@@ -169,8 +188,8 @@ export function normalizeAiSongRequestResult(
   const assistantMessage = invalidPlayableClaim
     ? safeBlockedMessage
     : needsConfirmation && matchedSong
-      ? `I can play ${matchedSong.title}. Do you want me to play it?`
-      : result.assistant_message;
+      ? `Did you mean ${matchedSong.title}? Say the song title to choose it.`
+      : assistantText;
 
   return {
     assistant_message: assistantMessage,
@@ -201,14 +220,14 @@ export function normalizeAiSongRequestResult(
     should_generate_schedule: canGenerate,
     should_search_catalog: shouldSearchCatalog,
     spoken_response:
-      typeof result.spoken_response === "string" && result.spoken_response.trim() && !invalidPlayableClaim
-        ? result.spoken_response
+      spokenText && !invalidPlayableClaim
+        ? spokenText
         : assistantMessage,
     speech_text:
-      typeof result.speech_text === "string" && result.speech_text.trim() && !invalidPlayableClaim
-        ? result.speech_text
-        : typeof result.spoken_response === "string" && result.spoken_response.trim() && !invalidPlayableClaim
-          ? result.spoken_response
+      speechText && !invalidPlayableClaim
+        ? speechText
+        : spokenText && !invalidPlayableClaim
+          ? spokenText
           : assistantMessage,
     suggested_song_ids: suggestedSongIds,
   };
@@ -216,14 +235,17 @@ export function normalizeAiSongRequestResult(
 
 export function isPreRouterDecision(value: unknown): value is AiPreRouterDecision {
   return (
+    value === "greeting" ||
+    value === "smalltalk" ||
     value === "confirmation" ||
-    value === "exact_catalog_match" ||
+    value === "high_confidence_song_match" ||
+    value === "ambiguous_song_match" ||
+    value === "reference" ||
     value === "list_songs" ||
-    value === "machine_question" ||
-    value === "angklung_question" ||
-    value === "catalog_recommendation" ||
-    value === "unsupported_song" ||
-    value === "limitation_explanation"
+    value === "genre" ||
+    value === "out_of_scope" ||
+    value === "protected_internal_request" ||
+    value === "transport_command"
   );
 }
 
@@ -270,4 +292,26 @@ function clampConfidence(value: number): number {
     return 0;
   }
   return Math.max(0, Math.min(1, value));
+}
+
+export function safeVisitorText(value: unknown): string | null {
+  if (typeof value !== "string") return null;
+  const text = value.trim();
+  if (!text || text.length > 1200 || !/[\p{L}\p{N}]/u.test(text)) return null;
+  return hasInternalLeakage(text) ? null : text;
+}
+
+function hasInternalLeakage(value: unknown): boolean {
+  if (typeof value !== "string") return false;
+  const suspicious = [
+    /\b(system|developer) (prompt|instructions?|message)\b/i,
+    /\bresponse_?schema\b/i,
+    /\bproject_?knowledge\b/i,
+    /\b(active_visible_catalog|matched_song_id|should_generate_schedule|assistant_message)\b/i,
+    /\b(angklobot-persona|angklung-basics|machine-architecture|rack-and-validation|song-library-rules|midi-conversion-process|wro-demo-explanation)\b/i,
+    /return (strict )?json/i,
+    /friendly,? confident,? concise,? and knowledgeable/i,
+    /^\s*\{[\s\S]*\}\s*$/,
+  ];
+  return suspicious.some((pattern) => pattern.test(value));
 }

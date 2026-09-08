@@ -8,6 +8,7 @@ export async function POST(request: Request): Promise<Response> {
   const formData = await request.formData().catch(() => null);
   const audio = formData?.get("audio");
   const language = formData?.get("language");
+  const wakeListening = formData?.get("purpose") === "wake";
 
   if (!(audio instanceof File) || (language !== "en" && language !== "id")) {
     return jsonResponse({ error: "A WAV recording and an English or Indonesian language selection are required." }, 400);
@@ -23,6 +24,14 @@ export async function POST(request: Request): Promise<Response> {
   }
 
   const serviceUrl = (process.env.WHISPER_SERVER_URL ?? "http://127.0.0.1:8080").replace(/\/$/, "");
+  if (wakeListening) {
+    try {
+      const url = new URL(serviceUrl);
+      if (!["localhost", "127.0.0.1", "[::1]"].includes(url.hostname) || !["http:", "https:"].includes(url.protocol)) throw new Error();
+    } catch {
+      return jsonResponse({ error: "Wake listening requires Whisper on this Mac (a localhost URL)." }, 503);
+    }
+  }
   const upstreamForm = new FormData();
   upstreamForm.append("file", audio, "angklobot-voice.wav");
   upstreamForm.append("language", language);
@@ -36,9 +45,14 @@ export async function POST(request: Request): Promise<Response> {
   upstreamForm.append("temperature", "0.0");
   upstreamForm.append("temperature_inc", "0.0");
   upstreamForm.append("translate", "false");
+  // Every wake segment and command is independent; never carry previous audio text forward.
+  upstreamForm.append("no_context", "true");
 
   const controller = new AbortController();
   const timeout = setTimeout(() => controller.abort(), TRANSCRIPTION_TIMEOUT_MS);
+  const abort = () => controller.abort();
+  request.signal.addEventListener("abort", abort, { once: true });
+  if (request.signal.aborted) controller.abort();
   try {
     const response = await fetch(`${serviceUrl}/inference`, {
       body: upstreamForm,
@@ -59,6 +73,7 @@ export async function POST(request: Request): Promise<Response> {
     return jsonResponse({ error: detail }, 503);
   } finally {
     clearTimeout(timeout);
+    request.signal.removeEventListener("abort", abort);
   }
 }
 
