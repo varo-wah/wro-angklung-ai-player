@@ -24,6 +24,7 @@ export class AudioEngine {
   private useHtmlAudioFallback = false;
   private activeOscillators = new Set<OscillatorNode>();
   private activeHtmlAudio = new Set<HTMLAudioElement>();
+  private noteVoices = new Map<string, () => void>();
 
   async ensureReady(): Promise<void> {
     const AudioContextClass = window.AudioContext ?? window.webkitAudioContext;
@@ -44,12 +45,16 @@ export class AudioEngine {
   }
 
   playNote(note: string, durationSeconds: number, strength: number) {
+    if (!Number.isFinite(durationSeconds) || durationSeconds <= 0 || !Number.isFinite(strength)) return;
+    this.noteVoices.get(note)?.();
+    this.noteVoices.delete(note);
     const frequency = noteToFrequency(note);
-    const toneDuration = Math.max(0.08, Math.min(durationSeconds, 1.4));
-    const level = Math.max(0.02, Math.min(strength, 1)) * 0.34;
+    const toneDuration = durationSeconds;
+    const level = Math.max(0, Math.min(strength, 1)) * 0.12;
+    if (level === 0) return;
 
     if (this.useHtmlAudioFallback) {
-      void this.playHtmlTone(frequency, toneDuration, level);
+      void this.playHtmlTone(frequency, toneDuration, level, note);
       return;
     }
 
@@ -57,19 +62,25 @@ export class AudioEngine {
     const now = context.currentTime;
     const oscillator = context.createOscillator();
     const gain = context.createGain();
-
     oscillator.type = "triangle";
     oscillator.frequency.setValueAtTime(frequency, now);
-    gain.gain.setValueAtTime(0.0001, now);
-    gain.gain.exponentialRampToValueAtTime(level, now + 0.015);
-    gain.gain.exponentialRampToValueAtTime(0.0001, now + toneDuration);
-
+    // A shaken instrument continues sounding while driven, rather than decaying
+    // like a struck bell. Keep gain proportional to command strength.
+    const curve = createShakeEnvelope(toneDuration, level);
+    gain.gain.setValueCurveAtTime(curve, now, toneDuration);
     oscillator.connect(gain);
     gain.connect(context.destination);
+    const stop = () => { try { oscillator.stop(); } catch { /* Already ended. */ } };
+    this.noteVoices.set(note, stop);
     this.activeOscillators.add(oscillator);
-    oscillator.addEventListener("ended", () => this.activeOscillators.delete(oscillator), { once: true });
+    oscillator.addEventListener("ended", () => {
+      this.activeOscillators.delete(oscillator);
+      if (this.noteVoices.get(note) === stop) this.noteVoices.delete(note);
+      oscillator.disconnect();
+      gain.disconnect();
+    }, { once: true });
     oscillator.start(now);
-    oscillator.stop(now + toneDuration + 0.04);
+    oscillator.stop(now + toneDuration);
   }
 
   stopAll(): void {
@@ -81,6 +92,7 @@ export class AudioEngine {
       }
     }
     this.activeOscillators.clear();
+    this.noteVoices.clear();
 
     for (const audio of this.activeHtmlAudio) {
       try {
@@ -124,10 +136,15 @@ export class AudioEngine {
     oscillator.stop(now + 0.02);
   }
 
-  private async playHtmlTone(frequency: number, durationSeconds: number, level: number): Promise<void> {
+  private async playHtmlTone(frequency: number, durationSeconds: number, level: number, note?: string): Promise<void> {
     const audio = new Audio(this.getToneDataUrl(frequency, durationSeconds, level));
     this.activeHtmlAudio.add(audio);
-    audio.addEventListener("ended", () => this.activeHtmlAudio.delete(audio), { once: true });
+    const stop = () => { audio.pause(); audio.currentTime = 0; this.activeHtmlAudio.delete(audio); };
+    if (note) this.noteVoices.set(note, stop);
+    audio.addEventListener("ended", () => {
+      this.activeHtmlAudio.delete(audio);
+      if (note && this.noteVoices.get(note) === stop) this.noteVoices.delete(note);
+    }, { once: true });
     try {
       await audio.play();
     } catch (error) {
@@ -137,16 +154,28 @@ export class AudioEngine {
   }
 
   private getToneDataUrl(frequency: number, durationSeconds: number, level: number): string {
-    const key = `${Math.round(frequency)}-${Math.round(durationSeconds * 100)}-${Math.round(level * 100)}`;
+    const key = `${frequency}-${durationSeconds}-${level}`;
     const cached = this.toneCache.get(key);
     if (cached) {
       return cached;
     }
 
     const dataUrl = createToneDataUrl(frequency, durationSeconds, level);
+    if (this.toneCache.size >= 128) this.toneCache.delete(this.toneCache.keys().next().value!);
     this.toneCache.set(key, dataUrl);
     return dataUrl;
   }
+}
+
+export function shakeEnvelopeAt(time: number, duration: number): number {
+  const fade = Math.min(0.015, duration / 4);
+  const edge = Math.max(0, Math.min(1, time / fade, (duration - time) / fade));
+  return edge * (0.88 + 0.12 * Math.cos(2 * Math.PI * 16 * time));
+}
+
+export function createShakeEnvelope(duration: number, level: number): Float32Array {
+  const count = Math.max(3, Math.ceil(duration * 200) + 1);
+  return Float32Array.from({ length: count }, (_, i) => level * shakeEnvelopeAt(i * duration / (count - 1), duration));
 }
 
 function createToneDataUrl(frequency: number, durationSeconds: number, level: number): string {
@@ -170,9 +199,10 @@ function createToneDataUrl(frequency: number, durationSeconds: number, level: nu
   view.setUint32(40, sampleCount * 2, true);
 
   for (let index = 0; index < sampleCount; index += 1) {
-    const progress = index / sampleCount;
-    const envelope = Math.min(1, progress * 30, (1 - progress) * 12);
-    const sample = Math.sin((2 * Math.PI * frequency * index) / sampleRate) * level * envelope;
+    const time = index / sampleRate;
+    const envelope = shakeEnvelopeAt(time, durationSeconds);
+    const triangle = (2 / Math.PI) * Math.asin(Math.sin(2 * Math.PI * frequency * time));
+    const sample = triangle * level * envelope;
     view.setInt16(44 + index * 2, Math.max(-1, Math.min(1, sample)) * 32767, true);
   }
 

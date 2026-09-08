@@ -2,142 +2,184 @@
 
 import { useCallback, useEffect, useRef, useState } from "react";
 import {
-  BrowserVoiceRecorder,
-  speakVoiceResponse,
-  stopSpeaking,
-  transcribeVoiceRecording,
-  type VoiceLanguage,
-  type VoiceState,
+  BrowserVoiceRecorder, VoiceCaptureError, speakVoiceResponse, stopSpeaking,
+  transcribeVoiceRecording, type VoiceLanguage, type VoiceState,
 } from "@/lib/voice";
+import { useWakeWord } from "@/hooks/useWakeWord";
 
 type VoiceAssistantOptions = {
+  onAfterResponse?: () => Promise<unknown>;
   onBeforeListen: () => void;
-  onTranscript: (transcript: string) => Promise<string | null>;
+  onWakeDetected?: () => Promise<void>;
+  onTranscript: (transcript: string, language: VoiceLanguage) => Promise<string | null>;
 };
 
-export function useVoiceAssistant({ onBeforeListen, onTranscript }: VoiceAssistantOptions) {
+export function useVoiceAssistant({ onAfterResponse, onBeforeListen, onWakeDetected, onTranscript }: VoiceAssistantOptions) {
   const [error, setError] = useState<string | null>(null);
   const [language, setLanguageState] = useState<VoiceLanguage>("en");
   const [muted, setMutedState] = useState(false);
+  const mutedRef = useRef(muted);
+  mutedRef.current = muted;
   const [state, setState] = useState<VoiceState>("idle");
   const [transcript, setTranscript] = useState("");
   const mountedRef = useRef(true);
   const recorderRef = useRef<BrowserVoiceRecorder | null>(null);
-  const optionsRef = useRef({ onBeforeListen, onTranscript });
+  const abortRef = useRef<AbortController | null>(null);
+  const utteranceRef = useRef<SpeechSynthesisUtterance | null>(null);
+  const busyRef = useRef(false);
+  const operationRef = useRef(0);
+  const speechRef = useRef(0);
+  const startRef = useRef<() => Promise<void>>(async () => {});
+  const optionsRef = useRef({ onAfterResponse, onBeforeListen, onWakeDetected, onTranscript });
+  optionsRef.current = { onAfterResponse, onBeforeListen, onWakeDetected, onTranscript };
 
-  optionsRef.current = { onBeforeListen, onTranscript };
+  const stopSpeech = useCallback(() => {
+    ++speechRef.current;
+    stopSpeaking();
+    utteranceRef.current = null;
+    if (mountedRef.current) setState((current) => current === "speaking" ? "idle" : current);
+  }, []);
+
+  const cancelListening = useCallback(() => {
+    ++operationRef.current;
+    recorderRef.current?.cancel();
+    recorderRef.current = null;
+    abortRef.current?.abort();
+    stopSpeech();
+    // Keep a cancelled in-flight request busy until its promise actually settles.
+    if (mountedRef.current) setState(busyRef.current ? "thinking" : "idle");
+  }, [stopSpeech]);
+
+  const wakeWord = useWakeWord({
+    voiceState: state,
+    onWake: async () => {
+      await optionsRef.current.onWakeDetected?.();
+      await startRef.current();
+    },
+    onFatal: cancelListening,
+  });
 
   useEffect(() => {
-    const storedLanguage = window.localStorage.getItem("angklobot.voice.language");
-    const storedMuted = window.localStorage.getItem("angklobot.voice.muted");
-    if (storedLanguage === "en" || storedLanguage === "id") {
-      setLanguageState(storedLanguage);
-    }
-    setMutedState(storedMuted === "true");
+    mountedRef.current = true;
+    try {
+      const storedLanguage = window.localStorage.getItem("angklobot.voice.language");
+      if (storedLanguage === "en" || storedLanguage === "id") setLanguageState(storedLanguage);
+      setMutedState(window.localStorage.getItem("angklobot.voice.muted") === "true");
+    } catch { /* Private browsing may disable storage. */ }
     return () => {
       mountedRef.current = false;
+      ++operationRef.current;
+      ++speechRef.current;
       recorderRef.current?.cancel();
+      abortRef.current?.abort();
       stopSpeaking();
+      utteranceRef.current = null;
     };
   }, []);
 
-  const stopSpeech = useCallback(() => {
+  const speak = useCallback(async (text: string | null) => {
+    const speech = ++speechRef.current;
     stopSpeaking();
-    setState((current) => (current === "speaking" ? "idle" : current));
-  }, []);
-
-  const speak = useCallback(
-    (text: string | null) => {
-      if (!text || muted) {
-        setState("idle");
-        return;
-      }
+    if (!text?.trim() || mutedRef.current) {
+      await optionsRef.current.onAfterResponse?.();
+      setState("idle");
+      return;
+    }
+    // Mark busy before the browser queues an utterance; onstart can be delayed.
+    setState("speaking");
+    try {
+      await wakeWord.suspend();
+      if (!mountedRef.current || speech !== speechRef.current) return;
       const utterance = speakVoiceResponse(text, language, {
-        onEnd: () => mountedRef.current && setState("idle"),
-        onStart: () => mountedRef.current && setState("speaking"),
+        onEnd: () => {
+          if (mountedRef.current && speech === speechRef.current) {
+            utteranceRef.current = null;
+            void optionsRef.current.onAfterResponse?.().finally(() => {
+              if (mountedRef.current && speech === speechRef.current) setState("idle");
+            });
+          }
+        },
+        onStart: () => {},
       });
-      if (!utterance) {
-        setError("Spoken responses are not supported by this browser.");
+      utteranceRef.current = utterance;
+      if (!utterance) throw new Error("Spoken responses are not supported by this browser.");
+    } catch (caught) {
+      if (mountedRef.current && speech === speechRef.current) {
+        await optionsRef.current.onAfterResponse?.();
+        setError(caught instanceof Error ? caught.message : "Speech output failed.");
         setState("error");
+        wakeWord.fail(caught);
       }
-    },
-    [language, muted],
-  );
+    }
+  }, [language, wakeWord.suspend, wakeWord.fail]);
 
-  const startListening = useCallback(async () => {
-    if (state === "listening") {
-      recorderRef.current?.stop();
+  const runRequest = useCallback(async (text?: string) => {
+    if (busyRef.current) {
+      if (text === undefined) recorderRef.current?.stop();
       return;
     }
-    if (state === "transcribing" || state === "thinking") {
-      return;
-    }
-
-    stopSpeaking();
-    optionsRef.current.onBeforeListen();
+    if (text !== undefined && !text.trim()) return;
+    busyRef.current = true;
+    const operation = ++operationRef.current;
+    stopSpeech();
     setError(null);
     setTranscript("");
-    setState("listening");
-    const recorder = new BrowserVoiceRecorder();
-    recorderRef.current = recorder;
-
+    const isCurrent = () => mountedRef.current && operation === operationRef.current;
     try {
-      const recording = await recorder.recordUntilSilence();
-      if (!mountedRef.current) return;
-      recorderRef.current = null;
-      setState("transcribing");
-      const recognizedText = await transcribeVoiceRecording(recording, language);
-      if (!mountedRef.current) return;
-      setTranscript(recognizedText);
-      setState("thinking");
-      const response = await optionsRef.current.onTranscript(recognizedText);
-      if (!mountedRef.current) return;
-      speak(response);
-    } catch (caughtError) {
-      if (!mountedRef.current) return;
-      const message = caughtError instanceof Error ? caughtError.message : "Voice input failed.";
-      if (message === "Voice capture cancelled.") {
-        setState("idle");
-        return;
+      setState(text === undefined ? "listening" : "thinking");
+      await wakeWord.suspend();
+      if (!isCurrent()) return;
+      let request = text;
+      if (request === undefined) {
+        optionsRef.current.onBeforeListen();
+        const recorder = new BrowserVoiceRecorder();
+        recorderRef.current = recorder;
+        const recording = await recorder.recordUntilSilence();
+        if (!isCurrent()) return;
+        recorderRef.current = null;
+        setState("transcribing");
+        const controller = new AbortController();
+        abortRef.current = controller;
+        request = await transcribeVoiceRecording(recording, language, controller.signal);
+        if (!isCurrent()) return;
+        setTranscript(request);
       }
-      setError(message);
-      setState("error");
+      setState("thinking");
+      const response = await optionsRef.current.onTranscript(request, language);
+      if (isCurrent()) await speak(response);
+    } catch (caught) {
+      if (!isCurrent()) return;
+      if (caught instanceof VoiceCaptureError && caught.code === "cancelled") { setState("idle"); return; }
+      setError(caught instanceof Error ? caught.message : "Voice input failed.");
+      if (caught instanceof VoiceCaptureError && caught.code === "no_speech") {
+        setState("idle"); // A missed command can return to wake listening.
+      } else {
+        setState("error");
+        wakeWord.fail(caught);
+      }
     } finally {
       recorderRef.current = null;
+      abortRef.current = null;
+      busyRef.current = false;
+      if (mountedRef.current && operation !== operationRef.current) setState("idle");
     }
-  }, [language, speak, state]);
+  }, [language, speak, stopSpeech, wakeWord.suspend, wakeWord.fail]);
 
-  const cancelListening = useCallback(() => {
-    recorderRef.current?.cancel();
-    recorderRef.current = null;
-    setState("idle");
-  }, []);
+  const startListening = useCallback(() => runRequest(), [runRequest]);
+  startRef.current = startListening;
 
   const setLanguage = useCallback((nextLanguage: VoiceLanguage) => {
     setLanguageState(nextLanguage);
-    window.localStorage.setItem("angklobot.voice.language", nextLanguage);
+    try { window.localStorage.setItem("angklobot.voice.language", nextLanguage); } catch { /* Optional preference. */ }
   }, []);
 
   const setMuted = useCallback((nextMuted: boolean) => {
+    mutedRef.current = nextMuted;
     setMutedState(nextMuted);
-    window.localStorage.setItem("angklobot.voice.muted", String(nextMuted));
-    if (nextMuted) {
-      stopSpeaking();
-      setState((current) => (current === "speaking" ? "idle" : current));
-    }
-  }, []);
+    try { window.localStorage.setItem("angklobot.voice.muted", String(nextMuted)); } catch { /* Optional preference. */ }
+    if (nextMuted) stopSpeech();
+  }, [stopSpeech]);
 
-  return {
-    cancelListening,
-    error,
-    language,
-    muted,
-    setLanguage,
-    setMuted,
-    speak,
-    startListening,
-    state,
-    stopSpeech,
-    transcript,
-  };
+  return { cancelListening, error, language, muted, setLanguage, setMuted, speak,
+    startListening, submitText: runRequest, state, stopSpeech, transcript, wakeWord };
 }

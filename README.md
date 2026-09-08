@@ -179,6 +179,10 @@ ANGKLOBOT_WHISPER_THREADS=6 scripts/start_voice_macos.sh
 
 The multilingual `small` model is a larger optional accuracy upgrade. Both models should be tested for Indonesian accuracy and latency in the actual competition environment. The local service URL defaults to `http://127.0.0.1:8080` and can be changed for the Next.js server with `WHISPER_SERVER_URL`.
 
+### Optional local “Hey Angklobot” mode
+
+The Guest page includes an optional “Hey Angklobot” toggle using short browser microphone recordings and the existing local Whisper server. Enable it, say the wake phrase by itself, then wait for “Listening to command” before speaking your request. No custom model, training, access key, or separate wake-word service is required. The openWakeWord training path is paused. The existing Mic button remains available. See [local setup, matching rules, limitations, and tests](docs/wakeword-macos.md).
+
 The Guest Interface can accept chatbot-style song requests:
 
 - A Whole New World

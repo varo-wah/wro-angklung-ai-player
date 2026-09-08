@@ -13,9 +13,12 @@ const SLOWER_TEMPO_SCALE = 1.25;
 export function buildScheduleFromBuiltInSong(song: LoadedSong, settings: ArrangementSettings): ActuatorSchedule {
   const effectiveSettings: ArrangementSettings =
     song.category === "hardware_trial" ? { ...settings, tempo: "normal", mode: "melody" } : settings;
-  const scale = effectiveSettings.tempo === "slower" ? SLOWER_TEMPO_SCALE : 1;
+  const profile = song.category === "hardware_trial" ? undefined : song.performance_profile;
+  const baseTempo = profile?.tempo_bpm ?? song.tempo_bpm;
+  const scale = (song.tempo_bpm / baseTempo) * (effectiveSettings.tempo === "slower" ? SLOWER_TEMPO_SCALE : 1);
   const notes = scaleNotes(song.notes, scale);
   const commands = buildCommands(notes, effectiveSettings);
+  if (profile) applyReleaseGaps(commands, profile.release_seconds, profile.repeat_gap_seconds);
 
   const totalDurationSeconds = commands.reduce(
     (max, command) => Math.max(max, command.start_time_seconds + command.duration_seconds),
@@ -27,7 +30,7 @@ export function buildScheduleFromBuiltInSong(song: LoadedSong, settings: Arrange
     project: "wro-angklung-ai-player",
     song: {
       title: song.title,
-      tempo_bpm: effectiveSettings.tempo === "slower" ? Math.round(song.tempo_bpm / SLOWER_TEMPO_SCALE) : song.tempo_bpm,
+      tempo_bpm: effectiveSettings.tempo === "slower" ? Math.round(baseTempo / SLOWER_TEMPO_SCALE) : baseTempo,
       time_signature: song.time_signature ?? "4/4",
     },
     generated_at: new Date().toISOString(),
@@ -71,11 +74,11 @@ function buildCommands(notes: SongNote[], settings: ArrangementSettings): Actuat
           {
             note: harmonyNote,
             start: note.start,
-            duration: Math.min(note.duration, 0.45),
+            duration: Math.min(playbackDuration(note), 0.45),
           },
           commands.length + 1,
           settings,
-          clampStrength(settings.strength * 0.85),
+          settings.strength * songStrengthMultiplier(note) * 0.85,
         ),
       );
     }
@@ -97,8 +100,8 @@ function createCommand(note: SongNote, commandNumber: number, settings: Arrangem
     instrument_id: mapping.instrument_id,
     actuator_channel: mapping.actuator_channel,
     action: "shake",
-    duration_seconds: roundSeconds(note.duration),
-    strength: clampStrength(strengthOverride ?? settings.strength),
+    duration_seconds: playbackDuration(note),
+    strength: clampStrength(strengthOverride ?? settings.strength * songStrengthMultiplier(note)),
   };
 }
 
@@ -122,4 +125,41 @@ function roundSeconds(value: number): number {
 
 function clampStrength(value: number): number {
   return Math.max(0, Math.min(1, Math.round(value * 100) / 100));
+}
+
+function songStrengthMultiplier(note: SongNote): number {
+  const multiplier = note.playback_strength_multiplier;
+  if (multiplier === undefined) return 1;
+  if (!Number.isFinite(multiplier) || multiplier < 0) {
+    throw new Error(`Invalid playback strength multiplier for ${note.note}.`);
+  }
+  return multiplier;
+}
+
+function playbackDuration(note: SongNote): number {
+  const multiplier = note.playback_duration_multiplier ?? 1;
+  if (!Number.isFinite(multiplier) || multiplier <= 0 || multiplier > 1) {
+    throw new Error(`Invalid playback duration multiplier for ${note.note}.`);
+  }
+  return roundSeconds(note.duration * multiplier);
+}
+
+// Release earlier without moving any attack or changing strength. Preserve at
+// least 75% of short holds in the general trim, then separate same-channel
+// retriggers where possible. Simultaneous duplicates are left for validation.
+export function applyReleaseGaps(commands: ActuatorCommand[], release: number, repeatGap: number): void {
+  const nextByChannel = new Map<number, ActuatorCommand>();
+  for (let i = commands.length - 1; i >= 0; i--) {
+    const command = commands[i];
+    const original = command.duration_seconds;
+    const minimum = Math.min(original, 0.07);
+    let hold = Math.max(minimum, original - Math.min(release, original * 0.25));
+    const next = nextByChannel.get(command.actuator_channel);
+    if (next && next.start_time_seconds > command.start_time_seconds) {
+      const available = next.start_time_seconds - command.start_time_seconds - repeatGap;
+      if (available >= minimum) hold = Math.min(hold, available);
+    }
+    command.duration_seconds = roundSeconds(hold);
+    nextByChannel.set(command.actuator_channel, command);
+  }
 }

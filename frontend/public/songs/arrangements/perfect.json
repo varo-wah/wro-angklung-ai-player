@@ -81,6 +81,7 @@
     },
     {
       "note": "G5",
+      "playback_strength_multiplier": 1.05,
       "beat": 0.333333,
       "duration_beats": 0.666667,
       "velocity": 72,
@@ -91,6 +92,7 @@
     },
     {
       "note": "C6",
+      "playback_strength_multiplier": 1.05,
       "beat": 0.666667,
       "duration_beats": 0.333333,
       "velocity": 72,
@@ -111,6 +113,7 @@
     },
     {
       "note": "C6",
+      "playback_strength_multiplier": 1.05,
       "beat": 1.0,
       "duration_beats": 2.0,
       "velocity": 89,
@@ -181,6 +184,7 @@
     },
     {
       "note": "C6",
+      "playback_strength_multiplier": 1.05,
       "beat": 4.333333,
       "duration_beats": 0.333333,
       "velocity": 80,
@@ -291,6 +295,7 @@
     },
     {
       "note": "C6",
+      "playback_strength_multiplier": 1.05,
       "beat": 9.666667,
       "duration_beats": 0.25,
       "velocity": 89,
@@ -311,6 +316,7 @@
     },
     {
       "note": "C6",
+      "playback_strength_multiplier": 1.05,
       "beat": 10.0,
       "duration_beats": 0.25,
       "velocity": 80,
@@ -341,6 +347,7 @@
     },
     {
       "note": "C6",
+      "playback_strength_multiplier": 1.05,
       "beat": 12.0,
       "duration_beats": 0.25,
       "velocity": 89,
@@ -441,6 +448,7 @@
     },
     {
       "note": "C6",
+      "playback_strength_multiplier": 1.05,
       "beat": 16.666667,
       "duration_beats": 0.333333,
       "velocity": 89,
@@ -501,6 +509,7 @@
     },
     {
       "note": "G5",
+      "playback_strength_multiplier": 1.05,
       "beat": 20.0,
       "duration_beats": 0.333333,
       "velocity": 89,
@@ -530,6 +539,7 @@
     },
     {
       "note": "C6",
+      "playback_strength_multiplier": 1.05,
       "beat": 21.0,
       "duration_beats": 0.333333,
       "velocity": 89,
@@ -550,6 +560,7 @@
     },
     {
       "note": "C6",
+      "playback_strength_multiplier": 1.05,
       "beat": 22.0,
       "duration_beats": 0.333333,
       "velocity": 80,
@@ -580,6 +591,7 @@
     },
     {
       "note": "C6",
+      "playback_strength_multiplier": 1.05,
       "beat": 24.0,
       "duration_beats": 0.333333,
       "velocity": 89,
@@ -680,6 +692,7 @@
     },
     {
       "note": "C6",
+      "playback_strength_multiplier": 1.05,
       "beat": 27.333333,
       "duration_beats": 0.333333,
       "velocity": 89,
@@ -700,6 +713,7 @@
     },
     {
       "note": "C6",
+      "playback_strength_multiplier": 1.05,
       "beat": 28.0,
       "duration_beats": 0.333333,
       "velocity": 89,
@@ -760,6 +774,7 @@
     },
     {
       "note": "G5",
+      "playback_strength_multiplier": 1.05,
       "beat": 31.0,
       "duration_beats": 0.333333,
       "velocity": 89,
@@ -769,6 +784,7 @@
     },
     {
       "note": "G5",
+      "playback_strength_multiplier": 1.05,
       "beat": 31.333333,
       "duration_beats": 0.333333,
       "velocity": 86,
@@ -778,6 +794,7 @@
     },
     {
       "note": "G5",
+      "playback_strength_multiplier": 1.05,
       "beat": 31.666667,
       "duration_beats": 0.333333,
       "velocity": 80,
@@ -787,6 +804,7 @@
     },
     {
       "note": "A5",
+      "playback_strength_multiplier": 1.05,
       "beat": 32.0,
       "duration_beats": 0.333333,
       "velocity": 89,
@@ -906,6 +924,7 @@
     },
     {
       "note": "C6",
+      "playback_strength_multiplier": 1.05,
       "beat": 36.666667,
       "duration_beats": 0.333333,
       "velocity": 89,
@@ -1006,6 +1025,7 @@
     },
     {
       "note": "C6",
+      "playback_strength_multiplier": 1.05,
       "beat": 40.666667,
       "duration_beats": 0.333333,
       "velocity": 89,
@@ -1066,6 +1086,7 @@
     },
     {
       "note": "C6",
+      "playback_strength_multiplier": 1.05,
       "beat": 43.0,
       "duration_beats": 0.333333,
       "velocity": 89,
@@ -1086,6 +1107,7 @@
     },
     {
       "note": "G5",
+      "playback_strength_multiplier": 1.05,
       "beat": 44.0,
       "duration_beats": 0.333333,
       "velocity": 89,
@@ -1196,6 +1218,7 @@
     },
     {
       "note": "C6",
+      "playback_strength_multiplier": 1.05,
       "beat": 48.666667,
       "duration_beats": 0.333333,
       "velocity": 89,
@@ -1296,6 +1319,7 @@
     },
     {
       "note": "C6",
+      "playback_strength_multiplier": 1.05,
       "beat": 52.666667,
       "duration_beats": 0.333333,
       "velocity": 89,
@@ -1396,6 +1420,7 @@
     },
     {
       "note": "C6",
+      "playback_strength_multiplier": 1.05,
       "beat": 56.666667,
       "duration_beats": 0.333333,
       "velocity": 89,
@@ -1456,6 +1481,7 @@
     },
     {
       "note": "C6",
+      "playback_strength_multiplier": 1.05,
       "beat": 59.0,
       "duration_beats": 0.333333,
       "velocity": 89,
@@ -1476,6 +1502,7 @@
     },
     {
       "note": "G5",
+      "playback_strength_multiplier": 1.05,
       "beat": 60.0,
       "duration_beats": 0.333333,
       "velocity": 89,
@@ -1496,6 +1523,7 @@
     },
     {
       "note": "C6",
+      "playback_strength_multiplier": 1.05,
       "beat": 60.666667,
       "duration_beats": 0.333333,
       "velocity": 89,
@@ -1536,6 +1564,7 @@
     },
     {
       "note": "G5",
+      "playback_strength_multiplier": 1.05,
       "beat": 63.0,
       "duration_beats": 0.333333,
       "velocity": 89,
@@ -1565,6 +1594,7 @@
     },
     {
       "note": "C6",
+      "playback_strength_multiplier": 1.05,
       "beat": 65.0,
       "duration_beats": 0.333333,
       "velocity": 89,
@@ -1595,6 +1625,7 @@
     },
     {
       "note": "C6",
+      "playback_strength_multiplier": 1.05,
       "beat": 67.0,
       "duration_beats": 0.333333,
       "velocity": 89,
@@ -1604,6 +1635,7 @@
     },
     {
       "note": "B5",
+      "playback_strength_multiplier": 1.05,
       "beat": 67.666667,
       "duration_beats": 0.333333,
       "velocity": 89,
@@ -1623,6 +1655,7 @@
     },
     {
       "note": "A5",
+      "playback_strength_multiplier": 1.05,
       "beat": 68.0,
       "duration_beats": 0.333333,
       "velocity": 89,
@@ -1632,6 +1665,7 @@
     },
     {
       "note": "B5",
+      "playback_strength_multiplier": 1.05,
       "beat": 68.666667,
       "duration_beats": 0.333333,
       "velocity": 89,
@@ -1681,6 +1715,7 @@
     },
     {
       "note": "G5",
+      "playback_strength_multiplier": 1.05,
       "beat": 71.0,
       "duration_beats": 0.333333,
       "velocity": 89,
@@ -1740,6 +1775,7 @@
     },
     {
       "note": "C6",
+      "playback_strength_multiplier": 1.05,
       "beat": 73.0,
       "duration_beats": 0.333333,
       "velocity": 89,
@@ -1770,6 +1806,7 @@
     },
     {
       "note": "C6",
+      "playback_strength_multiplier": 1.05,
       "beat": 75.0,
       "duration_beats": 0.333333,
       "velocity": 89,
@@ -1779,6 +1816,7 @@
     },
     {
       "note": "B5",
+      "playback_strength_multiplier": 1.05,
       "beat": 75.666667,
       "duration_beats": 0.333333,
       "velocity": 89,
@@ -1798,6 +1836,7 @@
     },
     {
       "note": "A5",
+      "playback_strength_multiplier": 1.05,
       "beat": 76.0,
       "duration_beats": 0.333333,
       "velocity": 89,
@@ -1807,6 +1846,7 @@
     },
     {
       "note": "C6",
+      "playback_strength_multiplier": 1.05,
       "beat": 76.666667,
       "duration_beats": 0.333333,
       "velocity": 89,
@@ -1857,6 +1897,7 @@
     },
     {
       "note": "G5",
+      "playback_strength_multiplier": 1.05,
       "beat": 79.0,
       "duration_beats": 0.333333,
       "velocity": 89,
@@ -1866,6 +1907,7 @@
     },
     {
       "note": "G5",
+      "playback_strength_multiplier": 1.05,
       "beat": 79.333333,
       "duration_beats": 0.333333,
       "velocity": 70,
@@ -1875,6 +1917,7 @@
     },
     {
       "note": "G5",
+      "playback_strength_multiplier": 1.05,
       "beat": 79.666667,
       "duration_beats": 0.333333,
       "velocity": 73,
@@ -1894,6 +1937,7 @@
     },
     {
       "note": "G5",
+      "playback_strength_multiplier": 1.05,
       "beat": 80.0,
       "duration_beats": 0.333333,
       "velocity": 68,
@@ -1903,6 +1947,7 @@
     },
     {
       "note": "A5",
+      "playback_strength_multiplier": 1.05,
       "beat": 80.333333,
       "duration_beats": 0.333333,
       "velocity": 89,
@@ -1942,6 +1987,7 @@
     },
     {
       "note": "C6",
+      "playback_strength_multiplier": 1.05,
       "beat": 81.666667,
       "duration_beats": 0.333333,
       "velocity": 89,
@@ -1972,6 +2018,7 @@
     },
     {
       "note": "G5",
+      "playback_strength_multiplier": 1.05,
       "beat": 82.666667,
       "duration_beats": 0.333333,
       "velocity": 89,
@@ -1991,6 +2038,7 @@
     },
     {
       "note": "C6",
+      "playback_strength_multiplier": 1.05,
       "beat": 83.0,
       "duration_beats": 0.333333,
       "velocity": 89,
@@ -2000,6 +2048,7 @@
     },
     {
       "note": "B5",
+      "playback_strength_multiplier": 1.05,
       "beat": 83.666667,
       "duration_beats": 0.333333,
       "velocity": 89,
@@ -2019,6 +2068,7 @@
     },
     {
       "note": "A5",
+      "playback_strength_multiplier": 1.05,
       "beat": 84.0,
       "duration_beats": 0.333333,
       "velocity": 89,
@@ -2028,6 +2078,7 @@
     },
     {
       "note": "B5",
+      "playback_strength_multiplier": 1.05,
       "beat": 84.666667,
       "duration_beats": 0.333333,
       "velocity": 89,
@@ -2067,6 +2118,7 @@
     },
     {
       "note": "C6",
+      "playback_strength_multiplier": 1.05,
       "beat": 86.0,
       "duration_beats": 0.333333,
       "velocity": 89,
@@ -2107,6 +2159,7 @@
     },
     {
       "note": "G5",
+      "playback_strength_multiplier": 1.05,
       "beat": 87.0,
       "duration_beats": 0.333333,
       "velocity": 89,
@@ -2186,6 +2239,7 @@
     },
     {
       "note": "C6",
+      "playback_strength_multiplier": 1.05,
       "beat": 90.0,
       "duration_beats": 0.333333,
       "velocity": 89,
@@ -2236,6 +2290,7 @@
     },
     {
       "note": "C6",
+      "playback_strength_multiplier": 1.05,
       "beat": 92.666667,
       "duration_beats": 0.166667,
       "velocity": 89,
@@ -2326,6 +2381,7 @@
     },
     {
       "note": "C6",
+      "playback_strength_multiplier": 1.05,
       "beat": 96.0,
       "duration_beats": 0.166667,
       "velocity": 89,
@@ -2336,6 +2392,7 @@
     },
     {
       "note": "C6",
+      "playback_strength_multiplier": 1.05,
       "beat": 96.666667,
       "duration_beats": 0.166667,
       "velocity": 89,
@@ -2396,6 +2453,7 @@
     },
     {
       "note": "C6",
+      "playback_strength_multiplier": 1.05,
       "beat": 99.0,
       "duration_beats": 1.0,
       "velocity": 89,
@@ -2416,6 +2474,7 @@
     },
     {
       "note": "B5",
+      "playback_strength_multiplier": 1.05,
       "beat": 100.0,
       "duration_beats": 1.0,
       "velocity": 89,
@@ -2436,6 +2495,7 @@
     },
     {
       "note": "A5",
+      "playback_strength_multiplier": 1.05,
       "beat": 101.0,
       "duration_beats": 1.989583,
       "velocity": 89,
@@ -2466,6 +2526,7 @@
     },
     {
       "note": "B5",
+      "playback_strength_multiplier": 1.05,
       "beat": 103.0,
       "duration_beats": 1.989583,
       "velocity": 89,
@@ -2486,6 +2547,7 @@
     },
     {
       "note": "G5",
+      "playback_strength_multiplier": 1.05,
       "beat": 104.333333,
       "duration_beats": 0.333333,
       "velocity": 89,
@@ -2565,6 +2627,7 @@
     },
     {
       "note": "C6",
+      "playback_strength_multiplier": 1.05,
       "beat": 108.0,
       "duration_beats": 0.333333,
       "velocity": 89,
@@ -2615,6 +2678,7 @@
     },
     {
       "note": "C6",
+      "playback_strength_multiplier": 1.05,
       "beat": 109.333333,
       "duration_beats": 0.333333,
       "velocity": 89,
@@ -2625,6 +2689,7 @@
     },
     {
       "note": "C6",
+      "playback_strength_multiplier": 1.05,
       "beat": 109.666667,
       "duration_beats": 0.333333,
       "velocity": 79,
@@ -2645,6 +2710,7 @@
     },
     {
       "note": "C6",
+      "playback_strength_multiplier": 1.05,
       "beat": 110.0,
       "duration_beats": 0.333333,
       "velocity": 67,
@@ -2655,6 +2721,7 @@
     },
     {
       "note": "C6",
+      "playback_strength_multiplier": 1.05,
       "beat": 110.333333,
       "duration_beats": 0.333333,
       "velocity": 89,
@@ -2685,6 +2752,7 @@
     },
     {
       "note": "C6",
+      "playback_strength_multiplier": 1.05,
       "beat": 112.0,
       "duration_beats": 0.333333,
       "velocity": 89,
@@ -2795,6 +2863,7 @@
     },
     {
       "note": "C6",
+      "playback_strength_multiplier": 1.05,
       "beat": 115.333333,
       "duration_beats": 0.333333,
       "velocity": 89,
@@ -2815,6 +2884,7 @@
     },
     {
       "note": "C6",
+      "playback_strength_multiplier": 1.05,
       "beat": 116.0,
       "duration_beats": 0.333333,
       "velocity": 89,
@@ -2905,6 +2975,7 @@
     },
     {
       "note": "G5",
+      "playback_strength_multiplier": 1.05,
       "beat": 119.166667,
       "duration_beats": 0.166667,
       "velocity": 89,
@@ -2924,6 +2995,7 @@
     },
     {
       "note": "A5",
+      "playback_strength_multiplier": 1.05,
       "beat": 120.0,
       "duration_beats": 0.333333,
       "velocity": 89,
@@ -2933,6 +3005,7 @@
     },
     {
       "note": "G5",
+      "playback_strength_multiplier": 1.05,
       "beat": 120.333333,
       "duration_beats": 0.333333,
       "velocity": 89,
@@ -2942,6 +3015,7 @@
     },
     {
       "note": "G5",
+      "playback_strength_multiplier": 1.05,
       "beat": 120.666667,
       "duration_beats": 0.333333,
       "velocity": 89,
@@ -2971,6 +3045,7 @@
     },
     {
       "note": "C6",
+      "playback_strength_multiplier": 1.05,
       "beat": 121.666667,
       "duration_beats": 0.333333,
       "velocity": 89,
@@ -3021,6 +3096,7 @@
     },
     {
       "note": "G5",
+      "playback_strength_multiplier": 1.05,
       "beat": 124.833333,
       "duration_beats": 0.166667,
       "velocity": 89,
@@ -3040,6 +3116,7 @@
     },
     {
       "note": "G5",
+      "playback_strength_multiplier": 1.05,
       "beat": 125.0,
       "duration_beats": 0.333333,
       "velocity": 89,
@@ -3109,6 +3186,7 @@
     },
     {
       "note": "C6",
+      "playback_strength_multiplier": 1.05,
       "beat": 127.333333,
       "duration_beats": 0.333333,
       "velocity": 89,
@@ -3129,6 +3207,7 @@
     },
     {
       "note": "C6",
+      "playback_strength_multiplier": 1.05,
       "beat": 128.5,
       "duration_beats": 0.166667,
       "velocity": 89,
@@ -3189,6 +3268,7 @@
     },
     {
       "note": "C6",
+      "playback_strength_multiplier": 1.05,
       "beat": 130.166667,
       "duration_beats": 0.166667,
       "velocity": 89,
@@ -3199,6 +3279,7 @@
     },
     {
       "note": "G5",
+      "playback_strength_multiplier": 1.05,
       "beat": 130.333333,
       "duration_beats": 0.166667,
       "velocity": 89,
@@ -3238,6 +3319,7 @@
     },
     {
       "note": "C6",
+      "playback_strength_multiplier": 1.05,
       "beat": 131.333333,
       "duration_beats": 0.166667,
       "velocity": 89,
@@ -3258,6 +3340,7 @@
     },
     {
       "note": "C6",
+      "playback_strength_multiplier": 1.05,
       "beat": 132.333333,
       "duration_beats": 0.333333,
       "velocity": 89,
@@ -3318,6 +3401,7 @@
     },
     {
       "note": "G5",
+      "playback_strength_multiplier": 1.05,
       "beat": 135.0,
       "duration_beats": 0.333333,
       "velocity": 89,
@@ -3327,6 +3411,7 @@
     },
     {
       "note": "G5",
+      "playback_strength_multiplier": 1.05,
       "beat": 135.333333,
       "duration_beats": 0.333333,
       "velocity": 89,
@@ -3336,6 +3421,7 @@
     },
     {
       "note": "G5",
+      "playback_strength_multiplier": 1.05,
       "beat": 135.666667,
       "duration_beats": 0.333333,
       "velocity": 89,
@@ -3355,6 +3441,7 @@
     },
     {
       "note": "A5",
+      "playback_strength_multiplier": 1.05,
       "beat": 136.0,
       "duration_beats": 0.333333,
       "velocity": 89,
@@ -3474,6 +3561,7 @@
     },
     {
       "note": "C6",
+      "playback_strength_multiplier": 1.05,
       "beat": 140.666667,
       "duration_beats": 0.333333,
       "velocity": 89,
@@ -3574,6 +3662,7 @@
     },
     {
       "note": "C6",
+      "playback_strength_multiplier": 1.05,
       "beat": 144.666667,
       "duration_beats": 0.333333,
       "velocity": 89,
@@ -3634,6 +3723,7 @@
     },
     {
       "note": "C6",
+      "playback_strength_multiplier": 1.05,
       "beat": 147.0,
       "duration_beats": 0.333333,
       "velocity": 89,
@@ -3654,6 +3744,7 @@
     },
     {
       "note": "G5",
+      "playback_strength_multiplier": 1.05,
       "beat": 148.0,
       "duration_beats": 0.333333,
       "velocity": 89,
@@ -3764,6 +3855,7 @@
     },
     {
       "note": "C6",
+      "playback_strength_multiplier": 1.05,
       "beat": 152.666667,
       "duration_beats": 0.333333,
       "velocity": 89,
@@ -3864,6 +3956,7 @@
     },
     {
       "note": "C6",
+      "playback_strength_multiplier": 1.05,
       "beat": 156.666667,
       "duration_beats": 0.333333,
       "velocity": 89,
@@ -3964,6 +4057,7 @@
     },
     {
       "note": "C6",
+      "playback_strength_multiplier": 1.05,
       "beat": 160.666667,
       "duration_beats": 0.333333,
       "velocity": 89,
@@ -4024,6 +4118,7 @@
     },
     {
       "note": "C6",
+      "playback_strength_multiplier": 1.05,
       "beat": 163.0,
       "duration_beats": 0.333333,
       "velocity": 89,
@@ -4044,6 +4139,7 @@
     },
     {
       "note": "G5",
+      "playback_strength_multiplier": 1.05,
       "beat": 164.0,
       "duration_beats": 0.333333,
       "velocity": 89,
@@ -4064,6 +4160,7 @@
     },
     {
       "note": "C6",
+      "playback_strength_multiplier": 1.05,
       "beat": 164.666667,
       "duration_beats": 0.333333,
       "velocity": 89,
@@ -4104,6 +4201,7 @@
     },
     {
       "note": "G5",
+      "playback_strength_multiplier": 1.05,
       "beat": 167.0,
       "duration_beats": 0.333333,
       "velocity": 89,
@@ -4133,6 +4231,7 @@
     },
     {
       "note": "C6",
+      "playback_strength_multiplier": 1.05,
       "beat": 169.0,
       "duration_beats": 0.333333,
       "velocity": 89,
@@ -4163,6 +4262,7 @@
     },
     {
       "note": "C6",
+      "playback_strength_multiplier": 1.05,
       "beat": 171.0,
       "duration_beats": 0.333333,
       "velocity": 89,
@@ -4181,6 +4281,7 @@
     },
     {
       "note": "B5",
+      "playback_strength_multiplier": 1.05,
       "beat": 171.666667,
       "duration_beats": 0.333333,
       "velocity": 89,
@@ -4209,6 +4310,7 @@
     },
     {
       "note": "A5",
+      "playback_strength_multiplier": 1.05,
       "beat": 172.0,
       "duration_beats": 0.333333,
       "velocity": 89,
@@ -4227,6 +4329,7 @@
     },
     {
       "note": "B5",
+      "playback_strength_multiplier": 1.05,
       "beat": 172.666667,
       "duration_beats": 0.333333,
       "velocity": 89,
@@ -4294,6 +4397,7 @@
     },
     {
       "note": "G5",
+      "playback_strength_multiplier": 1.05,
       "beat": 175.0,
       "duration_beats": 0.333333,
       "velocity": 89,
@@ -4389,6 +4493,7 @@
     },
     {
       "note": "C6",
+      "playback_strength_multiplier": 1.05,
       "beat": 177.0,
       "duration_beats": 0.333333,
       "velocity": 89,
@@ -4399,6 +4504,7 @@
     },
     {
       "note": "C6",
+      "playback_strength_multiplier": 1.05,
       "beat": 177.0,
       "duration_beats": 0.333333,
       "velocity": 89,
@@ -4428,6 +4534,7 @@
     },
     {
       "note": "C6",
+      "playback_strength_multiplier": 1.05,
       "beat": 179.0,
       "duration_beats": 0.333333,
       "velocity": 89,
@@ -4446,6 +4553,7 @@
     },
     {
       "note": "B5",
+      "playback_strength_multiplier": 1.05,
       "beat": 179.666667,
       "duration_beats": 0.333333,
       "velocity": 89,
@@ -4474,6 +4582,7 @@
     },
     {
       "note": "A5",
+      "playback_strength_multiplier": 1.05,
       "beat": 180.0,
       "duration_beats": 0.333333,
       "velocity": 89,
@@ -4492,6 +4601,7 @@
     },
     {
       "note": "C6",
+      "playback_strength_multiplier": 1.05,
       "beat": 180.666667,
       "duration_beats": 0.333333,
       "velocity": 89,
@@ -4502,6 +4612,7 @@
     },
     {
       "note": "C6",
+      "playback_strength_multiplier": 1.05,
       "beat": 180.666667,
       "duration_beats": 0.333333,
       "velocity": 89,
@@ -4560,6 +4671,7 @@
     },
     {
       "note": "G5",
+      "playback_strength_multiplier": 1.05,
       "beat": 183.0,
       "duration_beats": 0.333333,
       "velocity": 89,
@@ -4578,6 +4690,7 @@
     },
     {
       "note": "G5",
+      "playback_strength_multiplier": 1.05,
       "beat": 183.333333,
       "duration_beats": 0.333333,
       "velocity": 89,
@@ -4596,6 +4709,7 @@
     },
     {
       "note": "G5",
+      "playback_strength_multiplier": 1.05,
       "beat": 183.666667,
       "duration_beats": 0.333333,
       "velocity": 89,
@@ -4624,6 +4738,7 @@
     },
     {
       "note": "G5",
+      "playback_strength_multiplier": 1.05,
       "beat": 184.0,
       "duration_beats": 0.333333,
       "velocity": 89,
@@ -4642,6 +4757,7 @@
     },
     {
       "note": "A5",
+      "playback_strength_multiplier": 1.05,
       "beat": 184.333333,
       "duration_beats": 0.333333,
       "velocity": 89,
@@ -4708,6 +4824,7 @@
     },
     {
       "note": "C6",
+      "playback_strength_multiplier": 1.05,
       "beat": 185.666667,
       "duration_beats": 0.333333,
       "velocity": 89,
@@ -4718,6 +4835,7 @@
     },
     {
       "note": "C6",
+      "playback_strength_multiplier": 1.05,
       "beat": 185.666667,
       "duration_beats": 0.333333,
       "velocity": 89,
@@ -4756,6 +4874,7 @@
     },
     {
       "note": "G5",
+      "playback_strength_multiplier": 1.05,
       "beat": 186.666667,
       "duration_beats": 0.333333,
       "velocity": 89,
@@ -4784,6 +4903,7 @@
     },
     {
       "note": "C6",
+      "playback_strength_multiplier": 1.05,
       "beat": 187.0,
       "duration_beats": 0.333333,
       "velocity": 89,
@@ -4802,6 +4922,7 @@
     },
     {
       "note": "B5",
+      "playback_strength_multiplier": 1.05,
       "beat": 187.666667,
       "duration_beats": 0.333333,
       "velocity": 89,
@@ -4830,6 +4951,7 @@
     },
     {
       "note": "A5",
+      "playback_strength_multiplier": 1.05,
       "beat": 188.0,
       "duration_beats": 0.333333,
       "velocity": 89,
@@ -4848,6 +4970,7 @@
     },
     {
       "note": "B5",
+      "playback_strength_multiplier": 1.05,
       "beat": 188.666667,
       "duration_beats": 0.333333,
       "velocity": 89,
@@ -4905,6 +5028,7 @@
     },
     {
       "note": "C6",
+      "playback_strength_multiplier": 1.05,
       "beat": 190.0,
       "duration_beats": 0.333333,
       "velocity": 89,
@@ -4915,6 +5039,7 @@
     },
     {
       "note": "C6",
+      "playback_strength_multiplier": 1.05,
       "beat": 190.0,
       "duration_beats": 0.333333,
       "velocity": 89,
@@ -4972,6 +5097,7 @@
     },
     {
       "note": "G5",
+      "playback_strength_multiplier": 1.05,
       "beat": 191.0,
       "duration_beats": 0.333333,
       "velocity": 89,
@@ -5173,6 +5299,7 @@
     },
     {
       "note": "C6",
+      "playback_strength_multiplier": 1.05,
       "beat": 196.666667,
       "duration_beats": 0.166667,
       "velocity": 89,
@@ -5183,6 +5310,7 @@
     },
     {
       "note": "C6",
+      "playback_strength_multiplier": 1.05,
       "beat": 196.666667,
       "duration_beats": 0.166667,
       "velocity": 89,
@@ -5308,6 +5436,7 @@
     },
     {
       "note": "C6",
+      "playback_strength_multiplier": 1.05,
       "beat": 200.0,
       "duration_beats": 0.166667,
       "velocity": 89,
@@ -5318,6 +5447,7 @@
     },
     {
       "note": "C6",
+      "playback_strength_multiplier": 1.05,
       "beat": 200.0,
       "duration_beats": 0.166667,
       "velocity": 89,
@@ -5327,6 +5457,7 @@
     },
     {
       "note": "C6",
+      "playback_strength_multiplier": 1.05,
       "beat": 200.666667,
       "duration_beats": 0.166667,
       "velocity": 89,
@@ -5337,6 +5468,7 @@
     },
     {
       "note": "C6",
+      "playback_strength_multiplier": 1.05,
       "beat": 200.666667,
       "duration_beats": 0.166667,
       "velocity": 89,
@@ -5356,6 +5488,7 @@
     },
     {
       "note": "C6",
+      "playback_strength_multiplier": 1.05,
       "beat": 201.0,
       "duration_beats": 0.166667,
       "velocity": 89,
@@ -5366,6 +5499,7 @@
     },
     {
       "note": "C6",
+      "playback_strength_multiplier": 1.05,
       "beat": 201.0,
       "duration_beats": 0.166667,
       "velocity": 89,
@@ -5425,6 +5559,7 @@
     },
     {
       "note": "C6",
+      "playback_strength_multiplier": 1.05,
       "beat": 204.666667,
       "duration_beats": 0.333333,
       "velocity": 85,
@@ -5465,6 +5600,7 @@
     },
     {
       "note": "C6",
+      "playback_strength_multiplier": 1.05,
       "beat": 205.666667,
       "duration_beats": 0.333333,
       "velocity": 85,
@@ -5505,6 +5641,7 @@
     },
     {
       "note": "G5",
+      "playback_strength_multiplier": 1.05,
       "beat": 208.0,
       "duration_beats": 0.166667,
       "velocity": 85,
@@ -5515,6 +5652,7 @@
     },
     {
       "note": "A5",
+      "playback_strength_multiplier": 1.05,
       "beat": 208.166667,
       "duration_beats": 0.166667,
       "velocity": 85,
@@ -5525,6 +5663,7 @@
     },
     {
       "note": "C6",
+      "playback_strength_multiplier": 1.05,
       "beat": 208.333333,
       "duration_beats": 0.333333,
       "velocity": 85,
@@ -5585,6 +5724,7 @@
     },
     {
       "note": "C6",
+      "playback_strength_multiplier": 1.05,
       "beat": 210.333333,
       "duration_beats": 0.333333,
       "velocity": 85,
@@ -5635,6 +5775,7 @@
     },
     {
       "note": "C6",
+      "playback_strength_multiplier": 1.05,
       "beat": 212.0,
       "duration_beats": 0.333333,
       "velocity": 85,
@@ -5705,6 +5846,7 @@
     },
     {
       "note": "G5",
+      "playback_strength_multiplier": 1.05,
       "beat": 215.0,
       "duration_beats": 0.333333,
       "velocity": 89,
@@ -5714,6 +5856,7 @@
     },
     {
       "note": "A5",
+      "playback_strength_multiplier": 1.05,
       "beat": 216.0,
       "duration_beats": 0.333333,
       "velocity": 89,
@@ -5723,6 +5866,7 @@
     },
     {
       "note": "G5",
+      "playback_strength_multiplier": 1.05,
       "beat": 216.333333,
       "duration_beats": 0.333333,
       "velocity": 89,
@@ -5782,6 +5926,7 @@
     },
     {
       "note": "C6",
+      "playback_strength_multiplier": 1.05,
       "beat": 219.0,
       "duration_beats": 0.333333,
       "velocity": 89,
@@ -5791,6 +5936,7 @@
     },
     {
       "note": "B5",
+      "playback_strength_multiplier": 1.05,
       "beat": 219.666667,
       "duration_beats": 0.333333,
       "velocity": 89,
@@ -5810,6 +5956,7 @@
     },
     {
       "note": "A5",
+      "playback_strength_multiplier": 1.05,
       "beat": 220.0,
       "duration_beats": 0.333333,
       "velocity": 89,
@@ -5819,6 +5966,7 @@
     },
     {
       "note": "B5",
+      "playback_strength_multiplier": 1.05,
       "beat": 220.666667,
       "duration_beats": 0.333333,
       "velocity": 89,
@@ -5868,6 +6016,7 @@
     },
     {
       "note": "G5",
+      "playback_strength_multiplier": 1.05,
       "beat": 223.0,
       "duration_beats": 0.333333,
       "velocity": 89,
@@ -5927,6 +6076,7 @@
     },
     {
       "note": "C6",
+      "playback_strength_multiplier": 1.05,
       "beat": 225.0,
       "duration_beats": 0.333333,
       "velocity": 89,
@@ -5957,6 +6107,7 @@
     },
     {
       "note": "C6",
+      "playback_strength_multiplier": 1.05,
       "beat": 227.0,
       "duration_beats": 0.333333,
       "velocity": 89,
@@ -5966,6 +6117,7 @@
     },
     {
       "note": "B5",
+      "playback_strength_multiplier": 1.05,
       "beat": 227.666667,
       "duration_beats": 0.333333,
       "velocity": 89,
@@ -5985,6 +6137,7 @@
     },
     {
       "note": "A5",
+      "playback_strength_multiplier": 1.05,
       "beat": 228.0,
       "duration_beats": 0.333333,
       "velocity": 89,
@@ -5994,6 +6147,7 @@
     },
     {
       "note": "C6",
+      "playback_strength_multiplier": 1.05,
       "beat": 228.666667,
       "duration_beats": 0.333333,
       "velocity": 89,
@@ -6044,6 +6198,7 @@
     },
     {
       "note": "G5",
+      "playback_strength_multiplier": 1.05,
       "beat": 231.0,
       "duration_beats": 0.333333,
       "velocity": 89,
@@ -6053,6 +6208,7 @@
     },
     {
       "note": "G5",
+      "playback_strength_multiplier": 1.05,
       "beat": 231.333333,
       "duration_beats": 0.333333,
       "velocity": 89,
@@ -6072,6 +6228,7 @@
     },
     {
       "note": "G5",
+      "playback_strength_multiplier": 1.05,
       "beat": 232.0,
       "duration_beats": 0.333333,
       "velocity": 89,
@@ -6081,6 +6238,7 @@
     },
     {
       "note": "A5",
+      "playback_strength_multiplier": 1.05,
       "beat": 232.333333,
       "duration_beats": 0.333333,
       "velocity": 89,
@@ -6120,6 +6278,7 @@
     },
     {
       "note": "C6",
+      "playback_strength_multiplier": 1.05,
       "beat": 233.666667,
       "duration_beats": 0.333333,
       "velocity": 89,
@@ -6150,6 +6309,7 @@
     },
     {
       "note": "G5",
+      "playback_strength_multiplier": 1.05,
       "beat": 234.666667,
       "duration_beats": 0.333333,
       "velocity": 89,
@@ -6169,6 +6329,7 @@
     },
     {
       "note": "A5",
+      "playback_strength_multiplier": 1.05,
       "beat": 235.0,
       "duration_beats": 0.333333,
       "velocity": 89,
@@ -6178,6 +6339,7 @@
     },
     {
       "note": "A5",
+      "playback_strength_multiplier": 1.05,
       "beat": 235.666667,
       "duration_beats": 0.333333,
       "velocity": 89,
@@ -6197,6 +6359,7 @@
     },
     {
       "note": "A5",
+      "playback_strength_multiplier": 1.05,
       "beat": 236.0,
       "duration_beats": 0.333333,
       "velocity": 89,
@@ -6206,6 +6369,7 @@
     },
     {
       "note": "G5",
+      "playback_strength_multiplier": 1.05,
       "beat": 236.666667,
       "duration_beats": 0.333333,
       "velocity": 89,
@@ -6245,6 +6409,7 @@
     },
     {
       "note": "C6",
+      "playback_strength_multiplier": 1.05,
       "beat": 238.0,
       "duration_beats": 0.333333,
       "velocity": 89,
@@ -6285,6 +6450,7 @@
     },
     {
       "note": "G5",
+      "playback_strength_multiplier": 1.05,
       "beat": 239.0,
       "duration_beats": 0.333333,
       "velocity": 89,
@@ -6474,6 +6640,7 @@
     },
     {
       "note": "C6",
+      "playback_strength_multiplier": 1.05,
       "beat": 248.0,
       "duration_beats": 0.166667,
       "velocity": 89,
@@ -6484,6 +6651,7 @@
     },
     {
       "note": "C6",
+      "playback_strength_multiplier": 1.05,
       "beat": 248.666667,
       "duration_beats": 0.166667,
       "velocity": 89,
@@ -6577,6 +6745,7 @@
     },
     {
       "note": "C6",
+      "playback_strength_multiplier": 1.05,
       "beat": 256.0,
       "duration_beats": 0.333333,
       "velocity": 89,
@@ -6634,6 +6803,7 @@
     },
     {
       "note": "C6",
+      "playback_strength_multiplier": 1.05,
       "beat": 259.0,
       "duration_beats": 0.666667,
       "velocity": 89,
@@ -6653,6 +6823,7 @@
     },
     {
       "note": "B5",
+      "playback_strength_multiplier": 1.05,
       "beat": 260.0,
       "duration_beats": 0.666667,
       "velocity": 89,
@@ -6672,6 +6843,7 @@
     },
     {
       "note": "A5",
+      "playback_strength_multiplier": 1.05,
       "beat": 261.0,
       "duration_beats": 0.666667,
       "velocity": 89,
@@ -6701,6 +6873,7 @@
     },
     {
       "note": "B5",
+      "playback_strength_multiplier": 1.05,
       "beat": 263.0,
       "duration_beats": 0.666667,
       "velocity": 89,
