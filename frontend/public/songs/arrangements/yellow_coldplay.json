@@ -1213,17 +1213,6 @@
       "physical_rack_map": "G3-C6"
     },
     {
-      "note": "E5",
-      "playback_strength_multiplier": 1.05,
-      "beat": 48.0,
-      "duration_beats": 0.5,
-      "velocity": 75,
-      "role": "melody",
-      "register": "upper_physical_g4_c6",
-      "source_track": "Grand Piano (Classic)",
-      "physical_rack_map": "G3-C6"
-    },
-    {
       "note": "C4",
       "playback_strength_multiplier": 0.9,
       "beat": 48.0,
@@ -1301,17 +1290,6 @@
       "physical_rack_map": "G3-C6"
     },
     {
-      "note": "E5",
-      "playback_strength_multiplier": 1.05,
-      "beat": 51.0,
-      "duration_beats": 0.5,
-      "velocity": 75,
-      "role": "melody",
-      "register": "upper_physical_g4_c6",
-      "source_track": "Grand Piano (Classic)",
-      "physical_rack_map": "G3-C6"
-    },
-    {
       "note": "C4",
       "playback_strength_multiplier": 0.9,
       "beat": 51.0,
@@ -1319,17 +1297,6 @@
       "velocity": 53,
       "role": "accompaniment",
       "register": "lower_physical_g3_f4",
-      "source_track": "Grand Piano (Classic)",
-      "physical_rack_map": "G3-C6"
-    },
-    {
-      "note": "E5",
-      "playback_strength_multiplier": 1.05,
-      "beat": 52.0,
-      "duration_beats": 0.5,
-      "velocity": 75,
-      "role": "melody",
-      "register": "upper_physical_g4_c6",
       "source_track": "Grand Piano (Classic)",
       "physical_rack_map": "G3-C6"
     },
@@ -1433,17 +1400,6 @@
       "physical_rack_map": "G3-C6"
     },
     {
-      "note": "E5",
-      "playback_strength_multiplier": 1.05,
-      "beat": 56.0,
-      "duration_beats": 0.5,
-      "velocity": 75,
-      "role": "melody",
-      "register": "upper_physical_g4_c6",
-      "source_track": "Grand Piano (Classic)",
-      "physical_rack_map": "G3-C6"
-    },
-    {
       "note": "B3",
       "playback_strength_multiplier": 0.9,
       "beat": 56.0,
@@ -1466,17 +1422,6 @@
       "physical_rack_map": "G3-C6"
     },
     {
-      "note": "E5",
-      "playback_strength_multiplier": 1.05,
-      "beat": 57.0,
-      "duration_beats": 0.5,
-      "velocity": 75,
-      "role": "melody",
-      "register": "upper_physical_g4_c6",
-      "source_track": "Grand Piano (Classic)",
-      "physical_rack_map": "G3-C6"
-    },
-    {
       "note": "B3",
       "playback_strength_multiplier": 0.9,
       "beat": 57.0,
@@ -1484,17 +1429,6 @@
       "velocity": 53,
       "role": "accompaniment",
       "register": "lower_physical_g3_f4",
-      "source_track": "Grand Piano (Classic)",
-      "physical_rack_map": "G3-C6"
-    },
-    {
-      "note": "E5",
-      "playback_strength_multiplier": 1.05,
-      "beat": 58.0,
-      "duration_beats": 0.5,
-      "velocity": 75,
-      "role": "melody",
-      "register": "upper_physical_g4_c6",
       "source_track": "Grand Piano (Classic)",
       "physical_rack_map": "G3-C6"
     },
@@ -1510,17 +1444,6 @@
       "physical_rack_map": "G3-C6"
     },
     {
-      "note": "E5",
-      "playback_strength_multiplier": 1.05,
-      "beat": 59.0,
-      "duration_beats": 0.5,
-      "velocity": 75,
-      "role": "melody",
-      "register": "upper_physical_g4_c6",
-      "source_track": "Grand Piano (Classic)",
-      "physical_rack_map": "G3-C6"
-    },
-    {
       "note": "B3",
       "playback_strength_multiplier": 0.9,
       "beat": 59.0,
@@ -1528,17 +1451,6 @@
       "velocity": 53,
       "role": "accompaniment",
       "register": "lower_physical_g3_f4",
-      "source_track": "Grand Piano (Classic)",
-      "physical_rack_map": "G3-C6"
-    },
-    {
-      "note": "E5",
-      "playback_strength_multiplier": 1.05,
-      "beat": 60.0,
-      "duration_beats": 0.5,
-      "velocity": 75,
-      "role": "melody",
-      "register": "upper_physical_g4_c6",
       "source_track": "Grand Piano (Classic)",
       "physical_rack_map": "G3-C6"
     },
@@ -1653,17 +1565,6 @@
       "physical_rack_map": "G3-C6"
     },
     {
-      "note": "F5",
-      "playback_strength_multiplier": 1.05,
-      "beat": 64.0,
-      "duration_beats": 0.5,
-      "velocity": 75,
-      "role": "melody",
-      "register": "upper_physical_g4_c6",
-      "source_track": "Grand Piano (Classic)",
-      "physical_rack_map": "G3-C6"
-    },
-    {
       "note": "C4",
       "playback_strength_multiplier": 0.9,
       "beat": 64.0,
@@ -1671,17 +1572,6 @@
       "velocity": 53,
       "role": "accompaniment",
       "register": "lower_physical_g3_f4",
-      "source_track": "Grand Piano (Classic)",
-      "physical_rack_map": "G3-C6"
-    },
-    {
-      "note": "F5",
-      "playback_strength_multiplier": 1.05,
-      "beat": 65.0,
-      "duration_beats": 0.5,
-      "velocity": 75,
-      "role": "melody",
-      "register": "upper_physical_g4_c6",
       "source_track": "Grand Piano (Classic)",
       "physical_rack_map": "G3-C6"
     },
@@ -1697,17 +1587,6 @@
       "physical_rack_map": "G3-C6"
     },
     {
-      "note": "F5",
-      "playback_strength_multiplier": 1.05,
-      "beat": 66.0,
-      "duration_beats": 0.5,
-      "velocity": 75,
-      "role": "melody",
-      "register": "upper_physical_g4_c6",
-      "source_track": "Grand Piano (Classic)",
-      "physical_rack_map": "G3-C6"
-    },
-    {
       "note": "C4",
       "playback_strength_multiplier": 0.9,
       "beat": 66.0,
@@ -1719,17 +1598,6 @@
       "physical_rack_map": "G3-C6"
     },
     {
-      "note": "F5",
-      "playback_strength_multiplier": 1.05,
-      "beat": 67.0,
-      "duration_beats": 0.5,
-      "velocity": 75,
-      "role": "melody",
-      "register": "upper_physical_g4_c6",
-      "source_track": "Grand Piano (Classic)",
-      "physical_rack_map": "G3-C6"
-    },
-    {
       "note": "C4",
       "playback_strength_multiplier": 0.9,
       "beat": 67.0,
@@ -1737,17 +1605,6 @@
       "velocity": 53,
       "role": "accompaniment",
       "register": "lower_physical_g3_f4",
-      "source_track": "Grand Piano (Classic)",
-      "physical_rack_map": "G3-C6"
-    },
-    {
-      "note": "F5",
-      "playback_strength_multiplier": 1.05,
-      "beat": 68.0,
-      "duration_beats": 0.5,
-      "velocity": 75,
-      "role": "melody",
-      "register": "upper_physical_g4_c6",
       "source_track": "Grand Piano (Classic)",
       "physical_rack_map": "G3-C6"
     },
@@ -1816,17 +1673,6 @@
       "physical_rack_map": "G3-C6"
     },
     {
-      "note": "F5",
-      "playback_strength_multiplier": 1.05,
-      "beat": 70.0,
-      "duration_beats": 0.5,
-      "velocity": 75,
-      "role": "melody",
-      "register": "upper_physical_g4_c6",
-      "source_track": "Grand Piano (Classic)",
-      "physical_rack_map": "G3-C6"
-    },
-    {
       "note": "C4",
       "playback_strength_multiplier": 0.9,
       "beat": 70.0,
@@ -1859,16 +1705,6 @@
       "physical_rack_map": "G3-C6"
     },
     {
-      "note": "G4",
-      "beat": 71.0,
-      "duration_beats": 1.0,
-      "velocity": 75,
-      "role": "melody",
-      "register": "upper_physical_g4_c6",
-      "source_track": "Grand Piano (Classic)",
-      "physical_rack_map": "G3-C6"
-    },
-    {
       "note": "C4",
       "playback_strength_multiplier": 0.9,
       "beat": 71.0,
@@ -1880,17 +1716,6 @@
       "physical_rack_map": "G3-C6"
     },
     {
-      "note": "E5",
-      "playback_strength_multiplier": 1.05,
-      "beat": 72.0,
-      "duration_beats": 0.5,
-      "velocity": 81,
-      "role": "melody",
-      "register": "upper_physical_g4_c6",
-      "source_track": "Grand Piano (Classic)",
-      "physical_rack_map": "G3-C6"
-    },
-    {
       "note": "C4",
       "playback_strength_multiplier": 0.9,
       "beat": 72.0,
@@ -1898,16 +1723,6 @@
       "velocity": 59,
       "role": "accompaniment",
       "register": "lower_physical_g3_f4",
-      "source_track": "Grand Piano (Classic)",
-      "physical_rack_map": "G3-C6"
-    },
-    {
-      "note": "G4",
-      "beat": 72.5,
-      "duration_beats": 0.5,
-      "velocity": 81,
-      "role": "melody",
-      "register": "upper_physical_g4_c6",
       "source_track": "Grand Piano (Classic)",
       "physical_rack_map": "G3-C6"
     },
@@ -1967,17 +1782,6 @@
       "physical_rack_map": "G3-C6"
     },
     {
-      "note": "E5",
-      "playback_strength_multiplier": 1.05,
-      "beat": 75.0,
-      "duration_beats": 0.5,
-      "velocity": 81,
-      "role": "melody",
-      "register": "upper_physical_g4_c6",
-      "source_track": "Grand Piano (Classic)",
-      "physical_rack_map": "G3-C6"
-    },
-    {
       "note": "C4",
       "playback_strength_multiplier": 0.9,
       "beat": 75.0,
@@ -1985,17 +1789,6 @@
       "velocity": 59,
       "role": "accompaniment",
       "register": "lower_physical_g3_f4",
-      "source_track": "Grand Piano (Classic)",
-      "physical_rack_map": "G3-C6"
-    },
-    {
-      "note": "E5",
-      "playback_strength_multiplier": 1.05,
-      "beat": 76.0,
-      "duration_beats": 0.5,
-      "velocity": 81,
-      "role": "melody",
-      "register": "upper_physical_g4_c6",
       "source_track": "Grand Piano (Classic)",
       "physical_rack_map": "G3-C6"
     },
@@ -2099,17 +1892,6 @@
       "physical_rack_map": "G3-C6"
     },
     {
-      "note": "E5",
-      "playback_strength_multiplier": 1.05,
-      "beat": 80.0,
-      "duration_beats": 0.5,
-      "velocity": 81,
-      "role": "melody",
-      "register": "upper_physical_g4_c6",
-      "source_track": "Grand Piano (Classic)",
-      "physical_rack_map": "G3-C6"
-    },
-    {
       "note": "B3",
       "playback_strength_multiplier": 0.9,
       "beat": 80.0,
@@ -2132,17 +1914,6 @@
       "physical_rack_map": "G3-C6"
     },
     {
-      "note": "E5",
-      "playback_strength_multiplier": 1.05,
-      "beat": 81.0,
-      "duration_beats": 0.5,
-      "velocity": 81,
-      "role": "melody",
-      "register": "upper_physical_g4_c6",
-      "source_track": "Grand Piano (Classic)",
-      "physical_rack_map": "G3-C6"
-    },
-    {
       "note": "B3",
       "playback_strength_multiplier": 0.9,
       "beat": 81.0,
@@ -2150,17 +1921,6 @@
       "velocity": 59,
       "role": "accompaniment",
       "register": "lower_physical_g3_f4",
-      "source_track": "Grand Piano (Classic)",
-      "physical_rack_map": "G3-C6"
-    },
-    {
-      "note": "E5",
-      "playback_strength_multiplier": 1.05,
-      "beat": 82.0,
-      "duration_beats": 0.5,
-      "velocity": 81,
-      "role": "melody",
-      "register": "upper_physical_g4_c6",
       "source_track": "Grand Piano (Classic)",
       "physical_rack_map": "G3-C6"
     },
@@ -2176,17 +1936,6 @@
       "physical_rack_map": "G3-C6"
     },
     {
-      "note": "E5",
-      "playback_strength_multiplier": 1.05,
-      "beat": 83.0,
-      "duration_beats": 0.5,
-      "velocity": 81,
-      "role": "melody",
-      "register": "upper_physical_g4_c6",
-      "source_track": "Grand Piano (Classic)",
-      "physical_rack_map": "G3-C6"
-    },
-    {
       "note": "B3",
       "playback_strength_multiplier": 0.9,
       "beat": 83.0,
@@ -2194,17 +1943,6 @@
       "velocity": 59,
       "role": "accompaniment",
       "register": "lower_physical_g3_f4",
-      "source_track": "Grand Piano (Classic)",
-      "physical_rack_map": "G3-C6"
-    },
-    {
-      "note": "E5",
-      "playback_strength_multiplier": 1.05,
-      "beat": 84.0,
-      "duration_beats": 0.5,
-      "velocity": 81,
-      "role": "melody",
-      "register": "upper_physical_g4_c6",
       "source_track": "Grand Piano (Classic)",
       "physical_rack_map": "G3-C6"
     },
@@ -2319,17 +2057,6 @@
       "physical_rack_map": "G3-C6"
     },
     {
-      "note": "F5",
-      "playback_strength_multiplier": 1.05,
-      "beat": 88.0,
-      "duration_beats": 0.5,
-      "velocity": 81,
-      "role": "melody",
-      "register": "upper_physical_g4_c6",
-      "source_track": "Grand Piano (Classic)",
-      "physical_rack_map": "G3-C6"
-    },
-    {
       "note": "C4",
       "playback_strength_multiplier": 0.9,
       "beat": 88.0,
@@ -2337,17 +2064,6 @@
       "velocity": 59,
       "role": "accompaniment",
       "register": "lower_physical_g3_f4",
-      "source_track": "Grand Piano (Classic)",
-      "physical_rack_map": "G3-C6"
-    },
-    {
-      "note": "F5",
-      "playback_strength_multiplier": 1.05,
-      "beat": 89.0,
-      "duration_beats": 0.5,
-      "velocity": 81,
-      "role": "melody",
-      "register": "upper_physical_g4_c6",
       "source_track": "Grand Piano (Classic)",
       "physical_rack_map": "G3-C6"
     },
@@ -2363,17 +2079,6 @@
       "physical_rack_map": "G3-C6"
     },
     {
-      "note": "F5",
-      "playback_strength_multiplier": 1.05,
-      "beat": 90.0,
-      "duration_beats": 0.5,
-      "velocity": 81,
-      "role": "melody",
-      "register": "upper_physical_g4_c6",
-      "source_track": "Grand Piano (Classic)",
-      "physical_rack_map": "G3-C6"
-    },
-    {
       "note": "C4",
       "playback_strength_multiplier": 0.9,
       "beat": 90.0,
@@ -2385,17 +2090,6 @@
       "physical_rack_map": "G3-C6"
     },
     {
-      "note": "F5",
-      "playback_strength_multiplier": 1.05,
-      "beat": 91.0,
-      "duration_beats": 0.5,
-      "velocity": 81,
-      "role": "melody",
-      "register": "upper_physical_g4_c6",
-      "source_track": "Grand Piano (Classic)",
-      "physical_rack_map": "G3-C6"
-    },
-    {
       "note": "C4",
       "playback_strength_multiplier": 0.9,
       "beat": 91.0,
@@ -2403,17 +2097,6 @@
       "velocity": 59,
       "role": "accompaniment",
       "register": "lower_physical_g3_f4",
-      "source_track": "Grand Piano (Classic)",
-      "physical_rack_map": "G3-C6"
-    },
-    {
-      "note": "F5",
-      "playback_strength_multiplier": 1.05,
-      "beat": 92.0,
-      "duration_beats": 0.5,
-      "velocity": 81,
-      "role": "melody",
-      "register": "upper_physical_g4_c6",
       "source_track": "Grand Piano (Classic)",
       "physical_rack_map": "G3-C6"
     },
@@ -2482,17 +2165,6 @@
       "physical_rack_map": "G3-C6"
     },
     {
-      "note": "F5",
-      "playback_strength_multiplier": 1.05,
-      "beat": 94.0,
-      "duration_beats": 0.5,
-      "velocity": 81,
-      "role": "melody",
-      "register": "upper_physical_g4_c6",
-      "source_track": "Grand Piano (Classic)",
-      "physical_rack_map": "G3-C6"
-    },
-    {
       "note": "C4",
       "playback_strength_multiplier": 0.9,
       "beat": 94.0,
@@ -2518,16 +2190,6 @@
       "note": "A4",
       "beat": 94.75,
       "duration_beats": 0.25,
-      "velocity": 81,
-      "role": "melody",
-      "register": "upper_physical_g4_c6",
-      "source_track": "Grand Piano (Classic)",
-      "physical_rack_map": "G3-C6"
-    },
-    {
-      "note": "G4",
-      "beat": 95.0,
-      "duration_beats": 1.0,
       "velocity": 81,
       "role": "melody",
       "register": "upper_physical_g4_c6",
@@ -2568,17 +2230,6 @@
       "physical_rack_map": "G3-C6"
     },
     {
-      "note": "E5",
-      "playback_strength_multiplier": 1.05,
-      "beat": 97.0,
-      "duration_beats": 0.5,
-      "velocity": 81,
-      "role": "melody",
-      "register": "upper_physical_g4_c6",
-      "source_track": "Grand Piano (Classic)",
-      "physical_rack_map": "G3-C6"
-    },
-    {
       "note": "C4",
       "playback_strength_multiplier": 0.9,
       "beat": 97.0,
@@ -2586,17 +2237,6 @@
       "velocity": 59,
       "role": "accompaniment",
       "register": "lower_physical_g3_f4",
-      "source_track": "Grand Piano (Classic)",
-      "physical_rack_map": "G3-C6"
-    },
-    {
-      "note": "E5",
-      "playback_strength_multiplier": 1.05,
-      "beat": 98.0,
-      "duration_beats": 0.5,
-      "velocity": 81,
-      "role": "melody",
-      "register": "upper_physical_g4_c6",
       "source_track": "Grand Piano (Classic)",
       "physical_rack_map": "G3-C6"
     },
@@ -2612,17 +2252,6 @@
       "physical_rack_map": "G3-C6"
     },
     {
-      "note": "E5",
-      "playback_strength_multiplier": 1.05,
-      "beat": 99.0,
-      "duration_beats": 0.5,
-      "velocity": 81,
-      "role": "melody",
-      "register": "upper_physical_g4_c6",
-      "source_track": "Grand Piano (Classic)",
-      "physical_rack_map": "G3-C6"
-    },
-    {
       "note": "C4",
       "playback_strength_multiplier": 0.9,
       "beat": 99.0,
@@ -2630,17 +2259,6 @@
       "velocity": 59,
       "role": "accompaniment",
       "register": "lower_physical_g3_f4",
-      "source_track": "Grand Piano (Classic)",
-      "physical_rack_map": "G3-C6"
-    },
-    {
-      "note": "E5",
-      "playback_strength_multiplier": 1.05,
-      "beat": 100.0,
-      "duration_beats": 0.5,
-      "velocity": 81,
-      "role": "melody",
-      "register": "upper_physical_g4_c6",
       "source_track": "Grand Piano (Classic)",
       "physical_rack_map": "G3-C6"
     },
@@ -2744,17 +2362,6 @@
       "physical_rack_map": "G3-C6"
     },
     {
-      "note": "E5",
-      "playback_strength_multiplier": 1.05,
-      "beat": 104.0,
-      "duration_beats": 0.5,
-      "velocity": 81,
-      "role": "melody",
-      "register": "upper_physical_g4_c6",
-      "source_track": "Grand Piano (Classic)",
-      "physical_rack_map": "G3-C6"
-    },
-    {
       "note": "B3",
       "playback_strength_multiplier": 0.9,
       "beat": 104.0,
@@ -2777,17 +2384,6 @@
       "physical_rack_map": "G3-C6"
     },
     {
-      "note": "E5",
-      "playback_strength_multiplier": 1.05,
-      "beat": 105.0,
-      "duration_beats": 0.5,
-      "velocity": 81,
-      "role": "melody",
-      "register": "upper_physical_g4_c6",
-      "source_track": "Grand Piano (Classic)",
-      "physical_rack_map": "G3-C6"
-    },
-    {
       "note": "B3",
       "playback_strength_multiplier": 0.9,
       "beat": 105.0,
@@ -2795,17 +2391,6 @@
       "velocity": 59,
       "role": "accompaniment",
       "register": "lower_physical_g3_f4",
-      "source_track": "Grand Piano (Classic)",
-      "physical_rack_map": "G3-C6"
-    },
-    {
-      "note": "E5",
-      "playback_strength_multiplier": 1.05,
-      "beat": 106.0,
-      "duration_beats": 0.5,
-      "velocity": 81,
-      "role": "melody",
-      "register": "upper_physical_g4_c6",
       "source_track": "Grand Piano (Classic)",
       "physical_rack_map": "G3-C6"
     },
@@ -2821,17 +2406,6 @@
       "physical_rack_map": "G3-C6"
     },
     {
-      "note": "E5",
-      "playback_strength_multiplier": 1.05,
-      "beat": 107.0,
-      "duration_beats": 0.5,
-      "velocity": 81,
-      "role": "melody",
-      "register": "upper_physical_g4_c6",
-      "source_track": "Grand Piano (Classic)",
-      "physical_rack_map": "G3-C6"
-    },
-    {
       "note": "B3",
       "playback_strength_multiplier": 0.9,
       "beat": 107.0,
@@ -2839,17 +2413,6 @@
       "velocity": 59,
       "role": "accompaniment",
       "register": "lower_physical_g3_f4",
-      "source_track": "Grand Piano (Classic)",
-      "physical_rack_map": "G3-C6"
-    },
-    {
-      "note": "E5",
-      "playback_strength_multiplier": 1.05,
-      "beat": 108.0,
-      "duration_beats": 0.5,
-      "velocity": 81,
-      "role": "melody",
-      "register": "upper_physical_g4_c6",
       "source_track": "Grand Piano (Classic)",
       "physical_rack_map": "G3-C6"
     },
@@ -2975,17 +2538,6 @@
       "physical_rack_map": "G3-C6"
     },
     {
-      "note": "F5",
-      "playback_strength_multiplier": 1.05,
-      "beat": 112.0,
-      "duration_beats": 0.5,
-      "velocity": 81,
-      "role": "melody",
-      "register": "upper_physical_g4_c6",
-      "source_track": "Grand Piano (Classic)",
-      "physical_rack_map": "G3-C6"
-    },
-    {
       "note": "C4",
       "playback_strength_multiplier": 0.9,
       "beat": 112.0,
@@ -2993,17 +2545,6 @@
       "velocity": 59,
       "role": "accompaniment",
       "register": "lower_physical_g3_f4",
-      "source_track": "Grand Piano (Classic)",
-      "physical_rack_map": "G3-C6"
-    },
-    {
-      "note": "F5",
-      "playback_strength_multiplier": 1.05,
-      "beat": 113.0,
-      "duration_beats": 0.5,
-      "velocity": 81,
-      "role": "melody",
-      "register": "upper_physical_g4_c6",
       "source_track": "Grand Piano (Classic)",
       "physical_rack_map": "G3-C6"
     },
@@ -3019,17 +2560,6 @@
       "physical_rack_map": "G3-C6"
     },
     {
-      "note": "F5",
-      "playback_strength_multiplier": 1.05,
-      "beat": 114.0,
-      "duration_beats": 0.5,
-      "velocity": 81,
-      "role": "melody",
-      "register": "upper_physical_g4_c6",
-      "source_track": "Grand Piano (Classic)",
-      "physical_rack_map": "G3-C6"
-    },
-    {
       "note": "C4",
       "playback_strength_multiplier": 0.9,
       "beat": 114.0,
@@ -3041,17 +2571,6 @@
       "physical_rack_map": "G3-C6"
     },
     {
-      "note": "F5",
-      "playback_strength_multiplier": 1.05,
-      "beat": 115.0,
-      "duration_beats": 0.5,
-      "velocity": 81,
-      "role": "melody",
-      "register": "upper_physical_g4_c6",
-      "source_track": "Grand Piano (Classic)",
-      "physical_rack_map": "G3-C6"
-    },
-    {
       "note": "C4",
       "playback_strength_multiplier": 0.9,
       "beat": 115.0,
@@ -3059,17 +2578,6 @@
       "velocity": 59,
       "role": "accompaniment",
       "register": "lower_physical_g3_f4",
-      "source_track": "Grand Piano (Classic)",
-      "physical_rack_map": "G3-C6"
-    },
-    {
-      "note": "F5",
-      "playback_strength_multiplier": 1.05,
-      "beat": 116.0,
-      "duration_beats": 0.5,
-      "velocity": 81,
-      "role": "melody",
-      "register": "upper_physical_g4_c6",
       "source_track": "Grand Piano (Classic)",
       "physical_rack_map": "G3-C6"
     },
@@ -3138,17 +2646,6 @@
       "physical_rack_map": "G3-C6"
     },
     {
-      "note": "F5",
-      "playback_strength_multiplier": 1.05,
-      "beat": 118.0,
-      "duration_beats": 0.5,
-      "velocity": 81,
-      "role": "melody",
-      "register": "upper_physical_g4_c6",
-      "source_track": "Grand Piano (Classic)",
-      "physical_rack_map": "G3-C6"
-    },
-    {
       "note": "C4",
       "playback_strength_multiplier": 0.9,
       "beat": 118.0,
@@ -3174,16 +2671,6 @@
       "note": "A4",
       "beat": 118.75,
       "duration_beats": 0.25,
-      "velocity": 81,
-      "role": "melody",
-      "register": "upper_physical_g4_c6",
-      "source_track": "Grand Piano (Classic)",
-      "physical_rack_map": "G3-C6"
-    },
-    {
-      "note": "G4",
-      "beat": 119.0,
-      "duration_beats": 1.0,
       "velocity": 81,
       "role": "melody",
       "register": "upper_physical_g4_c6",
@@ -4937,17 +4424,6 @@
       "physical_rack_map": "G3-C6"
     },
     {
-      "note": "E5",
-      "playback_strength_multiplier": 1.05,
-      "beat": 192.0,
-      "duration_beats": 0.5,
-      "velocity": 81,
-      "role": "melody",
-      "register": "upper_physical_g4_c6",
-      "source_track": "Grand Piano (Classic)",
-      "physical_rack_map": "G3-C6"
-    },
-    {
       "note": "C4",
       "playback_strength_multiplier": 0.9,
       "beat": 192.0,
@@ -4955,16 +4431,6 @@
       "velocity": 59,
       "role": "accompaniment",
       "register": "lower_physical_g3_f4",
-      "source_track": "Grand Piano (Classic)",
-      "physical_rack_map": "G3-C6"
-    },
-    {
-      "note": "G4",
-      "beat": 192.5,
-      "duration_beats": 0.5,
-      "velocity": 81,
-      "role": "melody",
-      "register": "upper_physical_g4_c6",
       "source_track": "Grand Piano (Classic)",
       "physical_rack_map": "G3-C6"
     },
@@ -5024,17 +4490,6 @@
       "physical_rack_map": "G3-C6"
     },
     {
-      "note": "E5",
-      "playback_strength_multiplier": 1.05,
-      "beat": 195.0,
-      "duration_beats": 0.5,
-      "velocity": 81,
-      "role": "melody",
-      "register": "upper_physical_g4_c6",
-      "source_track": "Grand Piano (Classic)",
-      "physical_rack_map": "G3-C6"
-    },
-    {
       "note": "C4",
       "playback_strength_multiplier": 0.9,
       "beat": 195.0,
@@ -5042,17 +4497,6 @@
       "velocity": 59,
       "role": "accompaniment",
       "register": "lower_physical_g3_f4",
-      "source_track": "Grand Piano (Classic)",
-      "physical_rack_map": "G3-C6"
-    },
-    {
-      "note": "E5",
-      "playback_strength_multiplier": 1.05,
-      "beat": 196.0,
-      "duration_beats": 0.5,
-      "velocity": 81,
-      "role": "melody",
-      "register": "upper_physical_g4_c6",
       "source_track": "Grand Piano (Classic)",
       "physical_rack_map": "G3-C6"
     },
@@ -5156,17 +4600,6 @@
       "physical_rack_map": "G3-C6"
     },
     {
-      "note": "E5",
-      "playback_strength_multiplier": 1.05,
-      "beat": 200.0,
-      "duration_beats": 0.5,
-      "velocity": 81,
-      "role": "melody",
-      "register": "upper_physical_g4_c6",
-      "source_track": "Grand Piano (Classic)",
-      "physical_rack_map": "G3-C6"
-    },
-    {
       "note": "B3",
       "playback_strength_multiplier": 0.9,
       "beat": 200.0,
@@ -5189,17 +4622,6 @@
       "physical_rack_map": "G3-C6"
     },
     {
-      "note": "E5",
-      "playback_strength_multiplier": 1.05,
-      "beat": 201.0,
-      "duration_beats": 0.5,
-      "velocity": 81,
-      "role": "melody",
-      "register": "upper_physical_g4_c6",
-      "source_track": "Grand Piano (Classic)",
-      "physical_rack_map": "G3-C6"
-    },
-    {
       "note": "B3",
       "playback_strength_multiplier": 0.9,
       "beat": 201.0,
@@ -5207,17 +4629,6 @@
       "velocity": 59,
       "role": "accompaniment",
       "register": "lower_physical_g3_f4",
-      "source_track": "Grand Piano (Classic)",
-      "physical_rack_map": "G3-C6"
-    },
-    {
-      "note": "E5",
-      "playback_strength_multiplier": 1.05,
-      "beat": 202.0,
-      "duration_beats": 0.5,
-      "velocity": 81,
-      "role": "melody",
-      "register": "upper_physical_g4_c6",
       "source_track": "Grand Piano (Classic)",
       "physical_rack_map": "G3-C6"
     },
@@ -5233,17 +4644,6 @@
       "physical_rack_map": "G3-C6"
     },
     {
-      "note": "E5",
-      "playback_strength_multiplier": 1.05,
-      "beat": 203.0,
-      "duration_beats": 0.5,
-      "velocity": 81,
-      "role": "melody",
-      "register": "upper_physical_g4_c6",
-      "source_track": "Grand Piano (Classic)",
-      "physical_rack_map": "G3-C6"
-    },
-    {
       "note": "B3",
       "playback_strength_multiplier": 0.9,
       "beat": 203.0,
@@ -5251,17 +4651,6 @@
       "velocity": 59,
       "role": "accompaniment",
       "register": "lower_physical_g3_f4",
-      "source_track": "Grand Piano (Classic)",
-      "physical_rack_map": "G3-C6"
-    },
-    {
-      "note": "E5",
-      "playback_strength_multiplier": 1.05,
-      "beat": 204.0,
-      "duration_beats": 0.5,
-      "velocity": 81,
-      "role": "melody",
-      "register": "upper_physical_g4_c6",
       "source_track": "Grand Piano (Classic)",
       "physical_rack_map": "G3-C6"
     },
@@ -5376,17 +4765,6 @@
       "physical_rack_map": "G3-C6"
     },
     {
-      "note": "F5",
-      "playback_strength_multiplier": 1.05,
-      "beat": 208.0,
-      "duration_beats": 0.5,
-      "velocity": 81,
-      "role": "melody",
-      "register": "upper_physical_g4_c6",
-      "source_track": "Grand Piano (Classic)",
-      "physical_rack_map": "G3-C6"
-    },
-    {
       "note": "C4",
       "playback_strength_multiplier": 0.9,
       "beat": 208.0,
@@ -5394,17 +4772,6 @@
       "velocity": 59,
       "role": "accompaniment",
       "register": "lower_physical_g3_f4",
-      "source_track": "Grand Piano (Classic)",
-      "physical_rack_map": "G3-C6"
-    },
-    {
-      "note": "F5",
-      "playback_strength_multiplier": 1.05,
-      "beat": 209.0,
-      "duration_beats": 0.5,
-      "velocity": 81,
-      "role": "melody",
-      "register": "upper_physical_g4_c6",
       "source_track": "Grand Piano (Classic)",
       "physical_rack_map": "G3-C6"
     },
@@ -5420,17 +4787,6 @@
       "physical_rack_map": "G3-C6"
     },
     {
-      "note": "F5",
-      "playback_strength_multiplier": 1.05,
-      "beat": 210.0,
-      "duration_beats": 0.5,
-      "velocity": 81,
-      "role": "melody",
-      "register": "upper_physical_g4_c6",
-      "source_track": "Grand Piano (Classic)",
-      "physical_rack_map": "G3-C6"
-    },
-    {
       "note": "C4",
       "playback_strength_multiplier": 0.9,
       "beat": 210.0,
@@ -5442,17 +4798,6 @@
       "physical_rack_map": "G3-C6"
     },
     {
-      "note": "F5",
-      "playback_strength_multiplier": 1.05,
-      "beat": 211.0,
-      "duration_beats": 0.5,
-      "velocity": 81,
-      "role": "melody",
-      "register": "upper_physical_g4_c6",
-      "source_track": "Grand Piano (Classic)",
-      "physical_rack_map": "G3-C6"
-    },
-    {
       "note": "C4",
       "playback_strength_multiplier": 0.9,
       "beat": 211.0,
@@ -5460,17 +4805,6 @@
       "velocity": 59,
       "role": "accompaniment",
       "register": "lower_physical_g3_f4",
-      "source_track": "Grand Piano (Classic)",
-      "physical_rack_map": "G3-C6"
-    },
-    {
-      "note": "F5",
-      "playback_strength_multiplier": 1.05,
-      "beat": 212.0,
-      "duration_beats": 0.5,
-      "velocity": 81,
-      "role": "melody",
-      "register": "upper_physical_g4_c6",
       "source_track": "Grand Piano (Classic)",
       "physical_rack_map": "G3-C6"
     },
@@ -5539,17 +4873,6 @@
       "physical_rack_map": "G3-C6"
     },
     {
-      "note": "F5",
-      "playback_strength_multiplier": 1.05,
-      "beat": 214.0,
-      "duration_beats": 0.5,
-      "velocity": 81,
-      "role": "melody",
-      "register": "upper_physical_g4_c6",
-      "source_track": "Grand Piano (Classic)",
-      "physical_rack_map": "G3-C6"
-    },
-    {
       "note": "C4",
       "playback_strength_multiplier": 0.9,
       "beat": 214.0,
@@ -5575,16 +4898,6 @@
       "note": "A4",
       "beat": 214.75,
       "duration_beats": 0.25,
-      "velocity": 81,
-      "role": "melody",
-      "register": "upper_physical_g4_c6",
-      "source_track": "Grand Piano (Classic)",
-      "physical_rack_map": "G3-C6"
-    },
-    {
-      "note": "G4",
-      "beat": 215.0,
-      "duration_beats": 1.0,
       "velocity": 81,
       "role": "melody",
       "register": "upper_physical_g4_c6",
@@ -5625,17 +4938,6 @@
       "physical_rack_map": "G3-C6"
     },
     {
-      "note": "E5",
-      "playback_strength_multiplier": 1.05,
-      "beat": 217.0,
-      "duration_beats": 0.5,
-      "velocity": 81,
-      "role": "melody",
-      "register": "upper_physical_g4_c6",
-      "source_track": "Grand Piano (Classic)",
-      "physical_rack_map": "G3-C6"
-    },
-    {
       "note": "C4",
       "playback_strength_multiplier": 0.9,
       "beat": 217.0,
@@ -5643,17 +4945,6 @@
       "velocity": 59,
       "role": "accompaniment",
       "register": "lower_physical_g3_f4",
-      "source_track": "Grand Piano (Classic)",
-      "physical_rack_map": "G3-C6"
-    },
-    {
-      "note": "E5",
-      "playback_strength_multiplier": 1.05,
-      "beat": 218.0,
-      "duration_beats": 0.5,
-      "velocity": 81,
-      "role": "melody",
-      "register": "upper_physical_g4_c6",
       "source_track": "Grand Piano (Classic)",
       "physical_rack_map": "G3-C6"
     },
@@ -5669,17 +4960,6 @@
       "physical_rack_map": "G3-C6"
     },
     {
-      "note": "E5",
-      "playback_strength_multiplier": 1.05,
-      "beat": 219.0,
-      "duration_beats": 0.5,
-      "velocity": 81,
-      "role": "melody",
-      "register": "upper_physical_g4_c6",
-      "source_track": "Grand Piano (Classic)",
-      "physical_rack_map": "G3-C6"
-    },
-    {
       "note": "C4",
       "playback_strength_multiplier": 0.9,
       "beat": 219.0,
@@ -5687,17 +4967,6 @@
       "velocity": 59,
       "role": "accompaniment",
       "register": "lower_physical_g3_f4",
-      "source_track": "Grand Piano (Classic)",
-      "physical_rack_map": "G3-C6"
-    },
-    {
-      "note": "E5",
-      "playback_strength_multiplier": 1.05,
-      "beat": 220.0,
-      "duration_beats": 0.5,
-      "velocity": 81,
-      "role": "melody",
-      "register": "upper_physical_g4_c6",
       "source_track": "Grand Piano (Classic)",
       "physical_rack_map": "G3-C6"
     },
@@ -5801,17 +5070,6 @@
       "physical_rack_map": "G3-C6"
     },
     {
-      "note": "E5",
-      "playback_strength_multiplier": 1.05,
-      "beat": 224.0,
-      "duration_beats": 0.5,
-      "velocity": 81,
-      "role": "melody",
-      "register": "upper_physical_g4_c6",
-      "source_track": "Grand Piano (Classic)",
-      "physical_rack_map": "G3-C6"
-    },
-    {
       "note": "B3",
       "playback_strength_multiplier": 0.9,
       "beat": 224.0,
@@ -5834,17 +5092,6 @@
       "physical_rack_map": "G3-C6"
     },
     {
-      "note": "E5",
-      "playback_strength_multiplier": 1.05,
-      "beat": 225.0,
-      "duration_beats": 0.5,
-      "velocity": 81,
-      "role": "melody",
-      "register": "upper_physical_g4_c6",
-      "source_track": "Grand Piano (Classic)",
-      "physical_rack_map": "G3-C6"
-    },
-    {
       "note": "B3",
       "playback_strength_multiplier": 0.9,
       "beat": 225.0,
@@ -5852,17 +5099,6 @@
       "velocity": 59,
       "role": "accompaniment",
       "register": "lower_physical_g3_f4",
-      "source_track": "Grand Piano (Classic)",
-      "physical_rack_map": "G3-C6"
-    },
-    {
-      "note": "E5",
-      "playback_strength_multiplier": 1.05,
-      "beat": 226.0,
-      "duration_beats": 0.5,
-      "velocity": 81,
-      "role": "melody",
-      "register": "upper_physical_g4_c6",
       "source_track": "Grand Piano (Classic)",
       "physical_rack_map": "G3-C6"
     },
@@ -5878,17 +5114,6 @@
       "physical_rack_map": "G3-C6"
     },
     {
-      "note": "E5",
-      "playback_strength_multiplier": 1.05,
-      "beat": 227.0,
-      "duration_beats": 0.5,
-      "velocity": 81,
-      "role": "melody",
-      "register": "upper_physical_g4_c6",
-      "source_track": "Grand Piano (Classic)",
-      "physical_rack_map": "G3-C6"
-    },
-    {
       "note": "B3",
       "playback_strength_multiplier": 0.9,
       "beat": 227.0,
@@ -5896,17 +5121,6 @@
       "velocity": 59,
       "role": "accompaniment",
       "register": "lower_physical_g3_f4",
-      "source_track": "Grand Piano (Classic)",
-      "physical_rack_map": "G3-C6"
-    },
-    {
-      "note": "E5",
-      "playback_strength_multiplier": 1.05,
-      "beat": 228.0,
-      "duration_beats": 0.5,
-      "velocity": 81,
-      "role": "melody",
-      "register": "upper_physical_g4_c6",
       "source_track": "Grand Piano (Classic)",
       "physical_rack_map": "G3-C6"
     },
@@ -6032,17 +5246,6 @@
       "physical_rack_map": "G3-C6"
     },
     {
-      "note": "F5",
-      "playback_strength_multiplier": 1.05,
-      "beat": 232.0,
-      "duration_beats": 0.5,
-      "velocity": 81,
-      "role": "melody",
-      "register": "upper_physical_g4_c6",
-      "source_track": "Grand Piano (Classic)",
-      "physical_rack_map": "G3-C6"
-    },
-    {
       "note": "C4",
       "playback_strength_multiplier": 0.9,
       "beat": 232.0,
@@ -6050,17 +5253,6 @@
       "velocity": 59,
       "role": "accompaniment",
       "register": "lower_physical_g3_f4",
-      "source_track": "Grand Piano (Classic)",
-      "physical_rack_map": "G3-C6"
-    },
-    {
-      "note": "F5",
-      "playback_strength_multiplier": 1.05,
-      "beat": 233.0,
-      "duration_beats": 0.5,
-      "velocity": 81,
-      "role": "melody",
-      "register": "upper_physical_g4_c6",
       "source_track": "Grand Piano (Classic)",
       "physical_rack_map": "G3-C6"
     },
@@ -6076,17 +5268,6 @@
       "physical_rack_map": "G3-C6"
     },
     {
-      "note": "F5",
-      "playback_strength_multiplier": 1.05,
-      "beat": 234.0,
-      "duration_beats": 0.5,
-      "velocity": 81,
-      "role": "melody",
-      "register": "upper_physical_g4_c6",
-      "source_track": "Grand Piano (Classic)",
-      "physical_rack_map": "G3-C6"
-    },
-    {
       "note": "C4",
       "playback_strength_multiplier": 0.9,
       "beat": 234.0,
@@ -6098,17 +5279,6 @@
       "physical_rack_map": "G3-C6"
     },
     {
-      "note": "F5",
-      "playback_strength_multiplier": 1.05,
-      "beat": 235.0,
-      "duration_beats": 0.5,
-      "velocity": 81,
-      "role": "melody",
-      "register": "upper_physical_g4_c6",
-      "source_track": "Grand Piano (Classic)",
-      "physical_rack_map": "G3-C6"
-    },
-    {
       "note": "C4",
       "playback_strength_multiplier": 0.9,
       "beat": 235.0,
@@ -6116,17 +5286,6 @@
       "velocity": 59,
       "role": "accompaniment",
       "register": "lower_physical_g3_f4",
-      "source_track": "Grand Piano (Classic)",
-      "physical_rack_map": "G3-C6"
-    },
-    {
-      "note": "F5",
-      "playback_strength_multiplier": 1.05,
-      "beat": 236.0,
-      "duration_beats": 0.5,
-      "velocity": 81,
-      "role": "melody",
-      "register": "upper_physical_g4_c6",
       "source_track": "Grand Piano (Classic)",
       "physical_rack_map": "G3-C6"
     },
@@ -6195,17 +5354,6 @@
       "physical_rack_map": "G3-C6"
     },
     {
-      "note": "F5",
-      "playback_strength_multiplier": 1.05,
-      "beat": 238.0,
-      "duration_beats": 0.5,
-      "velocity": 81,
-      "role": "melody",
-      "register": "upper_physical_g4_c6",
-      "source_track": "Grand Piano (Classic)",
-      "physical_rack_map": "G3-C6"
-    },
-    {
       "note": "C4",
       "playback_strength_multiplier": 0.9,
       "beat": 238.0,
@@ -6231,16 +5379,6 @@
       "note": "A4",
       "beat": 238.75,
       "duration_beats": 0.25,
-      "velocity": 81,
-      "role": "melody",
-      "register": "upper_physical_g4_c6",
-      "source_track": "Grand Piano (Classic)",
-      "physical_rack_map": "G3-C6"
-    },
-    {
-      "note": "G4",
-      "beat": 239.0,
-      "duration_beats": 1.0,
       "velocity": 81,
       "role": "melody",
       "register": "upper_physical_g4_c6",
@@ -9006,17 +8144,6 @@
       "physical_rack_map": "G3-C6"
     },
     {
-      "note": "E5",
-      "playback_strength_multiplier": 1.05,
-      "beat": 360.0,
-      "duration_beats": 0.5,
-      "velocity": 75,
-      "role": "melody",
-      "register": "upper_physical_g4_c6",
-      "source_track": "Grand Piano (Classic)",
-      "physical_rack_map": "G3-C6"
-    },
-    {
       "note": "C4",
       "playback_strength_multiplier": 0.9,
       "beat": 360.0,
@@ -9094,17 +8221,6 @@
       "physical_rack_map": "G3-C6"
     },
     {
-      "note": "E5",
-      "playback_strength_multiplier": 1.05,
-      "beat": 363.0,
-      "duration_beats": 0.5,
-      "velocity": 75,
-      "role": "melody",
-      "register": "upper_physical_g4_c6",
-      "source_track": "Grand Piano (Classic)",
-      "physical_rack_map": "G3-C6"
-    },
-    {
       "note": "C4",
       "playback_strength_multiplier": 0.9,
       "beat": 363.0,
@@ -9112,17 +8228,6 @@
       "velocity": 53,
       "role": "accompaniment",
       "register": "lower_physical_g3_f4",
-      "source_track": "Grand Piano (Classic)",
-      "physical_rack_map": "G3-C6"
-    },
-    {
-      "note": "E5",
-      "playback_strength_multiplier": 1.05,
-      "beat": 364.0,
-      "duration_beats": 0.5,
-      "velocity": 75,
-      "role": "melody",
-      "register": "upper_physical_g4_c6",
       "source_track": "Grand Piano (Classic)",
       "physical_rack_map": "G3-C6"
     },
