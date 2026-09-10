@@ -233,7 +233,7 @@ export class ArduinoSerialController {
       try {
         await this.writeLine("ARM");
         await this.writeLine("CALIBRATE");
-        await this.writeLine("SWEEP,40,300,150");
+        await this.writeLine("SWEEP,30,150,50");
         await completed;
         await this.writeLine("CALDONE");
         await this.writeLine("DISARM");
