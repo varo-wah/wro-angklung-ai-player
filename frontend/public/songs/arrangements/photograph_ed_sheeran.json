@@ -39,6 +39,7 @@
       "G3",
       "A3",
       "C4",
+      "E4",
       "F4",
       "G4",
       "A4",
@@ -60,7 +61,7 @@
       "duration_beats": 0.5,
       "velocity": 55,
       "role": "melody",
-      "register": "upper_physical_g4_c6",
+      "register": "physical_c4_c6",
       "source_track": "Acoustic Gtr (Classic)",
       "physical_rack_map": "G3-C6"
     },
@@ -82,7 +83,7 @@
       "duration_beats": 0.5,
       "velocity": 55,
       "role": "melody",
-      "register": "upper_physical_g4_c6",
+      "register": "physical_c4_c6",
       "source_track": "Acoustic Gtr (Classic)",
       "physical_rack_map": "G3-C6"
     },
@@ -92,7 +93,7 @@
       "duration_beats": 0.5,
       "velocity": 55,
       "role": "melody",
-      "register": "upper_physical_g4_c6",
+      "register": "physical_c4_c6",
       "source_track": "Acoustic Gtr (Classic)",
       "physical_rack_map": "G3-C6"
     },
@@ -114,7 +115,7 @@
       "duration_beats": 1.0,
       "velocity": 55,
       "role": "melody",
-      "register": "upper_physical_g4_c6",
+      "register": "physical_c4_c6",
       "source_track": "Acoustic Gtr (Classic)",
       "physical_rack_map": "G3-C6"
     },
@@ -124,7 +125,7 @@
       "duration_beats": 0.5,
       "velocity": 55,
       "role": "melody",
-      "register": "upper_physical_g4_c6",
+      "register": "physical_c4_c6",
       "source_track": "Acoustic Gtr (Classic)",
       "physical_rack_map": "G3-C6"
     },
@@ -140,22 +141,22 @@
       "physical_rack_map": "G3-C6"
     },
     {
-      "note": "G4",
+      "note": "F4",
       "beat": 2.5,
       "duration_beats": 0.5,
       "velocity": 55,
       "role": "melody",
-      "register": "upper_physical_g4_c6",
+      "register": "physical_c4_c6",
       "source_track": "Acoustic Gtr (Classic)",
       "physical_rack_map": "G3-C6"
     },
     {
-      "note": "G4",
+      "note": "E4",
       "beat": 3.0,
       "duration_beats": 0.5,
       "velocity": 55,
       "role": "melody",
-      "register": "upper_physical_g4_c6",
+      "register": "physical_c4_c6",
       "source_track": "Acoustic Gtr (Classic)",
       "physical_rack_map": "G3-C6"
     },
@@ -171,22 +172,12 @@
       "physical_rack_map": "G3-C6"
     },
     {
-      "note": "G4",
+      "note": "C4",
       "beat": 3.5,
       "duration_beats": 0.5,
       "velocity": 55,
       "role": "melody",
-      "register": "upper_physical_g4_c6",
-      "source_track": "Acoustic Gtr (Classic)",
-      "physical_rack_map": "G3-C6"
-    },
-    {
-      "note": "G4",
-      "beat": 4.0,
-      "duration_beats": 0.5,
-      "velocity": 55,
-      "role": "melody",
-      "register": "upper_physical_g4_c6",
+      "register": "physical_c4_c6",
       "source_track": "Acoustic Gtr (Classic)",
       "physical_rack_map": "G3-C6"
     },
@@ -208,7 +199,7 @@
       "duration_beats": 0.5,
       "velocity": 55,
       "role": "melody",
-      "register": "upper_physical_g4_c6",
+      "register": "physical_c4_c6",
       "source_track": "Acoustic Gtr (Classic)",
       "physical_rack_map": "G3-C6"
     },
@@ -218,7 +209,7 @@
       "duration_beats": 0.5,
       "velocity": 55,
       "role": "melody",
-      "register": "upper_physical_g4_c6",
+      "register": "physical_c4_c6",
       "source_track": "Acoustic Gtr (Classic)",
       "physical_rack_map": "G3-C6"
     },
@@ -240,7 +231,7 @@
       "duration_beats": 1.0,
       "velocity": 55,
       "role": "melody",
-      "register": "upper_physical_g4_c6",
+      "register": "physical_c4_c6",
       "source_track": "Acoustic Gtr (Classic)",
       "physical_rack_map": "G3-C6"
     },
@@ -250,7 +241,7 @@
       "duration_beats": 0.5,
       "velocity": 55,
       "role": "melody",
-      "register": "upper_physical_g4_c6",
+      "register": "physical_c4_c6",
       "source_track": "Acoustic Gtr (Classic)",
       "physical_rack_map": "G3-C6"
     },
@@ -266,22 +257,22 @@
       "physical_rack_map": "G3-C6"
     },
     {
-      "note": "G4",
+      "note": "F4",
       "beat": 6.5,
       "duration_beats": 0.5,
       "velocity": 55,
       "role": "melody",
-      "register": "upper_physical_g4_c6",
+      "register": "physical_c4_c6",
       "source_track": "Acoustic Gtr (Classic)",
       "physical_rack_map": "G3-C6"
     },
     {
-      "note": "G4",
+      "note": "E4",
       "beat": 7.0,
       "duration_beats": 0.5,
       "velocity": 55,
       "role": "melody",
-      "register": "upper_physical_g4_c6",
+      "register": "physical_c4_c6",
       "source_track": "Acoustic Gtr (Classic)",
       "physical_rack_map": "G3-C6"
     },
@@ -297,12 +288,12 @@
       "physical_rack_map": "G3-C6"
     },
     {
-      "note": "G4",
+      "note": "C4",
       "beat": 7.5,
       "duration_beats": 0.5,
       "velocity": 55,
       "role": "melody",
-      "register": "upper_physical_g4_c6",
+      "register": "physical_c4_c6",
       "source_track": "Acoustic Gtr (Classic)",
       "physical_rack_map": "G3-C6"
     },
