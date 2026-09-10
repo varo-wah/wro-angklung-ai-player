@@ -8,7 +8,7 @@ const { multiplierFor } = require('../scripts/tune-fireflies.cjs');
 const { buildScheduleFromBuiltInSong: build } = load('src/lib/scheduleBuilder.ts');
 const { encodeArduinoNoteCommand: encode } = load('src/lib/arduinoSerial.ts');
 const arrangement = JSON.parse(fs.readFileSync(path.join(__dirname, '../public/songs/arrangements/fireflies_owl_city.json')));
-const settings = { strength: 0.8, tempo: 'normal', mode: 'melody' };
+const settings = { strength: 0.8, tempo: 'normal', mode: 'harmony' };
 async function loaded(data) {
   return load('src/lib/songLoader.ts', { fetch: async () => ({ ok: true, json: async () => data }) })
     .loadSongArrangement({ id: data.id, title: data.title, path: '/test.json' }).then(song => ({ ...song, performance_profile: undefined }));
@@ -31,7 +31,8 @@ test('Fireflies JSON -> loader -> schedule -> unchanged serial encoding', async 
   const commands = build(song, settings).commands;
   for (const [index, note] of song.notes.entries()) {
     const command = commands.find(c => c.command_id === `cmd_${String(index + 1).padStart(4, "0")}`);
-    assert.equal(command.strength, Math.min(1, Math.round(0.8 * note.playback_strength_multiplier * 100) / 100));
+    assert.equal(command.strength, ["accompaniment", "support"].includes(note.role) ? 1 : Math.min(1, Math.round(0.8 * note.playback_strength_multiplier * 100) / 100));
+    if (["accompaniment", "support"].includes(note.role)) assert.ok(command.duration_seconds <= 0.18);
     assert.ok(command.strength >= 0 && command.strength <= 1);
     assert.equal(Number(encode(command).split(',')[3]), Math.round(command.strength * 1000));
   }
@@ -39,22 +40,22 @@ test('Fireflies JSON -> loader -> schedule -> unchanged serial encoding', async 
   assert.equal(highShort.strength, 1);
   assert.ok(highShort.strength > commands.find(c => c.note === 'G3').strength);
   assert.ok(highShort.strength > commands.find(c => c.note === 'B5' && c.duration_seconds >= 0.36).strength);
-  assert.equal(Math.min(...commands.map(c => c.strength)), 0.6);
+  assert.equal(Math.min(...commands.map(c => c.strength)), Math.min(...song.notes.map(n => ["accompaniment", "support"].includes(n.role) ? 1 : Math.min(1, Math.round(0.8 * n.playback_strength_multiplier * 100) / 100))));
   assert.equal(Math.max(...commands.map(c => c.strength)), 1);
 });
 test('missing multiplier retains legacy strengths in seconds/tracks and both modes', async () => {
   const song = await loaded({ id: 'legacy', title: 'Legacy', tempo_bpm: 92,
     tracks: [{ role: 'melody', notes: [{ note: 'C5', start: 0, duration: 1, velocity: 10 }] }] });
   assert.equal(build(song, settings).commands[0].strength, 0.8);
-  assert.deepEqual(Array.from(build(song, { ...settings, mode: 'harmony' }).commands, c => c.strength).sort(), [0.68, 0.8]);
+  assert.deepEqual(Array.from(build(song, { ...settings, mode: 'harmony' }).commands, c => c.strength).sort(), [0.8]);
   song.notes[0].playback_strength_multiplier = 1;
   assert.equal(build(song, settings).commands[0].strength, 0.8);
 });
-test('seconds notes retain multiplier; harmony inherits dynamics; slower mode preserves strength', async () => {
+test('seconds notes retain multiplier; Extra retains authored dynamics without synthetic notes; slower mode preserves strength', async () => {
   const song = await loaded({ id: 'seconds', title: 'Seconds', tempo_bpm: 92,
     notes: [{ note: 'C5', start: 0, duration: 1, playback_strength_multiplier: 1.25 }] });
   assert.equal(song.notes[0].playback_strength_multiplier, 1.25);
-  assert.deepEqual(Array.from(build(song, { ...settings, mode: 'harmony', tempo: 'slower' }).commands, c => c.strength).sort(), [0.85, 1]);
+  assert.deepEqual(Array.from(build(song, { ...settings, mode: 'harmony', tempo: 'slower' }).commands, c => c.strength).sort(), [1]);
   song.notes[0].playback_strength_multiplier = 10;
   assert.equal(build(song, settings).commands[0].strength, 1);
   for (const invalid of [-1, NaN, Infinity, null, '1.2']) {
@@ -71,7 +72,7 @@ test('low notes retain the boost throughout Fireflies, including sustained notes
   assert.equal(multiplierFor({ note: 'G3', beat: 0, duration_beats: 0.75 }), 0.9);
 });
 
-test('Fireflies articulation shortens long pulses only and preserves starts and strength', async () => {
+test('Articulation preserves source rests, starts and strength', async () => {
   const song = await loaded(arrangement);
   const commands = build(song, settings).commands;
   const original = await loaded({ ...arrangement, notes: arrangement.notes.map(({ playback_duration_multiplier, ...note }) => note) });
@@ -81,8 +82,7 @@ test('Fireflies articulation shortens long pulses only and preserves starts and 
     assert.equal(command.start_time_seconds, before.start_time_seconds);
     assert.equal(command.note, before.note);
     assert.equal(command.strength, before.strength);
-    const factor = before.duration_seconds >= 0.489 ? 0.75 : 1;
-    assert.equal(command.duration_seconds, Math.round(before.duration_seconds * factor * 1000) / 1000);
+    assert.ok(command.duration_seconds <= before.duration_seconds);
     assert.equal(Number(encode(command).split(',')[2]), Math.round(command.duration_seconds * 1000));
   });
 });

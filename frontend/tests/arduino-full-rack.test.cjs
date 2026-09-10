@@ -112,7 +112,7 @@ test("firmware starts with conservative live calibration and exposes safe debug 
     return match[1].split(",").map((value) => Number(value.trim()));
   };
 
-  assert.deepEqual(readCalibrationArray("uint8_t", "motorPowerPercent"), [30, 30, 30, 30, 30, 30, 35, 35, 25, 15, 35, 20, 20, 25, 25, 25, 25, 25]);
+  assert.deepEqual(readCalibrationArray("uint8_t", "motorPowerPercent"), [30, 28, 30, 30, 30, 30, 25, 30, 25, 30, 30, 25, 25, 25, 55, 35, 22, 25]);
   assert.deepEqual(readCalibrationArray("uint16_t", "motorPulseMs"), Array(18).fill(550));
   assert.match(firmware, /MAX_CALIBRATION_POWER_PERCENT = 60/);
   assert.match(firmware, /MIN_CALIBRATION_PULSE_MS = 50/);
@@ -155,13 +155,13 @@ test("preparation validates all 18 channels before ARM and ALL_OFF", async () =>
   assert.deepEqual(lines, []);
 });
 
-test("wake greeting uses the firmware sweep protocol and disarms after completion", async () => {
+test("wake greeting uses the fast fixed-output firmware sweep and disarms after completion", async () => {
   const {controller, lines} = connectedController();
   const greeting = controller.runWakeSweep();
   for (let index = 0; index < 20 && lines.length < 3; index++) await new Promise(resolve => setImmediate(resolve));
   controller.handleLine("ACK,SWEEP,DONE");
   assert.equal(await greeting, true);
-  assert.deepEqual(lines, ["ARM", "CALIBRATE", "SWEEP", "CALDONE", "DISARM"]);
+  assert.deepEqual(lines, ["ARM", "CALIBRATE", "SWEEP,30,150,50", "CALDONE", "DISARM"]);
 });
 
 test("disconnect shuts down and disarms before releasing serial", async () => {

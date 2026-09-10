@@ -223,7 +223,7 @@ export class ArduinoSerialController {
     await this.writeLine("DISARM");
   }
 
-  /** Run the firmware's calibrated full-rack greeting, then return to a disarmed state. */
+  /** Run a fast fixed-output full-rack greeting, then return to a disarmed state. */
   async runWakeSweep(): Promise<boolean> {
     if (!this.connected) return false;
     if (this.wakeSweepPromise) return this.wakeSweepPromise;
@@ -233,7 +233,7 @@ export class ArduinoSerialController {
       try {
         await this.writeLine("ARM");
         await this.writeLine("CALIBRATE");
-        await this.writeLine("SWEEP");
+        await this.writeLine("SWEEP,30,150,50");
         await completed;
         await this.writeLine("CALDONE");
         await this.writeLine("DISARM");

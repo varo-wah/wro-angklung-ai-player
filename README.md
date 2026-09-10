@@ -1,5 +1,7 @@
 # WRO Angklung AI Player
 
+For the current Mac Chrome USB controller, paired phone controls, shared connection status, and recovery procedure, see [Operating configuration](docs/operating-configuration.md). The older milestone descriptions below have not yet been fully reconciled with the current full-rack implementation.
+
 This repository contains the software foundation for a WRO robotics project: a website-based AI Angklung Performance Console.
 
 The official build order is now:

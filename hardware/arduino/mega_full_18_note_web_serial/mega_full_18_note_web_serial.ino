@@ -82,9 +82,9 @@ const uint8_t PHYSICAL_ANGKLUNG_NUMBERS[CHANNEL_COUNT] = {
 //
 
 uint8_t motorPowerPercent[CHANNEL_COUNT] = {
-  30, 30, 30,
-  30, 30, 30, 35, 35, 25, 15,
-  35, 20, 20, 25, 25, 25, 25,
+  30, 28, 30,
+  30, 30, 30, 25, 30, 25, 30,
+  30, 25, 25, 25, 55, 35, 22,
   25
 };
 
@@ -165,11 +165,18 @@ RoutineMode routineMode = ROUTINE_NONE;
 // SERIAL STATE
 // =============================================================================
 
-char commandBuffer[COMMAND_BUFFER_SIZE];
-
-uint8_t commandLength = 0;
-
-bool discardCommandUntilNewline = false;
+struct CommandInput {
+  char buffer[COMMAND_BUFFER_SIZE];
+  uint8_t length = 0;
+  bool discard = false;
+};
+CommandInput usbInput, uartInput;
+enum Controller { OWNER_NONE, OWNER_USB, OWNER_UART };
+Controller owner = OWNER_NONE;
+Controller commandSource = OWNER_USB;
+Print *commandOutput = &Serial;
+const unsigned long WIRELESS_LEASE_MS = 6000;
+unsigned long wirelessActivityMs = 0;
 
 // =============================================================================
 // SYSTEM STATE
@@ -623,7 +630,7 @@ bool parseLongInRange(
 
 bool requireArmed() {
   if (!armed) {
-    Serial.println(
+    commandOutput->println(
       F("ERROR,NOT_ARMED")
     );
 
@@ -637,7 +644,7 @@ bool requireArmed() {
 
 bool requireCalibrationMode() {
   if (!calibrationMode) {
-    Serial.println(
+    commandOutput->println(
       F("ERROR,NOT_IN_CALIBRATION_MODE")
     );
 
@@ -654,55 +661,55 @@ bool requireCalibrationMode() {
 void printCalibration(
   uint8_t channel
 ) {
-  Serial.print(
+  commandOutput->print(
     F("CAL,")
   );
 
-  Serial.print(channel);
+  commandOutput->print(channel);
 
-  Serial.print(',');
+  commandOutput->print(',');
 
-  Serial.print(
+  commandOutput->print(
     NOTE_LABELS[channel]
   );
 
-  Serial.print(
+  commandOutput->print(
     F(",ANGKLUNG=")
   );
 
-  Serial.print(
+  commandOutput->print(
     PHYSICAL_ANGKLUNG_NUMBERS[channel]
   );
 
-  Serial.print(
+  commandOutput->print(
     F(",POWER=")
   );
 
-  Serial.print(
+  commandOutput->print(
     motorPowerPercent[channel]
   );
 
-  Serial.print(
+  commandOutput->print(
     F(",PULSE=")
   );
 
-  Serial.print(
+  commandOutput->print(
     motorPulseMs[channel]
   );
 
-  Serial.print(
+  commandOutput->print(
     F(",IN1=")
   );
 
-  Serial.print(
+  commandOutput->print(
     IN1_PINS[channel]
   );
 
-  Serial.print(
+  commandOutput->print(
     F(",IN2=")
   );
 
-  Serial.println(
+  commandOutput->println(
     IN2_PINS[channel]
   );
 }
@@ -710,7 +717,7 @@ void printCalibration(
 // -----------------------------------------------------------------------------
 
 void printCalibrationExport() {
-  Serial.println(
+  commandOutput->println(
     F("CALEXPORT,BEGIN")
   );
 
@@ -719,52 +726,52 @@ void printCalibrationExport() {
     channel < CHANNEL_COUNT;
     channel++
   ) {
-    Serial.print(
+    commandOutput->print(
       F("CALEXPORT,")
     );
 
-    Serial.print(channel);
+    commandOutput->print(channel);
 
-    Serial.print(',');
+    commandOutput->print(',');
 
-    Serial.print(
+    commandOutput->print(
       NOTE_LABELS[channel]
     );
 
-    Serial.print(
+    commandOutput->print(
       F(",POWER=")
     );
 
-    Serial.print(
+    commandOutput->print(
       motorPowerPercent[channel]
     );
 
-    Serial.print(
+    commandOutput->print(
       F(",PULSE=")
     );
 
-    Serial.print(
+    commandOutput->print(
       motorPulseMs[channel]
     );
 
-    Serial.print(
+    commandOutput->print(
       F(",IN1=")
     );
 
-    Serial.print(
+    commandOutput->print(
       IN1_PINS[channel]
     );
 
-    Serial.print(
+    commandOutput->print(
       F(",IN2=")
     );
 
-    Serial.println(
+    commandOutput->println(
       IN2_PINS[channel]
     );
   }
 
-  Serial.println(
+  commandOutput->println(
     F("CALEXPORT,END")
   );
 }
@@ -778,41 +785,41 @@ void printSweepStep(
   uint8_t powerPercent,
   uint16_t pulseMs
 ) {
-  Serial.print(
+  commandOutput->print(
     F("SWEEP,CHANNEL=")
   );
 
-  Serial.print(channel);
+  commandOutput->print(channel);
 
-  Serial.print(
+  commandOutput->print(
     F(",NOTE=")
   );
 
-  Serial.print(
+  commandOutput->print(
     NOTE_LABELS[channel]
   );
 
-  Serial.print(
+  commandOutput->print(
     F(",ANGKLUNG=")
   );
 
-  Serial.print(
+  commandOutput->print(
     PHYSICAL_ANGKLUNG_NUMBERS[channel]
   );
 
-  Serial.print(
+  commandOutput->print(
     F(",POWER=")
   );
 
-  Serial.print(
+  commandOutput->print(
     powerPercent
   );
 
-  Serial.print(
+  commandOutput->print(
     F(",PULSE=")
   );
 
-  Serial.println(
+  commandOutput->println(
     pulseMs
   );
 }
@@ -846,35 +853,35 @@ void startCurrentNoteSweepStep() {
 // -----------------------------------------------------------------------------
 
 void startCurrentCalSweepStep() {
-  Serial.print(
+  commandOutput->print(
     F("CALSWEEP,CHANNEL=")
   );
 
-  Serial.print(
+  commandOutput->print(
     routineChannel
   );
 
-  Serial.print(
+  commandOutput->print(
     F(",NOTE=")
   );
 
-  Serial.print(
+  commandOutput->print(
     NOTE_LABELS[routineChannel]
   );
 
-  Serial.print(
+  commandOutput->print(
     F(",POWER=")
   );
 
-  Serial.print(
+  commandOutput->print(
     calSweepCurrentPower
   );
 
-  Serial.print(
+  commandOutput->print(
     F(",PULSE=")
   );
 
-  Serial.println(
+  commandOutput->println(
     calSweepPulseMs
   );
 
@@ -911,7 +918,7 @@ void updateRoutine() {
     ) {
       cancelRoutine();
 
-      Serial.println(
+      commandOutput->println(
         F("ACK,SWEEP,DONE")
       );
 
@@ -929,7 +936,7 @@ void updateRoutine() {
     ) {
       cancelRoutine();
 
-      Serial.println(
+      commandOutput->println(
         F("ACK,CALSWEEP,DONE")
       );
 
@@ -997,7 +1004,7 @@ void handleNoteCommand(
   if (
     countCommas(command) != 3
   ) {
-    Serial.println(
+    commandOutput->println(
       F("ERROR,INVALID_NOTE")
     );
 
@@ -1009,7 +1016,7 @@ void handleNoteCommand(
   }
 
   if (calibrationMode) {
-    Serial.println(
+    commandOutput->println(
       F("ERROR,CALIBRATION_MODE_ACTIVE")
     );
 
@@ -1046,7 +1053,7 @@ void handleNoteCommand(
       channel
     )
   ) {
-    Serial.println(
+    commandOutput->println(
       F("ERROR,INVALID_CHANNEL")
     );
 
@@ -1061,7 +1068,7 @@ void handleNoteCommand(
       durationMs
     )
   ) {
-    Serial.println(
+    commandOutput->println(
       F("ERROR,INVALID_DURATION")
     );
 
@@ -1076,7 +1083,7 @@ void handleNoteCommand(
       strength
     )
   ) {
-    Serial.println(
+    commandOutput->println(
       F("ERROR,INVALID_STRENGTH")
     );
 
@@ -1091,11 +1098,11 @@ void handleNoteCommand(
     (uint16_t)strength
   );
 
-  Serial.print(
+  commandOutput->print(
     F("ACK,NOTE,")
   );
 
-  Serial.println(channel);
+  commandOutput->println(channel);
 }
 
 // =============================================================================
@@ -1139,7 +1146,7 @@ void handleTestCommand(
         channel
       )
     ) {
-      Serial.println(
+      commandOutput->println(
         F("ERROR,INVALID_CHANNEL")
       );
 
@@ -1154,33 +1161,33 @@ void handleTestCommand(
       motorPulseMs[channel]
     );
 
-    Serial.print(
+    commandOutput->print(
       F("ACK,TEST,")
     );
 
-    Serial.print(channel);
+    commandOutput->print(channel);
 
-    Serial.print(
+    commandOutput->print(
       F(",NOTE=")
     );
 
-    Serial.print(
+    commandOutput->print(
       NOTE_LABELS[channel]
     );
 
-    Serial.print(
+    commandOutput->print(
       F(",POWER=")
     );
 
-    Serial.print(
+    commandOutput->print(
       motorPowerPercent[channel]
     );
 
-    Serial.print(
+    commandOutput->print(
       F(",PULSE=")
     );
 
-    Serial.println(
+    commandOutput->println(
       motorPulseMs[channel]
     );
 
@@ -1222,7 +1229,7 @@ void handleTestCommand(
         channel
       )
     ) {
-      Serial.println(
+      commandOutput->println(
         F("ERROR,INVALID_CHANNEL")
       );
 
@@ -1237,7 +1244,7 @@ void handleTestCommand(
         powerPercent
       )
     ) {
-      Serial.println(
+      commandOutput->println(
         F("ERROR,INVALID_POWER")
       );
 
@@ -1252,7 +1259,7 @@ void handleTestCommand(
         durationMs
       )
     ) {
-      Serial.println(
+      commandOutput->println(
         F("ERROR,INVALID_DURATION")
       );
 
@@ -1267,40 +1274,40 @@ void handleTestCommand(
       (unsigned long)durationMs
     );
 
-    Serial.print(
+    commandOutput->print(
       F("ACK,TEST,")
     );
 
-    Serial.print(channel);
+    commandOutput->print(channel);
 
-    Serial.print(
+    commandOutput->print(
       F(",NOTE=")
     );
 
-    Serial.print(
+    commandOutput->print(
       NOTE_LABELS[channel]
     );
 
-    Serial.print(
+    commandOutput->print(
       F(",POWER=")
     );
 
-    Serial.print(
+    commandOutput->print(
       powerPercent
     );
 
-    Serial.print(
+    commandOutput->print(
       F(",PULSE=")
     );
 
-    Serial.println(
+    commandOutput->println(
       durationMs
     );
 
     return;
   }
 
-  Serial.println(
+  commandOutput->println(
     F("ERROR,INVALID_TEST")
   );
 }
@@ -1356,7 +1363,7 @@ void handleAllCommand(
         durationMs
       )
     ) {
-      Serial.println(
+      commandOutput->println(
         F("ERROR,INVALID_DURATION")
       );
 
@@ -1377,11 +1384,11 @@ void handleAllCommand(
       );
     }
 
-    Serial.print(
+    commandOutput->print(
       F("ACK,ALL,PROFILE,DURATION=")
     );
 
-    Serial.println(
+    commandOutput->println(
       durationMs
     );
 
@@ -1416,7 +1423,7 @@ void handleAllCommand(
         powerPercent
       )
     ) {
-      Serial.println(
+      commandOutput->println(
         F("ERROR,INVALID_POWER")
       );
 
@@ -1431,7 +1438,7 @@ void handleAllCommand(
         durationMs
       )
     ) {
-      Serial.println(
+      commandOutput->println(
         F("ERROR,INVALID_DURATION")
       );
 
@@ -1452,26 +1459,26 @@ void handleAllCommand(
       );
     }
 
-    Serial.print(
+    commandOutput->print(
       F("ACK,ALL,POWER=")
     );
 
-    Serial.print(
+    commandOutput->print(
       powerPercent
     );
 
-    Serial.print(
+    commandOutput->print(
       F(",DURATION=")
     );
 
-    Serial.println(
+    commandOutput->println(
       durationMs
     );
 
     return;
   }
 
-  Serial.println(
+  commandOutput->println(
     F("ERROR,INVALID_ALL")
   );
 }
@@ -1537,7 +1544,7 @@ void handleAllOnCommand(
       );
     }
 
-    Serial.println(
+    commandOutput->println(
       F("ACK,ALLON,PROFILE")
     );
 
@@ -1561,7 +1568,7 @@ void handleAllOnCommand(
         powerPercent
       )
     ) {
-      Serial.println(
+      commandOutput->println(
         F("ERROR,INVALID_POWER")
       );
 
@@ -1581,18 +1588,18 @@ void handleAllOnCommand(
       );
     }
 
-    Serial.print(
+    commandOutput->print(
       F("ACK,ALLON,POWER=")
     );
 
-    Serial.println(
+    commandOutput->println(
       powerPercent
     );
 
     return;
   }
 
-  Serial.println(
+  commandOutput->println(
     F("ERROR,INVALID_ALLON")
   );
 }
@@ -1643,7 +1650,7 @@ void handleSweepCommand(
     if (
       countCommas(command) != 3
     ) {
-      Serial.println(
+      commandOutput->println(
         F("ERROR,INVALID_SWEEP")
       );
 
@@ -1680,7 +1687,7 @@ void handleSweepCommand(
         powerPercent
       )
     ) {
-      Serial.println(
+      commandOutput->println(
         F("ERROR,INVALID_POWER")
       );
 
@@ -1695,7 +1702,7 @@ void handleSweepCommand(
         durationMs
       )
     ) {
-      Serial.println(
+      commandOutput->println(
         F("ERROR,INVALID_DURATION")
       );
 
@@ -1710,7 +1717,7 @@ void handleSweepCommand(
         gapMs
       )
     ) {
-      Serial.println(
+      commandOutput->println(
         F("ERROR,INVALID_GAP")
       );
 
@@ -1738,7 +1745,7 @@ void handleSweepCommand(
   routineWaitingGap =
     false;
 
-  Serial.println(
+  commandOutput->println(
     F("ACK,SWEEP,START")
   );
 
@@ -1769,7 +1776,7 @@ void handleCalSweepCommand(
   if (
     countCommas(command) != 6
   ) {
-    Serial.println(
+    commandOutput->println(
       F("ERROR,INVALID_CALSWEEP")
     );
 
@@ -1827,7 +1834,7 @@ void handleCalSweepCommand(
       channel
     )
   ) {
-    Serial.println(
+    commandOutput->println(
       F("ERROR,INVALID_CHANNEL")
     );
 
@@ -1842,7 +1849,7 @@ void handleCalSweepCommand(
       startPower
     )
   ) {
-    Serial.println(
+    commandOutput->println(
       F("ERROR,INVALID_START_POWER")
     );
 
@@ -1857,7 +1864,7 @@ void handleCalSweepCommand(
       endPower
     )
   ) {
-    Serial.println(
+    commandOutput->println(
       F("ERROR,INVALID_END_POWER")
     );
 
@@ -1872,7 +1879,7 @@ void handleCalSweepCommand(
       stepPower
     )
   ) {
-    Serial.println(
+    commandOutput->println(
       F("ERROR,INVALID_STEP")
     );
 
@@ -1887,7 +1894,7 @@ void handleCalSweepCommand(
       durationMs
     )
   ) {
-    Serial.println(
+    commandOutput->println(
       F("ERROR,INVALID_DURATION")
     );
 
@@ -1902,7 +1909,7 @@ void handleCalSweepCommand(
       gapMs
     )
   ) {
-    Serial.println(
+    commandOutput->println(
       F("ERROR,INVALID_GAP")
     );
 
@@ -1913,7 +1920,7 @@ void handleCalSweepCommand(
     startPower >
     endPower
   ) {
-    Serial.println(
+    commandOutput->println(
       F("ERROR,START_POWER_GT_END_POWER")
     );
 
@@ -1946,17 +1953,17 @@ void handleCalSweepCommand(
   calSweepPulseMs =
     (uint16_t)durationMs;
 
-  Serial.print(
+  commandOutput->print(
     F("ACK,CALSWEEP,START,CHANNEL=")
   );
 
-  Serial.print(channel);
+  commandOutput->print(channel);
 
-  Serial.print(
+  commandOutput->print(
     F(",NOTE=")
   );
 
-  Serial.println(
+  commandOutput->println(
     NOTE_LABELS[channel]
   );
 
@@ -1983,7 +1990,7 @@ void handlePowerCommand(
   if (
     countCommas(command) != 2
   ) {
-    Serial.println(
+    commandOutput->println(
       F("ERROR,INVALID_POWER")
     );
 
@@ -2013,7 +2020,7 @@ void handlePowerCommand(
       channel
     )
   ) {
-    Serial.println(
+    commandOutput->println(
       F("ERROR,INVALID_CHANNEL")
     );
 
@@ -2028,7 +2035,7 @@ void handlePowerCommand(
       percent
     )
   ) {
-    Serial.println(
+    commandOutput->println(
       F("ERROR,INVALID_POWER")
     );
 
@@ -2038,15 +2045,15 @@ void handlePowerCommand(
   motorPowerPercent[channel] =
     (uint8_t)percent;
 
-  Serial.print(
+  commandOutput->print(
     F("ACK,POWER,")
   );
 
-  Serial.print(channel);
+  commandOutput->print(channel);
 
-  Serial.print(',');
+  commandOutput->print(',');
 
-  Serial.println(percent);
+  commandOutput->println(percent);
 }
 
 // =============================================================================
@@ -2069,7 +2076,7 @@ void handlePulseCommand(
   if (
     countCommas(command) != 2
   ) {
-    Serial.println(
+    commandOutput->println(
       F("ERROR,INVALID_PULSE")
     );
 
@@ -2099,7 +2106,7 @@ void handlePulseCommand(
       channel
     )
   ) {
-    Serial.println(
+    commandOutput->println(
       F("ERROR,INVALID_CHANNEL")
     );
 
@@ -2114,7 +2121,7 @@ void handlePulseCommand(
       pulseMs
     )
   ) {
-    Serial.println(
+    commandOutput->println(
       F("ERROR,INVALID_PULSE")
     );
 
@@ -2124,15 +2131,15 @@ void handlePulseCommand(
   motorPulseMs[channel] =
     (uint16_t)pulseMs;
 
-  Serial.print(
+  commandOutput->print(
     F("ACK,PULSE,")
   );
 
-  Serial.print(channel);
+  commandOutput->print(channel);
 
-  Serial.print(',');
+  commandOutput->print(',');
 
-  Serial.println(pulseMs);
+  commandOutput->println(pulseMs);
 }
 
 // =============================================================================
@@ -2148,7 +2155,7 @@ void handleCalibrationCommand(
   if (
     countCommas(command) != 1
   ) {
-    Serial.println(
+    commandOutput->println(
       F("ERROR,INVALID_CAL")
     );
 
@@ -2165,7 +2172,7 @@ void handleCalibrationCommand(
       channel
     )
   ) {
-    Serial.println(
+    commandOutput->println(
       F("ERROR,INVALID_CHANNEL")
     );
 
@@ -2199,6 +2206,34 @@ void handleCommand(
     }
   }
 
+  const bool safety = strcmp(command, "STOP") == 0 ||
+    strcmp(command, "ALL_OFF") == 0 || strcmp(command, "DISARM") == 0 ||
+    strcmp(command, "ESTOP") == 0;
+  const bool readOnly = strncmp(command, "HELLO,", 6) == 0 ||
+    strcmp(command, "STATUS") == 0 || strcmp(command, "PING") == 0;
+  // A stop from the other transport also revokes the current owner's ARM.
+  if (safety && owner != OWNER_NONE && owner != commandSource) {
+    armed = false;
+    calibrationMode = false;
+    owner = OWNER_NONE;
+  }
+  if (!safety && !readOnly && owner != OWNER_NONE && owner != commandSource) {
+    commandOutput->println(F("ERROR,CONTROLLER_BUSY"));
+    return;
+  }
+  // Phase 1 UART cannot enter calibration, sweeps, or continuous output.
+  if (commandSource == OWNER_UART && !safety && !readOnly &&
+      strcmp(command, "ARM") != 0 && strncmp(command, "NOTE,", 5) != 0) {
+    commandOutput->println(F("ERROR,WIRELESS_COMMAND_NOT_ALLOWED"));
+    return;
+  }
+  if (strcmp(command, "PING") == 0) {
+    commandOutput->println(F("PONG"));
+    return;
+  }
+  if (commandSource == OWNER_UART && owner == OWNER_UART && !readOnly)
+    wirelessActivityMs = millis();
+
   // ---------------------------------------------------------------------------
   // WEB SERIAL HANDSHAKE
   // ---------------------------------------------------------------------------
@@ -2209,7 +2244,7 @@ void handleCommand(
       "HELLO,1"
     ) == 0
   ) {
-    Serial.println(
+    commandOutput->println(
       F("READY,1,ACTIVE")
     );
 
@@ -2223,7 +2258,7 @@ void handleCommand(
       6
     ) == 0
   ) {
-    Serial.println(
+    commandOutput->println(
       F("ERROR,PROTOCOL_VERSION")
     );
 
@@ -2265,8 +2300,10 @@ void handleCommand(
 
     armed =
       true;
+    owner = commandSource;
+    wirelessActivityMs = millis();
 
-    Serial.println(
+    commandOutput->println(
       F("ACK,ARM")
     );
 
@@ -2292,7 +2329,7 @@ void handleCommand(
     calibrationMode =
       true;
 
-    Serial.println(
+    commandOutput->println(
       F("ACK,CALIBRATE,ENTER")
     );
 
@@ -2318,7 +2355,7 @@ void handleCommand(
     calibrationMode =
       false;
 
-    Serial.println(
+    commandOutput->println(
       F("ACK,CALIBRATE,EXIT")
     );
 
@@ -2497,7 +2534,7 @@ void handleCommand(
       printCalibration(channel);
     }
 
-    Serial.println(
+    commandOutput->println(
       F("ACK,CALALL,DONE")
     );
 
@@ -2537,7 +2574,7 @@ void handleCommand(
   ) {
     allOff();
 
-    Serial.println(
+    commandOutput->println(
       F("ACK,ALL_OFF")
     );
 
@@ -2559,13 +2596,14 @@ void handleCommand(
     ) == 0
   ) {
     armed = false;
+    owner = OWNER_NONE;
 
     calibrationMode =
       false;
 
     allOff();
 
-    Serial.println(
+    commandOutput->println(
       F("ACK,DISARM")
     );
 
@@ -2582,45 +2620,45 @@ void handleCommand(
       "STATUS"
     ) == 0
   ) {
-    Serial.print(
+    commandOutput->print(
       F("STATUS,READY,PROTOCOL=")
     );
 
-    Serial.print(
+    commandOutput->print(
       PROTOCOL_VERSION
     );
 
-    Serial.print(
+    commandOutput->print(
       F(",MODE=")
     );
 
-    Serial.print(
+    commandOutput->print(
       calibrationMode
         ? F("CALIBRATION")
         : F("NORMAL")
     );
 
-    Serial.print(
+    commandOutput->print(
       F(",ARMED=")
     );
 
-    Serial.print(
+    commandOutput->print(
       armed
         ? F("TRUE")
         : F("FALSE")
     );
 
-    Serial.print(
+    commandOutput->print(
       F(",CONTINUOUS=")
     );
 
-    Serial.print(
+    commandOutput->print(
       anyContinuousMotor()
         ? F("TRUE")
         : F("FALSE")
     );
 
-    Serial.print(
+    commandOutput->print(
       F(",ROUTINE=")
     );
 
@@ -2628,7 +2666,7 @@ void handleCommand(
       routineMode ==
       ROUTINE_NOTE_SWEEP
     ) {
-      Serial.println(
+      commandOutput->println(
         F("SWEEP")
       );
     }
@@ -2637,13 +2675,13 @@ void handleCommand(
       routineMode ==
       ROUTINE_CAL_SWEEP
     ) {
-      Serial.println(
+      commandOutput->println(
         F("CALSWEEP")
       );
     }
 
     else {
-      Serial.println(
+      commandOutput->println(
         F("NONE")
       );
     }
@@ -2651,7 +2689,7 @@ void handleCommand(
     return;
   }
 
-  Serial.println(
+  commandOutput->println(
     F("ERROR,UNKNOWN_COMMAND")
   );
 }
@@ -2660,69 +2698,44 @@ void handleCommand(
 // [L1160] SERIAL READER
 // =============================================================================
 
-void readSerial() {
+void readCommandPort(Stream &port, CommandInput &input, Controller source) {
   uint8_t bytesRead = 0;
-
-  while (
-    Serial.available() > 0 &&
-    bytesRead <
-    MAX_SERIAL_BYTES_PER_LOOP
-  ) {
-    const char incoming =
-      Serial.read();
-
-    bytesRead++;
-
-    if (
-      incoming == '\n' ||
-      incoming == '\r'
-    ) {
-      if (
-        !discardCommandUntilNewline &&
-        commandLength > 0
-      ) {
-        commandBuffer[
-          commandLength
-        ] = '\0';
-
-        handleCommand(
-          commandBuffer
-        );
+  while (port.available() > 0 && bytesRead++ < MAX_SERIAL_BYTES_PER_LOOP) {
+    const char incoming = port.read();
+    if (incoming == '\n' || incoming == '\r') {
+      if (!input.discard && input.length > 0) {
+        input.buffer[input.length] = '\0';
+        commandSource = source;
+        commandOutput = &port;
+        handleCommand(input.buffer);
+        commandOutput = &Serial;
+        commandSource = OWNER_USB;
       }
-
-      commandLength = 0;
-
-      discardCommandUntilNewline =
-        false;
-
-      continue;
+      input.length = 0;
+      input.discard = false;
+    } else if (!input.discard) {
+      if (input.length < COMMAND_BUFFER_SIZE - 1) input.buffer[input.length++] = incoming;
+      else {
+        input.length = 0;
+        input.discard = true;
+        port.println(F("ERROR,COMMAND_TOO_LONG"));
+      }
     }
+  }
+}
 
-    if (
-      discardCommandUntilNewline
-    ) {
-      continue;
-    }
+void readSerial() {
+  readCommandPort(Serial, usbInput, OWNER_USB);
+  readCommandPort(Serial1, uartInput, OWNER_UART);
+}
 
-    if (
-      commandLength <
-      COMMAND_BUFFER_SIZE - 1
-    ) {
-      commandBuffer[
-        commandLength++
-      ] = incoming;
-    }
-
-    else {
-      commandLength = 0;
-
-      discardCommandUntilNewline =
-        true;
-
-      Serial.println(
-        F("ERROR,COMMAND_TOO_LONG")
-      );
-    }
+void enforceWirelessLease() {
+  if (owner == OWNER_UART && millis() - wirelessActivityMs >= WIRELESS_LEASE_MS) {
+    allOff();
+    armed = false;
+    calibrationMode = false;
+    owner = OWNER_NONE;
+    // No unsolicited UART reply: every bridge transaction has exactly one reply.
   }
 }
 
@@ -2731,6 +2744,10 @@ void readSerial() {
 // =============================================================================
 
 void setup() {
+  owner = OWNER_NONE;
+  commandOutput = &Serial;
+  commandSource = OWNER_USB;
+  Serial1.begin(SERIAL_BAUD);
   armed = false;
 
   calibrationMode =
@@ -2770,19 +2787,19 @@ void setup() {
     SERIAL_BAUD
   );
 
-  Serial.println(
+  commandOutput->println(
     F("ANGKLOBOT FULL 18 + CALIBRATION READY")
   );
 
-  Serial.println(
+  commandOutput->println(
     F("OUTPUTS DISARMED")
   );
 
-  Serial.println(
+  commandOutput->println(
     F("PIN MAP: G5=40/41, A5=38/39, B5=44/45, C6=42/43")
   );
 
-  Serial.println(
+  commandOutput->println(
     F("WARNING: ALLON HAS NO AUTOMATIC TIMEOUT")
   );
 
@@ -2790,91 +2807,91 @@ void setup() {
   // [L1230] COMMAND HELP
   // ===========================================================================
 
-  Serial.println(
+  commandOutput->println(
     F("Commands:")
   );
 
-  Serial.println(
+  commandOutput->println(
     F("ARM")
   );
 
-  Serial.println(
+  commandOutput->println(
     F("DISARM / ESTOP")
   );
 
-  Serial.println(
+  commandOutput->println(
     F("STOP / ALL_OFF")
   );
 
-  Serial.println(
+  commandOutput->println(
     F("STATUS")
   );
 
-  Serial.println(
+  commandOutput->println(
     F("NOTE,<channel>,<duration>,<strength>")
   );
 
-  Serial.println(
+  commandOutput->println(
     F("CALIBRATE")
   );
 
-  Serial.println(
+  commandOutput->println(
     F("CALDONE")
   );
 
-  Serial.println(
+  commandOutput->println(
     F("TEST,<channel>")
   );
 
-  Serial.println(
+  commandOutput->println(
     F("TEST,<channel>,<power>,<duration>")
   );
 
-  Serial.println(
+  commandOutput->println(
     F("ALL,<duration>")
   );
 
-  Serial.println(
+  commandOutput->println(
     F("ALL,<power>,<duration>")
   );
 
-  Serial.println(
+  commandOutput->println(
     F("ALLON")
   );
 
-  Serial.println(
+  commandOutput->println(
     F("ALLON,<power>")
   );
 
-  Serial.println(
+  commandOutput->println(
     F("SWEEP")
   );
 
-  Serial.println(
+  commandOutput->println(
     F("SWEEP,<power>,<duration>,<gap>")
   );
 
-  Serial.println(
+  commandOutput->println(
     F("CALSWEEP,<channel>,<start>,<end>,<step>,<duration>,<gap>")
   );
 
-  Serial.println(
+  commandOutput->println(
     F("POWER,<channel>,<0-60>")
   );
 
-  Serial.println(
+  commandOutput->println(
     F("PULSE,<channel>,<50-700>")
   );
 
-  Serial.println(
+  commandOutput->println(
     F("CAL,<channel>")
   );
 
-  Serial.println(
+  commandOutput->println(
     F("CALALL")
   );
 
-  Serial.println(
+  commandOutput->println(
     F("CALEXPORT")
   );
 }
@@ -2884,6 +2901,7 @@ void setup() {
 // =============================================================================
 
 void loop() {
+  enforceWirelessLease();
   readSerial();
 
   updateMotorPulseExpiry();

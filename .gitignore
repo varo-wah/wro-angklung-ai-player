@@ -15,3 +15,6 @@ frontend/out/
 frontend/.firebase/
 frontend/.agents/
 frontend/skills-lock.json
+
+# Isolated local Wi-Fi website runtime
+frontend/.next-wireless/

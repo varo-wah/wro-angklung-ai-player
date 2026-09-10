@@ -1,6 +1,6 @@
 import type { ActuatorCommand, ActuatorSchedule } from "./types";
 import type { LoadedSong, SongNote } from "./songTypes";
-import { ANGKLUNG_RANGE_NOTES, FRONTEND_INSTRUMENT_MAP } from "./instrumentMap";
+import { FRONTEND_INSTRUMENT_MAP } from "./instrumentMap";
 
 export type ArrangementSettings = {
   strength: number;
@@ -16,9 +16,42 @@ export function buildScheduleFromBuiltInSong(song: LoadedSong, settings: Arrange
   const profile = song.category === "hardware_trial" ? undefined : song.performance_profile;
   const baseTempo = profile?.tempo_bpm ?? song.tempo_bpm;
   const scale = (song.tempo_bpm / baseTempo) * (effectiveSettings.tempo === "slower" ? SLOWER_TEMPO_SCALE : 1);
-  const notes = scaleNotes(song.notes, scale);
+  const selectedNotes = song.category === "hardware_trial" || effectiveSettings.mode === "harmony"
+    ? song.notes
+    : song.notes.filter(note => !["accompaniment", "support"].includes(note.role ?? ""));
+  const notes = scaleNotes(selectedNotes, scale);
   const commands = buildCommands(notes, effectiveSettings);
   if (profile) applyReleaseGaps(commands, profile.release_seconds, profile.repeat_gap_seconds);
+  if (song.category !== "hardware_trial") {
+    // Apply after tempo and articulation so Slower never lengthens the support pulse.
+    const byId = new Map(notes.map((note, index) => [`cmd_${String(index + 1).padStart(4, "0")}`, note]));
+    const melodyCommands = commands.filter(command => !["accompaniment", "support"].includes(byId.get(command.command_id)?.role ?? ""));
+    for (const command of commands) {
+      const note = byId.get(command.command_id);
+      if (note && ["accompaniment", "support"].includes(note.role ?? "")) {
+        command.duration_seconds = Math.min(command.duration_seconds, 0.18);
+        if (song.playback_policy !== "authored") {
+          command.strength = Math.max(command.strength, clampStrength(effectiveSettings.strength * 1.5));
+        }
+      } else if (note) {
+        // Shorten the existing hold; never restore/extend it into a written rest.
+        const nextMelody = melodyCommands.find(next => next.start_time_seconds > command.start_time_seconds);
+        const interval = nextMelody ? nextMelody.start_time_seconds - command.start_time_seconds : Infinity;
+        const gap = Math.min(0.12, interval * 0.35);
+        const released = command.duration_seconds - Math.min(0.04, command.duration_seconds * 0.2);
+        command.duration_seconds = roundSeconds(Math.max(0.01, Math.min(released, interval - gap)));
+      }
+    }
+  }
+
+  // Final limits run after tempo scaling, including authored songs and trials.
+  // Leave a larger motor release window without delaying the next attack.
+  for (const command of commands) {
+    const next = commands.find(candidate => candidate.actuator_channel === command.actuator_channel && candidate.start_time_seconds > command.start_time_seconds);
+    const interval = next ? next.start_time_seconds - command.start_time_seconds : Infinity;
+    const gap = Math.min(0.12, interval * 0.35);
+    command.duration_seconds = roundSeconds(Math.max(0.01, Math.min(command.duration_seconds, 2, interval - gap)));
+  }
 
   const totalDurationSeconds = commands.reduce(
     (max, command) => Math.max(max, command.start_time_seconds + command.duration_seconds),
@@ -66,22 +99,6 @@ function buildCommands(notes: SongNote[], settings: ArrangementSettings): Actuat
 
   for (const note of notes) {
     commands.push(createCommand(note, commands.length + 1, settings));
-
-    const harmonyNote = settings.mode === "harmony" ? findHarmonyNote(note.note) : null;
-    if (harmonyNote) {
-      commands.push(
-        createCommand(
-          {
-            note: harmonyNote,
-            start: note.start,
-            duration: Math.min(playbackDuration(note), 0.45),
-          },
-          commands.length + 1,
-          settings,
-          settings.strength * songStrengthMultiplier(note) * 0.85,
-        ),
-      );
-    }
   }
 
   return commands.sort((left, right) => left.start_time_seconds - right.start_time_seconds || left.actuator_channel - right.actuator_channel);
@@ -103,20 +120,6 @@ function createCommand(note: SongNote, commandNumber: number, settings: Arrangem
     duration_seconds: playbackDuration(note),
     strength: clampStrength(strengthOverride ?? settings.strength * songStrengthMultiplier(note)),
   };
-}
-
-function findHarmonyNote(note: string): string | null {
-  const noteIndex = ANGKLUNG_RANGE_NOTES.indexOf(note as (typeof ANGKLUNG_RANGE_NOTES)[number]);
-  if (noteIndex === -1) {
-    return null;
-  }
-
-  const lowerHarmony = ANGKLUNG_RANGE_NOTES[noteIndex - 2];
-  if (lowerHarmony) {
-    return lowerHarmony;
-  }
-
-  return ANGKLUNG_RANGE_NOTES[noteIndex + 2] ?? null;
 }
 
 function roundSeconds(value: number): number {

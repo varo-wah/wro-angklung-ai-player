@@ -8,7 +8,8 @@
     "start": "next start",
     "test": "node --test tests/*.test.cjs",
     "lint": "next lint",
-    "test:arduino": "node --test tests/arduino-full-rack.test.cjs"
+    "test:arduino": "node --test tests/arduino-full-rack.test.cjs",
+    "dev:wireless": "ANGKLOBOT_WIRELESS_ENABLED=1 ANGKLOBOT_DIST_DIR=.next-wireless next dev --hostname 127.0.0.1 --port 3002"
   },
   "dependencies": {
     "@tonejs/midi": "^2.0.28",

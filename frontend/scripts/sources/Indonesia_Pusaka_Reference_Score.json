@@ -1,0 +1,132 @@
+{
+  "title": "Indonesia Pusaka",
+  "artist": "Ismail Marzuki",
+  "source": "Gunawan E, SEKITAR MUSIK, Not Angka Lagu Indonesia Pusaka, 20 July 2018",
+  "source_url": "https://www.sekitarmusik.com/2018/07/lagu-indonesia-pusaka.html",
+  "source_key": "C major",
+  "tempo_bpm": 70,
+  "time_signature": "4/4",
+  "notation": "pitch:quarter-note beats; R is a rest. Source accidentals remain explicit here.",
+  "form": "Two verses: bars 1-17, then 2-17; first ending final beat supplies G3-C4 pickup for verse two.",
+  "rack_substitutions": {
+    "F#4": "G4"
+  },
+  "substitution_reason": "Unavailable F#4 lower neighbour in G4-F#4-G4 is replaced by repeated G4. This is an explicit ornament simplification, not an exact transcription.",
+  "bars": [
+    [
+      "R:3",
+      "G3:0.5",
+      "C4:0.5"
+    ],
+    [
+      "E4:1.5",
+      "C4:0.5",
+      "G3:0.5",
+      "C4:0.5",
+      "E4:0.5",
+      "A4:0.5"
+    ],
+    [
+      "G4:2",
+      "E4:1",
+      "C4:0.5",
+      "C4:0.5"
+    ],
+    [
+      "C4:1.5",
+      "B3:0.5",
+      "C4:0.5",
+      "B3:0.5",
+      "C4:0.5",
+      "E4:0.5"
+    ],
+    [
+      "D4:2",
+      "R:1",
+      "G3:0.5",
+      "C4:0.5"
+    ],
+    [
+      "E4:1.5",
+      "C4:0.5",
+      "G3:0.5",
+      "C4:0.5",
+      "B3:0.5",
+      "B3:0.5"
+    ],
+    [
+      "A3:2",
+      "F4:1",
+      "D4:0.5",
+      "B3:0.5"
+    ],
+    [
+      "C4:1.5",
+      "G4:0.5",
+      "F#4:0.5",
+      "G4:0.5",
+      "F4:0.5",
+      "B3:0.5"
+    ],
+    [
+      "C4:2",
+      "R:1",
+      "G4:0.5",
+      "G4:0.5"
+    ],
+    [
+      "G4:1.5",
+      "A4:0.5",
+      "G4:0.5",
+      "F4:0.5",
+      "D4:0.5",
+      "B3:0.5"
+    ],
+    [
+      "G3:2",
+      "R:1",
+      "E4:0.5",
+      "E4:0.5"
+    ],
+    [
+      "E4:1.5",
+      "F4:0.5",
+      "E4:0.5",
+      "D4:0.5",
+      "C4:0.5",
+      "B3:0.5"
+    ],
+    [
+      "A3:2",
+      "R:1",
+      "A3:0.5",
+      "B3:0.5"
+    ],
+    [
+      "C4:1.5",
+      "B3:0.5",
+      "C4:0.5",
+      "D4:0.5",
+      "E4:0.5",
+      "F4:0.5"
+    ],
+    [
+      "A4:2",
+      "G4:1",
+      "G3:0.5",
+      "C4:0.5"
+    ],
+    [
+      "E4:1.5",
+      "G4:0.5",
+      "F#4:0.5",
+      "G4:0.5",
+      "F4:0.5",
+      "B3:0.5"
+    ],
+    [
+      "C4:3",
+      "R:1"
+    ]
+  ]
+}

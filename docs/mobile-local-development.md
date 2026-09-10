@@ -1,4 +1,6 @@
-# Mobile access to local Angklobot (Phase 1)
+# Mobile access to local Angklobot
+
+The shared controller implementation is described in [Operating configuration](operating-configuration.md). Enable the Mac controller on localhost and pair remote devices with its code. The startup steps below still apply; the dated verification snapshot at the end is historical.
 
 ## Requirements
 
@@ -67,9 +69,9 @@ The quick tunnel URL is public and temporary: share only with testers and stop c
 4. Expect the transcript and Angklobot's song response on this phone. Existing catalog validation/confirmation still applies. This command may be handled deterministically without an Ollama inference request.
 5. To test Ollama as well, ask **“Why do people enjoy making music together?”**. Confirm the response comes back and the Mac Next.js terminal reports the local Ollama provider without fallback. A fallback reply alone does not prove Ollama succeeded.
 6. Spoken output depends on Voice being enabled and browser speech support. Text is the primary success check. Keep the page foregrounded; background/locked-screen listening is not guaranteed.
-7. Open `/control` and `/display` to check page access. They represent this browser's state, not the Mac operator's state.
+7. Enable the controller in Mac Chrome on localhost, connect Arduino, then enter its pairing code on the phone and audience screen. Confirm that each device shows the Mac USB status and current song.
 
-Phone `/guest` operates independently. BroadcastChannel/localStorage synchronize only compatible tabs within the same browser/origin, never phone ↔ Mac. Even localhost and the tunnel URL on the Mac are different origins. A phone song response or local simulation does **not** mean the physical robot played. Keep existing Arduino Web Serial USB operation in Chrome on the Mac; no firmware, protocol, mapping, or USB logic changes are part of this phase.
+Paired `/guest`, `/voice`, `/control`, and `/display` pages mirror the Mac controller through `/api/robot/session`. The Mac owns physical scheduling and USB; phones send validated actions to it. BroadcastChannel/localStorage remain a local simulator fallback only when no shared controller is in use. Use the same Mac-hosted server on every device; an independent Firebase deployment cannot control this session.
 
 ## Troubleshooting
 
@@ -81,7 +83,7 @@ Phone `/guest` operates independently. BroadcastChannel/localStorage synchronize
 - **Ollama unavailable/model missing:** check `curl http://127.0.0.1:11434/api/tags`, start Ollama, and pull the configured model. Slow model startup can trigger the existing 15-second AI timeout; retry after warm-up. Confirm `AI_PROVIDER=local_ollama`.
 - **HTTP 503 from status:** intentionally means upstream unavailable. Check `/api/speech/status` and `/api/ai/status` through the tunnel; neither returns private service URLs.
 - **No debug section:** it is development-only and is hidden in `npm run build` / `npm start`.
-- **No Mac display update or robot motion:** expected in Phase 1. Real cross-device synchronization is deferred.
+- **No Mac display update or robot motion:** check the shared status bar, enable the controller on Mac localhost, pair the device, and connect Arduino on the Mac. An offline/disconnected command is rejected rather than run as a local simulation.
 
 ## Validation commands
 

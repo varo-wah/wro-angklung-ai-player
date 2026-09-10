@@ -22,7 +22,7 @@ int main() {
   send("HELLO,2"); assert(Serial.output == "ERROR,PROTOCOL_VERSION\n");
   send("NOTE,0,300,1000"); assert(Serial.output == "ERROR,NOT_ARMED\n"); off();
   send("ARM"); assert(armed); off();
-  const uint8_t expectedPower[18] = {30,30,30,30,30,30,35,35,25,15,35,20,20,25,25,25,25,25};
+  const uint8_t expectedPower[18] = {30,28,30,30,30,30,25,30,25,30,30,25,25,25,55,35,22,25};
   for (int i=0; i<18; ++i) {
     assert(motorPowerPercent[i] == expectedPower[i]); assert(motorPulseMs[i] == 550);
     std::string note = "NOTE," + std::to_string(i) + ",5000,1000";

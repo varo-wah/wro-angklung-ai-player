@@ -25,6 +25,8 @@ export type SongCatalogEntry = {
 };
 
 export type ArrangementNote = {
+  /** Original MIDI hold, when recorded by a curated importer. */
+  source_duration?: number;
   note: string;
   beat?: number;
   duration_beats?: number;
@@ -48,6 +50,8 @@ export type ArrangementTrack = {
 };
 
 export type AngklungArrangement = {
+  /** Curated songs retain their section dynamics and articulation. */
+  playback_policy?: "authored";
   format_version?: string;
   id: string;
   title: string;
@@ -88,6 +92,7 @@ export type SongNote = {
 };
 
 export type LoadedSong = {
+  playback_policy?: "authored";
   performance_profile?: SongPerformanceProfile;
   id: string;
   title: string;

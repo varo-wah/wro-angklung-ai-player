@@ -31,7 +31,7 @@ test('all musical files retain deterministic balance and safe scheduled strength
     const commands = build(song, { strength: 0.8, tempo: 'normal', mode: 'melody' }).commands;
     assert.ok(commands.length > 0, name);
     assert.ok(commands.every(c => Number.isFinite(c.strength) && c.strength >= 0 && c.strength <= 1), name);
-    if (!['fireflies_owl_city', 'indonesia_raya', 'indonesia_pusaka', 'bengawan_solo', 'you_are_the_reason'].includes(data.id)) {
+    if (!data.arrangement_policy?.preserve_authored_dynamics && !['fireflies_owl_city', 'indonesia_raya', 'indonesia_pusaka', 'bengawan_solo', 'you_are_the_reason'].includes(data.id)) {
       for (const c of commands) {
         assert.ok([0.72, 0.8, 0.84].includes(c.strength), `${name}: ${c.strength}`);
       }

@@ -11,7 +11,7 @@ function strengthFor(note, inheritedRole) {
   return note.playback_strength_multiplier;
 }
 function tuneArrangement(arrangement) {
-  if (arrangement.category === 'hardware_trial' || ['fireflies_owl_city', 'indonesia_raya', 'indonesia_pusaka', 'bengawan_solo', 'you_are_the_reason'].includes(arrangement.id)) return arrangement;
+  if (arrangement.arrangement_policy?.preserve_authored_dynamics || arrangement.category === 'hardware_trial' || ['fireflies_owl_city', 'indonesia_raya', 'indonesia_pusaka', 'bengawan_solo', 'you_are_the_reason'].includes(arrangement.id)) return arrangement;
   const tune = (note, role) => {
     const strength = strengthFor(note, role);
     return strength === undefined ? { ...note } : { ...note, playback_strength_multiplier: strength };

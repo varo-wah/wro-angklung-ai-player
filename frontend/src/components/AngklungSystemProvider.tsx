@@ -1,8 +1,13 @@
 "use client";
 
 import Link from "next/link";
+import { useRobotSession } from "@/hooks/useRobotSession";
+import { RobotSessionStatus } from "@/components/RobotSessionStatus";
+import type { RobotAction, RobotCommand, RobotResult } from "@/lib/robotSession";
 import { usePathname } from "next/navigation";
 import { createContext, useContext, useEffect, useMemo, useRef, useState, type ReactNode } from "react";
+import { Esp32Transport } from "@/lib/esp32Transport";
+import type { RobotTransport, RobotTransportMode } from "@/lib/robotTransport";
 import { AudioEngine } from "@/lib/audioEngine";
 import {
   ArduinoSerialController,
@@ -67,6 +72,11 @@ type AngklungSystemContextValue = {
   activeCommandIds: Set<string>;
   activeInstrumentIds: Set<string>;
   arduinoConnection: ArduinoConnectionState;
+  transportMode: RobotTransportMode;
+  transportChanging: boolean;
+  setTransportMode: (mode: RobotTransportMode) => Promise<void>;
+  remoteControl: boolean;
+  physicalControl: boolean;
   aiAssistantMode: AiAssistantMode;
   aiConfidence: number;
   aiIntent: AiSongRequestIntent;
@@ -168,6 +178,8 @@ const AngklungSystemContext = createContext<AngklungSystemContextValue | null>(n
 
 export function AngklungSystemProvider({ children }: { children: ReactNode }) {
   const pathname = usePathname();
+  const [browserReady, setBrowserReady] = useState(false);
+  useEffect(() => setBrowserReady(true), []);
   useEffect(() => {
     if (pathname !== "/guest" && pathname !== "/voice") return;
     const viewport = window.visualViewport;
@@ -226,7 +238,12 @@ export function AngklungSystemProvider({ children }: { children: ReactNode }) {
   const engineRef = useRef<PlaybackEngine | null>(null);
   const audioRef = useRef<AudioEngine | null>(null);
   const latestRackCommandRef = useRef(new Map<string, string>());
-  const arduinoRef = useRef<ArduinoSerialController | null>(null);
+  const arduinoRef = useRef<RobotTransport | null>(null);
+  const [transportMode, setTransportModeState] = useState<RobotTransportMode>("usb");
+  const transportModeRef = useRef<RobotTransportMode>("usb");
+  const [transportChanging, setTransportChanging] = useState(false);
+  const transportChangingRef = useRef(false);
+  const controllerGenerationRef = useRef(0);
   const applyingSyncedSnapshotRef = useRef(false);
   const lastPublishedAtRef = useRef(0);
   const latestSnapshotAtRef = useRef(0);
@@ -240,6 +257,101 @@ export function AngklungSystemProvider({ children }: { children: ReactNode }) {
   const generatedScheduleRef = useRef<ActuatorSchedule | null>(null);
   const pendingUserModeScheduleRef = useRef<{ epoch: number; schedule: ActuatorSchedule } | null>(null);
   const activeCommandTimeoutsRef = useRef(new Set<number>());
+  const remotePendingRequestRef = useRef<string | null>(null);
+  const hostPendingRequestRef = useRef<string | null>(null);
+  const remoteConversationEpoch = useRef(0);
+  const robotSession = useRobotSession({
+    arduino: arduinoConnection,
+    snapshot: () => createSnapshot(Date.now()),
+    applySnapshot: snapshot => applySyncedSnapshot(snapshot, true),
+    execute: executeRemoteCommand,
+    interrupt: () => { cancelConversationRequest(); hostPendingRequestRef.current = null; },
+    halt: () => { cancelConversationRequest(); hostPendingRequestRef.current = null; emergencyStopPlayback(); },
+  });
+
+  function routesToMac(): boolean {
+    if (robotSession.credentials.current.role === "host") return false;
+    return robotSession.credentials.current.role === "remote" || robotSession.statusRef.current.hostOnline ||
+      (browserReady && typeof window !== "undefined" && !["localhost", "127.0.0.1", "[::1]"].includes(window.location.hostname));
+  }
+
+  async function remoteCommand(action: RobotAction) {
+    try { const response = await robotSession.send(action); setErrors([]); return response; }
+    catch (error) { setErrors([error instanceof Error ? error.message : "Remote command failed."]); throw error; }
+  }
+  function remoteAction(action: RobotAction) { void remoteCommand(action).catch(() => {}); }
+
+  async function executeRemoteCommand(command: RobotCommand): Promise<RobotResult> {
+    if (!arduinoRef.current?.connected) return { ok: false, error: "Arduino disconnected from the Mac." };
+    const action = command.action;
+    switch (action.type) {
+      case "request": {
+        const value = await handleSongRequest(action.text, action.language, true);
+        hostPendingRequestRef.current = value && pendingUserModeScheduleRef.current ? command.id : null;
+        return { ok: true, value, pending: Boolean(hostPendingRequestRef.current) };
+      }
+      case "start_pending":
+        if (hostPendingRequestRef.current !== action.requestId) return { ok: false, error: "Song request was replaced or cancelled." };
+        hostPendingRequestRef.current = null;
+        const started = await startPendingUserModePlayback();
+        return { ok: started, value: started, ...(started ? {} : { error: "Playback could not start on the Mac. Check USB and validation in the Control Panel." }) };
+      case "select": {
+        cancelConversationRequest();
+        stopPlaybackMedia();
+        setSchedule(null); generatedScheduleRef.current = null;
+        const song = await loadSelectedSong(action.songId);
+        if (!song) return { ok: false, error: "Song is unavailable." };
+        setSelectedSongIdState(action.songId);
+        return { ok: true };
+      }
+      case "generate": return { ok: true, value: (await generateSelectedSongSchedule())?.overall === "PASSED" };
+      case "play": {
+        const started = await playSchedule();
+        return { ok: started, value: started, ...(started ? {} : { error: "Playback could not start on the Mac. Generate a valid song and check USB." }) };
+      }
+      case "pause": pausePlayback(); await sendArduinoAllOff(); break;
+      case "stop": stopPlayback(); await sendArduinoAllOff(); break;
+      case "estop": emergencyStopPlayback(); await sendArduinoDisarm(); break;
+      case "reset": resetPlayback(); await sendArduinoAllOff(); break;
+      case "cancel": cancelConversationRequest(); break;
+      case "clear": clearChat(); break;
+      case "wake": stopPlaybackMedia(); return { ok: true, value: await arduinoRef.current.runWakeSweep() };
+    }
+    return { ok: true };
+  }
+
+  async function requestFromDevice(request: string, language: VoiceLanguage = "en") {
+    if (!routesToMac()) return requestSong(request, language);
+    const epoch = ++remoteConversationEpoch.current;
+    remotePendingRequestRef.current = null;
+    const playbackCommand = routePlaybackChatCommand(normalizeVisitorInput(request));
+    if (playbackCommand === "stop" || playbackCommand === "pause") {
+      await remoteCommand({ type: playbackCommand === "stop" ? "estop" : "pause" });
+      return playbackCommand === "stop" ? "Stopped playback." : "Paused playback.";
+    }
+    const response = await remoteCommand({ type: "request", text: request, language });
+    if (epoch !== remoteConversationEpoch.current) return null;
+    remotePendingRequestRef.current = response.result.pending ? response.id : null;
+    setChatInput("");
+    return typeof response.result.value === "string" ? response.result.value : null;
+  }
+  async function startPendingFromDevice() {
+    if (!routesToMac()) return startPendingUserModePlayback();
+    const requestId = remotePendingRequestRef.current;
+    remotePendingRequestRef.current = null;
+    if (!requestId) return false;
+    const response = await remoteCommand({ type: "start_pending", requestId });
+    return response.result.value === true;
+  }
+  function cancelFromDevice() {
+    ++remoteConversationEpoch.current;
+    if (routesToMac()) {
+      // Only cancel our own pending visitor interaction on navigation.
+      if (remotePendingRequestRef.current) remoteAction({ type: "cancel" });
+      remotePendingRequestRef.current = null;
+    } else cancelConversationRequest();
+  }
+
 
   const supportedSongs = useMemo(() => getVisibleCatalogSongs(songCatalog), [songCatalog]);
   const instruments = useMemo(() => buildFullAngklungRack(), []);
@@ -257,7 +369,13 @@ export function AngklungSystemProvider({ children }: { children: ReactNode }) {
   }
 
   useEffect(() => {
-    setArduinoConnection(getInitialArduinoConnectionState());
+    let mode: RobotTransportMode = "usb";
+    try { if (localStorage.getItem("angklobot.transport") === "esp32") mode = "esp32"; } catch { /* Optional preference. */ }
+    transportModeRef.current = mode;
+    setTransportModeState(mode);
+    setArduinoConnection(mode === "usb" ? getInitialArduinoConnectionState() : {
+      status: "disconnected", outputMode: "unknown", message: "ESP32 Wi-Fi selected. Click Connect ESP32.",
+    });
     return () => {
       if (arduinoRef.current?.connected) {
         void arduinoRef.current.disconnect();
@@ -343,6 +461,7 @@ export function AngklungSystemProvider({ children }: { children: ReactNode }) {
   }, [songCatalog]);
 
   useEffect(() => {
+    if (robotSession.credentials.current.role === "host" || routesToMac()) return;
     if (!syncControllerRef.current) {
       return;
     }
@@ -435,8 +554,9 @@ export function AngklungSystemProvider({ children }: { children: ReactNode }) {
     };
   }
 
-  function applySyncedSnapshot(snapshot: SyncedSystemSnapshot) {
-    if (snapshot.updatedAt <= latestSnapshotAtRef.current) {
+  function applySyncedSnapshot(snapshot: SyncedSystemSnapshot, fromServer = false) {
+    if (robotSession.credentials.current.role === "host" || (!fromServer && routesToMac())) return;
+    if (!fromServer && snapshot.updatedAt <= latestSnapshotAtRef.current) {
       return;
     }
     const activeSongs = getActiveCatalogSongs(songCatalogRef.current);
@@ -470,7 +590,7 @@ export function AngklungSystemProvider({ children }: { children: ReactNode }) {
     setAiSuggestedSongIds(snapshot.aiSuggestedSongIds);
     setChatMessages(snapshot.chatMessages);
     setElapsedSeconds(snapshot.elapsedSeconds);
-    setErrors([]);
+    if (!fromServer) setErrors([]);
     setGeneratedNotes(snapshot.generatedNotes);
     setLatestUserRequest(snapshot.latestUserRequest);
     setPlaybackState(snapshot.playbackState);
@@ -528,11 +648,11 @@ export function AngklungSystemProvider({ children }: { children: ReactNode }) {
     void loadSelectedSong(songId);
   }
 
-  function generateScheduleForSong(song: LoadedSong): SafetyReport | null {
+  function generateScheduleForSong(song: LoadedSong, arrangementSettings = settings): SafetyReport | null {
     generatedScheduleRef.current = null;
     stopPlaybackMedia();
     try {
-      const nextSchedule = buildScheduleFromBuiltInSong(song, settings);
+      const nextSchedule = buildScheduleFromBuiltInSong(song, arrangementSettings);
       const validationResult = validateSchedulePayload(nextSchedule);
       const nextSafetyReport = validateMotorSafety(nextSchedule);
 
@@ -598,7 +718,7 @@ export function AngklungSystemProvider({ children }: { children: ReactNode }) {
     return handleSongRequest(request, language);
   }
 
-  async function handleSongRequest(request: string, language: VoiceLanguage): Promise<string | null> {
+  async function handleSongRequest(request: string, language: VoiceLanguage, remoteVisitor = false): Promise<string | null> {
     const trimmedRequest = normalizeVisitorInput(request);
     if (!trimmedRequest) {
       return null;
@@ -704,7 +824,7 @@ export function AngklungSystemProvider({ children }: { children: ReactNode }) {
       matchedSong.demo_safe === false;
     let started = false;
     let queuedForUserMode = false;
-    const isUserMode = pathname === "/guest" || pathname === "/voice";
+    const isUserMode = remoteVisitor || pathname === "/guest" || pathname === "/voice";
     const canStartInUserMode = isUserMode && report?.overall === "PASSED" && !aiResult.needs_operator_review && generatedScheduleRef.current;
     const canStartInOperatorMode = !isUserMode && report?.overall === "PASSED" && !hasWarnings && !isDraftArrangement && !aiResult.needs_operator_review && generatedScheduleRef.current;
     if (canStartInUserMode && generatedScheduleRef.current) {
@@ -1014,12 +1134,43 @@ export function AngklungSystemProvider({ children }: { children: ReactNode }) {
     }
   }
 
-  function getArduinoController(): ArduinoSerialController {
-    arduinoRef.current ??= new ArduinoSerialController(setArduinoConnection);
+  function getArduinoController(): RobotTransport {
+    if (!arduinoRef.current) {
+      const generation = ++controllerGenerationRef.current;
+      const changed = (state: ArduinoConnectionState) => {
+        if (generation !== controllerGenerationRef.current) return;
+        setArduinoConnection(state);
+        if (state.status === "error" || state.status === "disconnected") {
+          cancelConversationRequest();
+          stopPlaybackMedia();
+        }
+      };
+      arduinoRef.current = transportModeRef.current === "esp32"
+        ? new Esp32Transport(changed) : new ArduinoSerialController(changed);
+    }
     return arduinoRef.current;
   }
 
+  async function setTransportMode(mode: RobotTransportMode) {
+    if (routesToMac()) throw new Error("Change the robot connection on the Mac controller.");
+    if (transportChangingRef.current || mode === transportModeRef.current) return;
+    transportChangingRef.current = true; setTransportChanging(true);
+    try {
+      robotSession.cancelQueued();
+      stopPlaybackMedia();
+      await arduinoRef.current?.disconnect();
+      ++controllerGenerationRef.current;
+      arduinoRef.current = null;
+      transportModeRef.current = mode; setTransportModeState(mode);
+      setArduinoConnection(mode === "usb" ? getInitialArduinoConnectionState() : {
+        status: "disconnected", outputMode: "unknown", message: "ESP32 Wi-Fi selected. Click Connect ESP32.",
+      });
+      try { localStorage.setItem("angklobot.transport", mode); } catch { /* Optional preference. */ }
+    } finally { transportChangingRef.current = false; setTransportChanging(false); }
+  }
+
   async function connectArduino() {
+    if (transportChangingRef.current) return;
     await getArduinoController().connect();
   }
 
@@ -1066,6 +1217,10 @@ export function AngklungSystemProvider({ children }: { children: ReactNode }) {
   }
 
   async function startSchedule(nextSchedule: ActuatorSchedule, offset = 0, isCurrent = () => true): Promise<boolean> {
+    if (transportChangingRef.current || ((robotSession.credentials.current.role === "host" || transportModeRef.current === "esp32") && !arduinoRef.current?.connected)) {
+      setErrors(["Robot disconnected. Connect the selected transport before playback."]);
+      return false;
+    }
     if (!validateSchedulePayload(nextSchedule).ok || validateMotorSafety(nextSchedule).overall !== "PASSED") {
       setErrors(["Schedule validation failed. Playback is blocked."]);
       return false;
@@ -1095,7 +1250,7 @@ export function AngklungSystemProvider({ children }: { children: ReactNode }) {
     }
 
     try {
-      await arduinoRef.current?.preparePlayback(nextSchedule.commands);
+      await arduinoRef.current?.preparePlayback(nextSchedule.commands, offset >= duration ? 0 : offset);
     } catch (error) {
       setErrors([error instanceof Error ? error.message : "Arduino did not accept the playback preparation command."]);
       return false;
@@ -1131,6 +1286,8 @@ export function AngklungSystemProvider({ children }: { children: ReactNode }) {
   }
 
   function pausePlayback() {
+    cancelConversationRequest();
+    hostPendingRequestRef.current = null;
     playbackSessionRef.current += 1;
     if (engineRef.current && playbackState === "playing") {
       setElapsedSeconds(engineRef.current.pause());
@@ -1146,6 +1303,8 @@ export function AngklungSystemProvider({ children }: { children: ReactNode }) {
   }
 
   function stopPlayback() {
+    cancelConversationRequest();
+    hostPendingRequestRef.current = null;
     stopPlaybackMedia();
     setAiConversationState("awaiting_song");
     setAiPendingSongId(null);
@@ -1177,6 +1336,8 @@ export function AngklungSystemProvider({ children }: { children: ReactNode }) {
   }
 
   function triggerCommand(command: ActuatorCommand) {
+    // Also cap imported or previously generated schedules at the output boundary.
+    command = { ...command, duration_seconds: Math.min(command.duration_seconds, 2) };
     try {
       audioRef.current?.playNote(command.note, command.duration_seconds, command.strength);
     } catch (error) {
@@ -1241,7 +1402,13 @@ export function AngklungSystemProvider({ children }: { children: ReactNode }) {
   const value: AngklungSystemContextValue = {
     activeCommandIds,
     activeInstrumentIds,
-    arduinoConnection,
+    arduinoConnection: routesToMac() ? {
+      ...robotSession.status.arduino,
+      message: robotSession.status.hostOnline ? `Mac USB: ${robotSession.status.arduino.message}` : "Mac controller offline. Remote playback unavailable.",
+    } : arduinoConnection,
+    remoteControl: routesToMac(),
+    physicalControl: routesToMac() || robotSession.role === "host" || transportMode === "esp32",
+    transportMode, transportChanging, setTransportMode,
     aiAssistantMode,
     aiConfidence,
     aiConversationState,
@@ -1259,7 +1426,7 @@ export function AngklungSystemProvider({ children }: { children: ReactNode }) {
     chatInput,
     chatMessages,
     elapsedSeconds,
-    emergencyStopPlayback,
+    emergencyStopPlayback: () => { if (routesToMac()) remoteAction({ type: "estop" }); else { robotSession.cancelQueued(); emergencyStopPlayback(); } },
     errors,
     generatedNotes,
     instruments,
@@ -1279,32 +1446,45 @@ export function AngklungSystemProvider({ children }: { children: ReactNode }) {
     workflowStatus,
     youtubeFallbackActive,
     youtubeUrl,
-    connectArduino,
-    disconnectArduino,
-    generateBuiltInSchedule,
-    loadSchedule,
-    pausePlayback,
-    playSchedule,
-    prepareUserModeAudio,
+    connectArduino: async () => { if (routesToMac()) { setErrors(["Connect the robot in the Mac controller tab."]); return; } await connectArduino(); },
+    disconnectArduino: async () => { if (routesToMac()) { setErrors(["Disconnect the robot in the Mac controller tab."]); return; } await disconnectArduino(); },
+    generateBuiltInSchedule: () => routesToMac() ? remoteAction({ type: "generate" }) : generateBuiltInSchedule(),
+    loadSchedule: (text, name) => { if (routesToMac()) { setErrors(["Upload arrangements on the Mac controller."]); return; } loadSchedule(text, name); },
+    pausePlayback: () => { if (routesToMac()) remoteAction({ type: "pause" }); else { robotSession.cancelQueued(); pausePlayback(); } },
+    playSchedule: async () => { try { return routesToMac() ? (await remoteCommand({ type: "play" })).result.value === true : await playSchedule(); } catch { return false; } },
+    prepareUserModeAudio: async () => routesToMac() ? true : prepareUserModeAudio(),
     refreshAiAssistant,
-    clearChat,
-    cancelConversationRequest,
-    requestSong,
-    runWakeGreeting,
-    startPendingUserModePlayback,
-    resetPlayback,
+    clearChat: () => routesToMac() ? remoteAction({ type: "clear" }) : clearChat(),
+    cancelConversationRequest: cancelFromDevice,
+    requestSong: requestFromDevice,
+    runWakeGreeting: async () => { if (routesToMac()) await remoteCommand({ type: "wake" }); else await runWakeGreeting(); },
+    startPendingUserModePlayback: startPendingFromDevice,
+    resetPlayback: () => { if (routesToMac()) remoteAction({ type: "reset" }); else { robotSession.cancelQueued(); resetPlayback(); } },
     setChatInput,
-    setSelectedSongId,
-    setSettings,
+    setSelectedSongId: songId => routesToMac() ? remoteAction({ type: "select", songId }) : setSelectedSongId(songId),
+    setSettings: value => {
+      if (routesToMac()) { setErrors(["Adjust arrangement settings on the Mac controller."]); return; }
+      setSettings(value);
+      if (value.mode !== settings.mode && sourceMode === "library" && selectedSong.id === selectedSongId && selectedSong.notes.length > 0) {
+        stopPlayback();
+        generateScheduleForSong(selectedSong, value);
+      }
+    },
     setShowSafetyNotices,
     setYoutubeUrl,
-    stopPlayback,
+    stopPlayback: () => { if (routesToMac()) remoteAction({ type: "stop" }); else { robotSession.cancelQueued(); stopPlayback(); } },
   };
 
   return (
     <AngklungSystemContext.Provider value={value}>
       <div className={pathname === "/guest" || pathname === "/voice" ? "visitor-shell" : "min-h-screen"}>
-        <SystemNavigation pathname={pathname} status={systemStatus} syncState={syncState} />
+        <SystemNavigation pathname={pathname} status={systemStatus} syncState={robotSession.role === "host" ? {
+          available: robotSession.serverAvailable, lastSyncedAt: robotSession.status.lastSeen,
+          status: robotSession.serverAvailable ? "synced" : "waiting",
+        } : syncState} />
+        <RobotSessionStatus session={robotSession} connectionLabel={transportMode === "esp32" ? "ESP32 Wi-Fi" : "Arduino USB"}
+          onEnableHost={async () => { if (!await prepareUserModeAudio()) throw new Error("Enable browser audio on the Mac before starting its controller."); stopPlaybackMedia(); await robotSession.enableHost(); }}
+          onConnect={connectArduino} onStop={value.emergencyStopPlayback} />
         {children}
       </div>
     </AngklungSystemContext.Provider>
@@ -1350,7 +1530,6 @@ function SystemNavigation({ pathname, status, syncState }: { pathname: string; s
         <nav className="flex flex-wrap items-center gap-2">
           <NavLink active={pathname.startsWith("/guest")} href="/guest" label="Guest Interface" />
           <NavLink active={pathname.startsWith("/control")} href="/control" label="Control Panel" />
-          <NavLink active={pathname.startsWith("/display")} href="/display" label="Display Screen" />
           <span className="rounded border border-white/10 bg-white/5 px-3 py-2 text-sm font-semibold text-slate-300 shadow-[inset_0_1px_0_rgba(255,255,255,0.06)]">
             {formatSyncState(syncState)}
           </span>

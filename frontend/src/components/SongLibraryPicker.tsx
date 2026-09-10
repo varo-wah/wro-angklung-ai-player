@@ -1,6 +1,8 @@
 "use client";
 
-import { useEffect, useMemo, useRef, useState } from "react";
+import { Fragment, useEffect, useMemo, useRef, useState } from "react";
+
+import { SONG_LIBRARY_GROUPS, songLibraryGroup, songLibraryGroupLabel } from "@/lib/songLibraryGroups";
 
 import type { SongCatalogEntry } from "@/lib/songTypes";
 
@@ -20,7 +22,7 @@ export function SongLibraryPicker({ songs, selectedSongId, onSelect }: SongLibra
   const selectedSong = songs.find((song) => song.id === selectedSongId);
 
   const categories = useMemo(
-    () => Array.from(new Set(songs.map((song) => song.category).filter((value): value is string => Boolean(value)))).sort(),
+    () => SONG_LIBRARY_GROUPS.map(group => ({ ...group, count: songs.filter(song => songLibraryGroup(song) === group.id).length })).filter(group => group.count > 0),
     [songs],
   );
 
@@ -28,18 +30,21 @@ export function SongLibraryPicker({ songs, selectedSongId, onSelect }: SongLibra
     const normalizedQuery = query.trim().toLocaleLowerCase();
 
     return songs
-      .filter((song) => category === ALL_CATEGORIES || song.category === category)
+      .filter((song) => category === ALL_CATEGORIES || songLibraryGroup(song) === category)
       .filter((song) => {
         if (!normalizedQuery) {
           return true;
         }
 
-        return [song.title, song.id, ...(song.aliases ?? [])]
+        return [song.title, song.id, songLibraryGroupLabel(song), ...(song.aliases ?? [])]
           .join(" ")
           .toLocaleLowerCase()
           .includes(normalizedQuery);
       })
-      .sort((left, right) => left.title.localeCompare(right.title));
+      .sort((left, right) => {
+        const groupOrder = SONG_LIBRARY_GROUPS.findIndex(group => group.id === songLibraryGroup(left)) - SONG_LIBRARY_GROUPS.findIndex(group => group.id === songLibraryGroup(right));
+        return groupOrder || left.title.localeCompare(right.title);
+      });
   }, [category, query, songs]);
 
   useEffect(() => {
@@ -85,7 +90,7 @@ export function SongLibraryPicker({ songs, selectedSongId, onSelect }: SongLibra
               {selectedSong?.title ?? "Choose a song"}
             </span>
             <span className="mt-0.5 block text-xs text-slate-400">
-              {songs.length} songs available{selectedSong?.category ? ` / ${formatLabel(selectedSong.category)}` : ""}
+              {songs.length} songs available{selectedSong?.category ? ` / ${songLibraryGroupLabel(selectedSong)}` : ""}
             </span>
           </span>
           <span className="shrink-0 rounded border border-lime-300/30 bg-lime-300/10 px-2.5 py-1 text-xs font-bold text-lime-200">
@@ -106,12 +111,12 @@ export function SongLibraryPicker({ songs, selectedSongId, onSelect }: SongLibra
           }}
           role="dialog"
         >
-          <div className="flex max-h-[min(760px,90vh)] w-full max-w-3xl flex-col overflow-hidden rounded-lg border border-white/15 bg-[#0a0e14] shadow-[0_30px_100px_rgba(0,0,0,0.7)]">
-            <div className="flex items-start justify-between gap-4 border-b border-white/10 px-4 py-4 sm:px-5">
+          <div className="flex max-h-[min(820px,calc(100dvh-24px))] w-full max-w-3xl flex-col overflow-hidden rounded-lg border border-white/15 bg-[#0a0e14] shadow-[0_30px_100px_rgba(0,0,0,0.7)]">
+            <div className="flex shrink-0 items-start justify-between gap-4 border-b border-white/10 px-4 py-4 sm:px-5">
               <div>
                 <p className="text-xs font-bold uppercase tracking-[0.16em] text-lime-300">Built-in Library</p>
                 <h3 className="mt-1 text-xl font-semibold text-slate-50">Choose a song</h3>
-                <p className="mt-1 text-sm text-slate-400">Search by title or alternate name.</p>
+                <p className="mt-1 text-sm text-slate-400">Browse by genre, or search by title and alternate name.</p>
               </div>
               <button
                 aria-label="Close song library"
@@ -124,7 +129,7 @@ export function SongLibraryPicker({ songs, selectedSongId, onSelect }: SongLibra
               </button>
             </div>
 
-            <div className="border-b border-white/10 px-4 py-3 sm:px-5">
+            <div className="shrink-0 border-b border-white/10 px-4 py-3 sm:px-5">
               <label className="block text-xs font-bold uppercase tracking-[0.12em] text-slate-400" htmlFor="song-library-search">
                 Search songs
               </label>
@@ -138,36 +143,50 @@ export function SongLibraryPicker({ songs, selectedSongId, onSelect }: SongLibra
                 type="search"
                 value={query}
               />
-              <div className="mt-3 flex gap-2 overflow-x-auto pb-1" aria-label="Filter songs by category">
-                {[ALL_CATEGORIES, ...categories].map((item) => (
+              <label className="mt-3 block text-xs font-semibold text-slate-400 sm:hidden" htmlFor="song-library-group">Group</label>
+              <select
+                id="song-library-group"
+                className="mt-1 w-full rounded border border-white/15 bg-slate-950 px-3 py-2 text-sm text-slate-100 sm:hidden"
+                value={category}
+                onChange={event => setCategory(event.target.value)}
+              >
+                <option value={ALL_CATEGORIES}>All songs ({songs.length})</option>
+                {categories.map(group => <option key={group.id} value={group.id}>{group.label} ({group.count})</option>)}
+              </select>
+              <div className="mt-3 hidden flex-wrap gap-2 sm:flex" aria-label="Filter songs by group">
+                {[{ id: ALL_CATEGORIES, label: "All songs", count: songs.length }, ...categories].map((group) => (
                   <button
-                    aria-pressed={category === item}
-                    className={`shrink-0 rounded border px-3 py-1.5 text-xs font-semibold ${
-                      category === item
+                    aria-pressed={category === group.id}
+                    className={`inline-flex items-center gap-2 rounded border px-3 py-2 text-xs font-semibold ${
+                      category === group.id
                         ? "border-lime-300/60 bg-lime-300/15 text-lime-200"
                         : "border-white/10 bg-white/[0.04] text-slate-400 hover:border-white/20 hover:text-slate-200"
                     }`}
-                    key={item}
-                    onClick={() => setCategory(item)}
+                    key={group.id}
+                    onClick={() => setCategory(group.id)}
                     type="button"
                   >
-                    {item === ALL_CATEGORIES ? "All songs" : formatLabel(item)}
+                    {group.label}<span className="text-[10px] opacity-70">{group.count}</span>
                   </button>
                 ))}
               </div>
             </div>
 
-            <div className="flex items-center justify-between border-b border-white/10 px-4 py-2.5 text-xs text-slate-400 sm:px-5">
+            <div className="flex shrink-0 items-center justify-between border-b border-white/10 px-4 py-2.5 text-xs text-slate-400 sm:px-5">
               <span>{filteredSongs.length} results</span>
               <span>{songs.length} total</span>
             </div>
 
-            <div className="min-h-0 flex-1 overflow-y-auto p-2 sm:p-3">
+            <div className="min-h-0 flex-1 overflow-y-auto overscroll-contain p-2 sm:p-3">
               {filteredSongs.length > 0 ? (
                 <div className="divide-y divide-white/[0.07]">
-                  {filteredSongs.map((song) => {
+                  {filteredSongs.map((song, index) => {
                     const isSelected = song.id === selectedSongId;
+                    const group = songLibraryGroup(song);
+                    const startsGroup = category === ALL_CATEGORIES && (index === 0 || songLibraryGroup(filteredSongs[index - 1]) !== group);
                     return (
+                      <Fragment key={song.id}>
+                      {startsGroup && <h4 className="bg-[#101720] px-3 py-2.5 text-xs font-bold tracking-wide text-slate-300">{songLibraryGroupLabel(song)} <span className="ml-2 font-normal text-slate-500">{filteredSongs.filter(item => songLibraryGroup(item) === group).length}</span></h4>}
                       <button
                         aria-current={isSelected ? "true" : undefined}
                         className={`flex w-full items-center justify-between gap-4 px-3 py-3 text-left hover:bg-white/[0.05] ${
@@ -182,13 +201,14 @@ export function SongLibraryPicker({ songs, selectedSongId, onSelect }: SongLibra
                             {song.title}
                           </span>
                           <span className="mt-1 flex flex-wrap gap-x-3 gap-y-1 text-xs text-slate-500">
-                            <span>{formatLabel(song.category ?? "uncategorized")}</span>
+                            <span>{songLibraryGroupLabel(song)}</span>
                             {song.difficulty ? <span>{formatLabel(song.difficulty)}</span> : null}
                             {song.physical_rack_map ? <span>Rack {song.physical_rack_map}</span> : null}
                           </span>
                         </span>
                         <span className="shrink-0 text-xs font-bold text-lime-300">{isSelected ? "Selected" : "Choose"}</span>
                       </button>
+                      </Fragment>
                     );
                   })}
                 </div>
