@@ -929,5 +929,31 @@
     "accompaniment_register": "lower_physical",
     "accompaniment_target_range": "G3-F4",
     "path": "/songs/arrangements/we_are_the_champions.json"
+  },
+  {
+    "id": "laskar_pelangi_nidji",
+    "title": "Laskar Pelangi",
+    "aliases": [
+      "laskar pelangi",
+      "nidji",
+      "laskar pelangi nidji"
+    ],
+    "category": "indonesian_modern",
+    "difficulty": "medium",
+    "priority": "medium",
+    "verdict": "Sheet transcription draft",
+    "reason": "Supplied 26-bar score transposed G major to C major; ties and rests retained, optional bass from printed chords. Listening review pending.",
+    "arrangement_status": "sheet_transcription_draft_needs_listening_review",
+    "playable": true,
+    "demo_safe": false,
+    "has_validated_notes": true,
+    "active": true,
+    "visible_in_guest": true,
+    "physical_rack_map": "G3-C6",
+    "melody_register": "upper_physical",
+    "melody_target_range": "G4-C6",
+    "accompaniment_register": "lower_physical",
+    "accompaniment_target_range": "G3-F4",
+    "path": "/songs/arrangements/laskar_pelangi_nidji.json"
   }
 ]

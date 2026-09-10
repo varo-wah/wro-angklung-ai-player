@@ -1,6 +1,6 @@
 # Current song list — 10 September 2026
 
-32 musical arrangements and 3 hardware tests are active (35 entries). The legacy out-of-range Perfect draft is inactive; the playable Perfect is the reviewed MuseScore arrangement.
+33 musical arrangements and 3 hardware tests are active (36 entries). The legacy out-of-range Perfect draft is inactive; the playable Perfect is the reviewed MuseScore arrangement.
 
 ## Pop & ballads (15)
 
@@ -47,9 +47,10 @@
 - Indonesia Raya
 - Tanah Airku
 
-## Indonesian pop (1)
+## Indonesian pop (2)
 
 - Lantas
+- Laskar Pelangi (supplied-score draft)
 
 ## Instrumental (1)
 
