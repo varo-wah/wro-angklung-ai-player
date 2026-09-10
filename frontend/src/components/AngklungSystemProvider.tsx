@@ -121,6 +121,8 @@ type AngklungSystemContextValue = {
   pausePlayback: () => void;
   playSchedule: () => Promise<boolean>;
   prepareUserModeAudio: () => Promise<boolean>;
+  previewMuted: boolean;
+  setPreviewMuted: (muted: boolean) => void;
   refreshAiAssistant: () => Promise<void>;
   clearChat: () => void;
   cancelConversationRequest: () => void;
@@ -237,6 +239,19 @@ export function AngklungSystemProvider({ children }: { children: ReactNode }) {
   });
   const engineRef = useRef<PlaybackEngine | null>(null);
   const audioRef = useRef<AudioEngine | null>(null);
+  const [previewMuted, setPreviewMutedState] = useState(false);
+  const previewMutedRef = useRef(false);
+  function setPreviewMuted(muted: boolean) {
+    previewMutedRef.current = muted;
+    setPreviewMutedState(muted);
+    audioRef.current?.setMuted(muted);
+    if (!muted) void audioRef.current?.ensureReady().catch(() => setErrors(["Preview audio could not resume. Click Play again to enable browser audio."]));
+    try { localStorage.setItem("angklobot.preview-muted", String(muted)); } catch { /* Storage may be unavailable. */ }
+  }
+  useEffect(() => {
+    try { setPreviewMuted(localStorage.getItem("angklobot.preview-muted") === "true"); } catch { /* Use audible default. */ }
+  }, []);
+
   const latestRackCommandRef = useRef(new Map<string, string>());
   const arduinoRef = useRef<RobotTransport | null>(null);
   const [transportMode, setTransportModeState] = useState<RobotTransportMode>("usb");
@@ -1206,6 +1221,7 @@ export function AngklungSystemProvider({ children }: { children: ReactNode }) {
 
   async function prepareUserModeAudio(): Promise<boolean> {
     audioRef.current ??= new AudioEngine();
+    audioRef.current.setMuted(previewMutedRef.current);
     try {
       await audioRef.current.ensureReady();
       setErrors([]);
@@ -1231,6 +1247,7 @@ export function AngklungSystemProvider({ children }: { children: ReactNode }) {
     playbackSessionRef.current = playbackSession;
 
     audioRef.current ??= new AudioEngine();
+    audioRef.current.setMuted(previewMutedRef.current);
     try {
       await audioRef.current.ensureReady();
       if (playbackSession !== playbackSessionRef.current || !isCurrent()) {
@@ -1452,6 +1469,8 @@ export function AngklungSystemProvider({ children }: { children: ReactNode }) {
     loadSchedule: (text, name) => { if (routesToMac()) { setErrors(["Upload arrangements on the Mac controller."]); return; } loadSchedule(text, name); },
     pausePlayback: () => { if (routesToMac()) remoteAction({ type: "pause" }); else { robotSession.cancelQueued(); pausePlayback(); } },
     playSchedule: async () => { try { return routesToMac() ? (await remoteCommand({ type: "play" })).result.value === true : await playSchedule(); } catch { return false; } },
+    previewMuted,
+    setPreviewMuted,
     prepareUserModeAudio: async () => routesToMac() ? true : prepareUserModeAudio(),
     refreshAiAssistant,
     clearChat: () => routesToMac() ? remoteAction({ type: "clear" }) : clearChat(),

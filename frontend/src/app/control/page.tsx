@@ -344,6 +344,8 @@ function SongSourcePanel() {
       </label>
       <p className="mt-2 text-xs text-slate-400">YouTube conversion remains Phase 3. No download or transcription runs here.</p>
       <PlaybackControls
+        previewMuted={system.previewMuted}
+        onPreviewMutedChange={system.setPreviewMuted}
           remoteControl={system.remoteControl}
           physicalControl={system.physicalControl}
         arduinoConnection={system.arduinoConnection}

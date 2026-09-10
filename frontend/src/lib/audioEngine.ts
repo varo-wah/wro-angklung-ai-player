@@ -19,6 +19,13 @@ const NOTE_OFFSETS: Record<string, number> = {
 };
 
 export class AudioEngine {
+  private muted = false;
+
+  setMuted(muted: boolean): void {
+    this.muted = muted;
+    if (muted) this.stopAll();
+  }
+
   private context: AudioContext | null = null;
   private toneCache = new Map<string, string>();
   private useHtmlAudioFallback = false;
@@ -27,6 +34,7 @@ export class AudioEngine {
   private noteVoices = new Map<string, () => void>();
 
   async ensureReady(): Promise<void> {
+    if (this.muted) return;
     const AudioContextClass = window.AudioContext ?? window.webkitAudioContext;
     if (!AudioContextClass) {
       this.useHtmlAudioFallback = true;
@@ -45,6 +53,7 @@ export class AudioEngine {
   }
 
   playNote(note: string, durationSeconds: number, strength: number) {
+    if (this.muted) return;
     if (!Number.isFinite(durationSeconds) || durationSeconds <= 0 || !Number.isFinite(strength)) return;
     this.noteVoices.get(note)?.();
     this.noteVoices.delete(note);

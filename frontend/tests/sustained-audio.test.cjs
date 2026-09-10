@@ -40,3 +40,16 @@ test('zero strength is silent; retrigger stops previous same pitch; stop cancels
   audio.stopAll();
   assert.equal(oscillators[1].stops.at(-1), undefined);
 });
+
+test('preview mute immediately cuts voices, blocks new audio, and unmutes future notes', async () => {
+  const { audio, oscillators } = engine();
+  audio.playNote('C5', 2, .8);
+  audio.setMuted(true);
+  assert.equal(oscillators[0].stops.length, 2);
+  await audio.ensureReady();
+  audio.playNote('D5', 1, .8);
+  assert.equal(oscillators.length, 1);
+  audio.setMuted(false);
+  audio.playNote('E5', 1, .8);
+  assert.equal(oscillators.length, 2);
+});

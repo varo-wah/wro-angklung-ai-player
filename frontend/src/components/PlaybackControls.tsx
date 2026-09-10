@@ -11,6 +11,8 @@ type PlaybackControlsProps = {
   transportMode?: RobotTransportMode;
   transportChanging?: boolean;
   onTransportChange?: (mode: RobotTransportMode) => Promise<void>;
+  previewMuted?: boolean;
+  onPreviewMutedChange?: (muted: boolean) => void;
   disabled: boolean;
   remoteControl?: boolean;
   physicalControl?: boolean;
@@ -31,6 +33,8 @@ type PlaybackControlsProps = {
 export function PlaybackControls({
   arduinoConnection,
   transportMode = "usb", transportChanging = false, onTransportChange,
+  previewMuted = false,
+  onPreviewMutedChange,
   disabled,
   remoteControl = false,
   physicalControl = false,
@@ -131,6 +135,14 @@ export function PlaybackControls({
           E-Stop
         </button>
       </div>
+      {onPreviewMutedChange && (
+        <button type="button" aria-pressed={previewMuted}
+          className="mt-3 rounded border border-white/20 px-3 py-2 text-xs font-semibold hover:bg-white/10"
+          title="Silences virtual angklung audio on this browser only. Robot playback and rack animation continue."
+          onClick={() => onPreviewMutedChange(!previewMuted)}>
+          {previewMuted ? "Unmute virtual angklung" : "Mute virtual angklung"}
+        </button>
+      )}
       <div className="mt-3 h-2 overflow-hidden rounded bg-white/10">
         <div className="h-full bg-lime-300 transition-[width]" style={{ width: `${progress}%` }} />
       </div>
