@@ -25,7 +25,11 @@ test('21 presets uniformly slow attacks, shorten holds, preserve count, pitches 
       assert.equal(c.note, before.note);
       assert.equal(c.strength, before.strength);
       assert.equal(c.start_time_seconds, Math.round(before.start_time_seconds * scale * 1000) / 1000);
-      assert.ok(c.duration_seconds > 0 && c.duration_seconds <= before.duration_seconds * scale + 0.002);
+      // Compare with the scored hold: the baseline has already had absolute
+      // release gaps applied, so scaling that shortened result is not equivalent.
+      const source = song.notes.filter(n => !['accompaniment','support'].includes(n.role))[Number(c.command_id.slice(4))-1];
+      assert.ok(c.duration_seconds > 0 && c.duration_seconds <= 2);
+      assert.ok(c.duration_seconds <= source.duration * (source.playback_duration_multiplier ?? 1) * scale + 0.002);
     });
   }
 });

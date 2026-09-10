@@ -35,5 +35,26 @@ int main() {
   nowMs+=6500; s=slot(0,"HELLO,1\n"); parseRequest(0); reply("READY,1,ACTIVE\n");
   s=slot(0,"ARM\n"); parseRequest(0); reply("ACK,ARM\n");
   wasConnected=true; WiFi.state=0; loop(); assert(fault && !wirelessMayBeArmed);
-  std::cout<<"Bridge authentication, framing, busy bound, stop priority, reply correlation and failures passed\n";
+  // Preloaded song playback: ordered upload, exact deadlines, completion and lease.
+  WiFi.state=WL_CONNECTED; fault=false; pending=-1; wirelessMayBeArmed=false;
+  clearSchedule(); megaUart.output.clear();
+  s=slot(0,"SCHED,BEGIN,7,2\n"); parseRequest(0); assert(expectedNotes==2);
+  s=slot(0,"SCHED,ADD,7,0,0:0:100:800;150:18:100:800\n"); parseRequest(0);
+  assert(noteCount==0 && s->output.find("400")!=std::string::npos);
+  s=slot(0,"SCHED,ADD,7,0,0:0:100:800;150:1:100:800\n"); parseRequest(0); assert(noteCount==2);
+  s=slot(0,"ARM\n"); parseRequest(0); reply("ACK,ARM\n");
+  s=slot(0,"SCHED,RUN,7\n"); parseRequest(0); assert(scheduleRunning);
+  auto before=megaUart.output; nowMs=startsAt-1; tickSchedule(); assert(megaUart.output==before);
+  nowMs=startsAt; tickSchedule(); assert(pending==-2 && nextNote==1);
+  assert(megaUart.output.find("NOTE,0,100,800\n")!=std::string::npos); reply("ACK,NOTE,0\n");
+  nowMs=startsAt+150; tickSchedule(); assert(nextNote==2); reply("ACK,NOTE,1\n");
+  nowMs=startsAt+250; tickSchedule(); assert(!scheduleRunning); reply("ACK,DISARM\n");
+  assert(!wirelessMayBeArmed);
+  clearSchedule(); fault=false; pending=-1;
+  s=slot(0,"SCHED,BEGIN,8,1\n"); parseRequest(0);
+  s=slot(0,"SCHED,ADD,8,0,10000:0:100:800\n"); parseRequest(0);
+  s=slot(0,"ARM\n"); parseRequest(0); reply("ACK,ARM\n");
+  s=slot(0,"SCHED,RUN,8\n"); parseRequest(0);
+  nowMs=keepAt+2001; tickSchedule(); assert(fault && !scheduleRunning && scheduleId==0);
+  std::cout<<"Bridge authentication, framing, stop priority, buffered schedules, deadlines and lease expiry passed\n";
 }

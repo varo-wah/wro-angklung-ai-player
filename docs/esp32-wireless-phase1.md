@@ -1,5 +1,7 @@
 # Phase 1: Mac → Wi-Fi → ESP32-S3 → Mega → one NOTE
 
+> Historical bring-up record. Buffered full-song support now supersedes the single-note limitations below; see [current website control](website-wireless-control.md) and [competition runbook](competition-setup.md). Wiring observations and private configuration guidance remain relevant.
+
 Status (2026-09-09 device setup): both boards uploaded; Mac → iPhone hotspot →
 ESP32 → Mega UART → `NOTE,0,300,1000` acknowledged with motor power confirmed
 physically disconnected. Final ALL_OFF/DISARM acknowledgments and STATUS verified

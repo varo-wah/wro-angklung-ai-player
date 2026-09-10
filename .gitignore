@@ -18,3 +18,6 @@ frontend/skills-lock.json
 
 # Isolated local Wi-Fi website runtime
 frontend/.next-wireless/
+
+# Stable competition production build
+frontend/.next-competition/

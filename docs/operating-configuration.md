@@ -1,4 +1,6 @@
-# Shared Mac USB operating configuration
+# Shared Mac controller and pairing
+
+For the unified USB/ESP32 competition startup on port 3002, use [Competition runbook](competition-setup.md). The notes below describe pairing and the older USB/mobile development mode.
 
 ## One controller, multiple paired devices
 

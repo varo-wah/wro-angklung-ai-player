@@ -89,7 +89,7 @@ export class Esp32Transport implements RobotTransport {
     if (!this.online) throw new Error("Connect ESP32 Wi-Fi before playback.");
     const notes = commands.filter(command => command.start_time_seconds >= offset)
       .map(command => {
-        const [, channel, duration, strength] = encodeArduinoNoteCommand(command).split(",");
+        const [, channel, duration, strength] = encodeArduinoNoteCommand({ ...command, duration_seconds: Math.min(command.duration_seconds, 2) }).split(",");
         const at = Math.round((command.start_time_seconds - offset) * 1000);
         if (!Number.isFinite(at) || at < 0 || at > 1800000) throw new Error("Wireless schedule exceeds 30 minutes.");
         return { at, value: `${at}:${channel}:${duration}:${strength}` };
