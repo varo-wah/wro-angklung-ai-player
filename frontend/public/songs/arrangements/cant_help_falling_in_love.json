@@ -33,16 +33,23 @@
     "C6"
   ],
   "range": {
-    "lowest": "G4",
-    "highest": "F5",
+    "lowest": "G3",
+    "highest": "G5",
     "unique_notes": [
+      "G3",
+      "A3",
+      "B3",
+      "C4",
+      "E4",
+      "F4",
       "G4",
       "A4",
       "B4",
       "C5",
       "D5",
       "E5",
-      "F5"
+      "F5",
+      "G5"
     ]
   },
   "arrangement_status": "draft_layered_from_midi_g3_c6_needs_review",
@@ -53,8 +60,8 @@
     {
       "note": "C5",
       "playback_strength_multiplier": 1.05,
-      "beat": 0.0,
-      "duration_beats": 2.0,
+      "beat": 0,
+      "duration_beats": 2,
       "velocity": 55,
       "role": "melody",
       "register": "upper_physical_g4_c6",
@@ -62,25 +69,48 @@
       "physical_rack_map": "G3-C6"
     },
     {
-      "note": "G4",
-      "beat": 2.0,
-      "duration_beats": 2.0,
+      "note": "C4",
+      "beat": 0,
+      "duration_beats": 0.20099999999999998,
+      "velocity": 70,
+      "role": "accompaniment",
+      "register": "lower_physical_g3_f4",
+      "source_track": "Newly composed sparse bass; not present in source MIDI",
+      "physical_rack_map": "G3-C6",
+      "playback_strength_multiplier": 0.9
+    },
+    {
+      "note": "G5",
+      "beat": 2,
+      "duration_beats": 2,
       "velocity": 55,
       "role": "melody",
       "register": "upper_physical_g4_c6",
       "source_track": "Vibraphone",
-      "physical_rack_map": "G3-C6"
+      "physical_rack_map": "G3-C6",
+      "playback_strength_multiplier": 1.05
     },
     {
       "note": "C5",
       "playback_strength_multiplier": 1.05,
-      "beat": 4.0,
+      "beat": 4,
       "duration_beats": 2.75,
       "velocity": 55,
       "role": "melody",
       "register": "upper_physical_g4_c6",
       "source_track": "Vibraphone",
       "physical_rack_map": "G3-C6"
+    },
+    {
+      "note": "A3",
+      "beat": 4,
+      "duration_beats": 0.20099999999999998,
+      "velocity": 70,
+      "role": "accompaniment",
+      "register": "lower_physical_g3_f4",
+      "source_track": "Newly composed sparse bass; not present in source MIDI",
+      "physical_rack_map": "G3-C6",
+      "playback_strength_multiplier": 0.9
     },
     {
       "note": "D5",
@@ -96,7 +126,7 @@
     {
       "note": "F5",
       "playback_strength_multiplier": 1.05,
-      "beat": 8.0,
+      "beat": 8,
       "duration_beats": 1.75,
       "velocity": 55,
       "role": "melody",
@@ -105,15 +135,37 @@
       "physical_rack_map": "G3-C6"
     },
     {
+      "note": "F4",
+      "beat": 8,
+      "duration_beats": 0.20099999999999998,
+      "velocity": 70,
+      "role": "accompaniment",
+      "register": "lower_physical_g3_f4",
+      "source_track": "Newly composed sparse bass; not present in source MIDI",
+      "physical_rack_map": "G3-C6",
+      "playback_strength_multiplier": 0.9
+    },
+    {
       "note": "E5",
       "playback_strength_multiplier": 1.05,
-      "beat": 10.0,
+      "beat": 10,
       "duration_beats": 1.75,
       "velocity": 55,
       "role": "melody",
       "register": "upper_physical_g4_c6",
       "source_track": "Vibraphone",
       "physical_rack_map": "G3-C6"
+    },
+    {
+      "note": "C4",
+      "beat": 10,
+      "duration_beats": 0.20099999999999998,
+      "velocity": 70,
+      "role": "accompaniment",
+      "register": "lower_physical_g3_f4",
+      "source_track": "Newly composed sparse bass; not present in source MIDI",
+      "physical_rack_map": "G3-C6",
+      "playback_strength_multiplier": 0.9
     },
     {
       "note": "D5",
@@ -127,6 +179,17 @@
       "physical_rack_map": "G3-C6"
     },
     {
+      "note": "G3",
+      "beat": 12,
+      "duration_beats": 0.20099999999999998,
+      "velocity": 70,
+      "role": "accompaniment",
+      "register": "lower_physical_g3_f4",
+      "source_track": "Newly composed sparse bass; not present in source MIDI",
+      "physical_rack_map": "G3-C6",
+      "playback_strength_multiplier": 0.9
+    },
+    {
       "note": "G4",
       "beat": 15.625,
       "duration_beats": 0.25,
@@ -138,8 +201,8 @@
     },
     {
       "note": "A4",
-      "beat": 16.0,
-      "duration_beats": 2.0,
+      "beat": 16,
+      "duration_beats": 2,
       "velocity": 55,
       "role": "melody",
       "register": "upper_physical_g4_c6",
@@ -147,8 +210,19 @@
       "physical_rack_map": "G3-C6"
     },
     {
+      "note": "F4",
+      "beat": 16,
+      "duration_beats": 0.20099999999999998,
+      "velocity": 70,
+      "role": "accompaniment",
+      "register": "lower_physical_g3_f4",
+      "source_track": "Newly composed sparse bass; not present in source MIDI",
+      "physical_rack_map": "G3-C6",
+      "playback_strength_multiplier": 0.9
+    },
+    {
       "note": "B4",
-      "beat": 18.0,
+      "beat": 18,
       "duration_beats": 1.75,
       "velocity": 55,
       "role": "melody",
@@ -157,9 +231,20 @@
       "physical_rack_map": "G3-C6"
     },
     {
+      "note": "G3",
+      "beat": 18,
+      "duration_beats": 0.20099999999999998,
+      "velocity": 70,
+      "role": "accompaniment",
+      "register": "lower_physical_g3_f4",
+      "source_track": "Newly composed sparse bass; not present in source MIDI",
+      "physical_rack_map": "G3-C6",
+      "playback_strength_multiplier": 0.9
+    },
+    {
       "note": "C5",
       "playback_strength_multiplier": 1.05,
-      "beat": 20.0,
+      "beat": 20,
       "duration_beats": 1.5,
       "velocity": 55,
       "role": "melody",
@@ -168,9 +253,20 @@
       "physical_rack_map": "G3-C6"
     },
     {
+      "note": "A3",
+      "beat": 20,
+      "duration_beats": 0.20099999999999998,
+      "velocity": 70,
+      "role": "accompaniment",
+      "register": "lower_physical_g3_f4",
+      "source_track": "Newly composed sparse bass; not present in source MIDI",
+      "physical_rack_map": "G3-C6",
+      "playback_strength_multiplier": 0.9
+    },
+    {
       "note": "D5",
       "playback_strength_multiplier": 1.05,
-      "beat": 22.0,
+      "beat": 22,
       "duration_beats": 0.75,
       "velocity": 55,
       "role": "melody",
@@ -203,18 +299,29 @@
     {
       "note": "E5",
       "playback_strength_multiplier": 1.05,
-      "beat": 24.0,
+      "beat": 24,
       "duration_beats": 1.75,
       "velocity": 55,
       "role": "melody",
       "register": "upper_physical_g4_c6",
       "source_track": "Vibraphone",
       "physical_rack_map": "G3-C6"
+    },
+    {
+      "note": "F4",
+      "beat": 24,
+      "duration_beats": 0.20099999999999998,
+      "velocity": 70,
+      "role": "accompaniment",
+      "register": "lower_physical_g3_f4",
+      "source_track": "Newly composed sparse bass; not present in source MIDI",
+      "physical_rack_map": "G3-C6",
+      "playback_strength_multiplier": 0.9
     },
     {
       "note": "D5",
       "playback_strength_multiplier": 1.05,
-      "beat": 26.0,
+      "beat": 26,
       "duration_beats": 1.75,
       "velocity": 55,
       "role": "melody",
@@ -223,9 +330,20 @@
       "physical_rack_map": "G3-C6"
     },
     {
+      "note": "G3",
+      "beat": 26,
+      "duration_beats": 0.20099999999999998,
+      "velocity": 70,
+      "role": "accompaniment",
+      "register": "lower_physical_g3_f4",
+      "source_track": "Newly composed sparse bass; not present in source MIDI",
+      "physical_rack_map": "G3-C6",
+      "playback_strength_multiplier": 0.9
+    },
+    {
       "note": "C5",
       "playback_strength_multiplier": 1.05,
-      "beat": 28.0,
+      "beat": 28,
       "duration_beats": 3.5,
       "velocity": 55,
       "role": "melody",
@@ -234,20 +352,42 @@
       "physical_rack_map": "G3-C6"
     },
     {
+      "note": "C4",
+      "beat": 28,
+      "duration_beats": 0.20099999999999998,
+      "velocity": 70,
+      "role": "accompaniment",
+      "register": "lower_physical_g3_f4",
+      "source_track": "Newly composed sparse bass; not present in source MIDI",
+      "physical_rack_map": "G3-C6",
+      "playback_strength_multiplier": 0.9
+    },
+    {
       "note": "C5",
       "playback_strength_multiplier": 1.05,
-      "beat": 32.0,
-      "duration_beats": 2.0,
+      "beat": 32,
+      "duration_beats": 2,
       "velocity": 55,
       "role": "melody",
       "register": "upper_physical_g4_c6",
       "source_track": "Vibraphone",
       "physical_rack_map": "G3-C6"
+    },
+    {
+      "note": "C4",
+      "beat": 32,
+      "duration_beats": 0.20099999999999998,
+      "velocity": 70,
+      "role": "accompaniment",
+      "register": "lower_physical_g3_f4",
+      "source_track": "Newly composed sparse bass; not present in source MIDI",
+      "physical_rack_map": "G3-C6",
+      "playback_strength_multiplier": 0.9
     },
     {
       "note": "G4",
-      "beat": 34.0,
-      "duration_beats": 2.0,
+      "beat": 34,
+      "duration_beats": 2,
       "velocity": 55,
       "role": "melody",
       "register": "upper_physical_g4_c6",
@@ -257,13 +397,24 @@
     {
       "note": "C5",
       "playback_strength_multiplier": 1.05,
-      "beat": 36.0,
+      "beat": 36,
       "duration_beats": 2.75,
       "velocity": 55,
       "role": "melody",
       "register": "upper_physical_g4_c6",
       "source_track": "Vibraphone",
       "physical_rack_map": "G3-C6"
+    },
+    {
+      "note": "A3",
+      "beat": 36,
+      "duration_beats": 0.20099999999999998,
+      "velocity": 70,
+      "role": "accompaniment",
+      "register": "lower_physical_g3_f4",
+      "source_track": "Newly composed sparse bass; not present in source MIDI",
+      "physical_rack_map": "G3-C6",
+      "playback_strength_multiplier": 0.9
     },
     {
       "note": "D5",
@@ -279,8 +430,8 @@
     {
       "note": "F5",
       "playback_strength_multiplier": 1.05,
-      "beat": 40.0,
-      "duration_beats": 2.0,
+      "beat": 40,
+      "duration_beats": 2,
       "velocity": 55,
       "role": "melody",
       "register": "upper_physical_g4_c6",
@@ -288,15 +439,48 @@
       "physical_rack_map": "G3-C6"
     },
     {
+      "note": "F4",
+      "beat": 40,
+      "duration_beats": 0.20099999999999998,
+      "velocity": 70,
+      "role": "accompaniment",
+      "register": "lower_physical_g3_f4",
+      "source_track": "Newly composed sparse bass; not present in source MIDI",
+      "physical_rack_map": "G3-C6",
+      "playback_strength_multiplier": 0.9
+    },
+    {
+      "note": "C4",
+      "beat": 42,
+      "duration_beats": 0.20099999999999998,
+      "velocity": 70,
+      "role": "accompaniment",
+      "register": "lower_physical_g3_f4",
+      "source_track": "Newly composed sparse bass; not present in source MIDI",
+      "physical_rack_map": "G3-C6",
+      "playback_strength_multiplier": 0.9
+    },
+    {
       "note": "E5",
       "playback_strength_multiplier": 1.05,
-      "beat": 44.0,
+      "beat": 44,
       "duration_beats": 0.25,
       "velocity": 55,
       "role": "melody",
       "register": "upper_physical_g4_c6",
       "source_track": "Vibraphone",
       "physical_rack_map": "G3-C6"
+    },
+    {
+      "note": "G3",
+      "beat": 44,
+      "duration_beats": 0.20099999999999998,
+      "velocity": 70,
+      "role": "accompaniment",
+      "register": "lower_physical_g3_f4",
+      "source_track": "Newly composed sparse bass; not present in source MIDI",
+      "physical_rack_map": "G3-C6",
+      "playback_strength_multiplier": 0.9
     },
     {
       "note": "G4",
@@ -310,7 +494,7 @@
     },
     {
       "note": "A4",
-      "beat": 48.0,
+      "beat": 48,
       "duration_beats": 1.75,
       "velocity": 55,
       "role": "melody",
@@ -319,19 +503,41 @@
       "physical_rack_map": "G3-C6"
     },
     {
+      "note": "F4",
+      "beat": 48,
+      "duration_beats": 0.20099999999999998,
+      "velocity": 70,
+      "role": "accompaniment",
+      "register": "lower_physical_g3_f4",
+      "source_track": "Newly composed sparse bass; not present in source MIDI",
+      "physical_rack_map": "G3-C6",
+      "playback_strength_multiplier": 0.9
+    },
+    {
       "note": "B4",
-      "beat": 50.0,
+      "beat": 50,
       "duration_beats": 1.75,
       "velocity": 55,
       "role": "melody",
       "register": "upper_physical_g4_c6",
       "source_track": "Vibraphone",
       "physical_rack_map": "G3-C6"
+    },
+    {
+      "note": "G3",
+      "beat": 50,
+      "duration_beats": 0.20099999999999998,
+      "velocity": 70,
+      "role": "accompaniment",
+      "register": "lower_physical_g3_f4",
+      "source_track": "Newly composed sparse bass; not present in source MIDI",
+      "physical_rack_map": "G3-C6",
+      "playback_strength_multiplier": 0.9
     },
     {
       "note": "C5",
       "playback_strength_multiplier": 1.05,
-      "beat": 52.0,
+      "beat": 52,
       "duration_beats": 1.5,
       "velocity": 55,
       "role": "melody",
@@ -340,9 +546,20 @@
       "physical_rack_map": "G3-C6"
     },
     {
+      "note": "A3",
+      "beat": 52,
+      "duration_beats": 0.20099999999999998,
+      "velocity": 70,
+      "role": "accompaniment",
+      "register": "lower_physical_g3_f4",
+      "source_track": "Newly composed sparse bass; not present in source MIDI",
+      "physical_rack_map": "G3-C6",
+      "playback_strength_multiplier": 0.9
+    },
+    {
       "note": "D5",
       "playback_strength_multiplier": 1.05,
-      "beat": 54.0,
+      "beat": 54,
       "duration_beats": 0.75,
       "velocity": 55,
       "role": "melody",
@@ -375,19 +592,30 @@
     {
       "note": "E5",
       "playback_strength_multiplier": 1.05,
-      "beat": 56.0,
-      "duration_beats": 4.0,
+      "beat": 56,
+      "duration_beats": 4,
       "velocity": 55,
       "role": "melody",
       "register": "upper_physical_g4_c6",
       "source_track": "Vibraphone",
       "physical_rack_map": "G3-C6"
+    },
+    {
+      "note": "F4",
+      "beat": 56,
+      "duration_beats": 0.20099999999999998,
+      "velocity": 70,
+      "role": "accompaniment",
+      "register": "lower_physical_g3_f4",
+      "source_track": "Newly composed sparse bass; not present in source MIDI",
+      "physical_rack_map": "G3-C6",
+      "playback_strength_multiplier": 0.9
     },
     {
       "note": "D5",
       "playback_strength_multiplier": 1.05,
-      "beat": 58.0,
-      "duration_beats": 2.0,
+      "beat": 58,
+      "duration_beats": 2,
       "velocity": 55,
       "role": "melody",
       "register": "upper_physical_g4_c6",
@@ -395,9 +623,20 @@
       "physical_rack_map": "G3-C6"
     },
     {
+      "note": "G3",
+      "beat": 58,
+      "duration_beats": 0.20099999999999998,
+      "velocity": 70,
+      "role": "accompaniment",
+      "register": "lower_physical_g3_f4",
+      "source_track": "Newly composed sparse bass; not present in source MIDI",
+      "physical_rack_map": "G3-C6",
+      "playback_strength_multiplier": 0.9
+    },
+    {
       "note": "C5",
       "playback_strength_multiplier": 1.05,
-      "beat": 60.0,
+      "beat": 60,
       "duration_beats": 3.5,
       "velocity": 55,
       "role": "melody",
@@ -406,14 +645,36 @@
       "physical_rack_map": "G3-C6"
     },
     {
+      "note": "C4",
+      "beat": 60,
+      "duration_beats": 0.20099999999999998,
+      "velocity": 70,
+      "role": "accompaniment",
+      "register": "lower_physical_g3_f4",
+      "source_track": "Newly composed sparse bass; not present in source MIDI",
+      "physical_rack_map": "G3-C6",
+      "playback_strength_multiplier": 0.9
+    },
+    {
       "note": "B4",
-      "beat": 64.0,
+      "beat": 64,
       "duration_beats": 1.25,
       "velocity": 55,
       "role": "melody",
       "register": "upper_physical_g4_c6",
       "source_track": "Vibraphone",
       "physical_rack_map": "G3-C6"
+    },
+    {
+      "note": "E4",
+      "beat": 64,
+      "duration_beats": 0.20099999999999998,
+      "velocity": 70,
+      "role": "accompaniment",
+      "register": "lower_physical_g3_f4",
+      "source_track": "Newly composed sparse bass; not present in source MIDI",
+      "physical_rack_map": "G3-C6",
+      "playback_strength_multiplier": 0.9
     },
     {
       "note": "G4",
@@ -427,7 +688,7 @@
     },
     {
       "note": "B4",
-      "beat": 66.0,
+      "beat": 66,
       "duration_beats": 1.25,
       "velocity": 55,
       "role": "melody",
@@ -437,7 +698,7 @@
     },
     {
       "note": "B4",
-      "beat": 68.0,
+      "beat": 68,
       "duration_beats": 0.5,
       "velocity": 55,
       "role": "melody",
@@ -446,10 +707,21 @@
       "physical_rack_map": "G3-C6"
     },
     {
+      "note": "B3",
+      "beat": 68,
+      "duration_beats": 0.20099999999999998,
+      "velocity": 70,
+      "role": "accompaniment",
+      "register": "lower_physical_g3_f4",
+      "source_track": "Newly composed sparse bass; not present in source MIDI",
+      "physical_rack_map": "G3-C6",
+      "playback_strength_multiplier": 0.9
+    },
+    {
       "note": "E5",
       "playback_strength_multiplier": 1.05,
       "beat": 68.625,
-      "duration_beats": 4.0,
+      "duration_beats": 4,
       "velocity": 55,
       "role": "melody",
       "register": "upper_physical_g4_c6",
@@ -478,7 +750,7 @@
     },
     {
       "note": "A4",
-      "beat": 70.0,
+      "beat": 70,
       "duration_beats": 1.5,
       "velocity": 55,
       "role": "melody",
@@ -488,7 +760,7 @@
     },
     {
       "note": "B4",
-      "beat": 72.0,
+      "beat": 72,
       "duration_beats": 0.75,
       "velocity": 55,
       "role": "melody",
@@ -497,10 +769,21 @@
       "physical_rack_map": "G3-C6"
     },
     {
+      "note": "E4",
+      "beat": 72,
+      "duration_beats": 0.20099999999999998,
+      "velocity": 70,
+      "role": "accompaniment",
+      "register": "lower_physical_g3_f4",
+      "source_track": "Newly composed sparse bass; not present in source MIDI",
+      "physical_rack_map": "G3-C6",
+      "playback_strength_multiplier": 0.9
+    },
+    {
       "note": "E5",
       "playback_strength_multiplier": 1.05,
       "beat": 72.625,
-      "duration_beats": 4.0,
+      "duration_beats": 4,
       "velocity": 55,
       "role": "melody",
       "register": "upper_physical_g4_c6",
@@ -519,7 +802,7 @@
     },
     {
       "note": "B4",
-      "beat": 74.0,
+      "beat": 74,
       "duration_beats": 1.25,
       "velocity": 55,
       "role": "melody",
@@ -529,13 +812,24 @@
     },
     {
       "note": "G4",
-      "beat": 76.0,
+      "beat": 76,
       "duration_beats": 0.5,
       "velocity": 55,
       "role": "melody",
       "register": "upper_physical_g4_c6",
       "source_track": "Vibraphone",
       "physical_rack_map": "G3-C6"
+    },
+    {
+      "note": "B3",
+      "beat": 76,
+      "duration_beats": 0.20099999999999998,
+      "velocity": 70,
+      "role": "accompaniment",
+      "register": "lower_physical_g3_f4",
+      "source_track": "Newly composed sparse bass; not present in source MIDI",
+      "physical_rack_map": "G3-C6",
+      "playback_strength_multiplier": 0.9
     },
     {
       "note": "G4",
@@ -572,7 +866,7 @@
       "note": "E5",
       "playback_strength_multiplier": 1.05,
       "beat": 79.625,
-      "duration_beats": 4.0,
+      "duration_beats": 4,
       "velocity": 55,
       "role": "melody",
       "register": "upper_physical_g4_c6",
@@ -582,7 +876,7 @@
     {
       "note": "F5",
       "playback_strength_multiplier": 1.05,
-      "beat": 80.0,
+      "beat": 80,
       "duration_beats": 3.5,
       "velocity": 55,
       "role": "melody",
@@ -591,9 +885,20 @@
       "physical_rack_map": "G3-C6"
     },
     {
+      "note": "F4",
+      "beat": 80,
+      "duration_beats": 0.20099999999999998,
+      "velocity": 70,
+      "role": "accompaniment",
+      "register": "lower_physical_g3_f4",
+      "source_track": "Newly composed sparse bass; not present in source MIDI",
+      "physical_rack_map": "G3-C6",
+      "playback_strength_multiplier": 0.9
+    },
+    {
       "note": "C5",
       "playback_strength_multiplier": 1.05,
-      "beat": 84.0,
+      "beat": 84,
       "duration_beats": 1.75,
       "velocity": 55,
       "role": "melody",
@@ -602,9 +907,20 @@
       "physical_rack_map": "G3-C6"
     },
     {
+      "note": "C4",
+      "beat": 84,
+      "duration_beats": 0.20099999999999998,
+      "velocity": 70,
+      "role": "accompaniment",
+      "register": "lower_physical_g3_f4",
+      "source_track": "Newly composed sparse bass; not present in source MIDI",
+      "physical_rack_map": "G3-C6",
+      "playback_strength_multiplier": 0.9
+    },
+    {
       "note": "G4",
-      "beat": 86.0,
-      "duration_beats": 2.0,
+      "beat": 86,
+      "duration_beats": 2,
       "velocity": 55,
       "role": "melody",
       "register": "upper_physical_g4_c6",
@@ -614,7 +930,7 @@
     {
       "note": "C5",
       "playback_strength_multiplier": 1.05,
-      "beat": 88.0,
+      "beat": 88,
       "duration_beats": 2.5,
       "velocity": 55,
       "role": "melody",
@@ -623,9 +939,20 @@
       "physical_rack_map": "G3-C6"
     },
     {
+      "note": "A3",
+      "beat": 88,
+      "duration_beats": 0.20099999999999998,
+      "velocity": 70,
+      "role": "accompaniment",
+      "register": "lower_physical_g3_f4",
+      "source_track": "Newly composed sparse bass; not present in source MIDI",
+      "physical_rack_map": "G3-C6",
+      "playback_strength_multiplier": 0.9
+    },
+    {
       "note": "D5",
       "playback_strength_multiplier": 1.05,
-      "beat": 91.0,
+      "beat": 91,
       "duration_beats": 0.75,
       "velocity": 55,
       "role": "melody",
@@ -637,7 +964,7 @@
       "note": "E5",
       "playback_strength_multiplier": 1.05,
       "beat": 91.625,
-      "duration_beats": 4.0,
+      "duration_beats": 4,
       "velocity": 55,
       "role": "melody",
       "register": "upper_physical_g4_c6",
@@ -647,8 +974,30 @@
     {
       "note": "F5",
       "playback_strength_multiplier": 1.05,
-      "beat": 92.0,
-      "duration_beats": 2.0,
+      "beat": 92,
+      "duration_beats": 2,
+      "velocity": 55,
+      "role": "melody",
+      "register": "upper_physical_g4_c6",
+      "source_track": "Vibraphone",
+      "physical_rack_map": "G3-C6"
+    },
+    {
+      "note": "F4",
+      "beat": 92,
+      "duration_beats": 0.20099999999999998,
+      "velocity": 70,
+      "role": "accompaniment",
+      "register": "lower_physical_g3_f4",
+      "source_track": "Newly composed sparse bass; not present in source MIDI",
+      "physical_rack_map": "G3-C6",
+      "playback_strength_multiplier": 0.9
+    },
+    {
+      "note": "E5",
+      "playback_strength_multiplier": 1.05,
+      "beat": 94,
+      "duration_beats": 4,
       "velocity": 55,
       "role": "melody",
       "register": "upper_physical_g4_c6",
@@ -658,8 +1007,8 @@
     {
       "note": "E5",
       "playback_strength_multiplier": 1.05,
-      "beat": 94.0,
-      "duration_beats": 4.0,
+      "beat": 96,
+      "duration_beats": 4,
       "velocity": 55,
       "role": "melody",
       "register": "upper_physical_g4_c6",
@@ -667,15 +1016,15 @@
       "physical_rack_map": "G3-C6"
     },
     {
-      "note": "E5",
-      "playback_strength_multiplier": 1.05,
-      "beat": 96.0,
-      "duration_beats": 4.0,
-      "velocity": 55,
-      "role": "melody",
-      "register": "upper_physical_g4_c6",
-      "source_track": "Vibraphone",
-      "physical_rack_map": "G3-C6"
+      "note": "C4",
+      "beat": 96,
+      "duration_beats": 0.20099999999999998,
+      "velocity": 70,
+      "role": "accompaniment",
+      "register": "lower_physical_g3_f4",
+      "source_track": "Newly composed sparse bass; not present in source MIDI",
+      "physical_rack_map": "G3-C6",
+      "playback_strength_multiplier": 0.9
     },
     {
       "note": "G4",
@@ -689,8 +1038,8 @@
     },
     {
       "note": "A4",
-      "beat": 100.0,
-      "duration_beats": 2.0,
+      "beat": 100,
+      "duration_beats": 2,
       "velocity": 55,
       "role": "melody",
       "register": "upper_physical_g4_c6",
@@ -698,19 +1047,41 @@
       "physical_rack_map": "G3-C6"
     },
     {
+      "note": "F4",
+      "beat": 100,
+      "duration_beats": 0.20099999999999998,
+      "velocity": 70,
+      "role": "accompaniment",
+      "register": "lower_physical_g3_f4",
+      "source_track": "Newly composed sparse bass; not present in source MIDI",
+      "physical_rack_map": "G3-C6",
+      "playback_strength_multiplier": 0.9
+    },
+    {
       "note": "B4",
-      "beat": 102.0,
+      "beat": 102,
       "duration_beats": 1.75,
       "velocity": 55,
       "role": "melody",
       "register": "upper_physical_g4_c6",
       "source_track": "Vibraphone",
       "physical_rack_map": "G3-C6"
+    },
+    {
+      "note": "G3",
+      "beat": 102,
+      "duration_beats": 0.20099999999999998,
+      "velocity": 70,
+      "role": "accompaniment",
+      "register": "lower_physical_g3_f4",
+      "source_track": "Newly composed sparse bass; not present in source MIDI",
+      "physical_rack_map": "G3-C6",
+      "playback_strength_multiplier": 0.9
     },
     {
       "note": "C5",
       "playback_strength_multiplier": 1.05,
-      "beat": 104.0,
+      "beat": 104,
       "duration_beats": 1.75,
       "velocity": 55,
       "role": "melody",
@@ -719,9 +1090,20 @@
       "physical_rack_map": "G3-C6"
     },
     {
+      "note": "A3",
+      "beat": 104,
+      "duration_beats": 0.20099999999999998,
+      "velocity": 70,
+      "role": "accompaniment",
+      "register": "lower_physical_g3_f4",
+      "source_track": "Newly composed sparse bass; not present in source MIDI",
+      "physical_rack_map": "G3-C6",
+      "playback_strength_multiplier": 0.9
+    },
+    {
       "note": "D5",
       "playback_strength_multiplier": 1.05,
-      "beat": 106.0,
+      "beat": 106,
       "duration_beats": 0.5,
       "velocity": 55,
       "role": "melody",
@@ -754,8 +1136,8 @@
     {
       "note": "E5",
       "playback_strength_multiplier": 1.05,
-      "beat": 108.0,
-      "duration_beats": 4.0,
+      "beat": 108,
+      "duration_beats": 4,
       "velocity": 55,
       "role": "melody",
       "register": "upper_physical_g4_c6",
@@ -763,9 +1145,20 @@
       "physical_rack_map": "G3-C6"
     },
     {
+      "note": "F4",
+      "beat": 108,
+      "duration_beats": 0.20099999999999998,
+      "velocity": 70,
+      "role": "accompaniment",
+      "register": "lower_physical_g3_f4",
+      "source_track": "Newly composed sparse bass; not present in source MIDI",
+      "physical_rack_map": "G3-C6",
+      "playback_strength_multiplier": 0.9
+    },
+    {
       "note": "D5",
       "playback_strength_multiplier": 1.05,
-      "beat": 110.0,
+      "beat": 110,
       "duration_beats": 1.75,
       "velocity": 55,
       "role": "melody",
@@ -774,10 +1167,21 @@
       "physical_rack_map": "G3-C6"
     },
     {
+      "note": "G3",
+      "beat": 110,
+      "duration_beats": 0.20099999999999998,
+      "velocity": 70,
+      "role": "accompaniment",
+      "register": "lower_physical_g3_f4",
+      "source_track": "Newly composed sparse bass; not present in source MIDI",
+      "physical_rack_map": "G3-C6",
+      "playback_strength_multiplier": 0.9
+    },
+    {
       "note": "C5",
       "playback_strength_multiplier": 1.05,
-      "beat": 112.0,
-      "duration_beats": 3.0,
+      "beat": 112,
+      "duration_beats": 3,
       "velocity": 55,
       "role": "melody",
       "register": "upper_physical_g4_c6",
@@ -785,8 +1189,19 @@
       "physical_rack_map": "G3-C6"
     },
     {
+      "note": "C4",
+      "beat": 112,
+      "duration_beats": 0.20099999999999998,
+      "velocity": 70,
+      "role": "accompaniment",
+      "register": "lower_physical_g3_f4",
+      "source_track": "Newly composed sparse bass; not present in source MIDI",
+      "physical_rack_map": "G3-C6",
+      "playback_strength_multiplier": 0.9
+    },
+    {
       "note": "B4",
-      "beat": 116.0,
+      "beat": 116,
       "duration_beats": 0.75,
       "velocity": 55,
       "role": "melody",
@@ -795,10 +1210,21 @@
       "physical_rack_map": "G3-C6"
     },
     {
+      "note": "E4",
+      "beat": 116,
+      "duration_beats": 0.20099999999999998,
+      "velocity": 70,
+      "role": "accompaniment",
+      "register": "lower_physical_g3_f4",
+      "source_track": "Newly composed sparse bass; not present in source MIDI",
+      "physical_rack_map": "G3-C6",
+      "playback_strength_multiplier": 0.9
+    },
+    {
       "note": "E5",
       "playback_strength_multiplier": 1.05,
       "beat": 116.625,
-      "duration_beats": 4.0,
+      "duration_beats": 4,
       "velocity": 55,
       "role": "melody",
       "register": "upper_physical_g4_c6",
@@ -827,7 +1253,7 @@
     },
     {
       "note": "B4",
-      "beat": 118.0,
+      "beat": 118,
       "duration_beats": 3.875,
       "velocity": 55,
       "role": "melody",
@@ -837,7 +1263,7 @@
     },
     {
       "note": "B4",
-      "beat": 120.0,
+      "beat": 120,
       "duration_beats": 0.5,
       "velocity": 55,
       "role": "melody",
@@ -846,10 +1272,21 @@
       "physical_rack_map": "G3-C6"
     },
     {
+      "note": "B3",
+      "beat": 120,
+      "duration_beats": 0.20099999999999998,
+      "velocity": 70,
+      "role": "accompaniment",
+      "register": "lower_physical_g3_f4",
+      "source_track": "Newly composed sparse bass; not present in source MIDI",
+      "physical_rack_map": "G3-C6",
+      "playback_strength_multiplier": 0.9
+    },
+    {
       "note": "E5",
       "playback_strength_multiplier": 1.05,
       "beat": 120.625,
-      "duration_beats": 4.0,
+      "duration_beats": 4,
       "velocity": 55,
       "role": "melody",
       "register": "upper_physical_g4_c6",
@@ -869,7 +1306,7 @@
     {
       "note": "B4",
       "beat": 121.625,
-      "duration_beats": 4.0,
+      "duration_beats": 4,
       "velocity": 55,
       "role": "melody",
       "register": "upper_physical_g4_c6",
@@ -878,7 +1315,7 @@
     },
     {
       "note": "A4",
-      "beat": 122.0,
+      "beat": 122,
       "duration_beats": 1.5,
       "velocity": 55,
       "role": "melody",
@@ -888,7 +1325,7 @@
     },
     {
       "note": "B4",
-      "beat": 124.0,
+      "beat": 124,
       "duration_beats": 0.75,
       "velocity": 55,
       "role": "melody",
@@ -897,10 +1334,21 @@
       "physical_rack_map": "G3-C6"
     },
     {
+      "note": "E4",
+      "beat": 124,
+      "duration_beats": 0.20099999999999998,
+      "velocity": 70,
+      "role": "accompaniment",
+      "register": "lower_physical_g3_f4",
+      "source_track": "Newly composed sparse bass; not present in source MIDI",
+      "physical_rack_map": "G3-C6",
+      "playback_strength_multiplier": 0.9
+    },
+    {
       "note": "E5",
       "playback_strength_multiplier": 1.05,
       "beat": 124.625,
-      "duration_beats": 4.0,
+      "duration_beats": 4,
       "velocity": 55,
       "role": "melody",
       "register": "upper_physical_g4_c6",
@@ -919,13 +1367,24 @@
     },
     {
       "note": "G4",
-      "beat": 128.0,
+      "beat": 128,
       "duration_beats": 0.5,
       "velocity": 55,
       "role": "melody",
       "register": "upper_physical_g4_c6",
       "source_track": "Vibraphone",
       "physical_rack_map": "G3-C6"
+    },
+    {
+      "note": "B3",
+      "beat": 128,
+      "duration_beats": 0.20099999999999998,
+      "velocity": 70,
+      "role": "accompaniment",
+      "register": "lower_physical_g3_f4",
+      "source_track": "Newly composed sparse bass; not present in source MIDI",
+      "physical_rack_map": "G3-C6",
+      "playback_strength_multiplier": 0.9
     },
     {
       "note": "G4",
@@ -962,7 +1421,7 @@
       "note": "E5",
       "playback_strength_multiplier": 1.05,
       "beat": 131.625,
-      "duration_beats": 4.0,
+      "duration_beats": 4,
       "velocity": 55,
       "role": "melody",
       "register": "upper_physical_g4_c6",
@@ -972,7 +1431,7 @@
     {
       "note": "F5",
       "playback_strength_multiplier": 1.05,
-      "beat": 132.0,
+      "beat": 132,
       "duration_beats": 3.5,
       "velocity": 55,
       "role": "melody",
@@ -981,9 +1440,20 @@
       "physical_rack_map": "G3-C6"
     },
     {
+      "note": "F4",
+      "beat": 132,
+      "duration_beats": 0.20099999999999998,
+      "velocity": 70,
+      "role": "accompaniment",
+      "register": "lower_physical_g3_f4",
+      "source_track": "Newly composed sparse bass; not present in source MIDI",
+      "physical_rack_map": "G3-C6",
+      "playback_strength_multiplier": 0.9
+    },
+    {
       "note": "C5",
       "playback_strength_multiplier": 1.05,
-      "beat": 136.0,
+      "beat": 136,
       "duration_beats": 1.75,
       "velocity": 55,
       "role": "melody",
@@ -992,9 +1462,20 @@
       "physical_rack_map": "G3-C6"
     },
     {
+      "note": "C4",
+      "beat": 136,
+      "duration_beats": 0.20099999999999998,
+      "velocity": 70,
+      "role": "accompaniment",
+      "register": "lower_physical_g3_f4",
+      "source_track": "Newly composed sparse bass; not present in source MIDI",
+      "physical_rack_map": "G3-C6",
+      "playback_strength_multiplier": 0.9
+    },
+    {
       "note": "G4",
-      "beat": 138.0,
-      "duration_beats": 2.0,
+      "beat": 138,
+      "duration_beats": 2,
       "velocity": 55,
       "role": "melody",
       "register": "upper_physical_g4_c6",
@@ -1004,7 +1485,7 @@
     {
       "note": "C5",
       "playback_strength_multiplier": 1.05,
-      "beat": 140.0,
+      "beat": 140,
       "duration_beats": 2.5,
       "velocity": 55,
       "role": "melody",
@@ -1013,9 +1494,20 @@
       "physical_rack_map": "G3-C6"
     },
     {
+      "note": "A3",
+      "beat": 140,
+      "duration_beats": 0.20099999999999998,
+      "velocity": 70,
+      "role": "accompaniment",
+      "register": "lower_physical_g3_f4",
+      "source_track": "Newly composed sparse bass; not present in source MIDI",
+      "physical_rack_map": "G3-C6",
+      "playback_strength_multiplier": 0.9
+    },
+    {
       "note": "D5",
       "playback_strength_multiplier": 1.05,
-      "beat": 143.0,
+      "beat": 143,
       "duration_beats": 0.5,
       "velocity": 55,
       "role": "melody",
@@ -1027,7 +1519,7 @@
       "note": "E5",
       "playback_strength_multiplier": 1.05,
       "beat": 143.625,
-      "duration_beats": 4.0,
+      "duration_beats": 4,
       "velocity": 55,
       "role": "melody",
       "register": "upper_physical_g4_c6",
@@ -1037,8 +1529,30 @@
     {
       "note": "F5",
       "playback_strength_multiplier": 1.05,
-      "beat": 144.0,
-      "duration_beats": 2.0,
+      "beat": 144,
+      "duration_beats": 2,
+      "velocity": 55,
+      "role": "melody",
+      "register": "upper_physical_g4_c6",
+      "source_track": "Vibraphone",
+      "physical_rack_map": "G3-C6"
+    },
+    {
+      "note": "F4",
+      "beat": 144,
+      "duration_beats": 0.20099999999999998,
+      "velocity": 70,
+      "role": "accompaniment",
+      "register": "lower_physical_g3_f4",
+      "source_track": "Newly composed sparse bass; not present in source MIDI",
+      "physical_rack_map": "G3-C6",
+      "playback_strength_multiplier": 0.9
+    },
+    {
+      "note": "E5",
+      "playback_strength_multiplier": 1.05,
+      "beat": 146,
+      "duration_beats": 4,
       "velocity": 55,
       "role": "melody",
       "register": "upper_physical_g4_c6",
@@ -1048,8 +1562,8 @@
     {
       "note": "E5",
       "playback_strength_multiplier": 1.05,
-      "beat": 146.0,
-      "duration_beats": 4.0,
+      "beat": 148,
+      "duration_beats": 4,
       "velocity": 55,
       "role": "melody",
       "register": "upper_physical_g4_c6",
@@ -1057,15 +1571,15 @@
       "physical_rack_map": "G3-C6"
     },
     {
-      "note": "E5",
-      "playback_strength_multiplier": 1.05,
-      "beat": 148.0,
-      "duration_beats": 4.0,
-      "velocity": 55,
-      "role": "melody",
-      "register": "upper_physical_g4_c6",
-      "source_track": "Vibraphone",
-      "physical_rack_map": "G3-C6"
+      "note": "C4",
+      "beat": 148,
+      "duration_beats": 0.20099999999999998,
+      "velocity": 70,
+      "role": "accompaniment",
+      "register": "lower_physical_g3_f4",
+      "source_track": "Newly composed sparse bass; not present in source MIDI",
+      "physical_rack_map": "G3-C6",
+      "playback_strength_multiplier": 0.9
     },
     {
       "note": "G4",
@@ -1079,8 +1593,8 @@
     },
     {
       "note": "A4",
-      "beat": 152.0,
-      "duration_beats": 2.0,
+      "beat": 152,
+      "duration_beats": 2,
       "velocity": 55,
       "role": "melody",
       "register": "upper_physical_g4_c6",
@@ -1088,19 +1602,41 @@
       "physical_rack_map": "G3-C6"
     },
     {
+      "note": "F4",
+      "beat": 152,
+      "duration_beats": 0.20099999999999998,
+      "velocity": 70,
+      "role": "accompaniment",
+      "register": "lower_physical_g3_f4",
+      "source_track": "Newly composed sparse bass; not present in source MIDI",
+      "physical_rack_map": "G3-C6",
+      "playback_strength_multiplier": 0.9
+    },
+    {
       "note": "B4",
-      "beat": 154.0,
+      "beat": 154,
       "duration_beats": 1.75,
       "velocity": 55,
       "role": "melody",
       "register": "upper_physical_g4_c6",
       "source_track": "Vibraphone",
       "physical_rack_map": "G3-C6"
+    },
+    {
+      "note": "G3",
+      "beat": 154,
+      "duration_beats": 0.20099999999999998,
+      "velocity": 70,
+      "role": "accompaniment",
+      "register": "lower_physical_g3_f4",
+      "source_track": "Newly composed sparse bass; not present in source MIDI",
+      "physical_rack_map": "G3-C6",
+      "playback_strength_multiplier": 0.9
     },
     {
       "note": "C5",
       "playback_strength_multiplier": 1.05,
-      "beat": 156.0,
+      "beat": 156,
       "duration_beats": 1.75,
       "velocity": 55,
       "role": "melody",
@@ -1109,9 +1645,20 @@
       "physical_rack_map": "G3-C6"
     },
     {
+      "note": "A3",
+      "beat": 156,
+      "duration_beats": 0.20099999999999998,
+      "velocity": 70,
+      "role": "accompaniment",
+      "register": "lower_physical_g3_f4",
+      "source_track": "Newly composed sparse bass; not present in source MIDI",
+      "physical_rack_map": "G3-C6",
+      "playback_strength_multiplier": 0.9
+    },
+    {
       "note": "D5",
       "playback_strength_multiplier": 1.05,
-      "beat": 158.0,
+      "beat": 158,
       "duration_beats": 0.5,
       "velocity": 55,
       "role": "melody",
@@ -1144,8 +1691,8 @@
     {
       "note": "E5",
       "playback_strength_multiplier": 1.05,
-      "beat": 160.0,
-      "duration_beats": 4.0,
+      "beat": 160,
+      "duration_beats": 4,
       "velocity": 55,
       "role": "melody",
       "register": "upper_physical_g4_c6",
@@ -1153,9 +1700,20 @@
       "physical_rack_map": "G3-C6"
     },
     {
+      "note": "F4",
+      "beat": 160,
+      "duration_beats": 0.20099999999999998,
+      "velocity": 70,
+      "role": "accompaniment",
+      "register": "lower_physical_g3_f4",
+      "source_track": "Newly composed sparse bass; not present in source MIDI",
+      "physical_rack_map": "G3-C6",
+      "playback_strength_multiplier": 0.9
+    },
+    {
       "note": "D5",
       "playback_strength_multiplier": 1.05,
-      "beat": 162.0,
+      "beat": 162,
       "duration_beats": 1.75,
       "velocity": 55,
       "role": "melody",
@@ -1164,15 +1722,37 @@
       "physical_rack_map": "G3-C6"
     },
     {
+      "note": "G3",
+      "beat": 162,
+      "duration_beats": 0.20099999999999998,
+      "velocity": 70,
+      "role": "accompaniment",
+      "register": "lower_physical_g3_f4",
+      "source_track": "Newly composed sparse bass; not present in source MIDI",
+      "physical_rack_map": "G3-C6",
+      "playback_strength_multiplier": 0.9
+    },
+    {
       "note": "C5",
       "playback_strength_multiplier": 1.05,
-      "beat": 164.0,
+      "beat": 164,
       "duration_beats": 3.25,
       "velocity": 55,
       "role": "melody",
       "register": "upper_physical_g4_c6",
       "source_track": "Vibraphone",
       "physical_rack_map": "G3-C6"
+    },
+    {
+      "note": "C4",
+      "beat": 164,
+      "duration_beats": 0.20099999999999998,
+      "velocity": 70,
+      "role": "accompaniment",
+      "register": "lower_physical_g3_f4",
+      "source_track": "Newly composed sparse bass; not present in source MIDI",
+      "physical_rack_map": "G3-C6",
+      "playback_strength_multiplier": 0.9
     },
     {
       "note": "G4",
@@ -1186,8 +1766,8 @@
     },
     {
       "note": "A4",
-      "beat": 168.0,
-      "duration_beats": 2.0,
+      "beat": 168,
+      "duration_beats": 2,
       "velocity": 55,
       "role": "melody",
       "register": "upper_physical_g4_c6",
@@ -1195,19 +1775,41 @@
       "physical_rack_map": "G3-C6"
     },
     {
+      "note": "F4",
+      "beat": 168,
+      "duration_beats": 0.20099999999999998,
+      "velocity": 70,
+      "role": "accompaniment",
+      "register": "lower_physical_g3_f4",
+      "source_track": "Newly composed sparse bass; not present in source MIDI",
+      "physical_rack_map": "G3-C6",
+      "playback_strength_multiplier": 0.9
+    },
+    {
       "note": "B4",
-      "beat": 170.0,
-      "duration_beats": 2.0,
+      "beat": 170,
+      "duration_beats": 2,
       "velocity": 55,
       "role": "melody",
       "register": "upper_physical_g4_c6",
       "source_track": "Vibraphone",
       "physical_rack_map": "G3-C6"
+    },
+    {
+      "note": "G3",
+      "beat": 170,
+      "duration_beats": 0.20099999999999998,
+      "velocity": 70,
+      "role": "accompaniment",
+      "register": "lower_physical_g3_f4",
+      "source_track": "Newly composed sparse bass; not present in source MIDI",
+      "physical_rack_map": "G3-C6",
+      "playback_strength_multiplier": 0.9
     },
     {
       "note": "C5",
       "playback_strength_multiplier": 1.05,
-      "beat": 172.0,
+      "beat": 172,
       "duration_beats": 1.75,
       "velocity": 55,
       "role": "melody",
@@ -1216,9 +1818,20 @@
       "physical_rack_map": "G3-C6"
     },
     {
+      "note": "A3",
+      "beat": 172,
+      "duration_beats": 0.20099999999999998,
+      "velocity": 70,
+      "role": "accompaniment",
+      "register": "lower_physical_g3_f4",
+      "source_track": "Newly composed sparse bass; not present in source MIDI",
+      "physical_rack_map": "G3-C6",
+      "playback_strength_multiplier": 0.9
+    },
+    {
       "note": "D5",
       "playback_strength_multiplier": 1.05,
-      "beat": 174.0,
+      "beat": 174,
       "duration_beats": 0.75,
       "velocity": 55,
       "role": "melody",
@@ -1249,10 +1862,21 @@
       "physical_rack_map": "G3-C6"
     },
     {
+      "note": "F4",
+      "beat": 176,
+      "duration_beats": 0.20099999999999998,
+      "velocity": 70,
+      "role": "accompaniment",
+      "register": "lower_physical_g3_f4",
+      "source_track": "Newly composed sparse bass; not present in source MIDI",
+      "physical_rack_map": "G3-C6",
+      "playback_strength_multiplier": 0.9
+    },
+    {
       "note": "D5",
       "playback_strength_multiplier": 1.05,
-      "beat": 178.0,
-      "duration_beats": 2.0,
+      "beat": 178,
+      "duration_beats": 2,
       "velocity": 55,
       "role": "melody",
       "register": "upper_physical_g4_c6",
@@ -1260,15 +1884,37 @@
       "physical_rack_map": "G3-C6"
     },
     {
+      "note": "G3",
+      "beat": 178,
+      "duration_beats": 0.20099999999999998,
+      "velocity": 70,
+      "role": "accompaniment",
+      "register": "lower_physical_g3_f4",
+      "source_track": "Newly composed sparse bass; not present in source MIDI",
+      "physical_rack_map": "G3-C6",
+      "playback_strength_multiplier": 0.9
+    },
+    {
       "note": "C5",
       "playback_strength_multiplier": 1.05,
-      "beat": 180.0,
-      "duration_beats": 4.0,
+      "beat": 180,
+      "duration_beats": 4,
       "velocity": 55,
       "role": "melody",
       "register": "upper_physical_g4_c6",
       "source_track": "Vibraphone",
       "physical_rack_map": "G3-C6"
+    },
+    {
+      "note": "C4",
+      "beat": 180,
+      "duration_beats": 0.20099999999999998,
+      "velocity": 70,
+      "role": "accompaniment",
+      "register": "lower_physical_g3_f4",
+      "source_track": "Newly composed sparse bass; not present in source MIDI",
+      "physical_rack_map": "G3-C6",
+      "playback_strength_multiplier": 0.9
     }
   ]
 }
