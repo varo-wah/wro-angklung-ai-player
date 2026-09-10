@@ -1,9 +1,10 @@
 # Current song list — 10 September 2026
 
-33 musical arrangements and 3 hardware tests are active (36 entries). The legacy out-of-range Perfect draft is inactive; the playable Perfect is the reviewed MuseScore arrangement.
+35 musical arrangements and 3 hardware tests are active (38 entries). The legacy out-of-range Perfect draft is inactive; the playable Perfect is the reviewed MuseScore arrangement.
 
-## Pop & ballads (15)
+## Pop & ballads (16)
 
+- A Sky Full of Stars
 - A Thousand Years
 - All of Me
 - Count on Me
@@ -27,11 +28,12 @@
 - We Are the Champions
 - Yellow
 
-## Film & musicals (4)
+## Film & musicals (5)
 
 - A Whole New World
 - Golden
 - Let It Go
+- Mission: Impossible Theme
 - Under the Sea
 
 ## Traditional & folk (4)

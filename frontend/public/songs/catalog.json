@@ -955,5 +955,53 @@
     "accompaniment_register": "lower_physical",
     "accompaniment_target_range": "G3-F4",
     "path": "/songs/arrangements/laskar_pelangi_nidji.json"
+  },
+  {
+    "id": "mission_impossible_theme",
+    "title": "Mission: Impossible Theme",
+    "aliases": [
+      "mission impossible",
+      "mission impossible theme",
+      "mission: impossible"
+    ],
+    "category": "musical_film",
+    "difficulty": "hard",
+    "priority": "high",
+    "verdict": "MIDI arrangement draft",
+    "reason": "Bass ostinato intro, then overdriven guitar track 21 with trumpet responses in its gaps; rapid opening trill and drums omitted.",
+    "arrangement_status": "source_reviewed_draft_needs_audition",
+    "playable": true,
+    "demo_safe": false,
+    "has_validated_notes": true,
+    "active": true,
+    "visible_in_guest": true,
+    "physical_rack_map": "G3-C6",
+    "melody_target_range": "G3-C6",
+    "accompaniment_target_range": "G3-F4",
+    "path": "/songs/arrangements/mission_impossible_theme.json"
+  },
+  {
+    "id": "a_sky_full_of_stars",
+    "title": "A Sky Full of Stars",
+    "aliases": [
+      "a sky full of stars",
+      "sky full of stars",
+      "coldplay sky full of stars"
+    ],
+    "category": "international_pop",
+    "difficulty": "hard",
+    "priority": "high",
+    "verdict": "MIDI arrangement draft",
+    "reason": "Grand Piano top voice, rejecting inner attacks beneath sustained lead; Electric Piano supplies bass.",
+    "arrangement_status": "source_reviewed_draft_needs_audition",
+    "playable": true,
+    "demo_safe": false,
+    "has_validated_notes": true,
+    "active": true,
+    "visible_in_guest": true,
+    "physical_rack_map": "G3-C6",
+    "melody_target_range": "G3-C6",
+    "accompaniment_target_range": "G3-F4",
+    "path": "/songs/arrangements/a_sky_full_of_stars.json"
   }
 ]
