@@ -344,7 +344,12 @@ function SongSourcePanel() {
       </label>
       <p className="mt-2 text-xs text-slate-400">YouTube conversion remains Phase 3. No download or transcription runs here.</p>
       <PlaybackControls
+          remoteControl={system.remoteControl}
+          physicalControl={system.physicalControl}
         arduinoConnection={system.arduinoConnection}
+        transportMode={system.transportMode}
+        transportChanging={system.transportChanging}
+        onTransportChange={system.setTransportMode}
         disabled={!system.schedule || system.workflowStatus.readyForSimulation === false}
         embedded
         elapsedSeconds={system.elapsedSeconds}
@@ -523,10 +528,11 @@ function ArrangementSettingsPanel() {
               value={system.settings.mode}
               options={[
                 ["melody", "Melody only"],
-                ["harmony", "Melody + simple harmony"],
+                ["harmony", "Melody with Extra"],
               ]}
               onChange={(value) => system.setSettings({ ...system.settings, mode: value as ArrangementSettings["mode"] })}
             />
+            <p className="text-xs text-slate-400">All holds are capped at 2 seconds. Written rests are preserved, with up to 120 ms of release between notes (proportionally shorter for fast passages). Extra keeps its short accompaniment pulses.</p>
           </>
         )}
       </div>

@@ -1,0 +1,287 @@
+{
+  "id": "untitled_flute_viola",
+  "title": "Manuk Dadali",
+  "tempo_bpm": 80,
+  "time_signature": "2/4",
+  "source": "Two user-supplied score images, 40 bars. Printed title: Untitled score. Composer unspecified. Identified by the user as Manuk Dadali.",
+  "source_images": [
+    "codex-clipboard-5112b062-f84e-4517-b85d-6e7cc5bc21c2.png",
+    "codex-clipboard-aef84161-265e-4543-9e0e-e33f5e96afc4.png"
+  ],
+  "flute_bars": [
+    [
+      "C5:.25",
+      "B4:.25",
+      "A4:.25",
+      "G4:.25",
+      "F4:.25",
+      "E4:.25",
+      "D4:.25",
+      "C4:.25~"
+    ],
+    [
+      "C4:1.5",
+      "G4:.5"
+    ],
+    [
+      "E4:.5",
+      "F4:.5",
+      "G4:.5",
+      "B4:.5"
+    ],
+    [
+      "C5:1",
+      "B4:.5",
+      "C5:.5"
+    ],
+    [
+      "E4:.5",
+      "F4:.5",
+      "G4:.5",
+      "G4:.5"
+    ],
+    [
+      "G4:1.5",
+      "G4:.5"
+    ],
+    [
+      "E4:.5",
+      "F4:.5",
+      "G4:.5",
+      "B4:.5"
+    ],
+    [
+      "C5:1",
+      "B4:.5",
+      "C5:.5"
+    ],
+    [
+      "E4:.5",
+      "G4:.5",
+      "F4:.5",
+      "E4:.5"
+    ],
+    [
+      "F4:1.5",
+      "G4:.5"
+    ],
+    [
+      "A4:.5",
+      "G4:.5",
+      "F4:.5",
+      "D4:.5"
+    ],
+    [
+      "C4:.5",
+      "E4:.5",
+      "F4:.5",
+      "G4:.5"
+    ],
+    [
+      "C4:.5",
+      "E4:.5",
+      "F4:.5",
+      "F4:.5"
+    ],
+    [
+      "F4:1.5",
+      "G4:.5"
+    ],
+    [
+      "F4:.5",
+      "E4:.5",
+      "C4:.5",
+      "B3:.5"
+    ],
+    [
+      "C4:.5",
+      "E4:.5",
+      "F4:.5",
+      "G4:.5"
+    ],
+    [
+      "C4:.5",
+      "E4:.5",
+      "C4:.5",
+      "B3:.5"
+    ],
+    [
+      "C4:.5",
+      "R:.5",
+      "R:1"
+    ],
+    [
+      "R:.5",
+      "C4:.5",
+      "E4:.5",
+      "G4:.5"
+    ],
+    [
+      "A4:1",
+      "F4:.5",
+      "A4:.5"
+    ],
+    [
+      "R:.5",
+      "A4:.5",
+      "F4:.5",
+      "G4:.5"
+    ],
+    [
+      "A4:.5",
+      "A4:.5",
+      "A4:1"
+    ],
+    [
+      "R:.5",
+      "C5:.5",
+      "B4:.5",
+      "A4:.5"
+    ],
+    [
+      "G4:1",
+      "E4:.5",
+      "G4:.5"
+    ],
+    [
+      "R:.5",
+      "G4:.5",
+      "E4:.5",
+      "F4:.5"
+    ],
+    [
+      "G4:.5",
+      "G4:.5",
+      "G4:1"
+    ],
+    [
+      "R:.5",
+      "C4:.5",
+      "E4:.5",
+      "G4:.5"
+    ],
+    [
+      "A4:1",
+      "F4:.5",
+      "A4:.5"
+    ],
+    [
+      "R:.5",
+      "A4:.5",
+      "F4:.5",
+      "G4:.5"
+    ],
+    [
+      "A4:.5",
+      "A4:.5",
+      "A4:1"
+    ],
+    [
+      "R:.5",
+      "C5:.5",
+      "B4:.5",
+      "C5:.5"
+    ],
+    [
+      "D5:1",
+      "B4:.5",
+      "G4:.5"
+    ],
+    [
+      "R:.5",
+      "G4:.5",
+      "B4:.5",
+      "D5:.5"
+    ],
+    [
+      "C5:2~"
+    ],
+    [
+      "C5:2~"
+    ],
+    [
+      "C5:2"
+    ],
+    [
+      "A#4:2"
+    ],
+    [
+      "E5:2~"
+    ],
+    [
+      "E5:2"
+    ],
+    [
+      "A4:.25",
+      "B4:.25",
+      "C5:.25",
+      "D5:.25",
+      "B4:.5",
+      "G4:.25",
+      "A4:.25"
+    ]
+  ],
+  "viola_support": [
+    {
+      "bar": 4,
+      "note": "E4"
+    },
+    {
+      "bar": 6,
+      "note": "C4"
+    },
+    {
+      "bar": 8,
+      "note": "C4"
+    },
+    {
+      "bar": 10,
+      "note": "A3"
+    },
+    {
+      "bar": 19,
+      "note": "D4"
+    },
+    {
+      "bar": 20,
+      "note": "C4"
+    },
+    {
+      "bar": 22,
+      "note": "C4"
+    },
+    {
+      "bar": 26,
+      "note": "C4"
+    },
+    {
+      "bar": 28,
+      "note": "C4"
+    },
+    {
+      "bar": 30,
+      "note": "C4"
+    },
+    {
+      "bar": 32,
+      "note": "D4"
+    },
+    {
+      "bar": 34,
+      "note": "F4"
+    },
+    {
+      "bar": 38,
+      "note": "E4"
+    }
+  ],
+  "adaptations": [
+    "Upper flute voice selected where staff has simultaneous notes; lower flute voices omitted.",
+    "Bar 37 A#4 is unavailable on the natural-note rack and uses A4, explicitly.",
+    "Extra uses only one short, stronger, available viola note in each listed bar; electric bass omitted.",
+    "Flute ties 1-2, 34-36 and 38-39 are continuous; different-pitch slurs are not ties."
+  ],
+  "extra_pulse_seconds": 0.18,
+  "extra_strength_multiplier": 1.25,
+  "extra_trial_note": "At 80 BPM: 180ms viola-support pulses at 1.25 times the melody strength, capped by the existing command limit. At the 80% strength setting, support reaches 100% of channel calibration while melody stays at 80%. Physical onset and sustain require listening."
+}

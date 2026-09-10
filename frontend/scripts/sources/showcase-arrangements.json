@@ -1,0 +1,352 @@
+{
+  "under_the_sea": {
+    "file": "Under The Sea.mid",
+    "title": "Under the Sea",
+    "artist": "The Little Mermaid",
+    "category": "musical_film",
+    "aliases": [
+      "under the sea",
+      "little mermaid",
+      "sebastian"
+    ],
+    "shift": 7,
+    "melodyTracks": [
+      1
+    ],
+    "introTrack": 3,
+    "introEnd": 9.8,
+    "sections": [
+      [
+        0,
+        "instrumental introduction",
+        0.95,
+        0.95,
+        0.3
+      ],
+      [
+        9.8,
+        "verse one",
+        1.05,
+        0.95,
+        0.4
+      ],
+      [
+        36,
+        "chorus one",
+        1.2,
+        1.05,
+        0.3
+      ],
+      [
+        65,
+        "verse two",
+        1.08,
+        0.95,
+        0.4
+      ],
+      [
+        87,
+        "chorus two",
+        1.2,
+        1.05,
+        0.3
+      ],
+      [
+        112,
+        "instrumental and vocal exchanges",
+        1.12,
+        1.0,
+        0.3
+      ],
+      [
+        151.2,
+        "modulated finale",
+        1.25,
+        1.1,
+        0.3
+      ]
+    ],
+    "melodyDecision": "Track 1 steel drums carries the syllabic lead, not an accompaniment ostinato. Track 24 duplicates it and is excluded. Track 3 supplies only the opening instrumental hook. Seven implausible octave-displaced lead notes at 68.65-70.17s are raised three octaves before transposition.",
+    "supportDecision": "One muted-guitar chord tone on selected original syncopations, or a sparse fretless-bass root where the guitar is absent. Marimba runs, piccolo, percussion, backing voices and duplicate ensemble tracks excluded.",
+    "calibration": "Check 100-180ms melody attacks and 120ms bass/guitar pulses; do not slow the entire calypso pattern merely to make bass louder."
+  },
+  "golden_huntrx": {
+    "file": "FF14 单人 Kpop猎魔女团 Huntrx- Golden.mid",
+    "title": "Golden",
+    "artist": "HUNTR/X / KPop Demon Hunters",
+    "category": "international_pop",
+    "aliases": [
+      "golden",
+      "huntrx",
+      "huntr/x",
+      "kpop demon hunters",
+      "rumi"
+    ],
+    "shift": -7,
+    "melodyTracks": [
+      0
+    ],
+    "sections": [
+      [
+        0,
+        "opening motif",
+        0.88,
+        0.8,
+        1.0
+      ],
+      [
+        16.7,
+        "verse",
+        1.0,
+        0.9,
+        0.65
+      ],
+      [
+        31.8,
+        "rising pre-chorus",
+        1.1,
+        0.95,
+        0.48
+      ],
+      [
+        47.7,
+        "chorus one",
+        1.2,
+        1.05,
+        0.48
+      ],
+      [
+        78.8,
+        "post-chorus",
+        1.12,
+        0.95,
+        0.65
+      ],
+      [
+        94,
+        "contrasting verse",
+        0.94,
+        0.85,
+        0.85
+      ],
+      [
+        111,
+        "rebuild",
+        1.08,
+        0.95,
+        0.6
+      ],
+      [
+        127.7,
+        "chorus two",
+        1.22,
+        1.05,
+        0.48
+      ],
+      [
+        158,
+        "repeated-note climax",
+        1.25,
+        1.08,
+        0.65
+      ],
+      [
+        175,
+        "slowing outro",
+        0.9,
+        0.8,
+        1.1
+      ]
+    ],
+    "melodyDecision": "Track 0 Harp (piano program): continuity- and velocity-led upper voice extraction, including the LOWER repeated vocal notes underneath chorus harmony at 50.65-52.59s. Rolled chords are grouped, octave doubles removed, and inner piano notes underneath a sustained lead rejected. This is a reviewed extraction interpretation, not a separately encoded vocal track.",
+    "supportDecision": "Sparse original left-hand root attacks plus one inner chord tone at selected chorus chord changes. Retain the source rising figures and repeated-note climax in the upper voice; suppress the continuous piano left-hand subdivisions.",
+    "calibration": "Check the 160ms repeated-note climax and stronger 140ms bass pulses. The supplied piano MIDI velocities are unusually low, so section dynamics are normalized deliberately rather than sent directly to motors."
+  },
+  "let_it_go": {
+    "file": "Let it go - Idina Menzel.mid",
+    "title": "Let It Go",
+    "artist": "Idina Menzel / Frozen",
+    "category": "musical_film",
+    "aliases": [
+      "let it go",
+      "frozen",
+      "elsa",
+      "idina menzel"
+    ],
+    "shift": 4,
+    "melodyTracks": [
+      0,
+      1,
+      2
+    ],
+    "introTrack": 4,
+    "introEnd": 15.5,
+    "sections": [
+      [
+        0,
+        "piano introduction",
+        0.75,
+        0.72,
+        1.7
+      ],
+      [
+        15.5,
+        "intimate verse",
+        0.8,
+        0.75,
+        1.7
+      ],
+      [
+        43.5,
+        "pre-chorus build",
+        0.95,
+        0.85,
+        1.2
+      ],
+      [
+        60.6,
+        "chorus one",
+        1.14,
+        1.0,
+        0.85
+      ],
+      [
+        89.3,
+        "lighter interlude and verse",
+        0.88,
+        0.8,
+        1.5
+      ],
+      [
+        106.8,
+        "second build",
+        1.03,
+        0.9,
+        1.0
+      ],
+      [
+        120.8,
+        "chorus two",
+        1.18,
+        1.02,
+        0.85
+      ],
+      [
+        148.9,
+        "bridge",
+        1.05,
+        0.88,
+        1.1
+      ],
+      [
+        175.2,
+        "final build",
+        1.14,
+        0.96,
+        0.85
+      ],
+      [
+        183.2,
+        "final chorus",
+        1.25,
+        1.08,
+        0.85
+      ],
+      [
+        210,
+        "closing phrase",
+        1.05,
+        0.82,
+        1.7
+      ]
+    ],
+    "melodyDecision": "Compare Cello with Piano: the cello is monophonic and syllabic while Piano contains repeated chord patterns and fills. Preserve the entire Cello musical channel across Tone.js program-split tracks 0, 1 and 2, including the final chorus on tubular-bells program. Piano top voice is used only for the instrumental introduction.",
+    "supportDecision": "Selected Sound 3 low chord/root attacks. Opening has one light root roughly per bar; chorus adds a second chord tone on selected downbeats. Remove drums, pizzicato runs, high piano fills and long stuck-note orchestral layers.",
+    "calibration": "Check low opening melody notes against bass and long chorus holds; dynamics need a usable quiet motor setting, with the final chorus clearly stronger."
+  },
+  "we_are_the_champions": {
+    "file": "We Are The Champions Queen.mid",
+    "title": "We Are the Champions",
+    "artist": "Queen",
+    "category": "international_pop",
+    "aliases": [
+      "we are the champions",
+      "champions",
+      "queen",
+      "freddie mercury"
+    ],
+    "shift": 7,
+    "melodyTracks": [
+      9
+    ],
+    "sections": [
+      [
+        0,
+        "verse one",
+        0.9,
+        0.82,
+        1.25
+      ],
+      [
+        26.5,
+        "first build",
+        1.02,
+        0.9,
+        0.95
+      ],
+      [
+        36.9,
+        "chorus one",
+        1.15,
+        1.0,
+        0.9
+      ],
+      [
+        72,
+        "piano transition",
+        0.88,
+        0.8,
+        1.25
+      ],
+      [
+        79.5,
+        "verse two",
+        0.95,
+        0.85,
+        1.25
+      ],
+      [
+        102,
+        "second build",
+        1.08,
+        0.95,
+        0.95
+      ],
+      [
+        112.7,
+        "chorus two",
+        1.2,
+        1.04,
+        0.9
+      ],
+      [
+        128,
+        "final refrain",
+        1.25,
+        1.08,
+        0.9
+      ],
+      [
+        145,
+        "expressive ending",
+        1.12,
+        0.9,
+        1.5
+      ]
+    ],
+    "melodyDecision": "Track 9 string ensemble follows the embedded karaoke syllable timestamps (including the chorus at 36.96s). Track 15 is a delayed duplicate, not a second vocal line, and is removed. Lower each complete chorus by one octave before the +7-semitone transposition, preserving the chorus semitone pattern; this also avoids isolated high-note folding.",
+    "supportDecision": "Sparse Piano 1 chord roots and one additional chord tone in choruses. Preserve the piano transition and closing cadence as instrumental melody only where the vocal is absent. Remove duplicated distorted guitars, delayed strings, drum kit and busy bass fills.",
+    "calibration": "Check sustained chorus notes and low verse attacks. The finale keeps the MIDI tempo slowdown; confirm paired short harmony pulses do not cover the lead.",
+    "start_at_seconds": 36.96
+  }
+}

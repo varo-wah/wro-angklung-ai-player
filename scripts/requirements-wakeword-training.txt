@@ -1,0 +1,3 @@
+-r requirements-wakeword.txt
+# The CPU-only local training path uses the scikit-learn installed by openWakeWord.
+onnx>=1.16,<2

@@ -1,0 +1,4216 @@
+{
+  "format_version": "angklung_song.v1",
+  "id": "we_are_the_champions",
+  "title": "We Are the Champions",
+  "aliases": [
+    "we are the champions",
+    "champions",
+    "queen",
+    "freddie mercury"
+  ],
+  "category": "international_pop",
+  "difficulty": "showcase",
+  "arrangement_status": "curated_midi_software_validated_physical_review_required",
+  "playable": true,
+  "demo_safe": false,
+  "has_validated_notes": true,
+  "physical_rack_map": "G3-C6",
+  "tempo_bpm": 95.00014250021376,
+  "time_signature": "3/8",
+  "playback_policy": "authored",
+  "arrangement_policy": {
+    "preserve_authored_dynamics": true,
+    "physical_rack_map": "G3-C6",
+    "melody_register": "phrase_contour_preserved",
+    "melody_target_range": "G3-C6",
+    "accompaniment_register": "lower_physical",
+    "accompaniment_target_range": "G3-F4"
+  },
+  "notes": [
+    {
+      "note": "C4",
+      "start": 0,
+      "duration": 0.16,
+      "role": "accompaniment",
+      "source_track": "2: Piano 1",
+      "source_note": "F2",
+      "source_note_index": 207,
+      "source_start": 36.947,
+      "section": "chorus one",
+      "playback_strength_multiplier": 1
+    },
+    {
+      "note": "C5",
+      "start": 0,
+      "duration": 1.197,
+      "role": "melody",
+      "source_track": "9: string ensemble 1",
+      "playback_strength_multiplier": 1.196,
+      "source_note": "F5",
+      "source_note_index": 41,
+      "source_start": 36.96,
+      "source_duration": 1.243,
+      "section": "chorus one"
+    },
+    {
+      "note": "E4",
+      "start": 0,
+      "duration": 0.16,
+      "role": "accompaniment",
+      "source_track": "2: Piano 1",
+      "source_note": "A4",
+      "source_note_index": 205,
+      "source_start": 36.947,
+      "section": "chorus one",
+      "playback_strength_multiplier": 0.9
+    },
+    {
+      "note": "B4",
+      "start": 1.237,
+      "duration": 0.289,
+      "role": "melody",
+      "source_track": "9: string ensemble 1",
+      "playback_strength_multiplier": 1.196,
+      "source_note": "E5",
+      "source_note_index": 42,
+      "source_start": 38.197,
+      "source_duration": 0.316,
+      "section": "chorus one"
+    },
+    {
+      "note": "C4",
+      "start": 1.25,
+      "duration": 0.16,
+      "role": "accompaniment",
+      "source_track": "2: Piano 1",
+      "source_note": "F4",
+      "source_note_index": 212,
+      "source_start": 38.21,
+      "section": "chorus one",
+      "playback_strength_multiplier": 1
+    },
+    {
+      "note": "C5",
+      "start": 1.566,
+      "duration": 0.309,
+      "role": "melody",
+      "source_track": "9: string ensemble 1",
+      "playback_strength_multiplier": 1.191,
+      "source_note": "F5",
+      "source_note_index": 43,
+      "source_start": 38.526,
+      "source_duration": 0.388,
+      "section": "chorus one"
+    },
+    {
+      "note": "B4",
+      "start": 1.915,
+      "duration": 0.572,
+      "role": "melody",
+      "source_track": "9: string ensemble 1",
+      "playback_strength_multiplier": 1.185,
+      "source_note": "E5",
+      "source_note_index": 44,
+      "source_start": 38.875,
+      "source_duration": 0.618,
+      "section": "chorus one"
+    },
+    {
+      "note": "B3",
+      "start": 2.514,
+      "duration": 0.16,
+      "role": "accompaniment",
+      "source_track": "2: Piano 1",
+      "source_note": "E4",
+      "source_note_index": 219,
+      "source_start": 39.474,
+      "section": "chorus one",
+      "playback_strength_multiplier": 1
+    },
+    {
+      "note": "G4",
+      "start": 2.527,
+      "duration": 0.835,
+      "role": "melody",
+      "source_track": "9: string ensemble 1",
+      "playback_strength_multiplier": 1.196,
+      "source_note": "C5",
+      "source_note_index": 45,
+      "source_start": 39.487,
+      "source_duration": 0.875,
+      "section": "chorus one"
+    },
+    {
+      "note": "E4",
+      "start": 3.402,
+      "duration": 0.342,
+      "role": "melody",
+      "source_track": "9: string ensemble 1",
+      "playback_strength_multiplier": 1.196,
+      "source_note": "A4",
+      "source_note_index": 46,
+      "source_start": 40.362,
+      "source_duration": 0.362,
+      "section": "chorus one"
+    },
+    {
+      "note": "B3",
+      "start": 3.461,
+      "duration": 0.16,
+      "role": "accompaniment",
+      "source_track": "2: Piano 1",
+      "source_note": "E3",
+      "source_note_index": 222,
+      "source_start": 40.421,
+      "section": "chorus one",
+      "playback_strength_multiplier": 1
+    },
+    {
+      "note": "A4",
+      "start": 3.783,
+      "duration": 0.546,
+      "role": "melody",
+      "source_track": "9: string ensemble 1",
+      "playback_strength_multiplier": 1.196,
+      "source_note": "D5",
+      "source_note_index": 47,
+      "source_start": 40.743,
+      "source_duration": 0.599,
+      "section": "chorus one"
+    },
+    {
+      "note": "E4",
+      "start": 4.369,
+      "duration": 1.336,
+      "role": "melody",
+      "source_track": "9: string ensemble 1",
+      "playback_strength_multiplier": 1.168,
+      "source_note": "A4",
+      "source_note_index": 48,
+      "source_start": 41.329,
+      "source_duration": 1.237,
+      "section": "chorus one"
+    },
+    {
+      "note": "C4",
+      "start": 4.408,
+      "duration": 0.16,
+      "role": "accompaniment",
+      "source_track": "2: Piano 1",
+      "source_note": "F4",
+      "source_note_index": 228,
+      "source_start": 41.368,
+      "section": "chorus one",
+      "playback_strength_multiplier": 1
+    },
+    {
+      "note": "D4",
+      "start": 6.619,
+      "duration": 0.16,
+      "role": "accompaniment",
+      "source_track": "2: Piano 1",
+      "source_note": "G4",
+      "source_note_index": 239,
+      "source_start": 43.579,
+      "section": "chorus one",
+      "playback_strength_multiplier": 0.9
+    },
+    {
+      "note": "G3",
+      "start": 6.619,
+      "duration": 0.16,
+      "role": "accompaniment",
+      "source_track": "2: Piano 1",
+      "source_note": "C3",
+      "source_note_index": 238,
+      "source_start": 43.579,
+      "section": "chorus one",
+      "playback_strength_multiplier": 1
+    },
+    {
+      "note": "G4",
+      "start": 7.25,
+      "duration": 0.296,
+      "role": "melody",
+      "source_track": "9: string ensemble 1",
+      "playback_strength_multiplier": 1.196,
+      "source_note": "C5",
+      "source_note_index": 49,
+      "source_start": 44.21,
+      "source_duration": 0.309,
+      "section": "chorus one"
+    },
+    {
+      "note": "B3",
+      "start": 7.566,
+      "duration": 0.16,
+      "role": "accompaniment",
+      "source_track": "2: Piano 1",
+      "source_note": "E2",
+      "source_note_index": 247,
+      "source_start": 44.526,
+      "section": "chorus one",
+      "playback_strength_multiplier": 1
+    },
+    {
+      "note": "C5",
+      "start": 7.586,
+      "duration": 1.184,
+      "role": "melody",
+      "source_track": "9: string ensemble 1",
+      "playback_strength_multiplier": 1.196,
+      "source_note": "F5",
+      "source_note_index": 50,
+      "source_start": 44.546,
+      "source_duration": 1.197,
+      "section": "chorus one"
+    },
+    {
+      "note": "D5",
+      "start": 8.81,
+      "duration": 0.296,
+      "role": "melody",
+      "source_track": "9: string ensemble 1",
+      "playback_strength_multiplier": 1.196,
+      "source_note": "G5",
+      "source_note_index": 51,
+      "source_start": 45.77,
+      "source_duration": 0.316,
+      "section": "chorus one"
+    },
+    {
+      "note": "C4",
+      "start": 8.829,
+      "duration": 0.16,
+      "role": "accompaniment",
+      "source_track": "2: Piano 1",
+      "source_note": "F4",
+      "source_note_index": 250,
+      "source_start": 45.789,
+      "section": "chorus one",
+      "playback_strength_multiplier": 0.9
+    },
+    {
+      "note": "D4",
+      "start": 8.829,
+      "duration": 0.16,
+      "role": "accompaniment",
+      "source_track": "2: Piano 1",
+      "source_note": "G3",
+      "source_note_index": 251,
+      "source_start": 45.789,
+      "section": "chorus one",
+      "playback_strength_multiplier": 1
+    },
+    {
+      "note": "E5",
+      "start": 9.145,
+      "duration": 0.263,
+      "role": "melody",
+      "source_track": "9: string ensemble 1",
+      "playback_strength_multiplier": 1.196,
+      "source_note": "A5",
+      "source_note_index": 52,
+      "source_start": 46.105,
+      "source_duration": 0.309,
+      "section": "chorus one"
+    },
+    {
+      "note": "G5",
+      "start": 9.448,
+      "duration": 0.519,
+      "role": "melody",
+      "source_track": "9: string ensemble 1",
+      "playback_strength_multiplier": 1.196,
+      "source_note": "C6",
+      "source_note_index": 53,
+      "source_start": 46.408,
+      "source_duration": 0.592,
+      "section": "chorus one"
+    },
+    {
+      "note": "E5",
+      "start": 10.007,
+      "duration": 0.973,
+      "role": "melody",
+      "source_track": "9: string ensemble 1",
+      "playback_strength_multiplier": 1.196,
+      "source_note": "A5",
+      "source_note_index": 54,
+      "source_start": 46.967,
+      "source_duration": 1,
+      "section": "chorus one"
+    },
+    {
+      "note": "B3",
+      "start": 10.093,
+      "duration": 0.16,
+      "role": "accompaniment",
+      "source_track": "2: Piano 1",
+      "source_note": "E4",
+      "source_note_index": 258,
+      "source_start": 47.053,
+      "section": "chorus one",
+      "playback_strength_multiplier": 1
+    },
+    {
+      "note": "A4",
+      "start": 11.02,
+      "duration": 0.118,
+      "role": "melody",
+      "source_track": "9: string ensemble 1",
+      "playback_strength_multiplier": 1.196,
+      "source_note": "D5",
+      "source_note_index": 55,
+      "source_start": 47.98,
+      "source_duration": 0.467,
+      "section": "chorus one"
+    },
+    {
+      "note": "B3",
+      "start": 11.04,
+      "duration": 0.16,
+      "role": "accompaniment",
+      "source_track": "2: Piano 1",
+      "source_note": "E3",
+      "source_note_index": 261,
+      "source_start": 48,
+      "section": "chorus one",
+      "playback_strength_multiplier": 1
+    },
+    {
+      "note": "B4",
+      "start": 11.178,
+      "duration": 0.192,
+      "role": "melody",
+      "source_track": "9: string ensemble 1",
+      "playback_strength_multiplier": 1.196,
+      "source_note": "E5",
+      "source_note_index": 56,
+      "source_start": 48.138,
+      "source_duration": 0.178,
+      "section": "chorus one"
+    },
+    {
+      "note": "A4",
+      "start": 11.494,
+      "duration": 0.988,
+      "role": "melody",
+      "source_track": "9: string ensemble 1",
+      "playback_strength_multiplier": 1.196,
+      "source_note": "D5",
+      "source_note_index": 57,
+      "source_start": 48.454,
+      "source_duration": 0.914,
+      "section": "chorus one"
+    },
+    {
+      "note": "E4",
+      "start": 12.619,
+      "duration": 0.16,
+      "role": "accompaniment",
+      "source_track": "2: Piano 1",
+      "source_note": "A3",
+      "source_note_index": 268,
+      "source_start": 49.579,
+      "section": "chorus one",
+      "playback_strength_multiplier": 1
+    },
+    {
+      "note": "A3",
+      "start": 14.514,
+      "duration": 0.16,
+      "role": "accompaniment",
+      "source_track": "2: Piano 1",
+      "source_note": "D4",
+      "source_note_index": 277,
+      "source_start": 51.474,
+      "section": "chorus one",
+      "playback_strength_multiplier": 1
+    },
+    {
+      "note": "A4",
+      "start": 15.178,
+      "duration": 0.828,
+      "role": "melody",
+      "source_track": "9: string ensemble 1",
+      "playback_strength_multiplier": 1.196,
+      "source_note": "D5",
+      "source_note_index": 58,
+      "source_start": 52.138,
+      "source_duration": 0.875,
+      "section": "chorus one"
+    },
+    {
+      "note": "G4",
+      "start": 16.046,
+      "duration": 0.598,
+      "role": "melody",
+      "source_track": "9: string ensemble 1",
+      "playback_strength_multiplier": 1.196,
+      "source_note": "C5",
+      "source_note_index": 59,
+      "source_start": 53.006,
+      "source_duration": 0.671,
+      "section": "chorus one"
+    },
+    {
+      "note": "A3",
+      "start": 16.093,
+      "duration": 0.16,
+      "role": "accompaniment",
+      "source_track": "2: Piano 1",
+      "source_note": "D4",
+      "source_note_index": 284,
+      "source_start": 53.053,
+      "section": "chorus one",
+      "playback_strength_multiplier": 1
+    },
+    {
+      "note": "A4",
+      "start": 16.685,
+      "duration": 0.322,
+      "role": "melody",
+      "source_track": "9: string ensemble 1",
+      "playback_strength_multiplier": 1.196,
+      "source_note": "D5",
+      "source_note_index": 60,
+      "source_start": 53.645,
+      "source_duration": 0.401,
+      "section": "chorus one"
+    },
+    {
+      "note": "D4",
+      "start": 17.04,
+      "duration": 0.16,
+      "role": "accompaniment",
+      "source_track": "2: Piano 1",
+      "source_note": "G3",
+      "source_note_index": 289,
+      "source_start": 54,
+      "section": "chorus one",
+      "playback_strength_multiplier": 1
+    },
+    {
+      "note": "G3",
+      "start": 17.04,
+      "duration": 0.16,
+      "role": "accompaniment",
+      "source_track": "2: Piano 1",
+      "source_note": "C5",
+      "source_note_index": 287,
+      "source_start": 54,
+      "section": "chorus one",
+      "playback_strength_multiplier": 0.9
+    },
+    {
+      "note": "G4",
+      "start": 17.046,
+      "duration": 0.927,
+      "role": "melody",
+      "source_track": "9: string ensemble 1",
+      "playback_strength_multiplier": 1.196,
+      "source_note": "C5",
+      "source_note_index": 61,
+      "source_start": 54.006,
+      "source_duration": 1.02,
+      "section": "chorus one"
+    },
+    {
+      "note": "B3",
+      "start": 17.987,
+      "duration": 0.16,
+      "role": "accompaniment",
+      "source_track": "2: Piano 1",
+      "source_note": "E4",
+      "source_note_index": 290,
+      "source_start": 54.947,
+      "section": "chorus one",
+      "playback_strength_multiplier": 1
+    },
+    {
+      "note": "F4",
+      "start": 18.014,
+      "duration": 0.861,
+      "role": "melody",
+      "source_track": "9: string ensemble 1",
+      "playback_strength_multiplier": 1.196,
+      "source_note": "A#4",
+      "source_note_index": 62,
+      "source_start": 54.974,
+      "source_duration": 0.849,
+      "section": "chorus one"
+    },
+    {
+      "note": "F5",
+      "start": 18.915,
+      "duration": 0.894,
+      "role": "melody",
+      "source_track": "9: string ensemble 1",
+      "playback_strength_multiplier": 1.196,
+      "source_note": "A#5",
+      "source_note_index": 63,
+      "source_start": 55.875,
+      "source_duration": 0.967,
+      "section": "chorus one"
+    },
+    {
+      "note": "C4",
+      "start": 18.935,
+      "duration": 0.16,
+      "role": "accompaniment",
+      "source_track": "2: Piano 1",
+      "source_note": "F5",
+      "source_note_index": 294,
+      "source_start": 55.895,
+      "section": "chorus one",
+      "playback_strength_multiplier": 0.9
+    },
+    {
+      "note": "F4",
+      "start": 18.935,
+      "duration": 0.16,
+      "role": "accompaniment",
+      "source_track": "2: Piano 1",
+      "source_note": "A#3",
+      "source_note_index": 293,
+      "source_start": 55.895,
+      "section": "chorus one",
+      "playback_strength_multiplier": 1
+    },
+    {
+      "note": "E5",
+      "start": 19.849,
+      "duration": 0.651,
+      "role": "melody",
+      "source_track": "9: string ensemble 1",
+      "playback_strength_multiplier": 1.196,
+      "source_note": "A5",
+      "source_note_index": 64,
+      "source_start": 56.809,
+      "source_duration": 0.724,
+      "section": "chorus one"
+    },
+    {
+      "note": "F4",
+      "start": 19.882,
+      "duration": 0.16,
+      "role": "accompaniment",
+      "source_track": "2: Piano 1",
+      "source_note": "A#4",
+      "source_note_index": 298,
+      "source_start": 56.842,
+      "section": "chorus one",
+      "playback_strength_multiplier": 1
+    },
+    {
+      "note": "F5",
+      "start": 20.54,
+      "duration": 0.256,
+      "role": "melody",
+      "source_track": "9: string ensemble 1",
+      "playback_strength_multiplier": 1.196,
+      "source_note": "A#5",
+      "source_note_index": 65,
+      "source_start": 57.5,
+      "source_duration": 0.289,
+      "section": "chorus one"
+    },
+    {
+      "note": "C4",
+      "start": 20.829,
+      "duration": 0.16,
+      "role": "accompaniment",
+      "source_track": "2: Piano 1",
+      "source_note": "F5",
+      "source_note_index": 304,
+      "source_start": 57.789,
+      "section": "chorus one",
+      "playback_strength_multiplier": 0.9
+    },
+    {
+      "note": "F4",
+      "start": 20.829,
+      "duration": 0.16,
+      "role": "accompaniment",
+      "source_track": "2: Piano 1",
+      "source_note": "A#4",
+      "source_note_index": 302,
+      "source_start": 57.789,
+      "section": "chorus one",
+      "playback_strength_multiplier": 1
+    },
+    {
+      "note": "E5",
+      "start": 20.836,
+      "duration": 0.907,
+      "role": "melody",
+      "source_track": "9: string ensemble 1",
+      "playback_strength_multiplier": 1.196,
+      "source_note": "A5",
+      "source_note_index": 66,
+      "source_start": 57.796,
+      "source_duration": 0.934,
+      "section": "chorus one"
+    },
+    {
+      "note": "C4",
+      "start": 21.777,
+      "duration": 0.16,
+      "role": "accompaniment",
+      "source_track": "2: Piano 1",
+      "source_note": "F4",
+      "source_note_index": 305,
+      "source_start": 58.737,
+      "section": "chorus one",
+      "playback_strength_multiplier": 1
+    },
+    {
+      "note": "D5",
+      "start": 21.783,
+      "duration": 0.901,
+      "role": "melody",
+      "source_track": "9: string ensemble 1",
+      "playback_strength_multiplier": 1.196,
+      "source_note": "G5",
+      "source_note_index": 67,
+      "source_start": 58.743,
+      "source_duration": 0.941,
+      "section": "chorus one"
+    },
+    {
+      "note": "C4",
+      "start": 22.724,
+      "duration": 0.16,
+      "role": "accompaniment",
+      "source_track": "2: Piano 1",
+      "source_note": "F3",
+      "source_note_index": 310,
+      "source_start": 59.684,
+      "section": "chorus one",
+      "playback_strength_multiplier": 1
+    },
+    {
+      "note": "E4",
+      "start": 22.724,
+      "duration": 0.16,
+      "role": "accompaniment",
+      "source_track": "2: Piano 1",
+      "source_note": "A4",
+      "source_note_index": 309,
+      "source_start": 59.684,
+      "section": "chorus one",
+      "playback_strength_multiplier": 0.9
+    },
+    {
+      "note": "E5",
+      "start": 22.724,
+      "duration": 0.907,
+      "role": "melody",
+      "source_track": "9: string ensemble 1",
+      "playback_strength_multiplier": 1.196,
+      "source_note": "A5",
+      "source_note_index": 68,
+      "source_start": 59.684,
+      "source_duration": 0.947,
+      "section": "chorus one"
+    },
+    {
+      "note": "C4",
+      "start": 23.671,
+      "duration": 0.16,
+      "role": "accompaniment",
+      "source_track": "2: Piano 1",
+      "source_note": "F4",
+      "source_note_index": 311,
+      "source_start": 60.631,
+      "section": "chorus one",
+      "playback_strength_multiplier": 1
+    },
+    {
+      "note": "C5",
+      "start": 23.671,
+      "duration": 0.611,
+      "role": "melody",
+      "source_track": "9: string ensemble 1",
+      "playback_strength_multiplier": 1.196,
+      "source_note": "F5",
+      "source_note_index": 69,
+      "source_start": 60.631,
+      "source_duration": 0.645,
+      "section": "chorus one"
+    },
+    {
+      "note": "F5",
+      "start": 24.323,
+      "duration": 0.276,
+      "role": "melody",
+      "source_track": "9: string ensemble 1",
+      "playback_strength_multiplier": 1.187,
+      "source_note": "A#5",
+      "source_note_index": 70,
+      "source_start": 61.283,
+      "source_duration": 0.296,
+      "section": "chorus one"
+    },
+    {
+      "note": "C4",
+      "start": 24.619,
+      "duration": 0.16,
+      "role": "accompaniment",
+      "source_track": "2: Piano 1",
+      "source_note": "F4",
+      "source_note_index": 317,
+      "source_start": 61.579,
+      "section": "chorus one",
+      "playback_strength_multiplier": 0.9
+    },
+    {
+      "note": "D4",
+      "start": 24.619,
+      "duration": 0.16,
+      "role": "accompaniment",
+      "source_track": "2: Piano 1",
+      "source_note": "G3",
+      "source_note_index": 314,
+      "source_start": 61.579,
+      "section": "chorus one",
+      "playback_strength_multiplier": 1
+    },
+    {
+      "note": "E5",
+      "start": 24.639,
+      "duration": 0.888,
+      "role": "melody",
+      "source_track": "9: string ensemble 1",
+      "playback_strength_multiplier": 1.196,
+      "source_note": "A5",
+      "source_note_index": 71,
+      "source_start": 61.599,
+      "source_duration": 0.921,
+      "section": "chorus one"
+    },
+    {
+      "note": "C5",
+      "start": 25.566,
+      "duration": 0.605,
+      "role": "melody",
+      "source_track": "9: string ensemble 1",
+      "playback_strength_multiplier": 1.196,
+      "source_note": "F5",
+      "source_note_index": 72,
+      "source_start": 62.526,
+      "source_duration": 0.625,
+      "section": "chorus one"
+    },
+    {
+      "note": "C4",
+      "start": 25.882,
+      "duration": 0.16,
+      "role": "accompaniment",
+      "source_track": "2: Piano 1",
+      "source_note": "F4",
+      "source_note_index": 319,
+      "source_start": 62.842,
+      "section": "chorus one",
+      "playback_strength_multiplier": 1
+    },
+    {
+      "note": "F5",
+      "start": 26.211,
+      "duration": 0.309,
+      "role": "melody",
+      "source_track": "9: string ensemble 1",
+      "playback_strength_multiplier": 1.196,
+      "source_note": "A#5",
+      "source_note_index": 73,
+      "source_start": 63.171,
+      "source_duration": 0.388,
+      "section": "chorus one"
+    },
+    {
+      "note": "D5",
+      "start": 26.56,
+      "duration": 0.868,
+      "role": "melody",
+      "source_track": "9: string ensemble 1",
+      "playback_strength_multiplier": 1.196,
+      "source_note": "G#5",
+      "source_note_index": 74,
+      "source_start": 63.52,
+      "source_duration": 0.901,
+      "section": "chorus one"
+    },
+    {
+      "note": "C5",
+      "start": 27.468,
+      "duration": 0.624,
+      "role": "melody",
+      "source_track": "9: string ensemble 1",
+      "playback_strength_multiplier": 1.196,
+      "source_note": "F5",
+      "source_note_index": 75,
+      "source_start": 64.428,
+      "source_duration": 0.645,
+      "section": "chorus one"
+    },
+    {
+      "note": "G3",
+      "start": 27.777,
+      "duration": 0.16,
+      "role": "accompaniment",
+      "source_track": "2: Piano 1",
+      "source_note": "C5",
+      "source_note_index": 325,
+      "source_start": 64.737,
+      "section": "chorus one",
+      "playback_strength_multiplier": 1
+    },
+    {
+      "note": "F5",
+      "start": 28.132,
+      "duration": 0.302,
+      "role": "melody",
+      "source_track": "9: string ensemble 1",
+      "playback_strength_multiplier": 1.196,
+      "source_note": "A#5",
+      "source_note_index": 76,
+      "source_start": 65.092,
+      "source_duration": 0.395,
+      "section": "chorus one"
+    },
+    {
+      "note": "D5",
+      "start": 28.474,
+      "duration": 0.888,
+      "role": "melody",
+      "source_track": "9: string ensemble 1",
+      "playback_strength_multiplier": 1.196,
+      "source_note": "G#5",
+      "source_note_index": 77,
+      "source_start": 65.434,
+      "source_duration": 0.961,
+      "section": "chorus one"
+    },
+    {
+      "note": "C5",
+      "start": 29.402,
+      "duration": 2.124,
+      "role": "melody",
+      "source_track": "9: string ensemble 1",
+      "playback_strength_multiplier": 1.173,
+      "source_note": "F5",
+      "source_note_index": 78,
+      "source_start": 66.362,
+      "source_duration": 2.263,
+      "section": "chorus one"
+    },
+    {
+      "note": "B4",
+      "start": 31.566,
+      "duration": 0.276,
+      "role": "melody",
+      "source_track": "9: string ensemble 1",
+      "playback_strength_multiplier": 1.155,
+      "source_note": "D#5",
+      "source_note_index": 79,
+      "source_start": 68.526,
+      "source_duration": 0.382,
+      "section": "chorus one"
+    },
+    {
+      "note": "G4",
+      "start": 31.882,
+      "duration": 0.276,
+      "role": "melody",
+      "source_track": "9: string ensemble 1",
+      "playback_strength_multiplier": 1.196,
+      "source_note": "C5",
+      "source_note_index": 80,
+      "source_start": 68.842,
+      "source_duration": 0.316,
+      "section": "chorus one"
+    },
+    {
+      "note": "C4",
+      "start": 32.198,
+      "duration": 0.16,
+      "role": "accompaniment",
+      "source_track": "2: Piano 1",
+      "source_note": "F2",
+      "source_note_index": 344,
+      "source_start": 69.158,
+      "section": "chorus one",
+      "playback_strength_multiplier": 1
+    },
+    {
+      "note": "C5",
+      "start": 32.198,
+      "duration": 3.8,
+      "role": "melody",
+      "source_track": "9: string ensemble 1",
+      "playback_strength_multiplier": 1.196,
+      "source_note": "F5",
+      "source_note_index": 81,
+      "source_start": 69.158,
+      "source_duration": 6.086,
+      "section": "chorus one"
+    },
+    {
+      "note": "C4",
+      "start": 36.303,
+      "duration": 0.16,
+      "role": "accompaniment",
+      "source_track": "2: Piano 1",
+      "source_note": "F4",
+      "source_note_index": 363,
+      "source_start": 73.263,
+      "section": "piano transition",
+      "playback_strength_multiplier": 0.8
+    },
+    {
+      "note": "C5",
+      "start": 36.303,
+      "duration": 0.276,
+      "role": "melody",
+      "source_track": "2: Piano 1",
+      "playback_strength_multiplier": 0.857,
+      "source_note": "F4",
+      "source_note_index": 363,
+      "source_start": 73.263,
+      "source_duration": 0.362,
+      "section": "piano transition",
+      "instrumental": true
+    },
+    {
+      "note": "D5",
+      "start": 36.619,
+      "duration": 0.149,
+      "role": "melody",
+      "source_track": "2: Piano 1",
+      "playback_strength_multiplier": 0.841,
+      "source_note": "G#4",
+      "source_note_index": 364,
+      "source_start": 73.579,
+      "source_duration": 0.138,
+      "section": "piano transition",
+      "instrumental": true
+    },
+    {
+      "note": "C5",
+      "start": 36.829,
+      "duration": 0.334,
+      "role": "melody",
+      "source_track": "2: Piano 1",
+      "playback_strength_multiplier": 0.855,
+      "source_note": "F4",
+      "source_note_index": 365,
+      "source_start": 73.789,
+      "source_duration": 0.309,
+      "section": "piano transition",
+      "instrumental": true
+    },
+    {
+      "note": "D5",
+      "start": 37.25,
+      "duration": 0.22,
+      "role": "melody",
+      "source_track": "2: Piano 1",
+      "playback_strength_multiplier": 0.836,
+      "source_note": "G#4",
+      "source_note_index": 370,
+      "source_start": 74.21,
+      "source_duration": 0.204,
+      "section": "piano transition",
+      "instrumental": true
+    },
+    {
+      "note": "C4",
+      "start": 37.566,
+      "duration": 0.16,
+      "role": "accompaniment",
+      "source_track": "2: Piano 1",
+      "source_note": "F2",
+      "source_note_index": 371,
+      "source_start": 74.526,
+      "section": "piano transition",
+      "playback_strength_multiplier": 0.8
+    },
+    {
+      "note": "C5",
+      "start": 38.198,
+      "duration": 0.092,
+      "role": "melody",
+      "source_track": "2: Piano 1",
+      "playback_strength_multiplier": 0.859,
+      "source_note": "F4",
+      "source_note_index": 372,
+      "source_start": 75.158,
+      "source_duration": 0.086,
+      "section": "piano transition",
+      "instrumental": true
+    },
+    {
+      "note": "C5",
+      "start": 38.514,
+      "duration": 0.907,
+      "role": "melody",
+      "source_track": "2: Piano 1",
+      "playback_strength_multiplier": 0.869,
+      "source_note": "F4",
+      "source_note_index": 377,
+      "source_start": 75.474,
+      "source_duration": 1.204,
+      "section": "piano transition",
+      "instrumental": true
+    },
+    {
+      "note": "A4",
+      "start": 39.461,
+      "duration": 0.163,
+      "role": "melody",
+      "source_track": "2: Piano 1",
+      "playback_strength_multiplier": 0.847,
+      "source_note": "D4",
+      "source_note_index": 384,
+      "source_start": 76.421,
+      "source_duration": 0.151,
+      "section": "piano transition",
+      "instrumental": true
+    },
+    {
+      "note": "G3",
+      "start": 39.461,
+      "duration": 0.16,
+      "role": "accompaniment",
+      "source_track": "2: Piano 1",
+      "source_note": "C3",
+      "source_note_index": 385,
+      "source_start": 76.421,
+      "section": "piano transition",
+      "playback_strength_multiplier": 0.8
+    },
+    {
+      "note": "C5",
+      "start": 40.093,
+      "duration": 0.276,
+      "role": "melody",
+      "source_track": "2: Piano 1",
+      "playback_strength_multiplier": 0.836,
+      "source_note": "F4",
+      "source_note_index": 388,
+      "source_start": 77.053,
+      "source_duration": 0.309,
+      "section": "piano transition",
+      "instrumental": true
+    },
+    {
+      "note": "D5",
+      "start": 40.408,
+      "duration": 0.135,
+      "role": "melody",
+      "source_track": "2: Piano 1",
+      "playback_strength_multiplier": 0.827,
+      "source_note": "G#4",
+      "source_note_index": 389,
+      "source_start": 77.368,
+      "source_duration": 0.125,
+      "section": "piano transition",
+      "instrumental": true
+    },
+    {
+      "note": "C5",
+      "start": 40.619,
+      "duration": 0.381,
+      "role": "melody",
+      "source_track": "2: Piano 1",
+      "playback_strength_multiplier": 0.841,
+      "source_note": "F4",
+      "source_note_index": 390,
+      "source_start": 77.579,
+      "source_duration": 0.382,
+      "section": "piano transition",
+      "instrumental": true
+    },
+    {
+      "note": "C4",
+      "start": 40.724,
+      "duration": 0.16,
+      "role": "accompaniment",
+      "source_track": "2: Piano 1",
+      "source_note": "F3",
+      "source_note_index": 391,
+      "source_start": 77.684,
+      "section": "piano transition",
+      "playback_strength_multiplier": 0.8
+    },
+    {
+      "note": "D5",
+      "start": 41.04,
+      "duration": 0.092,
+      "role": "melody",
+      "source_track": "2: Piano 1",
+      "playback_strength_multiplier": 0.847,
+      "source_note": "G#4",
+      "source_note_index": 396,
+      "source_start": 78,
+      "source_duration": 0.086,
+      "section": "piano transition",
+      "instrumental": true
+    },
+    {
+      "note": "C5",
+      "start": 41.671,
+      "duration": 0.092,
+      "role": "melody",
+      "source_track": "2: Piano 1",
+      "playback_strength_multiplier": 0.859,
+      "source_note": "F4",
+      "source_note_index": 398,
+      "source_start": 78.631,
+      "source_duration": 0.086,
+      "section": "piano transition",
+      "instrumental": true
+    },
+    {
+      "note": "C5",
+      "start": 41.987,
+      "duration": 0.572,
+      "role": "melody",
+      "source_track": "2: Piano 1",
+      "playback_strength_multiplier": 0.882,
+      "source_note": "F4",
+      "source_note_index": 405,
+      "source_start": 78.947,
+      "source_duration": 0.73,
+      "section": "piano transition",
+      "instrumental": true
+    },
+    {
+      "note": "G3",
+      "start": 41.987,
+      "duration": 0.16,
+      "role": "accompaniment",
+      "source_track": "2: Piano 1",
+      "source_note": "C3",
+      "source_note_index": 403,
+      "source_start": 78.947,
+      "section": "piano transition",
+      "playback_strength_multiplier": 0.8
+    },
+    {
+      "note": "D4",
+      "start": 42.599,
+      "duration": 0.302,
+      "role": "melody",
+      "source_track": "9: string ensemble 1",
+      "playback_strength_multiplier": 0.988,
+      "source_note": "G3",
+      "source_note_index": 82,
+      "source_start": 79.559,
+      "source_duration": 0.368,
+      "section": "verse two"
+    },
+    {
+      "note": "F4",
+      "start": 42.941,
+      "duration": 0.263,
+      "role": "melody",
+      "source_track": "9: string ensemble 1",
+      "playback_strength_multiplier": 0.988,
+      "source_note": "A#3",
+      "source_note_index": 83,
+      "source_start": 79.901,
+      "source_duration": 0.303,
+      "section": "verse two"
+    },
+    {
+      "note": "G4",
+      "start": 43.244,
+      "duration": 0.289,
+      "role": "melody",
+      "source_track": "9: string ensemble 1",
+      "playback_strength_multiplier": 0.969,
+      "source_note": "C4",
+      "source_note_index": 84,
+      "source_start": 80.204,
+      "source_duration": 0.276,
+      "section": "verse two"
+    },
+    {
+      "note": "G3",
+      "start": 43.566,
+      "duration": 0.16,
+      "role": "accompaniment",
+      "source_track": "2: Piano 1",
+      "source_note": "C2",
+      "source_note_index": 408,
+      "source_start": 80.526,
+      "section": "verse two",
+      "playback_strength_multiplier": 0.85
+    },
+    {
+      "note": "G4",
+      "start": 43.573,
+      "duration": 2.039,
+      "role": "melody",
+      "source_track": "9: string ensemble 1",
+      "playback_strength_multiplier": 0.98,
+      "source_note": "C4",
+      "source_note_index": 85,
+      "source_start": 80.533,
+      "source_duration": 1.888,
+      "section": "verse two"
+    },
+    {
+      "note": "D4",
+      "start": 45.777,
+      "duration": 0.16,
+      "role": "accompaniment",
+      "source_track": "2: Piano 1",
+      "source_note": "G2",
+      "source_note_index": 422,
+      "source_start": 82.737,
+      "section": "verse two",
+      "playback_strength_multiplier": 0.85
+    },
+    {
+      "note": "D4",
+      "start": 46.389,
+      "duration": 0.361,
+      "role": "melody",
+      "source_track": "9: string ensemble 1",
+      "playback_strength_multiplier": 0.988,
+      "source_note": "G3",
+      "source_note_index": 86,
+      "source_start": 83.349,
+      "source_duration": 0.434,
+      "section": "verse two"
+    },
+    {
+      "note": "F4",
+      "start": 46.79,
+      "duration": 0.249,
+      "role": "melody",
+      "source_track": "9: string ensemble 1",
+      "playback_strength_multiplier": 0.988,
+      "source_note": "A#3",
+      "source_note_index": 87,
+      "source_start": 83.75,
+      "source_duration": 0.27,
+      "section": "verse two"
+    },
+    {
+      "note": "G4",
+      "start": 47.079,
+      "duration": 0.276,
+      "role": "melody",
+      "source_track": "9: string ensemble 1",
+      "playback_strength_multiplier": 0.98,
+      "source_note": "C4",
+      "source_note_index": 88,
+      "source_start": 84.039,
+      "source_duration": 0.263,
+      "section": "verse two"
+    },
+    {
+      "note": "G3",
+      "start": 47.356,
+      "duration": 0.16,
+      "role": "accompaniment",
+      "source_track": "2: Piano 1",
+      "source_note": "C2",
+      "source_note_index": 425,
+      "source_start": 84.316,
+      "section": "verse two",
+      "playback_strength_multiplier": 0.85
+    },
+    {
+      "note": "G4",
+      "start": 47.395,
+      "duration": 1.997,
+      "role": "melody",
+      "source_track": "9: string ensemble 1",
+      "playback_strength_multiplier": 0.975,
+      "source_note": "C4",
+      "source_note_index": 89,
+      "source_start": 84.355,
+      "source_duration": 1.849,
+      "section": "verse two"
+    },
+    {
+      "note": "D4",
+      "start": 49.566,
+      "duration": 0.16,
+      "role": "accompaniment",
+      "source_track": "2: Piano 1",
+      "source_note": "G2",
+      "source_note_index": 440,
+      "source_start": 86.526,
+      "section": "verse two",
+      "playback_strength_multiplier": 0.85
+    },
+    {
+      "note": "D4",
+      "start": 50.165,
+      "duration": 0.315,
+      "role": "melody",
+      "source_track": "9: string ensemble 1",
+      "playback_strength_multiplier": 0.988,
+      "source_note": "G3",
+      "source_note_index": 90,
+      "source_start": 87.125,
+      "source_duration": 0.382,
+      "section": "verse two"
+    },
+    {
+      "note": "F4",
+      "start": 50.52,
+      "duration": 0.256,
+      "role": "melody",
+      "source_track": "9: string ensemble 1",
+      "playback_strength_multiplier": 0.988,
+      "source_note": "A#3",
+      "source_note_index": 91,
+      "source_start": 87.48,
+      "source_duration": 0.27,
+      "section": "verse two"
+    },
+    {
+      "note": "G4",
+      "start": 50.816,
+      "duration": 0.313,
+      "role": "melody",
+      "source_track": "9: string ensemble 1",
+      "playback_strength_multiplier": 0.973,
+      "source_note": "C4",
+      "source_note_index": 92,
+      "source_start": 87.776,
+      "source_duration": 0.289,
+      "section": "verse two"
+    },
+    {
+      "note": "D4",
+      "start": 50.829,
+      "duration": 0.16,
+      "role": "accompaniment",
+      "source_track": "2: Piano 1",
+      "source_note": "G2",
+      "source_note_index": 459,
+      "source_start": 87.789,
+      "section": "verse two",
+      "playback_strength_multiplier": 0.85
+    },
+    {
+      "note": "G4",
+      "start": 51.185,
+      "duration": 0.874,
+      "role": "melody",
+      "source_track": "9: string ensemble 1",
+      "playback_strength_multiplier": 0.988,
+      "source_note": "C4",
+      "source_note_index": 93,
+      "source_start": 88.145,
+      "source_duration": 0.862,
+      "section": "verse two"
+    },
+    {
+      "note": "G3",
+      "start": 52.092,
+      "duration": 0.16,
+      "role": "accompaniment",
+      "source_track": "2: Piano 1",
+      "source_note": "C4",
+      "source_note_index": 466,
+      "source_start": 89.052,
+      "section": "verse two",
+      "playback_strength_multiplier": 0.85
+    },
+    {
+      "note": "G4",
+      "start": 52.099,
+      "duration": 0.206,
+      "role": "melody",
+      "source_track": "9: string ensemble 1",
+      "playback_strength_multiplier": 0.95,
+      "source_note": "C4",
+      "source_note_index": 94,
+      "source_start": 89.059,
+      "source_duration": 0.191,
+      "section": "verse two"
+    },
+    {
+      "note": "G4",
+      "start": 52.356,
+      "duration": 0.135,
+      "role": "melody",
+      "source_track": "9: string ensemble 1",
+      "playback_strength_multiplier": 0.961,
+      "source_note": "C4",
+      "source_note_index": 95,
+      "source_start": 89.316,
+      "source_duration": 0.125,
+      "section": "verse two"
+    },
+    {
+      "note": "G4",
+      "start": 52.546,
+      "duration": 0.249,
+      "role": "melody",
+      "source_track": "9: string ensemble 1",
+      "playback_strength_multiplier": 0.969,
+      "source_note": "C4",
+      "source_note_index": 96,
+      "source_start": 89.506,
+      "source_duration": 0.25,
+      "section": "verse two"
+    },
+    {
+      "note": "G4",
+      "start": 52.836,
+      "duration": 0.107,
+      "role": "melody",
+      "source_track": "9: string ensemble 1",
+      "playback_strength_multiplier": 0.98,
+      "source_note": "C4",
+      "source_note_index": 97,
+      "source_start": 89.796,
+      "source_duration": 0.099,
+      "section": "verse two"
+    },
+    {
+      "note": "D4",
+      "start": 53.356,
+      "duration": 0.16,
+      "role": "accompaniment",
+      "source_track": "2: Piano 1",
+      "source_note": "G2",
+      "source_note_index": 484,
+      "source_start": 90.316,
+      "section": "verse two",
+      "playback_strength_multiplier": 0.85
+    },
+    {
+      "note": "D4",
+      "start": 53.691,
+      "duration": 0.213,
+      "role": "melody",
+      "source_track": "9: string ensemble 1",
+      "playback_strength_multiplier": 0.988,
+      "source_note": "G3",
+      "source_note_index": 98,
+      "source_start": 90.651,
+      "source_duration": 0.197,
+      "section": "verse two"
+    },
+    {
+      "note": "A4",
+      "start": 53.987,
+      "duration": 0.592,
+      "role": "melody",
+      "source_track": "9: string ensemble 1",
+      "playback_strength_multiplier": 0.98,
+      "source_note": "D4",
+      "source_note_index": 99,
+      "source_start": 90.947,
+      "source_duration": 0.776,
+      "section": "verse two"
+    },
+    {
+      "note": "A3",
+      "start": 54.619,
+      "duration": 0.16,
+      "role": "accompaniment",
+      "source_track": "2: Piano 1",
+      "source_note": "D4",
+      "source_note_index": 490,
+      "source_start": 91.579,
+      "section": "verse two",
+      "playback_strength_multiplier": 0.85
+    },
+    {
+      "note": "G4",
+      "start": 54.619,
+      "duration": 0.098,
+      "role": "melody",
+      "source_track": "9: string ensemble 1",
+      "playback_strength_multiplier": 0.98,
+      "source_note": "C4",
+      "source_note_index": 100,
+      "source_start": 91.579,
+      "source_duration": 0.197,
+      "section": "verse two"
+    },
+    {
+      "note": "F4",
+      "start": 54.757,
+      "duration": 0.105,
+      "role": "melody",
+      "source_track": "9: string ensemble 1",
+      "playback_strength_multiplier": 0.95,
+      "source_note": "A#3",
+      "source_note_index": 101,
+      "source_start": 91.717,
+      "source_duration": 0.132,
+      "section": "verse two"
+    },
+    {
+      "note": "G4",
+      "start": 54.902,
+      "duration": 1.798,
+      "role": "melody",
+      "source_track": "9: string ensemble 1",
+      "playback_strength_multiplier": 0.961,
+      "source_note": "C4",
+      "source_note_index": 102,
+      "source_start": 91.862,
+      "source_duration": 1.664,
+      "section": "verse two"
+    },
+    {
+      "note": "D4",
+      "start": 56.829,
+      "duration": 0.16,
+      "role": "accompaniment",
+      "source_track": "2: Piano 1",
+      "source_note": "G3",
+      "source_note_index": 501,
+      "source_start": 93.789,
+      "section": "verse two",
+      "playback_strength_multiplier": 0.85
+    },
+    {
+      "note": "F4",
+      "start": 57.764,
+      "duration": 0.282,
+      "role": "melody",
+      "source_track": "9: string ensemble 1",
+      "playback_strength_multiplier": 0.988,
+      "source_note": "A#3",
+      "source_note_index": 103,
+      "source_start": 94.724,
+      "source_duration": 0.362,
+      "section": "verse two"
+    },
+    {
+      "note": "A4",
+      "start": 58.086,
+      "duration": 0.276,
+      "role": "melody",
+      "source_track": "9: string ensemble 1",
+      "playback_strength_multiplier": 0.988,
+      "source_note": "D4",
+      "source_note_index": 104,
+      "source_start": 95.046,
+      "source_duration": 0.322,
+      "section": "verse two"
+    },
+    {
+      "note": "A3",
+      "start": 58.092,
+      "duration": 0.16,
+      "role": "accompaniment",
+      "source_track": "2: Piano 1",
+      "source_note": "D4",
+      "source_note_index": 509,
+      "source_start": 95.052,
+      "section": "verse two",
+      "playback_strength_multiplier": 0.85
+    },
+    {
+      "note": "B4",
+      "start": 58.402,
+      "duration": 0.296,
+      "role": "melody",
+      "source_track": "9: string ensemble 1",
+      "playback_strength_multiplier": 0.963,
+      "source_note": "D#4",
+      "source_note_index": 105,
+      "source_start": 95.362,
+      "source_duration": 0.289,
+      "section": "verse two"
+    },
+    {
+      "note": "B4",
+      "start": 58.737,
+      "duration": 1.812,
+      "role": "melody",
+      "source_track": "9: string ensemble 1",
+      "playback_strength_multiplier": 0.961,
+      "source_note": "D#4",
+      "source_note_index": 106,
+      "source_start": 95.697,
+      "source_duration": 1.678,
+      "section": "verse two"
+    },
+    {
+      "note": "G3",
+      "start": 60.619,
+      "duration": 0.16,
+      "role": "accompaniment",
+      "source_track": "2: Piano 1",
+      "source_note": "C4",
+      "source_note_index": 524,
+      "source_start": 97.579,
+      "section": "verse two",
+      "playback_strength_multiplier": 0.85
+    },
+    {
+      "note": "F4",
+      "start": 61.553,
+      "duration": 0.296,
+      "role": "melody",
+      "source_track": "9: string ensemble 1",
+      "playback_strength_multiplier": 0.988,
+      "source_note": "A#3",
+      "source_note_index": 107,
+      "source_start": 98.513,
+      "source_duration": 0.368,
+      "section": "verse two"
+    },
+    {
+      "note": "A4",
+      "start": 61.889,
+      "duration": 0.263,
+      "role": "melody",
+      "source_track": "9: string ensemble 1",
+      "playback_strength_multiplier": 0.988,
+      "source_note": "D4",
+      "source_note_index": 108,
+      "source_start": 98.849,
+      "source_duration": 0.322,
+      "section": "verse two"
+    },
+    {
+      "note": "B4",
+      "start": 62.191,
+      "duration": 2.274,
+      "role": "melody",
+      "source_track": "9: string ensemble 1",
+      "playback_strength_multiplier": 0.954,
+      "source_note": "D#4",
+      "source_note_index": 109,
+      "source_start": 99.151,
+      "source_duration": 2.105,
+      "section": "verse two"
+    },
+    {
+      "note": "G3",
+      "start": 62.198,
+      "duration": 0.16,
+      "role": "accompaniment",
+      "source_track": "2: Piano 1",
+      "source_note": "C4",
+      "source_note_index": 531,
+      "source_start": 99.158,
+      "section": "verse two",
+      "playback_strength_multiplier": 0.85
+    },
+    {
+      "note": "G3",
+      "start": 64.724,
+      "duration": 0.16,
+      "role": "accompaniment",
+      "source_track": "2: Piano 1",
+      "source_note": "C4",
+      "source_note_index": 548,
+      "source_start": 101.684,
+      "section": "verse two",
+      "playback_strength_multiplier": 0.85
+    },
+    {
+      "note": "F4",
+      "start": 65.336,
+      "duration": 0.276,
+      "role": "melody",
+      "source_track": "9: string ensemble 1",
+      "playback_strength_multiplier": 1.123,
+      "source_note": "A#3",
+      "source_note_index": 110,
+      "source_start": 102.296,
+      "source_duration": 0.349,
+      "section": "second build"
+    },
+    {
+      "note": "A4",
+      "start": 65.652,
+      "duration": 0.282,
+      "role": "melody",
+      "source_track": "9: string ensemble 1",
+      "playback_strength_multiplier": 1.123,
+      "source_note": "D4",
+      "source_note_index": 111,
+      "source_start": 102.612,
+      "source_duration": 0.336,
+      "section": "second build"
+    },
+    {
+      "note": "B4",
+      "start": 65.974,
+      "duration": 0.328,
+      "role": "melody",
+      "source_track": "9: string ensemble 1",
+      "playback_strength_multiplier": 1.095,
+      "source_note": "D#4",
+      "source_note_index": 112,
+      "source_start": 102.934,
+      "source_duration": 0.309,
+      "section": "second build"
+    },
+    {
+      "note": "F4",
+      "start": 65.987,
+      "duration": 0.16,
+      "role": "accompaniment",
+      "source_track": "2: Piano 1",
+      "source_note": "A#2",
+      "source_note_index": 552,
+      "source_start": 102.947,
+      "section": "second build",
+      "playback_strength_multiplier": 0.95
+    },
+    {
+      "note": "B4",
+      "start": 66.342,
+      "duration": 0.592,
+      "role": "melody",
+      "source_track": "9: string ensemble 1",
+      "playback_strength_multiplier": 1.123,
+      "source_note": "D#4",
+      "source_note_index": 113,
+      "source_start": 103.302,
+      "source_duration": 0.599,
+      "section": "second build"
+    },
+    {
+      "note": "C5",
+      "start": 66.974,
+      "duration": 0.315,
+      "role": "melody",
+      "source_track": "9: string ensemble 1",
+      "playback_strength_multiplier": 1.106,
+      "source_note": "F4",
+      "source_note_index": 114,
+      "source_start": 103.934,
+      "source_duration": 0.322,
+      "section": "second build"
+    },
+    {
+      "note": "A3",
+      "start": 67.25,
+      "duration": 0.16,
+      "role": "accompaniment",
+      "source_track": "2: Piano 1",
+      "source_note": "D2",
+      "source_note_index": 561,
+      "source_start": 104.21,
+      "section": "second build",
+      "playback_strength_multiplier": 0.95
+    },
+    {
+      "note": "C5",
+      "start": 67.329,
+      "duration": 0.506,
+      "role": "melody",
+      "source_track": "9: string ensemble 1",
+      "playback_strength_multiplier": 1.123,
+      "source_note": "F4",
+      "source_note_index": 115,
+      "source_start": 104.289,
+      "source_duration": 0.566,
+      "section": "second build"
+    },
+    {
+      "note": "D5",
+      "start": 67.875,
+      "duration": 0.328,
+      "role": "melody",
+      "source_track": "9: string ensemble 1",
+      "playback_strength_multiplier": 1.123,
+      "source_note": "G4",
+      "source_note_index": 116,
+      "source_start": 104.835,
+      "source_duration": 0.309,
+      "section": "second build"
+    },
+    {
+      "note": "G3",
+      "start": 68.198,
+      "duration": 0.16,
+      "role": "accompaniment",
+      "source_track": "2: Piano 1",
+      "source_note": "C2",
+      "source_note_index": 571,
+      "source_start": 105.158,
+      "section": "second build",
+      "playback_strength_multiplier": 0.95
+    },
+    {
+      "note": "D5",
+      "start": 68.244,
+      "duration": 0.835,
+      "role": "melody",
+      "source_track": "9: string ensemble 1",
+      "playback_strength_multiplier": 1.123,
+      "source_note": "G4",
+      "source_note_index": 117,
+      "source_start": 105.204,
+      "source_duration": 0.829,
+      "section": "second build"
+    },
+    {
+      "note": "E5",
+      "start": 69.119,
+      "duration": 0.559,
+      "role": "melody",
+      "source_track": "9: string ensemble 1",
+      "playback_strength_multiplier": 1.123,
+      "source_note": "A4",
+      "source_note_index": 118,
+      "source_start": 106.079,
+      "source_duration": 0.599,
+      "section": "second build"
+    },
+    {
+      "note": "C4",
+      "start": 69.145,
+      "duration": 0.16,
+      "role": "accompaniment",
+      "source_track": "2: Piano 1",
+      "source_note": "F2",
+      "source_note_index": 573,
+      "source_start": 106.105,
+      "section": "second build",
+      "playback_strength_multiplier": 0.95
+    },
+    {
+      "note": "F5",
+      "start": 69.717,
+      "duration": 0.341,
+      "role": "melody",
+      "source_track": "9: string ensemble 1",
+      "playback_strength_multiplier": 1.097,
+      "source_note": "A#4",
+      "source_note_index": 119,
+      "source_start": 106.677,
+      "source_duration": 0.316,
+      "section": "second build"
+    },
+    {
+      "note": "F4",
+      "start": 70.092,
+      "duration": 0.16,
+      "role": "accompaniment",
+      "source_track": "2: Piano 1",
+      "source_note": "A#2",
+      "source_note_index": 578,
+      "source_start": 107.052,
+      "section": "second build",
+      "playback_strength_multiplier": 0.95
+    },
+    {
+      "note": "F5",
+      "start": 70.106,
+      "duration": 0.342,
+      "role": "melody",
+      "source_track": "9: string ensemble 1",
+      "playback_strength_multiplier": 1.123,
+      "source_note": "A#4",
+      "source_note_index": 120,
+      "source_start": 107.066,
+      "source_duration": 0.395,
+      "section": "second build"
+    },
+    {
+      "note": "D5",
+      "start": 70.487,
+      "duration": 0.085,
+      "role": "melody",
+      "source_track": "9: string ensemble 1",
+      "playback_strength_multiplier": 1.108,
+      "source_note": "G4",
+      "source_note_index": 121,
+      "source_start": 107.447,
+      "source_duration": 0.151,
+      "section": "second build"
+    },
+    {
+      "note": "C5",
+      "start": 70.612,
+      "duration": 1.343,
+      "role": "melody",
+      "source_track": "9: string ensemble 1",
+      "playback_strength_multiplier": 1.123,
+      "source_note": "F4",
+      "source_note_index": 122,
+      "source_start": 107.572,
+      "source_duration": 1.243,
+      "section": "second build"
+    },
+    {
+      "note": "G3",
+      "start": 71.987,
+      "duration": 0.16,
+      "role": "accompaniment",
+      "source_track": "2: Piano 1",
+      "source_note": "C4",
+      "source_note_index": 589,
+      "source_start": 108.947,
+      "section": "second build",
+      "playback_strength_multiplier": 0.95
+    },
+    {
+      "note": "F4",
+      "start": 72.935,
+      "duration": 0.16,
+      "role": "accompaniment",
+      "source_track": "2: Piano 1",
+      "source_note": "A#3",
+      "source_note_index": 594,
+      "source_start": 109.895,
+      "section": "second build",
+      "playback_strength_multiplier": 0.95
+    },
+    {
+      "note": "F4",
+      "start": 73.882,
+      "duration": 0.16,
+      "role": "accompaniment",
+      "source_track": "2: Piano 1",
+      "source_note": "A#3",
+      "source_note_index": 604,
+      "source_start": 110.842,
+      "section": "second build",
+      "playback_strength_multiplier": 0.95
+    },
+    {
+      "note": "G3",
+      "start": 74.829,
+      "duration": 0.16,
+      "role": "accompaniment",
+      "source_track": "2: Piano 1",
+      "source_note": "C3",
+      "source_note_index": 613,
+      "source_start": 111.789,
+      "section": "second build",
+      "playback_strength_multiplier": 0.95
+    },
+    {
+      "note": "C4",
+      "start": 75.777,
+      "duration": 0.16,
+      "role": "accompaniment",
+      "source_track": "2: Piano 1",
+      "source_note": "F2",
+      "source_note_index": 620,
+      "source_start": 112.737,
+      "section": "chorus two",
+      "playback_strength_multiplier": 1.04
+    },
+    {
+      "note": "E4",
+      "start": 75.777,
+      "duration": 0.16,
+      "role": "accompaniment",
+      "source_track": "2: Piano 1",
+      "source_note": "A4",
+      "source_note_index": 618,
+      "source_start": 112.737,
+      "section": "chorus two",
+      "playback_strength_multiplier": 0.936
+    },
+    {
+      "note": "C5",
+      "start": 75.783,
+      "duration": 1.203,
+      "role": "melody",
+      "source_track": "9: string ensemble 1",
+      "playback_strength_multiplier": 1.248,
+      "source_note": "F5",
+      "source_note_index": 123,
+      "source_start": 112.743,
+      "source_duration": 1.25,
+      "section": "chorus two"
+    },
+    {
+      "note": "B4",
+      "start": 77.027,
+      "duration": 0.282,
+      "role": "melody",
+      "source_track": "9: string ensemble 1",
+      "playback_strength_multiplier": 1.248,
+      "source_note": "E5",
+      "source_note_index": 124,
+      "source_start": 113.987,
+      "source_duration": 0.316,
+      "section": "chorus two"
+    },
+    {
+      "note": "C4",
+      "start": 77.04,
+      "duration": 0.16,
+      "role": "accompaniment",
+      "source_track": "2: Piano 1",
+      "source_note": "F4",
+      "source_note_index": 625,
+      "source_start": 114,
+      "section": "chorus two",
+      "playback_strength_multiplier": 1.04
+    },
+    {
+      "note": "C5",
+      "start": 77.349,
+      "duration": 0.315,
+      "role": "melody",
+      "source_track": "9: string ensemble 1",
+      "playback_strength_multiplier": 1.243,
+      "source_note": "F5",
+      "source_note_index": 125,
+      "source_start": 114.309,
+      "source_duration": 0.401,
+      "section": "chorus two"
+    },
+    {
+      "note": "B4",
+      "start": 77.704,
+      "duration": 0.572,
+      "role": "melody",
+      "source_track": "9: string ensemble 1",
+      "playback_strength_multiplier": 1.236,
+      "source_note": "E5",
+      "source_note_index": 126,
+      "source_start": 114.664,
+      "source_duration": 0.618,
+      "section": "chorus two"
+    },
+    {
+      "note": "B3",
+      "start": 78.303,
+      "duration": 0.16,
+      "role": "accompaniment",
+      "source_track": "2: Piano 1",
+      "source_note": "E4",
+      "source_note_index": 632,
+      "source_start": 115.263,
+      "section": "chorus two",
+      "playback_strength_multiplier": 1.04
+    },
+    {
+      "note": "G4",
+      "start": 78.316,
+      "duration": 0.835,
+      "role": "melody",
+      "source_track": "9: string ensemble 1",
+      "playback_strength_multiplier": 1.248,
+      "source_note": "C5",
+      "source_note_index": 127,
+      "source_start": 115.276,
+      "source_duration": 0.875,
+      "section": "chorus two"
+    },
+    {
+      "note": "E4",
+      "start": 79.191,
+      "duration": 0.335,
+      "role": "melody",
+      "source_track": "9: string ensemble 1",
+      "playback_strength_multiplier": 1.248,
+      "source_note": "A4",
+      "source_note_index": 128,
+      "source_start": 116.151,
+      "source_duration": 0.362,
+      "section": "chorus two"
+    },
+    {
+      "note": "B3",
+      "start": 79.25,
+      "duration": 0.16,
+      "role": "accompaniment",
+      "source_track": "2: Piano 1",
+      "source_note": "E3",
+      "source_note_index": 635,
+      "source_start": 116.21,
+      "section": "chorus two",
+      "playback_strength_multiplier": 1.04
+    },
+    {
+      "note": "A4",
+      "start": 79.566,
+      "duration": 0.546,
+      "role": "melody",
+      "source_track": "9: string ensemble 1",
+      "playback_strength_multiplier": 1.248,
+      "source_note": "D5",
+      "source_note_index": 129,
+      "source_start": 116.526,
+      "source_duration": 0.605,
+      "section": "chorus two"
+    },
+    {
+      "note": "E4",
+      "start": 80.152,
+      "duration": 1.336,
+      "role": "melody",
+      "source_track": "9: string ensemble 1",
+      "playback_strength_multiplier": 1.219,
+      "source_note": "A4",
+      "source_note_index": 130,
+      "source_start": 117.112,
+      "source_duration": 1.237,
+      "section": "chorus two"
+    },
+    {
+      "note": "C4",
+      "start": 80.198,
+      "duration": 0.16,
+      "role": "accompaniment",
+      "source_track": "2: Piano 1",
+      "source_note": "F4",
+      "source_note_index": 641,
+      "source_start": 117.158,
+      "section": "chorus two",
+      "playback_strength_multiplier": 1.04
+    },
+    {
+      "note": "D4",
+      "start": 82.408,
+      "duration": 0.16,
+      "role": "accompaniment",
+      "source_track": "2: Piano 1",
+      "source_note": "G4",
+      "source_note_index": 652,
+      "source_start": 119.368,
+      "section": "chorus two",
+      "playback_strength_multiplier": 0.936
+    },
+    {
+      "note": "G3",
+      "start": 82.408,
+      "duration": 0.16,
+      "role": "accompaniment",
+      "source_track": "2: Piano 1",
+      "source_note": "C3",
+      "source_note_index": 651,
+      "source_start": 119.368,
+      "section": "chorus two",
+      "playback_strength_multiplier": 1.04
+    },
+    {
+      "note": "G4",
+      "start": 83.04,
+      "duration": 0.302,
+      "role": "melody",
+      "source_track": "9: string ensemble 1",
+      "playback_strength_multiplier": 1.248,
+      "source_note": "C5",
+      "source_note_index": 131,
+      "source_start": 120,
+      "source_duration": 0.309,
+      "section": "chorus two"
+    },
+    {
+      "note": "B3",
+      "start": 83.356,
+      "duration": 0.16,
+      "role": "accompaniment",
+      "source_track": "2: Piano 1",
+      "source_note": "E2",
+      "source_note_index": 660,
+      "source_start": 120.316,
+      "section": "chorus two",
+      "playback_strength_multiplier": 1.04
+    },
+    {
+      "note": "C5",
+      "start": 83.382,
+      "duration": 1.177,
+      "role": "melody",
+      "source_track": "9: string ensemble 1",
+      "playback_strength_multiplier": 1.248,
+      "source_note": "F5",
+      "source_note_index": 132,
+      "source_start": 120.342,
+      "source_duration": 1.191,
+      "section": "chorus two"
+    },
+    {
+      "note": "D5",
+      "start": 84.599,
+      "duration": 0.296,
+      "role": "melody",
+      "source_track": "9: string ensemble 1",
+      "playback_strength_multiplier": 1.248,
+      "source_note": "G5",
+      "source_note_index": 133,
+      "source_start": 121.559,
+      "source_duration": 0.316,
+      "section": "chorus two"
+    },
+    {
+      "note": "C4",
+      "start": 84.619,
+      "duration": 0.16,
+      "role": "accompaniment",
+      "source_track": "2: Piano 1",
+      "source_note": "F4",
+      "source_note_index": 663,
+      "source_start": 121.579,
+      "section": "chorus two",
+      "playback_strength_multiplier": 0.936
+    },
+    {
+      "note": "D4",
+      "start": 84.619,
+      "duration": 0.16,
+      "role": "accompaniment",
+      "source_track": "2: Piano 1",
+      "source_note": "G3",
+      "source_note_index": 664,
+      "source_start": 121.579,
+      "section": "chorus two",
+      "playback_strength_multiplier": 1.04
+    },
+    {
+      "note": "E5",
+      "start": 84.935,
+      "duration": 0.263,
+      "role": "melody",
+      "source_track": "9: string ensemble 1",
+      "playback_strength_multiplier": 1.248,
+      "source_note": "A5",
+      "source_note_index": 134,
+      "source_start": 121.895,
+      "source_duration": 0.309,
+      "section": "chorus two"
+    },
+    {
+      "note": "G5",
+      "start": 85.237,
+      "duration": 0.526,
+      "role": "melody",
+      "source_track": "9: string ensemble 1",
+      "playback_strength_multiplier": 1.248,
+      "source_note": "C6",
+      "source_note_index": 135,
+      "source_start": 122.197,
+      "source_duration": 0.586,
+      "section": "chorus two"
+    },
+    {
+      "note": "E5",
+      "start": 85.803,
+      "duration": 0.967,
+      "role": "melody",
+      "source_track": "9: string ensemble 1",
+      "playback_strength_multiplier": 1.248,
+      "source_note": "A5",
+      "source_note_index": 136,
+      "source_start": 122.763,
+      "source_duration": 0.993,
+      "section": "chorus two"
+    },
+    {
+      "note": "B3",
+      "start": 85.882,
+      "duration": 0.16,
+      "role": "accompaniment",
+      "source_track": "2: Piano 1",
+      "source_note": "E4",
+      "source_note_index": 671,
+      "source_start": 122.842,
+      "section": "chorus two",
+      "playback_strength_multiplier": 1.04
+    },
+    {
+      "note": "A4",
+      "start": 86.81,
+      "duration": 0.118,
+      "role": "melody",
+      "source_track": "9: string ensemble 1",
+      "playback_strength_multiplier": 1.248,
+      "source_note": "D5",
+      "source_note_index": 137,
+      "source_start": 123.77,
+      "source_duration": 0.329,
+      "section": "chorus two"
+    },
+    {
+      "note": "B3",
+      "start": 86.829,
+      "duration": 0.16,
+      "role": "accompaniment",
+      "source_track": "2: Piano 1",
+      "source_note": "E3",
+      "source_note_index": 674,
+      "source_start": 123.789,
+      "section": "chorus two",
+      "playback_strength_multiplier": 1.04
+    },
+    {
+      "note": "B4",
+      "start": 86.967,
+      "duration": 0.138,
+      "role": "melody",
+      "source_track": "9: string ensemble 1",
+      "playback_strength_multiplier": 1.238,
+      "source_note": "E5",
+      "source_note_index": 138,
+      "source_start": 123.927,
+      "source_duration": 0.178,
+      "section": "chorus two"
+    },
+    {
+      "note": "A4",
+      "start": 87.145,
+      "duration": 1.066,
+      "role": "melody",
+      "source_track": "9: string ensemble 1",
+      "playback_strength_multiplier": 1.238,
+      "source_note": "D5",
+      "source_note_index": 139,
+      "source_start": 124.105,
+      "source_duration": 0.987,
+      "section": "chorus two"
+    },
+    {
+      "note": "E4",
+      "start": 88.408,
+      "duration": 0.16,
+      "role": "accompaniment",
+      "source_track": "2: Piano 1",
+      "source_note": "A3",
+      "source_note_index": 681,
+      "source_start": 125.368,
+      "section": "chorus two",
+      "playback_strength_multiplier": 1.04
+    },
+    {
+      "note": "A3",
+      "start": 90.303,
+      "duration": 0.16,
+      "role": "accompaniment",
+      "source_track": "2: Piano 1",
+      "source_note": "D4",
+      "source_note_index": 690,
+      "source_start": 127.263,
+      "section": "chorus two",
+      "playback_strength_multiplier": 1.04
+    },
+    {
+      "note": "A4",
+      "start": 90.967,
+      "duration": 0.828,
+      "role": "melody",
+      "source_track": "9: string ensemble 1",
+      "playback_strength_multiplier": 1.248,
+      "source_note": "D5",
+      "source_note_index": 140,
+      "source_start": 127.927,
+      "source_duration": 0.882,
+      "section": "chorus two"
+    },
+    {
+      "note": "G4",
+      "start": 91.836,
+      "duration": 0.598,
+      "role": "melody",
+      "source_track": "9: string ensemble 1",
+      "playback_strength_multiplier": 1.25,
+      "source_note": "C5",
+      "source_note_index": 141,
+      "source_start": 128.796,
+      "source_duration": 0.671,
+      "section": "final refrain"
+    },
+    {
+      "note": "A3",
+      "start": 91.882,
+      "duration": 0.16,
+      "role": "accompaniment",
+      "source_track": "2: Piano 1",
+      "source_note": "D4",
+      "source_note_index": 697,
+      "source_start": 128.842,
+      "section": "final refrain",
+      "playback_strength_multiplier": 1.08
+    },
+    {
+      "note": "A4",
+      "start": 92.474,
+      "duration": 0.322,
+      "role": "melody",
+      "source_track": "9: string ensemble 1",
+      "playback_strength_multiplier": 1.25,
+      "source_note": "D5",
+      "source_note_index": 142,
+      "source_start": 129.434,
+      "source_duration": 0.401,
+      "section": "final refrain"
+    },
+    {
+      "note": "D4",
+      "start": 92.829,
+      "duration": 0.16,
+      "role": "accompaniment",
+      "source_track": "2: Piano 1",
+      "source_note": "G3",
+      "source_note_index": 702,
+      "source_start": 129.789,
+      "section": "final refrain",
+      "playback_strength_multiplier": 1.08
+    },
+    {
+      "note": "G3",
+      "start": 92.829,
+      "duration": 0.16,
+      "role": "accompaniment",
+      "source_track": "2: Piano 1",
+      "source_note": "C5",
+      "source_note_index": 701,
+      "source_start": 129.789,
+      "section": "final refrain",
+      "playback_strength_multiplier": 0.972
+    },
+    {
+      "note": "G4",
+      "start": 92.836,
+      "duration": 0.927,
+      "role": "melody",
+      "source_track": "9: string ensemble 1",
+      "playback_strength_multiplier": 1.25,
+      "source_note": "C5",
+      "source_note_index": 143,
+      "source_start": 129.796,
+      "source_duration": 1.02,
+      "section": "final refrain"
+    },
+    {
+      "note": "B3",
+      "start": 93.777,
+      "duration": 0.16,
+      "role": "accompaniment",
+      "source_track": "2: Piano 1",
+      "source_note": "E4",
+      "source_note_index": 703,
+      "source_start": 130.737,
+      "section": "final refrain",
+      "playback_strength_multiplier": 1.08
+    },
+    {
+      "note": "F4",
+      "start": 93.803,
+      "duration": 0.861,
+      "role": "melody",
+      "source_track": "9: string ensemble 1",
+      "playback_strength_multiplier": 1.25,
+      "source_note": "A#4",
+      "source_note_index": 144,
+      "source_start": 130.763,
+      "source_duration": 0.855,
+      "section": "final refrain"
+    },
+    {
+      "note": "F5",
+      "start": 94.704,
+      "duration": 0.894,
+      "role": "melody",
+      "source_track": "9: string ensemble 1",
+      "playback_strength_multiplier": 1.25,
+      "source_note": "A#5",
+      "source_note_index": 145,
+      "source_start": 131.664,
+      "source_duration": 0.967,
+      "section": "final refrain"
+    },
+    {
+      "note": "C4",
+      "start": 94.724,
+      "duration": 0.16,
+      "role": "accompaniment",
+      "source_track": "2: Piano 1",
+      "source_note": "F5",
+      "source_note_index": 707,
+      "source_start": 131.684,
+      "section": "final refrain",
+      "playback_strength_multiplier": 0.972
+    },
+    {
+      "note": "F4",
+      "start": 94.724,
+      "duration": 0.16,
+      "role": "accompaniment",
+      "source_track": "2: Piano 1",
+      "source_note": "A#3",
+      "source_note_index": 706,
+      "source_start": 131.684,
+      "section": "final refrain",
+      "playback_strength_multiplier": 1.08
+    },
+    {
+      "note": "E5",
+      "start": 95.638,
+      "duration": 0.651,
+      "role": "melody",
+      "source_track": "9: string ensemble 1",
+      "playback_strength_multiplier": 1.25,
+      "source_note": "A5",
+      "source_note_index": 146,
+      "source_start": 132.598,
+      "source_duration": 0.724,
+      "section": "final refrain"
+    },
+    {
+      "note": "F4",
+      "start": 95.671,
+      "duration": 0.16,
+      "role": "accompaniment",
+      "source_track": "2: Piano 1",
+      "source_note": "A#4",
+      "source_note_index": 711,
+      "source_start": 132.631,
+      "section": "final refrain",
+      "playback_strength_multiplier": 1.08
+    },
+    {
+      "note": "F5",
+      "start": 96.329,
+      "duration": 0.256,
+      "role": "melody",
+      "source_track": "9: string ensemble 1",
+      "playback_strength_multiplier": 1.25,
+      "source_note": "A#5",
+      "source_note_index": 147,
+      "source_start": 133.289,
+      "source_duration": 0.289,
+      "section": "final refrain"
+    },
+    {
+      "note": "C4",
+      "start": 96.619,
+      "duration": 0.16,
+      "role": "accompaniment",
+      "source_track": "2: Piano 1",
+      "source_note": "F5",
+      "source_note_index": 717,
+      "source_start": 133.579,
+      "section": "final refrain",
+      "playback_strength_multiplier": 0.972
+    },
+    {
+      "note": "F4",
+      "start": 96.619,
+      "duration": 0.16,
+      "role": "accompaniment",
+      "source_track": "2: Piano 1",
+      "source_note": "A#4",
+      "source_note_index": 715,
+      "source_start": 133.579,
+      "section": "final refrain",
+      "playback_strength_multiplier": 1.08
+    },
+    {
+      "note": "E5",
+      "start": 96.625,
+      "duration": 0.907,
+      "role": "melody",
+      "source_track": "9: string ensemble 1",
+      "playback_strength_multiplier": 1.25,
+      "source_note": "A5",
+      "source_note_index": 148,
+      "source_start": 133.585,
+      "source_duration": 0.934,
+      "section": "final refrain"
+    },
+    {
+      "note": "C4",
+      "start": 97.566,
+      "duration": 0.16,
+      "role": "accompaniment",
+      "source_track": "2: Piano 1",
+      "source_note": "F4",
+      "source_note_index": 718,
+      "source_start": 134.526,
+      "section": "final refrain",
+      "playback_strength_multiplier": 1.08
+    },
+    {
+      "note": "D5",
+      "start": 97.573,
+      "duration": 0.894,
+      "role": "melody",
+      "source_track": "9: string ensemble 1",
+      "playback_strength_multiplier": 1.25,
+      "source_note": "G5",
+      "source_note_index": 149,
+      "source_start": 134.533,
+      "source_duration": 0.941,
+      "section": "final refrain"
+    },
+    {
+      "note": "E5",
+      "start": 98.507,
+      "duration": 0.921,
+      "role": "melody",
+      "source_track": "9: string ensemble 1",
+      "playback_strength_multiplier": 1.25,
+      "source_note": "A5",
+      "source_note_index": 150,
+      "source_start": 135.467,
+      "source_duration": 0.954,
+      "section": "final refrain"
+    },
+    {
+      "note": "C4",
+      "start": 98.513,
+      "duration": 0.16,
+      "role": "accompaniment",
+      "source_track": "2: Piano 1",
+      "source_note": "F3",
+      "source_note_index": 723,
+      "source_start": 135.473,
+      "section": "final refrain",
+      "playback_strength_multiplier": 1.08
+    },
+    {
+      "note": "E4",
+      "start": 98.513,
+      "duration": 0.16,
+      "role": "accompaniment",
+      "source_track": "2: Piano 1",
+      "source_note": "A4",
+      "source_note_index": 722,
+      "source_start": 135.473,
+      "section": "final refrain",
+      "playback_strength_multiplier": 0.972
+    },
+    {
+      "note": "C4",
+      "start": 99.461,
+      "duration": 0.16,
+      "role": "accompaniment",
+      "source_track": "2: Piano 1",
+      "source_note": "F4",
+      "source_note_index": 724,
+      "source_start": 136.421,
+      "section": "final refrain",
+      "playback_strength_multiplier": 1.08
+    },
+    {
+      "note": "C5",
+      "start": 99.467,
+      "duration": 0.605,
+      "role": "melody",
+      "source_track": "9: string ensemble 1",
+      "playback_strength_multiplier": 1.25,
+      "source_note": "F5",
+      "source_note_index": 151,
+      "source_start": 136.427,
+      "source_duration": 0.638,
+      "section": "final refrain"
+    },
+    {
+      "note": "F5",
+      "start": 100.112,
+      "duration": 0.276,
+      "role": "melody",
+      "source_track": "9: string ensemble 1",
+      "playback_strength_multiplier": 1.25,
+      "source_note": "A#5",
+      "source_note_index": 152,
+      "source_start": 137.072,
+      "source_duration": 0.296,
+      "section": "final refrain"
+    },
+    {
+      "note": "C4",
+      "start": 100.408,
+      "duration": 0.16,
+      "role": "accompaniment",
+      "source_track": "2: Piano 1",
+      "source_note": "F4",
+      "source_note_index": 730,
+      "source_start": 137.368,
+      "section": "final refrain",
+      "playback_strength_multiplier": 0.972
+    },
+    {
+      "note": "D4",
+      "start": 100.408,
+      "duration": 0.16,
+      "role": "accompaniment",
+      "source_track": "2: Piano 1",
+      "source_note": "G3",
+      "source_note_index": 727,
+      "source_start": 137.368,
+      "section": "final refrain",
+      "playback_strength_multiplier": 1.08
+    },
+    {
+      "note": "E5",
+      "start": 100.428,
+      "duration": 0.888,
+      "role": "melody",
+      "source_track": "9: string ensemble 1",
+      "playback_strength_multiplier": 1.25,
+      "source_note": "A5",
+      "source_note_index": 153,
+      "source_start": 137.388,
+      "source_duration": 0.921,
+      "section": "final refrain"
+    },
+    {
+      "note": "C5",
+      "start": 101.356,
+      "duration": 0.605,
+      "role": "melody",
+      "source_track": "9: string ensemble 1",
+      "playback_strength_multiplier": 1.25,
+      "source_note": "F5",
+      "source_note_index": 154,
+      "source_start": 138.316,
+      "source_duration": 0.625,
+      "section": "final refrain"
+    },
+    {
+      "note": "C4",
+      "start": 101.671,
+      "duration": 0.16,
+      "role": "accompaniment",
+      "source_track": "2: Piano 1",
+      "source_note": "F4",
+      "source_note_index": 732,
+      "source_start": 138.631,
+      "section": "final refrain",
+      "playback_strength_multiplier": 1.08
+    },
+    {
+      "note": "F5",
+      "start": 102,
+      "duration": 0.309,
+      "role": "melody",
+      "source_track": "9: string ensemble 1",
+      "playback_strength_multiplier": 1.25,
+      "source_note": "A#5",
+      "source_note_index": 155,
+      "source_start": 138.96,
+      "source_duration": 0.388,
+      "section": "final refrain"
+    },
+    {
+      "note": "D5",
+      "start": 102.349,
+      "duration": 0.868,
+      "role": "melody",
+      "source_track": "9: string ensemble 1",
+      "playback_strength_multiplier": 1.25,
+      "source_note": "G#5",
+      "source_note_index": 156,
+      "source_start": 139.309,
+      "source_duration": 0.901,
+      "section": "final refrain"
+    },
+    {
+      "note": "C5",
+      "start": 103.257,
+      "duration": 0.618,
+      "role": "melody",
+      "source_track": "9: string ensemble 1",
+      "playback_strength_multiplier": 1.25,
+      "source_note": "F5",
+      "source_note_index": 157,
+      "source_start": 140.217,
+      "source_duration": 0.651,
+      "section": "final refrain"
+    },
+    {
+      "note": "G3",
+      "start": 103.566,
+      "duration": 0.16,
+      "role": "accompaniment",
+      "source_track": "2: Piano 1",
+      "source_note": "C5",
+      "source_note_index": 738,
+      "source_start": 140.526,
+      "section": "final refrain",
+      "playback_strength_multiplier": 1.08
+    },
+    {
+      "note": "F5",
+      "start": 103.915,
+      "duration": 0.309,
+      "role": "melody",
+      "source_track": "9: string ensemble 1",
+      "playback_strength_multiplier": 1.25,
+      "source_note": "A#5",
+      "source_note_index": 158,
+      "source_start": 140.875,
+      "source_duration": 0.395,
+      "section": "final refrain"
+    },
+    {
+      "note": "D5",
+      "start": 104.263,
+      "duration": 0.888,
+      "role": "melody",
+      "source_track": "9: string ensemble 1",
+      "playback_strength_multiplier": 1.25,
+      "source_note": "G#5",
+      "source_note_index": 159,
+      "source_start": 141.223,
+      "source_duration": 0.961,
+      "section": "final refrain"
+    },
+    {
+      "note": "C5",
+      "start": 105.191,
+      "duration": 2.124,
+      "role": "melody",
+      "source_track": "9: string ensemble 1",
+      "playback_strength_multiplier": 1.25,
+      "source_note": "F5",
+      "source_note_index": 160,
+      "source_start": 142.151,
+      "source_duration": 2.263,
+      "section": "final refrain"
+    },
+    {
+      "note": "B4",
+      "start": 107.356,
+      "duration": 0.276,
+      "role": "melody",
+      "source_track": "9: string ensemble 1",
+      "playback_strength_multiplier": 1.193,
+      "source_note": "D#5",
+      "source_note_index": 161,
+      "source_start": 144.316,
+      "source_duration": 0.382,
+      "section": "final refrain"
+    },
+    {
+      "note": "G4",
+      "start": 107.671,
+      "duration": 0.276,
+      "role": "melody",
+      "source_track": "9: string ensemble 1",
+      "playback_strength_multiplier": 1.25,
+      "source_note": "C5",
+      "source_note_index": 162,
+      "source_start": 144.631,
+      "source_duration": 0.316,
+      "section": "final refrain"
+    },
+    {
+      "note": "C4",
+      "start": 107.987,
+      "duration": 0.16,
+      "role": "accompaniment",
+      "source_track": "2: Piano 1",
+      "source_note": "F2",
+      "source_note_index": 757,
+      "source_start": 144.947,
+      "section": "final refrain",
+      "playback_strength_multiplier": 1.08
+    },
+    {
+      "note": "C5",
+      "start": 107.987,
+      "duration": 3.8,
+      "role": "melody",
+      "source_track": "9: string ensemble 1",
+      "playback_strength_multiplier": 1.25,
+      "source_note": "F5",
+      "source_note_index": 163,
+      "source_start": 144.947,
+      "source_duration": 6.086,
+      "section": "final refrain"
+    },
+    {
+      "note": "C4",
+      "start": 112.092,
+      "duration": 0.16,
+      "role": "accompaniment",
+      "source_track": "2: Piano 1",
+      "source_note": "F4",
+      "source_note_index": 776,
+      "source_start": 149.052,
+      "section": "expressive ending",
+      "playback_strength_multiplier": 0.9
+    },
+    {
+      "note": "G3",
+      "start": 113.671,
+      "duration": 0.16,
+      "role": "accompaniment",
+      "source_track": "2: Piano 1",
+      "source_note": "C3",
+      "source_note_index": 783,
+      "source_start": 150.631,
+      "section": "expressive ending",
+      "playback_strength_multiplier": 0.9
+    },
+    {
+      "note": "C5",
+      "start": 114.619,
+      "duration": 0.276,
+      "role": "melody",
+      "source_track": "2: Piano 1",
+      "playback_strength_multiplier": 1.107,
+      "source_note": "F4",
+      "source_note_index": 786,
+      "source_start": 151.579,
+      "source_duration": 0.763,
+      "section": "expressive ending",
+      "instrumental": true
+    },
+    {
+      "note": "A4",
+      "start": 114.935,
+      "duration": 0.298,
+      "role": "melody",
+      "source_track": "2: Piano 1",
+      "playback_strength_multiplier": 1.053,
+      "source_note": "D4",
+      "source_note_index": 788,
+      "source_start": 151.895,
+      "source_duration": 0.276,
+      "section": "expressive ending",
+      "instrumental": true
+    },
+    {
+      "note": "G3",
+      "start": 115.25,
+      "duration": 0.16,
+      "role": "accompaniment",
+      "source_track": "2: Piano 1",
+      "source_note": "C3",
+      "source_note_index": 789,
+      "source_start": 152.21,
+      "section": "expressive ending",
+      "playback_strength_multiplier": 0.9
+    },
+    {
+      "note": "C5",
+      "start": 115.882,
+      "duration": 0.276,
+      "role": "melody",
+      "source_track": "2: Piano 1",
+      "playback_strength_multiplier": 1.082,
+      "source_note": "F4",
+      "source_note_index": 793,
+      "source_start": 152.842,
+      "source_duration": 0.355,
+      "section": "expressive ending",
+      "instrumental": true
+    },
+    {
+      "note": "D5",
+      "start": 116.198,
+      "duration": 0.256,
+      "role": "melody",
+      "source_track": "2: Piano 1",
+      "playback_strength_multiplier": 1.086,
+      "source_note": "G#4",
+      "source_note_index": 794,
+      "source_start": 153.158,
+      "source_duration": 0.237,
+      "section": "expressive ending",
+      "instrumental": true
+    },
+    {
+      "note": "G5",
+      "start": 116.513,
+      "duration": 0.276,
+      "role": "melody",
+      "source_track": "2: Piano 1",
+      "playback_strength_multiplier": 1.104,
+      "source_note": "C5",
+      "source_note_index": 797,
+      "source_start": 153.473,
+      "source_duration": 0.382,
+      "section": "expressive ending",
+      "instrumental": true
+    },
+    {
+      "note": "D5",
+      "start": 116.829,
+      "duration": 0.27,
+      "role": "melody",
+      "source_track": "2: Piano 1",
+      "playback_strength_multiplier": 1.077,
+      "source_note": "G#4",
+      "source_note_index": 798,
+      "source_start": 153.789,
+      "source_duration": 0.25,
+      "section": "expressive ending",
+      "instrumental": true
+    },
+    {
+      "note": "C4",
+      "start": 117.145,
+      "duration": 0.16,
+      "role": "accompaniment",
+      "source_track": "2: Piano 1",
+      "source_note": "F4",
+      "source_note_index": 799,
+      "source_start": 154.105,
+      "section": "expressive ending",
+      "playback_strength_multiplier": 0.9
+    },
+    {
+      "note": "C5",
+      "start": 117.145,
+      "duration": 0.085,
+      "role": "melody",
+      "source_track": "2: Piano 1",
+      "playback_strength_multiplier": 1.071,
+      "source_note": "F4",
+      "source_note_index": 799,
+      "source_start": 154.105,
+      "source_duration": 0.072,
+      "section": "expressive ending",
+      "instrumental": true
+    },
+    {
+      "note": "A4",
+      "start": 118.092,
+      "duration": 0.276,
+      "role": "melody",
+      "source_track": "2: Piano 1",
+      "playback_strength_multiplier": 1.091,
+      "source_note": "D4",
+      "source_note_index": 802,
+      "source_start": 155.052,
+      "source_duration": 0.303,
+      "section": "expressive ending",
+      "instrumental": true
+    },
+    {
+      "note": "C5",
+      "start": 118.408,
+      "duration": 0.276,
+      "role": "melody",
+      "source_track": "2: Piano 1",
+      "playback_strength_multiplier": 1.107,
+      "source_note": "F4",
+      "source_note_index": 803,
+      "source_start": 155.368,
+      "source_duration": 0.764,
+      "section": "expressive ending",
+      "instrumental": true
+    },
+    {
+      "note": "A3",
+      "start": 118.724,
+      "duration": 0.16,
+      "role": "accompaniment",
+      "source_track": "2: Piano 1",
+      "source_note": "D4",
+      "source_note_index": 805,
+      "source_start": 155.684,
+      "section": "expressive ending",
+      "playback_strength_multiplier": 0.9
+    },
+    {
+      "note": "A4",
+      "start": 118.724,
+      "duration": 0.298,
+      "role": "melody",
+      "source_track": "2: Piano 1",
+      "playback_strength_multiplier": 1.053,
+      "source_note": "D4",
+      "source_note_index": 805,
+      "source_start": 155.684,
+      "source_duration": 0.276,
+      "section": "expressive ending",
+      "instrumental": true
+    },
+    {
+      "note": "C5",
+      "start": 119.684,
+      "duration": 0.286,
+      "role": "melody",
+      "source_track": "2: Piano 1",
+      "playback_strength_multiplier": 1.082,
+      "source_note": "F4",
+      "source_note_index": 810,
+      "source_start": 156.644,
+      "source_duration": 0.367,
+      "section": "expressive ending",
+      "instrumental": true
+    },
+    {
+      "note": "D5",
+      "start": 120.01,
+      "duration": 0.264,
+      "role": "melody",
+      "source_track": "2: Piano 1",
+      "playback_strength_multiplier": 1.086,
+      "source_note": "G#4",
+      "source_note_index": 811,
+      "source_start": 156.97,
+      "source_duration": 0.245,
+      "section": "expressive ending",
+      "instrumental": true
+    },
+    {
+      "note": "C4",
+      "start": 120.336,
+      "duration": 0.16,
+      "role": "accompaniment",
+      "source_track": "2: Piano 1",
+      "source_note": "F3",
+      "source_note_index": 812,
+      "source_start": 157.296,
+      "section": "expressive ending",
+      "playback_strength_multiplier": 0.9
+    },
+    {
+      "note": "G5",
+      "start": 120.336,
+      "duration": 0.286,
+      "role": "melody",
+      "source_track": "2: Piano 1",
+      "playback_strength_multiplier": 1.104,
+      "source_note": "C5",
+      "source_note_index": 814,
+      "source_start": 157.296,
+      "source_duration": 0.394,
+      "section": "expressive ending",
+      "instrumental": true
+    },
+    {
+      "note": "D5",
+      "start": 120.662,
+      "duration": 0.279,
+      "role": "melody",
+      "source_track": "2: Piano 1",
+      "playback_strength_multiplier": 1.077,
+      "source_note": "G#4",
+      "source_note_index": 815,
+      "source_start": 157.622,
+      "source_duration": 0.258,
+      "section": "expressive ending",
+      "instrumental": true
+    },
+    {
+      "note": "C5",
+      "start": 120.988,
+      "duration": 0.085,
+      "role": "melody",
+      "source_track": "2: Piano 1",
+      "playback_strength_multiplier": 1.071,
+      "source_note": "F4",
+      "source_note_index": 816,
+      "source_start": 157.948,
+      "source_duration": 0.076,
+      "section": "expressive ending",
+      "instrumental": true
+    },
+    {
+      "note": "A3",
+      "start": 122.002,
+      "duration": 0.16,
+      "role": "accompaniment",
+      "source_track": "2: Piano 1",
+      "source_note": "D4",
+      "source_note_index": 819,
+      "source_start": 158.962,
+      "section": "expressive ending",
+      "playback_strength_multiplier": 0.9
+    },
+    {
+      "note": "A4",
+      "start": 122.002,
+      "duration": 0.301,
+      "role": "melody",
+      "source_track": "2: Piano 1",
+      "playback_strength_multiplier": 1.091,
+      "source_note": "D4",
+      "source_note_index": 819,
+      "source_start": 158.962,
+      "source_duration": 0.327,
+      "section": "expressive ending",
+      "instrumental": true
+    },
+    {
+      "note": "C5",
+      "start": 122.343,
+      "duration": 0.301,
+      "role": "melody",
+      "source_track": "2: Piano 1",
+      "playback_strength_multiplier": 1.107,
+      "source_note": "F4",
+      "source_note_index": 820,
+      "source_start": 159.303,
+      "source_duration": 0.834,
+      "section": "expressive ending",
+      "instrumental": true
+    },
+    {
+      "note": "A4",
+      "start": 122.684,
+      "duration": 0.322,
+      "role": "melody",
+      "source_track": "2: Piano 1",
+      "playback_strength_multiplier": 1.053,
+      "source_note": "D4",
+      "source_note_index": 822,
+      "source_start": 159.644,
+      "source_duration": 0.298,
+      "section": "expressive ending",
+      "instrumental": true
+    },
+    {
+      "note": "D4",
+      "start": 123.59,
+      "duration": 0.16,
+      "role": "accompaniment",
+      "source_track": "2: Piano 1",
+      "source_note": "G3",
+      "source_note_index": 827,
+      "source_start": 160.55,
+      "section": "expressive ending",
+      "playback_strength_multiplier": 0.9
+    },
+    {
+      "note": "G4",
+      "start": 123.984,
+      "duration": 0.157,
+      "role": "melody",
+      "source_track": "2: Piano 1",
+      "playback_strength_multiplier": 1.147,
+      "source_note": "C4",
+      "source_note_index": 829,
+      "source_start": 160.944,
+      "source_duration": 0.387,
+      "section": "expressive ending",
+      "instrumental": true
+    },
+    {
+      "note": "B4",
+      "start": 124.182,
+      "duration": 0.844,
+      "role": "melody",
+      "source_track": "2: Piano 1",
+      "playback_strength_multiplier": 1.147,
+      "source_note": "D#4",
+      "source_note_index": 830,
+      "source_start": 161.142,
+      "source_duration": 0.781,
+      "section": "expressive ending",
+      "instrumental": true
+    }
+  ],
+  "metadata": {
+    "artist": "Queen",
+    "source_file": "We Are The Champions Queen.mid",
+    "source_sha256": "27e11fc8dadcb5fa04405c107772c95790649b5e462426345de9fc3cdaa5be7e",
+    "source_duration_seconds": 163.107,
+    "source_start_offset_seconds": 36.96,
+    "timing": "Original MIDI timing, shifted by source_start_offset_seconds; no grid quantization. Section and audit timestamps refer to the original source.",
+    "source_tempos": [
+      {
+        "time": 0,
+        "bpm": 95.00014250021376
+      },
+      {
+        "time": 156.033,
+        "bpm": 94.00012846684224
+      },
+      {
+        "time": 156.365,
+        "bpm": 92.00012880018032
+      },
+      {
+        "time": 157.955,
+        "bpm": 90.00009000009
+      },
+      {
+        "time": 158.316,
+        "bpm": 88.00002346667293
+      },
+      {
+        "time": 160.028,
+        "bpm": 80
+      },
+      {
+        "time": 160.418,
+        "bpm": 76.00006586672374
+      }
+    ],
+    "transposition_semitones": 7,
+    "melody_selection": "Track 9 string ensemble follows the embedded karaoke syllable timestamps (including the chorus at 36.96s). Track 15 is a delayed duplicate, not a second vocal line, and is removed. Lower each complete chorus by one octave before the +7-semitone transposition, preserving the chorus semitone pattern; this also avoids isolated high-note folding.",
+    "accompaniment_selection": "Sparse Piano 1 chord roots and one additional chord tone in choruses. Preserve the piano transition and closing cadence as instrumental melody only where the vocal is absent. Remove duplicated distorted guitars, delayed strings, drum kit and busy bass fills.",
+    "sections": [
+      {
+        "start": 0,
+        "label": "verse one",
+        "melodyStrength": 0.9,
+        "extraStrength": 0.82,
+        "minExtraInterval": 1.25
+      },
+      {
+        "start": 26.5,
+        "label": "first build",
+        "melodyStrength": 1.02,
+        "extraStrength": 0.9,
+        "minExtraInterval": 0.95
+      },
+      {
+        "start": 36.9,
+        "label": "chorus one",
+        "melodyStrength": 1.15,
+        "extraStrength": 1,
+        "minExtraInterval": 0.9
+      },
+      {
+        "start": 72,
+        "label": "piano transition",
+        "melodyStrength": 0.88,
+        "extraStrength": 0.8,
+        "minExtraInterval": 1.25
+      },
+      {
+        "start": 79.5,
+        "label": "verse two",
+        "melodyStrength": 0.95,
+        "extraStrength": 0.85,
+        "minExtraInterval": 1.25
+      },
+      {
+        "start": 102,
+        "label": "second build",
+        "melodyStrength": 1.08,
+        "extraStrength": 0.95,
+        "minExtraInterval": 0.95
+      },
+      {
+        "start": 112.7,
+        "label": "chorus two",
+        "melodyStrength": 1.2,
+        "extraStrength": 1.04,
+        "minExtraInterval": 0.9
+      },
+      {
+        "start": 128,
+        "label": "final refrain",
+        "melodyStrength": 1.25,
+        "extraStrength": 1.08,
+        "minExtraInterval": 0.9
+      },
+      {
+        "start": 145,
+        "label": "expressive ending",
+        "melodyStrength": 1.12,
+        "extraStrength": 0.9,
+        "minExtraInterval": 1.5
+      }
+    ],
+    "calibration_review": "Check sustained chorus notes and low verse attacks. The finale keeps the MIDI tempo slowdown; confirm paired short harmony pulses do not cover the lead.",
+    "review_status": "Track, phrase, contour and schedule inspection complete; listening and physical acceptance remain operator checks.",
+    "audit": {
+      "innerVoiceRejected": 0,
+      "graceNotesRemoved": [],
+      "supportConflictsRemoved": 2,
+      "accidentals": [
+        {
+          "time": 19.572,
+          "source": "D#4",
+          "transposed": "A#4",
+          "adapted": "B4",
+          "semitones": 1
+        },
+        {
+          "time": 19.908,
+          "source": "D#4",
+          "transposed": "A#4",
+          "adapted": "B4",
+          "semitones": 1
+        },
+        {
+          "time": 23.368,
+          "source": "D#4",
+          "transposed": "A#4",
+          "adapted": "B4",
+          "semitones": 1
+        },
+        {
+          "time": 27.145,
+          "source": "D#4",
+          "transposed": "A#4",
+          "adapted": "B4",
+          "semitones": 1
+        },
+        {
+          "time": 27.513,
+          "source": "D#4",
+          "transposed": "A#4",
+          "adapted": "B4",
+          "semitones": 1
+        },
+        {
+          "time": 63.52,
+          "source": "G#4",
+          "transposed": "D#5",
+          "adapted": "D5",
+          "semitones": -1
+        },
+        {
+          "time": 65.434,
+          "source": "G#4",
+          "transposed": "D#5",
+          "adapted": "D5",
+          "semitones": -1
+        },
+        {
+          "time": 68.526,
+          "source": "D#4",
+          "transposed": "A#4",
+          "adapted": "B4",
+          "semitones": 1
+        },
+        {
+          "time": 73.579,
+          "source": "G#4",
+          "transposed": "D#5",
+          "adapted": "D5",
+          "semitones": -1
+        },
+        {
+          "time": 74.21,
+          "source": "G#4",
+          "transposed": "D#5",
+          "adapted": "D5",
+          "semitones": -1
+        },
+        {
+          "time": 77.368,
+          "source": "G#4",
+          "transposed": "D#5",
+          "adapted": "D5",
+          "semitones": -1
+        },
+        {
+          "time": 78,
+          "source": "G#4",
+          "transposed": "D#5",
+          "adapted": "D5",
+          "semitones": -1
+        },
+        {
+          "time": 95.362,
+          "source": "D#4",
+          "transposed": "A#4",
+          "adapted": "B4",
+          "semitones": 1
+        },
+        {
+          "time": 95.697,
+          "source": "D#4",
+          "transposed": "A#4",
+          "adapted": "B4",
+          "semitones": 1
+        },
+        {
+          "time": 99.151,
+          "source": "D#4",
+          "transposed": "A#4",
+          "adapted": "B4",
+          "semitones": 1
+        },
+        {
+          "time": 102.934,
+          "source": "D#4",
+          "transposed": "A#4",
+          "adapted": "B4",
+          "semitones": 1
+        },
+        {
+          "time": 103.302,
+          "source": "D#4",
+          "transposed": "A#4",
+          "adapted": "B4",
+          "semitones": 1
+        },
+        {
+          "time": 139.309,
+          "source": "G#4",
+          "transposed": "D#5",
+          "adapted": "D5",
+          "semitones": -1
+        },
+        {
+          "time": 141.223,
+          "source": "G#4",
+          "transposed": "D#5",
+          "adapted": "D5",
+          "semitones": -1
+        },
+        {
+          "time": 144.316,
+          "source": "D#4",
+          "transposed": "A#4",
+          "adapted": "B4",
+          "semitones": 1
+        },
+        {
+          "time": 153.158,
+          "source": "G#4",
+          "transposed": "D#5",
+          "adapted": "D5",
+          "semitones": -1
+        },
+        {
+          "time": 153.789,
+          "source": "G#4",
+          "transposed": "D#5",
+          "adapted": "D5",
+          "semitones": -1
+        },
+        {
+          "time": 156.97,
+          "source": "G#4",
+          "transposed": "D#5",
+          "adapted": "D5",
+          "semitones": -1
+        },
+        {
+          "time": 157.622,
+          "source": "G#4",
+          "transposed": "D#5",
+          "adapted": "D5",
+          "semitones": -1
+        },
+        {
+          "time": 161.142,
+          "source": "D#4",
+          "transposed": "A#4",
+          "adapted": "B4",
+          "semitones": 1
+        }
+      ],
+      "octaveRepairs": [
+        {
+          "time": 36.96,
+          "from": "F5",
+          "to": "F4"
+        },
+        {
+          "time": 38.197,
+          "from": "E5",
+          "to": "E4"
+        },
+        {
+          "time": 38.526,
+          "from": "F5",
+          "to": "F4"
+        },
+        {
+          "time": 38.875,
+          "from": "E5",
+          "to": "E4"
+        },
+        {
+          "time": 39.487,
+          "from": "C5",
+          "to": "C4"
+        },
+        {
+          "time": 40.362,
+          "from": "A4",
+          "to": "A3"
+        },
+        {
+          "time": 40.743,
+          "from": "D5",
+          "to": "D4"
+        },
+        {
+          "time": 41.329,
+          "from": "A4",
+          "to": "A3"
+        },
+        {
+          "time": 44.21,
+          "from": "C5",
+          "to": "C4"
+        },
+        {
+          "time": 44.546,
+          "from": "F5",
+          "to": "F4"
+        },
+        {
+          "time": 45.77,
+          "from": "G5",
+          "to": "G4"
+        },
+        {
+          "time": 46.105,
+          "from": "A5",
+          "to": "A4"
+        },
+        {
+          "time": 46.408,
+          "from": "C6",
+          "to": "C5"
+        },
+        {
+          "time": 46.967,
+          "from": "A5",
+          "to": "A4"
+        },
+        {
+          "time": 47.98,
+          "from": "D5",
+          "to": "D4"
+        },
+        {
+          "time": 48.138,
+          "from": "E5",
+          "to": "E4"
+        },
+        {
+          "time": 48.454,
+          "from": "D5",
+          "to": "D4"
+        },
+        {
+          "time": 52.138,
+          "from": "D5",
+          "to": "D4"
+        },
+        {
+          "time": 53.006,
+          "from": "C5",
+          "to": "C4"
+        },
+        {
+          "time": 53.645,
+          "from": "D5",
+          "to": "D4"
+        },
+        {
+          "time": 54.006,
+          "from": "C5",
+          "to": "C4"
+        },
+        {
+          "time": 54.974,
+          "from": "A#4",
+          "to": "A#3"
+        },
+        {
+          "time": 55.875,
+          "from": "A#5",
+          "to": "A#4"
+        },
+        {
+          "time": 56.809,
+          "from": "A5",
+          "to": "A4"
+        },
+        {
+          "time": 57.5,
+          "from": "A#5",
+          "to": "A#4"
+        },
+        {
+          "time": 57.796,
+          "from": "A5",
+          "to": "A4"
+        },
+        {
+          "time": 58.743,
+          "from": "G5",
+          "to": "G4"
+        },
+        {
+          "time": 59.684,
+          "from": "A5",
+          "to": "A4"
+        },
+        {
+          "time": 60.631,
+          "from": "F5",
+          "to": "F4"
+        },
+        {
+          "time": 61.283,
+          "from": "A#5",
+          "to": "A#4"
+        },
+        {
+          "time": 61.599,
+          "from": "A5",
+          "to": "A4"
+        },
+        {
+          "time": 62.526,
+          "from": "F5",
+          "to": "F4"
+        },
+        {
+          "time": 63.171,
+          "from": "A#5",
+          "to": "A#4"
+        },
+        {
+          "time": 63.52,
+          "from": "G#5",
+          "to": "G#4"
+        },
+        {
+          "time": 64.428,
+          "from": "F5",
+          "to": "F4"
+        },
+        {
+          "time": 65.092,
+          "from": "A#5",
+          "to": "A#4"
+        },
+        {
+          "time": 65.434,
+          "from": "G#5",
+          "to": "G#4"
+        },
+        {
+          "time": 66.362,
+          "from": "F5",
+          "to": "F4"
+        },
+        {
+          "time": 68.526,
+          "from": "D#5",
+          "to": "D#4"
+        },
+        {
+          "time": 68.842,
+          "from": "C5",
+          "to": "C4"
+        },
+        {
+          "time": 69.158,
+          "from": "F5",
+          "to": "F4"
+        },
+        {
+          "time": 112.743,
+          "from": "F5",
+          "to": "F4"
+        },
+        {
+          "time": 113.987,
+          "from": "E5",
+          "to": "E4"
+        },
+        {
+          "time": 114.309,
+          "from": "F5",
+          "to": "F4"
+        },
+        {
+          "time": 114.664,
+          "from": "E5",
+          "to": "E4"
+        },
+        {
+          "time": 115.276,
+          "from": "C5",
+          "to": "C4"
+        },
+        {
+          "time": 116.151,
+          "from": "A4",
+          "to": "A3"
+        },
+        {
+          "time": 116.526,
+          "from": "D5",
+          "to": "D4"
+        },
+        {
+          "time": 117.112,
+          "from": "A4",
+          "to": "A3"
+        },
+        {
+          "time": 120,
+          "from": "C5",
+          "to": "C4"
+        },
+        {
+          "time": 120.342,
+          "from": "F5",
+          "to": "F4"
+        },
+        {
+          "time": 121.559,
+          "from": "G5",
+          "to": "G4"
+        },
+        {
+          "time": 121.895,
+          "from": "A5",
+          "to": "A4"
+        },
+        {
+          "time": 122.197,
+          "from": "C6",
+          "to": "C5"
+        },
+        {
+          "time": 122.763,
+          "from": "A5",
+          "to": "A4"
+        },
+        {
+          "time": 123.77,
+          "from": "D5",
+          "to": "D4"
+        },
+        {
+          "time": 123.927,
+          "from": "E5",
+          "to": "E4"
+        },
+        {
+          "time": 124.105,
+          "from": "D5",
+          "to": "D4"
+        },
+        {
+          "time": 127.927,
+          "from": "D5",
+          "to": "D4"
+        },
+        {
+          "time": 128.796,
+          "from": "C5",
+          "to": "C4"
+        },
+        {
+          "time": 129.434,
+          "from": "D5",
+          "to": "D4"
+        },
+        {
+          "time": 129.796,
+          "from": "C5",
+          "to": "C4"
+        },
+        {
+          "time": 130.763,
+          "from": "A#4",
+          "to": "A#3"
+        },
+        {
+          "time": 131.664,
+          "from": "A#5",
+          "to": "A#4"
+        },
+        {
+          "time": 132.598,
+          "from": "A5",
+          "to": "A4"
+        },
+        {
+          "time": 133.289,
+          "from": "A#5",
+          "to": "A#4"
+        },
+        {
+          "time": 133.585,
+          "from": "A5",
+          "to": "A4"
+        },
+        {
+          "time": 134.533,
+          "from": "G5",
+          "to": "G4"
+        },
+        {
+          "time": 135.467,
+          "from": "A5",
+          "to": "A4"
+        },
+        {
+          "time": 136.427,
+          "from": "F5",
+          "to": "F4"
+        },
+        {
+          "time": 137.072,
+          "from": "A#5",
+          "to": "A#4"
+        },
+        {
+          "time": 137.388,
+          "from": "A5",
+          "to": "A4"
+        },
+        {
+          "time": 138.316,
+          "from": "F5",
+          "to": "F4"
+        },
+        {
+          "time": 138.96,
+          "from": "A#5",
+          "to": "A#4"
+        },
+        {
+          "time": 139.309,
+          "from": "G#5",
+          "to": "G#4"
+        },
+        {
+          "time": 140.217,
+          "from": "F5",
+          "to": "F4"
+        },
+        {
+          "time": 140.875,
+          "from": "A#5",
+          "to": "A#4"
+        },
+        {
+          "time": 141.223,
+          "from": "G#5",
+          "to": "G#4"
+        },
+        {
+          "time": 142.151,
+          "from": "F5",
+          "to": "F4"
+        },
+        {
+          "time": 144.316,
+          "from": "D#5",
+          "to": "D#4"
+        },
+        {
+          "time": 144.631,
+          "from": "C5",
+          "to": "C4"
+        },
+        {
+          "time": 144.947,
+          "from": "F5",
+          "to": "F4"
+        }
+      ],
+      "melody_events": 156,
+      "accompaniment_events": 101,
+      "interval_changes": [
+        {
+          "time": 19.572,
+          "source": 1,
+          "mapped": 2
+        },
+        {
+          "time": 22.724,
+          "source": -5,
+          "mapped": -6
+        },
+        {
+          "time": 23.368,
+          "source": 1,
+          "mapped": 2
+        },
+        {
+          "time": 26.507,
+          "source": -5,
+          "mapped": -6
+        },
+        {
+          "time": 27.145,
+          "source": 1,
+          "mapped": 2
+        },
+        {
+          "time": 28.138,
+          "source": 2,
+          "mapped": 1
+        },
+        {
+          "time": 63.52,
+          "source": -2,
+          "mapped": -3
+        },
+        {
+          "time": 64.428,
+          "source": -3,
+          "mapped": -2
+        },
+        {
+          "time": 65.434,
+          "source": -2,
+          "mapped": -3
+        },
+        {
+          "time": 66.362,
+          "source": -3,
+          "mapped": -2
+        },
+        {
+          "time": 68.526,
+          "source": -2,
+          "mapped": -1
+        },
+        {
+          "time": 68.842,
+          "source": -3,
+          "mapped": -4
+        },
+        {
+          "time": 73.579,
+          "source": 3,
+          "mapped": 2
+        },
+        {
+          "time": 73.789,
+          "source": -3,
+          "mapped": -2
+        },
+        {
+          "time": 74.21,
+          "source": 3,
+          "mapped": 2
+        },
+        {
+          "time": 75.158,
+          "source": -3,
+          "mapped": -2
+        },
+        {
+          "time": 77.368,
+          "source": 3,
+          "mapped": 2
+        },
+        {
+          "time": 77.579,
+          "source": -3,
+          "mapped": -2
+        },
+        {
+          "time": 78,
+          "source": 3,
+          "mapped": 2
+        },
+        {
+          "time": 78.631,
+          "source": -3,
+          "mapped": -2
+        },
+        {
+          "time": 95.362,
+          "source": 1,
+          "mapped": 2
+        },
+        {
+          "time": 98.513,
+          "source": -5,
+          "mapped": -6
+        },
+        {
+          "time": 99.151,
+          "source": 1,
+          "mapped": 2
+        },
+        {
+          "time": 102.296,
+          "source": -5,
+          "mapped": -6
+        },
+        {
+          "time": 102.934,
+          "source": 1,
+          "mapped": 2
+        },
+        {
+          "time": 103.934,
+          "source": 2,
+          "mapped": 1
+        },
+        {
+          "time": 139.309,
+          "source": -2,
+          "mapped": -3
+        },
+        {
+          "time": 140.217,
+          "source": -3,
+          "mapped": -2
+        },
+        {
+          "time": 141.223,
+          "source": -2,
+          "mapped": -3
+        },
+        {
+          "time": 142.151,
+          "source": -3,
+          "mapped": -2
+        },
+        {
+          "time": 144.316,
+          "source": -2,
+          "mapped": -1
+        },
+        {
+          "time": 144.631,
+          "source": -3,
+          "mapped": -4
+        },
+        {
+          "time": 153.158,
+          "source": 3,
+          "mapped": 2
+        },
+        {
+          "time": 153.473,
+          "source": 4,
+          "mapped": 5
+        },
+        {
+          "time": 153.789,
+          "source": -4,
+          "mapped": -5
+        },
+        {
+          "time": 154.105,
+          "source": -3,
+          "mapped": -2
+        },
+        {
+          "time": 156.97,
+          "source": 3,
+          "mapped": 2
+        },
+        {
+          "time": 157.296,
+          "source": 4,
+          "mapped": 5
+        },
+        {
+          "time": 157.622,
+          "source": -4,
+          "mapped": -5
+        },
+        {
+          "time": 157.948,
+          "source": -3,
+          "mapped": -2
+        },
+        {
+          "time": 161.142,
+          "source": 3,
+          "mapped": 4
+        }
+      ],
+      "source_note_count": 2255
+    }
+  }
+}

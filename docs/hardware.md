@@ -2,9 +2,9 @@
 
 ## Current Status
 
-The Python pipeline still uses placeholder actuator functions. The website now has a narrow Web Serial trial driver for numbered angklungs 5, 7, 2, and 4, interpreted as G3, B3, D4, and F4 on the G3-C6 rack. It sends validated `actuator_schedule.v1` commands to the Arduino Mega firmware and commands all outputs off for Pause, Stop, completion, and disconnect. E-Stop also disarms firmware output.
+The Python pipeline still uses placeholder actuator functions. The website Web Serial driver supports channels 0-17 and sends validated `actuator_schedule.v1` commands to the Arduino Mega firmware. Pause, Stop, completion, and disconnect command all outputs off; E-Stop also disarms firmware output.
 
-The current mapping is G3 channel 0 to pins 6+7, B3 channel 2 to pins 8+9, D4 channel 4 to pins 10+11, and F4 channel 6 to pins 12+13. The firmware drives pins 6, 8, 10, and 12 with PWM while holding pins 7, 9, 11, and 13 LOW. Full-rack hardware control and physical certification remain incomplete.
+The canonical channel, G3-C6 note, angklung-number, and latest physically sweep-tested pin-pair mapping is in `hardware/arduino/README.md`. Firmware uses non-blocking software PWM on the first pin of every driver pair, so ordinary Mega digital pins remain power-adjustable. Every two-pin motor pair remains intact and IN1/IN2 are not reversed. Channel 13 remains assigned to pins 38,39 pending separate diagnosis of its missing physical hit. The corrected firmware compiles successfully but must still be uploaded before this mapping controls the rack.
 
 ## Expected Hardware Direction
 
@@ -17,7 +17,7 @@ Future hardware work may include:
 
 ## Hardware Boundary
 
-Python hardware code should enter through `src/actuator_controller.py`. Browser-operated trial code enters through `frontend/src/lib/arduinoSerial.ts` and the versioned serial protocol in `hardware/arduino/mega_low_5724_trial/mega_low_5724_trial.ino`.
+Python hardware code should enter through `src/actuator_controller.py`. Browser-operated hardware code enters through `frontend/src/lib/arduinoSerial.ts` and the versioned serial protocol in `hardware/arduino/mega_full_18_note/mega_full_18_note.ino`.
 
 The rest of the system should not know whether a note is played by:
 

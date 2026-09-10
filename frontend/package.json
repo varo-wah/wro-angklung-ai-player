@@ -8,7 +8,11 @@
     "start": "next start",
     "test": "node --test tests/*.test.cjs",
     "lint": "next lint",
-    "test:arduino": "node --test tests/arduino-full-rack.test.cjs"
+    "test:arduino": "node --test tests/arduino-full-rack.test.cjs",
+    "dev:wireless": "ANGKLOBOT_WIRELESS_ENABLED=1 ANGKLOBOT_DIST_DIR=.next-wireless next dev --hostname 127.0.0.1 --port 3002",
+    "build:competition": "ANGKLOBOT_DIST_DIR=.next-competition next build",
+    "start:competition": "ANGKLOBOT_WIRELESS_ENABLED=1 ANGKLOBOT_DIST_DIR=.next-competition next start --hostname 127.0.0.1 --port 3002",
+    "competition": "npm run build:competition && npm run start:competition"
   },
   "dependencies": {
     "@tonejs/midi": "^2.0.28",

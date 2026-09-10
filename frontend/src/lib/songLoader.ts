@@ -28,6 +28,7 @@ export async function loadSongArrangement(catalogEntry: SongCatalogEntry): Promi
 
   return {
     id: catalogEntry.id,
+    playback_policy: arrangement.playback_policy === "authored" ? "authored" : undefined,
     performance_profile: SONG_PERFORMANCE_PROFILES[catalogEntry.id],
     title: catalogEntry.title,
     aliases: catalogEntry.aliases ?? arrangement.aliases,
@@ -78,7 +79,7 @@ function toTimedNote(note: ArrangementNote, tempoBpm: number): SongNote {
       playback_duration_multiplier: note.playback_duration_multiplier,
       note: note.note,
       start: roundSeconds(note.start),
-      duration: roundSeconds(note.duration),
+      duration: roundSeconds(Number.isFinite(note.source_duration) && note.source_duration! > 0 ? Math.min(note.duration, note.source_duration!) : note.duration),
       register: note.register,
       role: note.role,
       sourceTrack: note.source_track ?? note.track,

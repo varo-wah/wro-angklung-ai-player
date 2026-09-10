@@ -24,7 +24,7 @@ The YouTube path is architecture preparation only. It validates source input and
 
 The reliable path is the preloaded supported song library. If a requested song is not preloaded, the frontend must show a limitation message and the future YouTube approval placeholder. It must not imply that every arbitrary song can be played.
 
-The active Phase 2 test library currently keeps `A Whole New World` and `Perfect MuseScore Ver.` playable on the corrected G3-C6 rack. `Perfect` remains in the catalog as inactive because its draft still uses the old G4-C7 rack and needs remapping. The active arrangements are layered G3-C6 drafts with upper melody notes and lower physical accompaniment. They are playable in the simulator, but remain `demo_safe: false` until listening review, simplification, and hardware validation are complete.
+The active Phase 2 test library currently keeps `A Whole New World` and the MuseScore-derived `Perfect` arrangement playable on the corrected G3-C6 rack. The older Perfect draft remains inactive because it still uses the old G4-C7 rack and needs remapping. The active arrangements are layered G3-C6 drafts with upper melody notes and lower physical accompaniment. They are playable in the simulator, but remain `demo_safe: false` until listening review, simplification, and hardware validation are complete.
 
 ## Song Format
 

@@ -1,6 +1,6 @@
 # Local Whisper “Hey Angklobot” prototype
 
-The optional Guest toggle uses the existing browser microphone recorder and local Whisper.cpp endpoint. No wake-word model, access key, training, or additional service is required. The earlier openWakeWord training path is paused and is not part of the active application.
+The optional Guest toggle uses the existing browser microphone recorder and local Whisper.cpp endpoint. No wake-word model, access key, training, or additional service is required. The openWakeWord training path is paused; its scripts and research remain available for later, but are not used by the Guest page.
 
 ## Start on this Mac
 
@@ -42,7 +42,7 @@ Ollama needs the existing `llama3.2:latest` model. Skip starting a process if it
 - One segment is transcribed at a time. There is a listening gap while Whisper processes it; phrases crossing a segment boundary may need repeating. This is a practical prototype, not a low-latency acoustic wake-word engine.
 - Detection consumes the current listening session. The recorder has released its microphone before normal command capture starts. Pending recordings and HTTP requests are cancelled on suspension; stale results cannot activate a command.
 - Wake listening is paused during command capture, transcription, AI processing and queued/active TTS. It rearms 500 ms after the interaction becomes idle, including muted replies. No wake beep is used.
-- A whole wake utterance of “Angklobot” or “Hey Angklobot” invokes the connected `mega_full_18_note_web_serial` firmware greeting. The browser sends `ARM`, `CALIBRATE`, and `SWEEP`, waits for `ACK,SWEEP,DONE`, then sends `CALDONE` and `DISARM` before opening command capture. If no Mega is connected, voice continues without the physical greeting. Web Serial still requires the operator to connect the Mega explicitly from the Control Panel.
+- A whole wake utterance of “Angklobot” or “Hey Angklobot” invokes the connected `mega_full_18_note_web_serial` firmware greeting. The browser sends `ARM`, enters the firmware's required calibration-mode safety gate, and sends the fast fixed-output command `SWEEP,30,150,50`. It waits for `ACK,SWEEP,DONE`, then sends `CALDONE` and `DISARM` before opening command capture. This is a note sweep, not `CALSWEEP`, and it does not change stored motor calibration. If no Mega is connected, voice continues without the physical greeting. Web Serial still requires the operator to connect the Mega explicitly from the Control Panel.
 - Disable, page exit/unmount, permission revocation, or fatal recorder/Whisper errors stop the loop. A saved preference never automatically opens the microphone on reload; click to enable again.
 - Manual recording defaults remain 15 seconds / 1200 ms silence. English and Bahasa Indonesia command transcription and TTS remain on the existing path.
 - Browser capture uses the system/default input. This change does not add a microphone device selector.
@@ -57,4 +57,4 @@ Ollama needs the existing `llama3.2:latest` model. Skip starting a process if it
 
 Run `cd frontend && npm test && npm run build`. Real microphone recognition and speaker feedback must still be checked with the user's voice in the target room.
 
-Native wake-word model training remains deferred for a later phase.
+Deferred native research is in [wakeword-openwakeword-deferred.md](wakeword-openwakeword-deferred.md).

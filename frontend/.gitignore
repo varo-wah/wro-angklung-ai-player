@@ -4,3 +4,4 @@ out/
 dist/
 *.tsbuildinfo
 .env*.local
+status-site/runtime-config.js

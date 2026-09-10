@@ -33,7 +33,7 @@ test('Lantas keeps its vocal-section transposition and tuned performance tempo',
     mode: 'melody',
   });
   assert.equal(schedule.song.tempo_bpm, 77);
-  assert.equal(schedule.commands.length, 972);
+  assert.equal(schedule.commands.length, 460);
 });
 
 test('the targeted importer records the Lantas trim for future regenerations', () => {
