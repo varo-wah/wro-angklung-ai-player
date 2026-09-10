@@ -12,6 +12,12 @@ test('Yellow keeps vocal holds and rests instead of octave-raised piano fillers'
   for (const beat of [51, 52, 57, 58, 59, 60, 64, 65, 66, 67, 195, 201, 225, 363]) {
     assert.ok(!melody.some(n => n.beat === beat), `unexpected filler at ${beat}`);
   }
+  // Low vocal phrase endings are source MIDI E4 (64), mapped to G4.
+  // They must survive even though the nearby piano chord is lower-register too.
+  for (const beat of [71, 72.5, 95, 119, 192.5, 215, 239]) {
+    assert.ok(melody.some(n => n.beat === beat && n.note === 'G4'));
+  }
+  assert.equal(melody.find(n => n.beat === 71).duration_beats, 1);
   // Genuine E5 in both the verse and chorus must remain.
   for (const beat of [49, 50, 134.5, 135, 254.5, 255]) {
     assert.ok(melody.some(n => n.beat === beat && n.note === 'E5'));
