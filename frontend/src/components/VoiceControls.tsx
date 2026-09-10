@@ -13,6 +13,7 @@ export function MicrophoneButton({ voice, large = false }: { voice: VisitorVoice
 
 export function VoiceControls({ voice }: { voice: VisitorVoice }) {
   return <div className="voice-controls">
+    <button type="button" className="voice-control" onClick={voice.enableSpokenReplies}>Enable spoken replies</button>
     <button type="button" aria-pressed={voice.wakeWord.enabled} disabled={!voice.wakeWord.enabled && voice.state !== "idle" && voice.state !== "error"}
       className="voice-control wake-control" onClick={() => void (voice.wakeWord.enabled ? voice.wakeWord.disable() : voice.wakeWord.enable())}>
       <span className={`wake-dot ${voice.wakeWord.enabled ? "active" : ""}`} />Hey Angklobot: {voice.wakeWord.enabled ? "On" : "Off"}

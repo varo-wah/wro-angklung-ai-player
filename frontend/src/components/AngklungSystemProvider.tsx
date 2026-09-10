@@ -300,6 +300,13 @@ export function AngklungSystemProvider({ children }: { children: ReactNode }) {
     if (!arduinoRef.current?.connected) return { ok: false, error: "Arduino disconnected from the Mac." };
     const action = command.action;
     switch (action.type) {
+      case "settings": {
+        cancelConversationRequest();
+        stopPlayback();
+        setSettings(action.settings);
+        if (selectedSong.notes.length > 0) generateScheduleForSong(selectedSong, action.settings);
+        return { ok: true };
+      }
       case "request": {
         const value = await handleSongRequest(action.text, action.language, true);
         hostPendingRequestRef.current = value && pendingUserModeScheduleRef.current ? command.id : null;
@@ -1482,7 +1489,7 @@ export function AngklungSystemProvider({ children }: { children: ReactNode }) {
     setChatInput,
     setSelectedSongId: songId => routesToMac() ? remoteAction({ type: "select", songId }) : setSelectedSongId(songId),
     setSettings: value => {
-      if (routesToMac()) { setErrors(["Adjust arrangement settings on the Mac controller."]); return; }
+      if (routesToMac()) { remoteAction({ type: "settings", settings: value }); return; }
       setSettings(value);
       if (value.mode !== settings.mode && sourceMode === "library" && selectedSong.id === selectedSongId && selectedSong.notes.length > 0) {
         stopPlayback();

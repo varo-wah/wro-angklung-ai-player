@@ -33,6 +33,24 @@ export default function GuestPage() {
           </button>
         </div>
       </header>
+      <details className="mb-3 rounded border border-white/15 p-3">
+        <summary className="cursor-pointer text-sm text-lime-200">Arrangement settings</summary>
+        <p className="mt-2 text-xs text-slate-400">Changes stop playback and regenerate the arrangement on the Mac.</p>
+        <div className="mt-2 flex flex-wrap gap-3 text-sm">
+          <label>Mode <select className="bg-slate-900" aria-label="Arrangement mode" value={system.settings.mode}
+            onChange={e => system.setSettings({ ...system.settings, mode: e.target.value === "harmony" ? "harmony" : "melody" })}>
+            <option value="melody">Melody only</option><option value="harmony">Melody with Extra</option>
+          </select></label>
+          <label>Tempo <select className="bg-slate-900" aria-label="Arrangement tempo" value={system.settings.tempo}
+            onChange={e => system.setSettings({ ...system.settings, tempo: e.target.value === "slower" ? "slower" : "normal" })}>
+            <option value="normal">Normal</option><option value="slower">Slower</option>
+          </select></label>
+          <label>Strength <select className="bg-slate-900" aria-label="Arrangement strength" value={system.settings.strength}
+            onChange={e => system.setSettings({ ...system.settings, strength: Number(e.target.value) })}>
+            {Array.from({ length: 21 }, (_, i) => i / 20).map(v => <option key={v} value={v}>{Math.round(v * 100)}%</option>)}
+          </select></label>
+        </div>
+      </details>
       <div ref={conversation} className="conversation-history" role="log" aria-label="Conversation" aria-live="polite">
         <div className="conversation-intro">
           <p className="text-sm text-slate-400">Ask about angklung, or choose a song from the library.</p>

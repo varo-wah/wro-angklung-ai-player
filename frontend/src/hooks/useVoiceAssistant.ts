@@ -180,6 +180,17 @@ export function useVoiceAssistant({ onAfterResponse, onBeforeListen, onWakeDetec
     if (nextMuted) stopSpeech();
   }, [stopSpeech]);
 
-  return { cancelListening, error, language, muted, setLanguage, setMuted, speak,
+  const enableSpokenReplies = useCallback(() => {
+    stopSpeech();
+    setMuted(false);
+    setError(null);
+    // Speak directly in the tap handler, before any asynchronous work.
+    const utterance = speakVoiceResponse(language === "id" ? "Suara aktif." : "Spoken replies enabled.", language,
+      { onStart: () => {}, onEnd: () => {} });
+    utteranceRef.current = utterance;
+    if (!utterance) setError("This browser does not support spoken replies.");
+  }, [language, setMuted, stopSpeech]);
+
+  return { enableSpokenReplies, cancelListening, error, language, muted, setLanguage, setMuted, speak,
     startListening, submitText: runRequest, state, stopSpeech, transcript, wakeWord };
 }
