@@ -6,7 +6,7 @@ FRONTEND_DIR="$(cd "$SCRIPT_DIR/.." && pwd)"
 STATUS_CONFIG="$FRONTEND_DIR/status-site/runtime-config.js"
 FIREBASE_PROJECT="${ANGKLOBOT_FIREBASE_PROJECT:-angklobot-control-panel}"
 FIREBASE_TARGET="${ANGKLOBOT_FIREBASE_TARGET:-status}"
-LOCAL_ORIGIN="${ANGKLOBOT_LOCAL_ORIGIN:-http://localhost:3000}"
+LOCAL_ORIGIN="${ANGKLOBOT_LOCAL_ORIGIN:-http://127.0.0.1:3002}"
 TUNNEL_LOG="$(mktemp -t angklobot-cloudflared.XXXXXX)"
 TUNNEL_PID=""
 

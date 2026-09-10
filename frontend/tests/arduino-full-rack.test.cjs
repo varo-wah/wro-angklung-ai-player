@@ -155,13 +155,13 @@ test("preparation validates all 18 channels before ARM and ALL_OFF", async () =>
   assert.deepEqual(lines, []);
 });
 
-test("wake greeting uses the fast fixed-output firmware sweep and disarms after completion", async () => {
+test("wake greeting uses the measured fixed-output firmware sweep and disarms after completion", async () => {
   const {controller, lines} = connectedController();
   const greeting = controller.runWakeSweep();
   for (let index = 0; index < 20 && lines.length < 3; index++) await new Promise(resolve => setImmediate(resolve));
   controller.handleLine("ACK,SWEEP,DONE");
   assert.equal(await greeting, true);
-  assert.deepEqual(lines, ["ARM", "CALIBRATE", "SWEEP,30,150,50", "CALDONE", "DISARM"]);
+  assert.deepEqual(lines, ["ARM", "CALIBRATE", "SWEEP,40,300,150", "CALDONE", "DISARM"]);
 });
 
 test("disconnect shuts down and disarms before releasing serial", async () => {

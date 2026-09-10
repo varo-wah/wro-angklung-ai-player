@@ -1,6 +1,6 @@
 # Current song list — 10 September 2026
 
-35 musical arrangements and 3 hardware tests are active (38 entries). The legacy out-of-range Perfect draft is inactive; the playable Perfect is the reviewed MuseScore arrangement.
+35 musical arrangements and 4 hardware tests are active (39 entries). The legacy out-of-range Perfect draft is inactive; the playable Perfect is the reviewed MuseScore arrangement.
 
 ## Pop & ballads (16)
 
@@ -58,10 +58,11 @@
 
 - River Flows in You
 
-## Hardware tests (3)
+## Hardware tests (4)
 
 - 5-7-2-4 Cycle
 - 5-7-2-4 Ping-Pong
 - Cross Pattern
+- Full Rack Sweep
 
 We Are the Champions starts at its first chorus. Melody only / Melody with Extra is available across the library; Extra plays only the authored support parts when present. All scheduled holds follow the two-second cap and release-gap policy.

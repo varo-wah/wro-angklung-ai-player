@@ -1003,5 +1003,26 @@
     "melody_target_range": "G3-C6",
     "accompaniment_target_range": "G3-F4",
     "path": "/songs/arrangements/a_sky_full_of_stars.json"
+  },
+  {
+    "id": "trial_full_rack_sweep",
+    "title": "Full Rack Sweep",
+    "aliases": [
+      "sweep",
+      "full rack sweep",
+      "all notes sweep"
+    ],
+    "category": "hardware_trial",
+    "difficulty": "easy",
+    "priority": "high",
+    "reason": "One ascending pass through all 18 channels; uses normal calibrated NOTE output and the operator strength slider, on USB or ESP32.",
+    "arrangement_status": "hardware_trial_requires_physical_review",
+    "playable": true,
+    "demo_safe": false,
+    "has_validated_notes": true,
+    "active": true,
+    "visible_in_guest": true,
+    "physical_rack_map": "G3-C6",
+    "path": "/songs/arrangements/trial_full_rack_sweep.json"
   }
 ]

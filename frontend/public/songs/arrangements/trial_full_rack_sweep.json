@@ -1,0 +1,177 @@
+{
+  "format_version": "angklung_song.v1",
+  "id": "trial_full_rack_sweep",
+  "title": "Full Rack Sweep",
+  "aliases": [
+    "sweep",
+    "full rack sweep",
+    "all notes sweep"
+  ],
+  "category": "hardware_trial",
+  "difficulty": "easy",
+  "tempo_bpm": 60,
+  "time_signature": "4/4",
+  "physical_rack_map": "G3-C6",
+  "allowed_note_set": [
+    "G3",
+    "A3",
+    "B3",
+    "C4",
+    "D4",
+    "E4",
+    "F4",
+    "G4",
+    "A4",
+    "B4",
+    "C5",
+    "D5",
+    "E5",
+    "F5",
+    "G5",
+    "A5",
+    "B5",
+    "C6"
+  ],
+  "range": {
+    "lowest": "G3",
+    "highest": "C6",
+    "unique_notes": [
+      "G3",
+      "A3",
+      "B3",
+      "C4",
+      "D4",
+      "E4",
+      "F4",
+      "G4",
+      "A4",
+      "B4",
+      "C5",
+      "D5",
+      "E5",
+      "F5",
+      "G5",
+      "A5",
+      "B5",
+      "C6"
+    ]
+  },
+  "arrangement_status": "hardware_trial_requires_physical_review",
+  "playable": true,
+  "demo_safe": false,
+  "has_validated_notes": true,
+  "metadata": {
+    "purpose": "One ascending pass through all 18 channels; uses normal calibrated NOTE output and the operator strength slider, on USB or ESP32.",
+    "timing": "400 ms on, 350 ms quiet between notes; no automatic repeat."
+  },
+  "notes": [
+    {
+      "note": "G3",
+      "start": 1,
+      "duration": 0.4,
+      "role": "hardware_trial"
+    },
+    {
+      "note": "A3",
+      "start": 1.75,
+      "duration": 0.4,
+      "role": "hardware_trial"
+    },
+    {
+      "note": "B3",
+      "start": 2.5,
+      "duration": 0.4,
+      "role": "hardware_trial"
+    },
+    {
+      "note": "C4",
+      "start": 3.25,
+      "duration": 0.4,
+      "role": "hardware_trial"
+    },
+    {
+      "note": "D4",
+      "start": 4,
+      "duration": 0.4,
+      "role": "hardware_trial"
+    },
+    {
+      "note": "E4",
+      "start": 4.75,
+      "duration": 0.4,
+      "role": "hardware_trial"
+    },
+    {
+      "note": "F4",
+      "start": 5.5,
+      "duration": 0.4,
+      "role": "hardware_trial"
+    },
+    {
+      "note": "G4",
+      "start": 6.25,
+      "duration": 0.4,
+      "role": "hardware_trial"
+    },
+    {
+      "note": "A4",
+      "start": 7,
+      "duration": 0.4,
+      "role": "hardware_trial"
+    },
+    {
+      "note": "B4",
+      "start": 7.75,
+      "duration": 0.4,
+      "role": "hardware_trial"
+    },
+    {
+      "note": "C5",
+      "start": 8.5,
+      "duration": 0.4,
+      "role": "hardware_trial"
+    },
+    {
+      "note": "D5",
+      "start": 9.25,
+      "duration": 0.4,
+      "role": "hardware_trial"
+    },
+    {
+      "note": "E5",
+      "start": 10,
+      "duration": 0.4,
+      "role": "hardware_trial"
+    },
+    {
+      "note": "F5",
+      "start": 10.75,
+      "duration": 0.4,
+      "role": "hardware_trial"
+    },
+    {
+      "note": "G5",
+      "start": 11.5,
+      "duration": 0.4,
+      "role": "hardware_trial"
+    },
+    {
+      "note": "A5",
+      "start": 12.25,
+      "duration": 0.4,
+      "role": "hardware_trial"
+    },
+    {
+      "note": "B5",
+      "start": 13,
+      "duration": 0.4,
+      "role": "hardware_trial"
+    },
+    {
+      "note": "C6",
+      "start": 13.75,
+      "duration": 0.4,
+      "role": "hardware_trial"
+    }
+  ]
+}
