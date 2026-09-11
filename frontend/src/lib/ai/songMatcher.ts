@@ -58,7 +58,11 @@ function phraseScore(query: string, phrase: string): number {
   if (tokenCoverage === 1 && phraseTokens.size >= 2) return 0.91 + tokenPrecision * 0.05;
   const tokenScore = tokenCoverage * 0.7 + tokenPrecision * 0.3;
   const editScore = 1 - levenshtein(compactQuery, compactPhrase) / Math.max(compactQuery.length, compactPhrase.length, 1);
-  return tokenScore * 0.65 + editScore * 0.35;
+  // A single misspelled word has no token overlap. Offer close spellings for
+  // confirmation, but never let spelling similarity alone auto-start a song.
+  const spellingScore = Math.min(compactQuery.length, compactPhrase.length) >= 4 && editScore >= 0.72
+    ? Math.min(0.87, editScore) : 0;
+  return Math.max(tokenScore * 0.65 + editScore * 0.35, spellingScore);
 }
 
 function containsWholePhrase(message: string, phrase: string): boolean {

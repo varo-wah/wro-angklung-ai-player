@@ -21,7 +21,7 @@ async function harness({warning=false,failed=false,draft=false,requestDelay,audi
   'next/navigation':{usePathname:()=>pathname},'next/link':{default:({children,...props})=>React.createElement('a',props,children)},
   '@/lib/songCatalog':{loadSongCatalog:async()=>catalog,getActiveCatalogSongs:s=>s,getVisibleCatalogSongs:s=>s},
   '@/lib/songLoader':{loadSongArrangement:async()=>song},
-  '@/lib/audioEngine':{AudioEngine:class {async ensureReady(){await audioDelay?.promise;}stopAll(){}}},
+  '@/lib/audioEngine':{AudioEngine:class {setMuted(){}async ensureReady(){await audioDelay?.promise;}stopAll(){}}},
   '@/lib/playbackEngine':{PlaybackEngine:class {play(){plays++;}stop(){}}},
   '@/lib/arduinoSerial':{getInitialArduinoConnectionState:()=>({status:'disconnected'}),ArduinoSerialController:class { constructor(onState){this.onState=onState;this.connected=false;} async connect(){this.connected=true;this.onState({status:'connected',outputMode:'active',message:'USB'});} async preparePlayback(){} async allOff(){} async disarm(){} async disconnect(){this.connected=false;} }},
   '@/lib/instrumentMap':{buildFullAngklungRack:()=>[]},

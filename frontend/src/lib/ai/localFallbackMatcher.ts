@@ -17,7 +17,7 @@ export function routeSongRequestPreRouter(
   context: AiSongRequestContext = {},
 ): AiPreRouterResult | null {
   const songs = activeSongs(catalog);
-  const normalized = normalizeForMatching(normalizeVisitorInput(message));
+  let normalized = normalizeForMatching(normalizeVisitorInput(message));
   const pendingSong = findSong(context.pending_song_id, songs);
 
   if (isProtectedInternalRequest(normalized)) {
@@ -32,13 +32,16 @@ export function routeSongRequestPreRouter(
   if (pendingSong && isAffirmative(normalized)) {
     return routed("confirmation", playableResult(pendingSong, "confirmation_yes", 0.98, languageText(context, `Playing ${pendingSong.title}.`, `Memainkan ${pendingSong.title}.`)));
   }
-  if (pendingSong && isNegative(normalized)) {
-    const alternatives = context.recent_suggested_song_ids?.filter((id) => id !== pendingSong.id) ?? [];
-    return routed("confirmation", result({
-      assistantMessage: languageText(context, "All right. Which one would you prefer?", "Baik. Anda ingin yang mana?"),
-      confidence: 0.98, intent: "confirmation_no", nextState: "awaiting_song", shouldSearchCatalog: false,
-      suggestedSongIds: alternatives,
-    }));
+  if (pendingSong && (isNegative(normalized) || /^(no|nope|nah|bukan|tidak)\b/.test(normalized))) {
+    const correction = normalized.replace(/^(?:no|nope|nah|bukan|tidak)\b\s*(?:i meant |i mean |instead |maksud saya )?/, "");
+    const correctedMatch = matchSongRequest(correction, songs);
+    if (!correction || correctedMatch.confidence === "low" || correctedMatch.best?.song.id === pendingSong.id) {
+      return routed("confirmation", result({
+        assistantMessage: languageText(context, "Sorry, that’s not in the available library.", "Maaf, lagu itu belum ada di pustaka yang tersedia."),
+        confidence: 0.98, intent: "confirmation_no", nextState: "awaiting_song", shouldSearchCatalog: false,
+      }));
+    }
+    normalized = correction;
   }
 
   if (isGreeting(normalized)) {
@@ -140,12 +143,13 @@ export function routeSongRequestPreRouter(
       languageText(context, `Playing ${match.best.song.title}.`, `Memainkan ${match.best.song.title}.`)));
   }
   if (match.confidence === "medium" && match.candidates.length) {
-    const choices = match.candidates.map((candidate) => candidate.song);
+    const candidate = match.candidates[0].song;
     return routed("ambiguous_song_match", result({
-      assistantMessage: languageText(context, `Which did you mean: ${formatSongList(choices)}?`, `Maksud Anda yang mana: ${formatSongList(choices)}?`),
+      assistantMessage: languageText(context, `Do you mean ${candidate.title}?`, `Maksud Anda ${candidate.title}?`),
       confidence: match.best?.score ?? 0.5, intent: "song_request",
-      nextState: "awaiting_song", shouldSearchCatalog: true,
-      suggestedSongIds: choices.map((song) => song.id),
+      matchedSongId: candidate.id, needsConfirmation: true,
+      nextState: "awaiting_confirmation", shouldSearchCatalog: true,
+      suggestedSongIds: [candidate.id],
     }));
   }
 
