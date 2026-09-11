@@ -197,6 +197,8 @@ export function AngklungSystemProvider({ children }: { children: ReactNode }) {
   const [selectedSongId, setSelectedSongIdState] = useState("");
   const [selectedSong, setSelectedSong] = useState<LoadedSong>(EMPTY_SELECTED_SONG);
   const [youtubeUrl, setYoutubeUrl] = useState("");
+  const [virtualOnly, setVirtualOnly] = useState(false);
+  const virtualOnlyRef = useRef(false);
   const [settings, setSettings] = useState<ArrangementSettings>(DEFAULT_SETTINGS);
   const [schedule, setSchedule] = useState<ActuatorSchedule | null>(null);
   const [generatedNotes, setGeneratedNotes] = useState<SongNote[]>([]);
@@ -287,6 +289,7 @@ export function AngklungSystemProvider({ children }: { children: ReactNode }) {
   });
 
   function routesToMac(): boolean {
+    if (virtualOnlyRef.current) return false;
     if (robotSession.credentials.current.role === "host") return false;
     return robotSession.credentials.current.role === "remote" || robotSession.statusRef.current.hostOnline ||
       (browserReady && typeof window !== "undefined" && !["localhost", "127.0.0.1", "[::1]"].includes(window.location.hostname));
@@ -486,7 +489,7 @@ export function AngklungSystemProvider({ children }: { children: ReactNode }) {
   }, [songCatalog]);
 
   useEffect(() => {
-    if (robotSession.credentials.current.role === "host" || routesToMac()) return;
+    if (virtualOnlyRef.current || robotSession.credentials.current.role === "host" || routesToMac()) return;
     if (!syncControllerRef.current) {
       return;
     }
@@ -580,7 +583,7 @@ export function AngklungSystemProvider({ children }: { children: ReactNode }) {
   }
 
   function applySyncedSnapshot(snapshot: SyncedSystemSnapshot, fromServer = false) {
-    if (robotSession.credentials.current.role === "host" || (!fromServer && routesToMac())) return;
+    if (virtualOnlyRef.current || robotSession.credentials.current.role === "host" || (!fromServer && routesToMac())) return;
     if (!fromServer && snapshot.updatedAt <= latestSnapshotAtRef.current) {
       return;
     }
@@ -1210,6 +1213,7 @@ export function AngklungSystemProvider({ children }: { children: ReactNode }) {
   }
 
   async function connectArduino() {
+    if (virtualOnlyRef.current) { setErrors(["Enable Mac control before connecting hardware."]); return; }
     if (transportChangingRef.current) return;
     await getArduinoController().connect();
   }
@@ -1258,7 +1262,7 @@ export function AngklungSystemProvider({ children }: { children: ReactNode }) {
   }
 
   async function startSchedule(nextSchedule: ActuatorSchedule, offset = 0, isCurrent = () => true): Promise<boolean> {
-    if (transportChangingRef.current || ((robotSession.credentials.current.role === "host" || transportModeRef.current === "esp32") && !arduinoRef.current?.connected)) {
+    if (!virtualOnlyRef.current && (transportChangingRef.current || ((robotSession.credentials.current.role === "host" || transportModeRef.current === "esp32") && !arduinoRef.current?.connected))) {
       setErrors(["Robot disconnected. Connect the selected transport before playback."]);
       return false;
     }
@@ -1292,7 +1296,7 @@ export function AngklungSystemProvider({ children }: { children: ReactNode }) {
     }
 
     try {
-      await arduinoRef.current?.preparePlayback(nextSchedule.commands, offset >= duration ? 0 : offset);
+      if (!virtualOnlyRef.current) await arduinoRef.current?.preparePlayback(nextSchedule.commands, offset >= duration ? 0 : offset);
     } catch (error) {
       setErrors([error instanceof Error ? error.message : "Arduino did not accept the playback preparation command."]);
       return false;
@@ -1400,7 +1404,7 @@ export function AngklungSystemProvider({ children }: { children: ReactNode }) {
       else next.delete(command.instrument_id);
       return next;
     });
-    if (arduinoRef.current?.connected) {
+    if (!virtualOnlyRef.current && arduinoRef.current?.connected) {
       void arduinoRef.current.sendNote(command).catch((error) => {
         setErrors([error instanceof Error ? error.message : "Arduino command transmission failed; playback was stopped."]);
         stopPlaybackMedia();
@@ -1456,7 +1460,7 @@ export function AngklungSystemProvider({ children }: { children: ReactNode }) {
       message: robotSession.status.hostOnline ? `Mac USB: ${robotSession.status.arduino.message}` : "Mac controller offline. Remote playback unavailable.",
     } : arduinoConnection,
     remoteControl: routesToMac(),
-    physicalControl: routesToMac() || robotSession.role === "host" || transportMode === "esp32",
+    physicalControl: !virtualOnly && (routesToMac() || robotSession.role === "host" || transportMode === "esp32"),
     transportMode, transportChanging, setTransportMode,
     aiAssistantMode,
     aiConfidence,
@@ -1509,7 +1513,7 @@ export function AngklungSystemProvider({ children }: { children: ReactNode }) {
     clearChat: () => routesToMac() ? remoteAction({ type: "clear" }) : clearChat(),
     cancelConversationRequest: cancelFromDevice,
     requestSong: requestFromDevice,
-    runWakeGreeting: async () => { if (routesToMac()) await remoteCommand({ type: "wake" }); else await runWakeGreeting(); },
+    runWakeGreeting: async () => { if (virtualOnlyRef.current) return; if (routesToMac()) await remoteCommand({ type: "wake" }); else await runWakeGreeting(); },
     startPendingUserModePlayback: startPendingFromDevice,
     resetPlayback: () => { if (routesToMac()) remoteAction({ type: "reset" }); else { robotSession.cancelQueued(); resetPlayback(); } },
     setChatInput,
@@ -1534,9 +1538,24 @@ export function AngklungSystemProvider({ children }: { children: ReactNode }) {
           available: robotSession.serverAvailable, lastSyncedAt: robotSession.status.lastSeen,
           status: robotSession.serverAvailable ? "synced" : "waiting",
         } : syncState} />
-        <RobotSessionStatus session={robotSession} connectionLabel={transportMode === "esp32" ? "ESP32 Wi-Fi" : "Arduino USB"}
+        {robotSession.role !== "host" && !arduinoRef.current?.connected && <div className="mx-auto max-w-5xl px-4 py-3">
+          <label className="flex items-center gap-3 text-sm text-slate-100">
+            <input type="checkbox" checked={!virtualOnly} onChange={event => {
+              remoteConversationEpoch.current += 1;
+              remotePendingRequestRef.current = null;
+              stopPlayback();
+              const local = !event.target.checked;
+              virtualOnlyRef.current = local;
+              setVirtualOnly(local);
+              if (local) { setPreviewMuted(false); void prepareUserModeAudio(); }
+            }} />
+            Control Mac / physical Angklobot
+          </label>
+          <p className="mt-1 text-xs text-slate-400">{virtualOnly ? "Virtual mode: songs play on this device’s speaker. Mac playback is independent." : "Turn off to try the virtual angklung on this device without pairing."}</p>
+        </div>}
+        {!virtualOnly && <RobotSessionStatus session={robotSession} connectionLabel={transportMode === "esp32" ? "ESP32 Wi-Fi" : "Arduino USB"}
           onEnableHost={async () => { if (!await prepareUserModeAudio()) throw new Error("Enable browser audio on the Mac before starting its controller."); stopPlaybackMedia(); await robotSession.enableHost(); }}
-          onConnect={connectArduino} onStop={value.emergencyStopPlayback} />
+          onConnect={connectArduino} onStop={value.emergencyStopPlayback} />}
         {children}
       </div>
     </AngklungSystemContext.Provider>

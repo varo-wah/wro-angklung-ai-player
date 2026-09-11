@@ -35,7 +35,7 @@ export default function GuestPage() {
       </header>
       <details className="mb-3 rounded border border-white/15 p-3">
         <summary className="cursor-pointer text-sm text-lime-200">Arrangement settings</summary>
-        <p className="mt-2 text-xs text-slate-400">Changes stop playback and regenerate the arrangement on the Mac.</p>
+        <p className="mt-2 text-xs text-slate-400">Changes stop playback and regenerate the arrangement on the selected playback device.</p>
         <div className="mt-2 flex flex-wrap gap-3 text-sm">
           <label>Mode <select className="bg-slate-900" aria-label="Arrangement mode" value={system.settings.mode}
             onChange={e => system.setSettings({ ...system.settings, mode: e.target.value === "harmony" ? "harmony" : "melody" })}>
