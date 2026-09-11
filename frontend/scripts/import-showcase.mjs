@@ -149,10 +149,10 @@ function build(id,c,midi,hash) {
     if(added.length){last=t;if(added.length===2)lastDouble=t;support.push(...added);}
   }
   if (id === 'golden_huntrx') {
-    // Extras support the lead only; preserve silence between melody phrases.
+    // Bass may attack only alongside a melody attack, never between lead notes.
     for (let i = support.length - 1; i >= 0; i--) {
       const n = support[i];
-      const active = melody.find(m => m.start <= n.start && n.start < m.start + Math.min(m.duration, m.source_duration));
+      const active = melody.find(m => m.start === n.start);
       const remaining = active ? round(active.start + Math.min(active.duration, active.source_duration) - n.start) : 0;
       if (remaining < 0.01) support.splice(i, 1);
       else n.duration = Math.min(n.duration, remaining);
