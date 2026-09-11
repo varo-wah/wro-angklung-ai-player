@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import { routeArrangementCommand } from "@/lib/arrangementCommandRouter";
 import { useRobotSession } from "@/hooks/useRobotSession";
 import { RobotSessionStatus } from "@/components/RobotSessionStatus";
 import type { RobotAction, RobotCommand, RobotResult } from "@/lib/robotSession";
@@ -142,7 +143,7 @@ type AngklungSystemContextValue = {
 const DEFAULT_SETTINGS: ArrangementSettings = {
   strength: 0.8,
   tempo: "normal",
-  mode: "melody",
+  mode: "harmony",
 };
 
 const INITIAL_CHAT_MESSAGES: ChatMessage[] = [
@@ -748,6 +749,21 @@ export function AngklungSystemProvider({ children }: { children: ReactNode }) {
       return null;
     }
     pendingUserModeScheduleRef.current = null;
+
+    const arrangementMode = routeArrangementCommand(trimmedRequest);
+    if (arrangementMode) {
+      const nextSettings = { ...settings, mode: arrangementMode };
+      stopPlayback();
+      setSettings(nextSettings);
+      if (sourceMode === "library" && selectedSong.notes.length > 0) generateScheduleForSong(selectedSong, nextSettings);
+      const label = arrangementMode === "melody" ? "Melody only" : "Melody with Extra";
+      const response = language === "id" ? `Mode ${label}. Katakan play untuk mulai.` : `${label} selected. Say play when you’re ready.`;
+      const timestamp = Date.now();
+      setChatInput("");
+      setLatestUserRequest(trimmedRequest);
+      setChatMessages(current => [...current, { id: timestamp, speaker: "user", text: trimmedRequest }, { id: timestamp + 1, speaker: "assistant", text: response }]);
+      return response;
+    }
 
     const playbackCommand = routePlaybackChatCommand(trimmedRequest);
     if (playbackCommand) {
