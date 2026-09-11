@@ -2,6 +2,7 @@ import type { ArduinoConnectionState } from "./arduinoSerial";
 import type { SyncedSystemSnapshot } from "./systemSync";
 
 export type RobotAction =
+  | { type: "seek"; seconds: number }
   | { type: "settings"; settings: { strength: number; tempo: "normal" | "slower"; mode: "melody" | "harmony" } }
   | { type: "request"; text: string; language: "en" | "id" }
   | { type: "select"; songId: string }
@@ -28,11 +29,12 @@ export const OFFLINE_ROBOT: RobotStatus = {
 export const HOST_LEASE_MS = 5000;
 export const COMMAND_QUEUE_MS = 8000;
 export const COMMAND_RUN_MS = 65000;
-export const isInterrupt = (action: RobotAction) => ["stop", "estop", "pause", "reset", "cancel"].includes(action.type);
+export const isInterrupt = (action: RobotAction) => ["stop", "estop", "pause", "reset", "cancel", "seek"].includes(action.type);
 
 export function parseRobotAction(value: unknown): RobotAction {
   if (!value || typeof value !== "object") throw new Error("Invalid command.");
   const a = value as Record<string, unknown>;
+  if (a.type === "seek" && typeof a.seconds === "number" && Number.isFinite(a.seconds) && a.seconds >= 0) return { type: "seek", seconds: a.seconds };
   if (a.type === "request" && typeof a.text === "string" && a.text.trim().length > 0 && a.text.length <= 2000 && (a.language === "en" || a.language === "id")) {
     return { type: "request", text: a.text.trim(), language: a.language };
   }

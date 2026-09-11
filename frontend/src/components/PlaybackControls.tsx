@@ -21,6 +21,7 @@ type PlaybackControlsProps = {
   totalDurationSeconds: number;
   onPlay: () => void;
   onPause: () => void;
+  onSeek: (seconds: number) => void;
   onStop: () => void;
   onReset: () => void;
   onEmergencyStop?: () => void;
@@ -43,6 +44,7 @@ export function PlaybackControls({
   totalDurationSeconds,
   onPlay,
   onPause,
+  onSeek,
   onStop,
   onReset,
   onEmergencyStop,
@@ -51,7 +53,11 @@ export function PlaybackControls({
   onGenerate,
   embedded = false,
 }: PlaybackControlsProps) {
-  const progress = totalDurationSeconds > 0 ? Math.min((elapsedSeconds / totalDurationSeconds) * 100, 100) : 0;
+  const [seekDraft, setSeekDraft] = useState<number | null>(null);
+  function commitSeek(seconds: number) {
+    setSeekDraft(null);
+    onSeek(seconds);
+  }
   const arduinoConnected = arduinoConnection.status === "connected";
   const [connectionError, setConnectionError] = useState<string | null>(null);
   const connectionLabel = transportMode === "esp32" ? "ESP32" : "Arduino";
@@ -78,7 +84,7 @@ export function PlaybackControls({
           </p>
         </div>
         <div className="text-xs font-medium text-slate-400">
-          {elapsedSeconds.toFixed(2)}s / {totalDurationSeconds.toFixed(2)}s
+          {(seekDraft ?? elapsedSeconds).toFixed(2)}s / {totalDurationSeconds.toFixed(2)}s
         </div>
       </div>
       {onTransportChange && <div className="mb-3">
@@ -143,8 +149,18 @@ export function PlaybackControls({
           {previewMuted ? "Unmute virtual angklung" : "Mute virtual angklung"}
         </button>
       )}
-      <div className="mt-3 h-2 overflow-hidden rounded bg-white/10">
-        <div className="h-full bg-lime-300 transition-[width]" style={{ width: `${progress}%` }} />
+      <div className="mt-3">
+        <input type="range" aria-label="Playback position" min={0} max={totalDurationSeconds || 0} step={0.1}
+          disabled={disabled || totalDurationSeconds <= 0}
+          value={Math.min(seekDraft ?? elapsedSeconds, totalDurationSeconds)}
+          aria-valuetext={`${(seekDraft ?? elapsedSeconds).toFixed(1)} seconds of ${totalDurationSeconds.toFixed(1)} seconds`}
+          className="h-6 w-full cursor-pointer accent-lime-300 disabled:opacity-40"
+          onChange={event => setSeekDraft(Number(event.target.value))}
+          onPointerUp={event => commitSeek(Number(event.currentTarget.value))}
+          onPointerCancel={() => setSeekDraft(null)}
+          onKeyUp={event => { if (["ArrowLeft", "ArrowRight", "ArrowUp", "ArrowDown", "Home", "End", "PageUp", "PageDown"].includes(event.key)) commitSeek(Number(event.currentTarget.value)); }}
+          onBlur={event => { if (seekDraft !== null) commitSeek(Number(event.currentTarget.value)); }} />
+        <p className="text-[11px] text-slate-400">Choose a position, then press Play to continue from there.</p>
       </div>
     </>
   );

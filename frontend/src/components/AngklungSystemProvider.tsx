@@ -119,6 +119,7 @@ type AngklungSystemContextValue = {
   generateBuiltInSchedule: () => void;
   loadSchedule: (fileText: string, uploadedFileName: string) => void;
   pausePlayback: () => void;
+  seekPlayback: (seconds: number) => void;
   playSchedule: () => Promise<boolean>;
   prepareUserModeAudio: () => Promise<boolean>;
   previewMuted: boolean;
@@ -331,6 +332,7 @@ export function AngklungSystemProvider({ children }: { children: ReactNode }) {
         const started = await playSchedule();
         return { ok: started, value: started, ...(started ? {} : { error: "Playback could not start on the Mac. Generate a valid song and check USB." }) };
       }
+      case "seek": seekPlayback(action.seconds); await sendArduinoAllOff(); break;
       case "pause": pausePlayback(); await sendArduinoAllOff(); break;
       case "stop": stopPlayback(); await sendArduinoAllOff(); break;
       case "estop": emergencyStopPlayback(); await sendArduinoDisarm(); break;
@@ -1354,6 +1356,13 @@ export function AngklungSystemProvider({ children }: { children: ReactNode }) {
     void sendArduinoAllOff();
   }
 
+  function seekPlayback(seconds: number) {
+    if (!schedule || !Number.isFinite(seconds)) return;
+    stopPlayback();
+    setElapsedSeconds(Math.max(0, Math.min(seconds, schedule.timing.total_duration_seconds)));
+    setPlaybackState("paused");
+  }
+
   function resetPlayback() {
     stopPlayback();
     setPlaybackState("idle");
@@ -1474,6 +1483,7 @@ export function AngklungSystemProvider({ children }: { children: ReactNode }) {
     disconnectArduino: async () => { if (routesToMac()) { setErrors(["Disconnect the robot in the Mac controller tab."]); return; } await disconnectArduino(); },
     generateBuiltInSchedule: () => routesToMac() ? remoteAction({ type: "generate" }) : generateBuiltInSchedule(),
     loadSchedule: (text, name) => { if (routesToMac()) { setErrors(["Upload arrangements on the Mac controller."]); return; } loadSchedule(text, name); },
+    seekPlayback: (seconds) => { if (routesToMac()) remoteAction({ type: "seek", seconds }); else { robotSession.cancelQueued(); seekPlayback(seconds); } },
     pausePlayback: () => { if (routesToMac()) remoteAction({ type: "pause" }); else { robotSession.cancelQueued(); pausePlayback(); } },
     playSchedule: async () => { try { return routesToMac() ? (await remoteCommand({ type: "play" })).result.value === true : await playSchedule(); } catch { return false; } },
     previewMuted,

@@ -359,6 +359,7 @@ function SongSourcePanel() {
         onConnectArduino={system.connectArduino}
         onDisconnectArduino={system.disconnectArduino}
         onGenerate={system.generateBuiltInSchedule}
+        onSeek={system.seekPlayback}
         onPause={system.pausePlayback}
         onPlay={system.playSchedule}
         onReset={system.resetPlayback}
