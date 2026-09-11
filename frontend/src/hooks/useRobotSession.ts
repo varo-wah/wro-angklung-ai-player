@@ -129,7 +129,7 @@ export function useRobotSession(options: Options) {
   async function send(action: RobotAction): Promise<{ id: string; result: RobotResult }> {
     const identity = credentials.current;
     if (identity.role !== "remote") throw new Error("Enter the Mac pairing code to control Angklobot.");
-    if (!statusRef.current.hostOnline || statusRef.current.arduino.status !== "connected") throw new Error("Mac or Arduino offline. Command was not sent.");
+    if (!statusRef.current.hostOnline || (statusRef.current.arduino.status !== "connected" && statusRef.current.virtualPlayback !== true)) throw new Error("Mac or Arduino offline. Command was not sent.");
     const id = typeof crypto.randomUUID === "function" ? crypto.randomUUID()
       : Array.from(crypto.getRandomValues(new Uint8Array(16)), byte => byte.toString(16).padStart(2, "0")).join("");
     await api({ op: "command", id, action }, identity.token);

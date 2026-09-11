@@ -98,3 +98,13 @@ test('delayed post-speech playback is tied to the paired device that requested t
   store.enqueue(client.token, 'start', { type: 'start_pending', requestId: 'request' });
   assert.equal(store.heartbeat(host.token, connected).commands[0].id, 'start');
 });
+test('paired commands reach virtual Mac with hardware disconnected, but physical mode stays gated',()=>{
+ const {store,host,client}=session();
+ const offline={status:'disconnected',outputMode:'unknown',message:'No hardware'};
+ store.heartbeat(host.token,offline,{virtualPlayback:true});
+ assert.equal(store.view().virtualPlayback,true);
+ store.enqueue(client.token,'virtual-play',{type:'play'});
+ assert.equal(store.heartbeat(host.token,offline,{virtualPlayback:true}).commands[0].action.type,'play');
+ store.heartbeat(host.token,offline,{virtualPlayback:false});
+ assert.throws(()=>store.enqueue(client.token,'physical-play',{type:'play'}),/not connected/);
+});

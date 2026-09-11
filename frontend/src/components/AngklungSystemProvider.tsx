@@ -302,7 +302,7 @@ export function AngklungSystemProvider({ children }: { children: ReactNode }) {
   function remoteAction(action: RobotAction) { void remoteCommand(action).catch(() => {}); }
 
   async function executeRemoteCommand(command: RobotCommand): Promise<RobotResult> {
-    if (!arduinoRef.current?.connected) return { ok: false, error: "Arduino disconnected from the Mac." };
+    if (!virtualOnlyRef.current && !arduinoRef.current?.connected) return { ok: false, error: "Arduino disconnected from the Mac. Enable virtual playback on the Mac to test without hardware." };
     const action = command.action;
     switch (action.type) {
       case "settings": {
@@ -343,7 +343,7 @@ export function AngklungSystemProvider({ children }: { children: ReactNode }) {
       case "reset": resetPlayback(); await sendArduinoAllOff(); break;
       case "cancel": cancelConversationRequest(); break;
       case "clear": clearChat(); break;
-      case "wake": stopPlaybackMedia(); return { ok: true, value: await arduinoRef.current.runWakeSweep() };
+      case "wake": if (virtualOnlyRef.current) return { ok: true, value: false }; stopPlaybackMedia(); return { ok: true, value: await arduinoRef.current!.runWakeSweep() };
     }
     return { ok: true };
   }
@@ -547,6 +547,7 @@ export function AngklungSystemProvider({ children }: { children: ReactNode }) {
 
   function createSnapshot(updatedAt: number): SyncedSystemSnapshot {
     return {
+      virtualPlayback: virtualOnlyRef.current,
       activeCommandIds: Array.from(activeCommandIds),
       activeInstrumentIds: Array.from(activeInstrumentIds),
       aiAssistantMode,
@@ -1460,7 +1461,7 @@ export function AngklungSystemProvider({ children }: { children: ReactNode }) {
       message: robotSession.status.hostOnline ? `Mac USB: ${robotSession.status.arduino.message}` : "Mac controller offline. Remote playback unavailable.",
     } : arduinoConnection,
     remoteControl: routesToMac(),
-    physicalControl: !virtualOnly && (routesToMac() || robotSession.role === "host" || transportMode === "esp32"),
+    physicalControl: routesToMac() ? robotSession.status.virtualPlayback !== true : !virtualOnly && (robotSession.role === "host" || transportMode === "esp32"),
     transportMode, transportChanging, setTransportMode,
     aiAssistantMode,
     aiConfidence,
@@ -1538,7 +1539,7 @@ export function AngklungSystemProvider({ children }: { children: ReactNode }) {
           available: robotSession.serverAvailable, lastSyncedAt: robotSession.status.lastSeen,
           status: robotSession.serverAvailable ? "synced" : "waiting",
         } : syncState} />
-        {robotSession.role !== "host" && !arduinoRef.current?.connected && <div className="mx-auto max-w-5xl px-4 py-3">
+        {robotSession.role === "host" && <div className="mx-auto max-w-5xl px-4 py-3">
           <label className="flex items-center gap-3 text-sm text-slate-100">
             <input type="checkbox" checked={!virtualOnly} onChange={event => {
               remoteConversationEpoch.current += 1;
@@ -1549,11 +1550,11 @@ export function AngklungSystemProvider({ children }: { children: ReactNode }) {
               setVirtualOnly(local);
               if (local) { setPreviewMuted(false); void prepareUserModeAudio(); }
             }} />
-            Control Mac / physical Angklobot
+            Send playback to physical angklung
           </label>
-          <p className="mt-1 text-xs text-slate-400">{virtualOnly ? "Virtual mode: songs play on this device’s speaker. Mac playback is independent." : "Turn off to try the virtual angklung on this device without pairing."}</p>
+          <p className="mt-1 text-xs text-slate-400">{virtualOnly ? "Mac speakers only: paired phones control virtual playback here." : "Turn off to test on Mac speakers; turn on to send notes to connected hardware."}</p>
         </div>}
-        {!virtualOnly && <RobotSessionStatus session={robotSession} connectionLabel={transportMode === "esp32" ? "ESP32 Wi-Fi" : "Arduino USB"}
+        {<RobotSessionStatus session={robotSession} connectionLabel={transportMode === "esp32" ? "ESP32 Wi-Fi" : "Arduino USB"}
           onEnableHost={async () => { if (!await prepareUserModeAudio()) throw new Error("Enable browser audio on the Mac before starting its controller."); stopPlaybackMedia(); await robotSession.enableHost(); }}
           onConnect={connectArduino} onStop={value.emergencyStopPlayback} />}
         {children}

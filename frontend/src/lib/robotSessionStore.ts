@@ -73,7 +73,7 @@ export class RobotSessionStore {
     if (!host) return { ...OFFLINE_ROBOT, revision: this.revision };
     if (token && token !== host.token) this.requireClient(token);
     return {
-      hostOnline: true, arduino: host.arduino, sourceLabel: host.snapshot?.sourceLabel ?? "", playbackState: host.snapshot?.playbackState ?? "idle", lastSeen: host.lastSeen,
+      virtualPlayback: host.snapshot?.virtualPlayback === true, hostOnline: true, arduino: host.arduino, sourceLabel: host.snapshot?.sourceLabel ?? "", playbackState: host.snapshot?.playbackState ?? "idle", lastSeen: host.lastSeen,
       revision: this.revision,
       ...(token && since !== this.revision ? { snapshot: host.snapshot } : {}),
     };
@@ -88,7 +88,7 @@ export class RobotSessionStore {
       const entry = this.commands.get(ack.id);
       if (entry?.state === "running") { entry.state = "done"; entry.result = ack.result; }
     }
-    if (arduino.status !== "connected") this.failOutstanding("Arduino disconnected. Reconnect it on the Mac before sending commands.");
+    if (arduino.status !== "connected" && host.snapshot?.virtualPlayback !== true) this.failOutstanding("Arduino disconnected. Reconnect it on the Mac before sending commands.");
     // Interrupts are delivered even while an AI request or sweep is running.
     const commands: RobotCommand[] = [];
     const interrupt = [...this.commands.values()].find(c => c.state === "queued" && isInterrupt(c.action));
@@ -103,7 +103,7 @@ export class RobotSessionStore {
       if (existing.owner !== token) throw new SessionError("Command ID already in use.");
       return { id };
     }
-    if (host.arduino.status !== "connected") throw new SessionError("Arduino is not connected to the Mac. Command was not sent.");
+    if (host.arduino.status !== "connected" && host.snapshot?.virtualPlayback !== true) throw new SessionError("Arduino is not connected to the Mac. Command was not sent.");
     if (action.type === "start_pending") {
       const request = this.commands.get(action.requestId);
       if (!request || request.owner !== token || request.action.type !== "request" || request.state !== "done" || !request.result?.pending) throw new SessionError("No pending song belongs to this request.");

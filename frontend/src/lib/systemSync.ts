@@ -26,6 +26,7 @@ export type SyncedWorkflowStatus = {
 };
 
 export type SyncedSystemSnapshot = {
+  virtualPlayback?: boolean;
   activeCommandIds: string[];
   activeInstrumentIds: string[];
   aiAssistantMode: AiAssistantMode;

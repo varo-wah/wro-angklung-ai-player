@@ -11,6 +11,7 @@ export type RobotAction =
 export type RobotCommand = { id: string; action: RobotAction; createdAt: number };
 export type RobotResult = { ok: boolean; pending?: boolean; value?: string | boolean | null; error?: string };
 export type RobotStatus = {
+  virtualPlayback?: boolean;
   hostOnline: boolean;
   arduino: ArduinoConnectionState;
   sourceLabel: string;

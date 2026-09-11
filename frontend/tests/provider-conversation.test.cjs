@@ -109,17 +109,18 @@ test('a spoken or typed remote stop takes the interrupt path instead of queuing 
   assert.equal(h.sent[0].type,'estop');assert.equal(result,'Stopped playback.');assert.equal(h.plays,0);
  }finally{await h.cleanup();}
 });
-test('paired phone can opt into independent virtual playback without remote commands',async()=>{
- const h=await harness({robotRole:'remote'});
+test('Mac virtual output accepts paired requests without hardware and phone remains remote',async()=>{
+ const h=await harness({robotRole:'host',pathname:'/control',draft:true});
  try {
-  assert.equal(h.api.remoteControl,true);
   await React.act(async()=>document.querySelector('input[type="checkbox"]').click());
-  assert.equal(h.api.remoteControl,false);assert.equal(h.api.physicalControl,false);
-  await React.act(async()=>h.robotOptions.applySnapshot({})); // Ignored while local, even from paired server.
-  await React.act(async()=>h.api.requestSong('Play Test Song'));
-  await React.act(async()=>h.api.startPendingUserModePlayback());
-  assert.equal(h.plays,1);assert.equal(h.sent.length,0);assert.equal(h.snapshots.length,0);
+  assert.equal(h.api.physicalControl,false);
+  let response;
+  await React.act(async()=>{response=await h.robotOptions.execute({id:'v1',action:{type:'request',text:'Play Test Song',language:'en'}});});
+  assert.equal(response.pending,true);
+  await React.act(async()=>h.robotOptions.execute({id:'v2',action:{type:'start_pending',requestId:'v1'}}));
+  assert.equal(h.plays,1);assert.equal(h.robotOptions.snapshot().virtualPlayback,true);
   await React.act(async()=>document.querySelector('input[type="checkbox"]').click());
-  assert.equal(h.api.remoteControl,true);assert.equal(h.api.playbackState,'stopped');
+  await React.act(async()=>{response=await h.robotOptions.execute({id:'v3',action:{type:'play'}});});
+  assert.equal(response.ok,false);assert.equal(h.api.playbackState,'stopped');
  } finally {await h.cleanup();}
 });
