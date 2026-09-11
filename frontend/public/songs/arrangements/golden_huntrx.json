@@ -44,7 +44,7 @@
     {
       "note": "F4",
       "start": 0,
-      "duration": 0.14,
+      "duration": 0.123,
       "role": "accompaniment",
       "source_track": "0: Harp",
       "source_note": "C3",
@@ -276,7 +276,7 @@
     {
       "note": "G3",
       "start": 4.082,
-      "duration": 0.14,
+      "duration": 0.122,
       "role": "accompaniment",
       "source_track": "0: Harp",
       "source_note": "D3",
@@ -379,7 +379,7 @@
     {
       "note": "A3",
       "start": 6.105,
-      "duration": 0.14,
+      "duration": 0.138,
       "role": "accompaniment",
       "source_track": "0: Harp",
       "source_note": "E3",
@@ -508,7 +508,7 @@
     {
       "note": "F4",
       "start": 8.164,
-      "duration": 0.14,
+      "duration": 0.121,
       "role": "accompaniment",
       "source_track": "0: Harp",
       "source_note": "C3",
@@ -624,7 +624,7 @@
     {
       "note": "G3",
       "start": 10.189,
-      "duration": 0.14,
+      "duration": 0.134,
       "role": "accompaniment",
       "source_track": "0: Harp",
       "source_note": "D3",
@@ -740,7 +740,7 @@
     {
       "note": "G3",
       "start": 12.247,
-      "duration": 0.14,
+      "duration": 0.117,
       "role": "accompaniment",
       "source_track": "0: Harp",
       "source_note": "D3",
@@ -841,18 +841,6 @@
       "section": "opening motif"
     },
     {
-      "note": "F4",
-      "start": 16.458,
-      "duration": 0.14,
-      "role": "accompaniment",
-      "source_track": "0: Harp",
-      "source_note": "C3",
-      "source_note_index": 74,
-      "source_start": 16.458,
-      "section": "opening motif",
-      "playback_strength_multiplier": 0.8
-    },
-    {
       "note": "C4",
       "start": 16.955,
       "duration": 0.116,
@@ -868,7 +856,7 @@
     {
       "note": "C4",
       "start": 17.111,
-      "duration": 0.14,
+      "duration": 0.116,
       "role": "accompaniment",
       "source_track": "0: Harp",
       "source_note": "G3",
@@ -919,7 +907,7 @@
     {
       "note": "F4",
       "start": 17.773,
-      "duration": 0.14,
+      "duration": 0.111,
       "role": "accompaniment",
       "source_track": "0: Harp",
       "source_note": "C4",
@@ -995,7 +983,7 @@
     {
       "note": "G3",
       "start": 19.079,
-      "duration": 0.14,
+      "duration": 0.119,
       "role": "accompaniment",
       "source_track": "0: Harp",
       "source_note": "D3",
@@ -1081,18 +1069,6 @@
       "playback_strength_multiplier": 0.9
     },
     {
-      "note": "D4",
-      "start": 21.032,
-      "duration": 0.14,
-      "role": "accompaniment",
-      "source_track": "0: Harp",
-      "source_note": "A3",
-      "source_note_index": 114,
-      "source_start": 21.032,
-      "section": "verse",
-      "playback_strength_multiplier": 0.9
-    },
-    {
       "note": "G4",
       "start": 21.178,
       "duration": 0.529,
@@ -1104,18 +1080,6 @@
       "source_start": 21.178,
       "source_duration": 0.49,
       "section": "verse"
-    },
-    {
-      "note": "G3",
-      "start": 21.679,
-      "duration": 0.14,
-      "role": "accompaniment",
-      "source_track": "0: Harp",
-      "source_note": "D4",
-      "source_note_index": 119,
-      "source_start": 21.679,
-      "section": "verse",
-      "playback_strength_multiplier": 0.9
     },
     {
       "note": "C4",
@@ -1298,7 +1262,7 @@
     {
       "note": "F4",
       "start": 25.089,
-      "duration": 0.14,
+      "duration": 0.116,
       "role": "accompaniment",
       "source_track": "0: Harp",
       "source_note": "C4",
@@ -1336,7 +1300,7 @@
     {
       "note": "F4",
       "start": 25.746,
-      "duration": 0.14,
+      "duration": 0.116,
       "role": "accompaniment",
       "source_track": "0: Harp",
       "source_note": "C3",
@@ -1424,7 +1388,7 @@
     {
       "note": "E4",
       "start": 27.705,
-      "duration": 0.14,
+      "duration": 0.13,
       "role": "accompaniment",
       "source_track": "0: Harp",
       "source_note": "B3",
@@ -1525,7 +1489,7 @@
     {
       "note": "D4",
       "start": 29.814,
-      "duration": 0.14,
+      "duration": 0.122,
       "role": "accompaniment",
       "source_track": "0: Harp",
       "source_note": "A3",
@@ -1627,7 +1591,7 @@
     {
       "note": "E4",
       "start": 31.284,
-      "duration": 0.14,
+      "duration": 0.118,
       "role": "accompaniment",
       "source_track": "0: Harp",
       "source_note": "B3",
@@ -1916,7 +1880,7 @@
     {
       "note": "G3",
       "start": 36.495,
-      "duration": 0.14,
+      "duration": 0.134,
       "role": "accompaniment",
       "source_track": "0: Harp",
       "source_note": "D3",
@@ -1979,7 +1943,7 @@
     {
       "note": "G3",
       "start": 37.471,
-      "duration": 0.14,
+      "duration": 0.127,
       "role": "accompaniment",
       "source_track": "0: Harp",
       "source_note": "D3",
@@ -2356,7 +2320,7 @@
     {
       "note": "G3",
       "start": 44.312,
-      "duration": 0.14,
+      "duration": 0.107,
       "role": "accompaniment",
       "source_track": "0: Harp",
       "source_note": "D3",
@@ -2419,7 +2383,7 @@
     {
       "note": "G3",
       "start": 45.287,
-      "duration": 0.14,
+      "duration": 0.134,
       "role": "accompaniment",
       "source_track": "0: Harp",
       "source_note": "D3",
@@ -2482,7 +2446,7 @@
     {
       "note": "A3",
       "start": 46.267,
-      "duration": 0.14,
+      "duration": 0.123,
       "role": "accompaniment",
       "source_track": "0: Harp",
       "source_note": "E3",
@@ -2621,30 +2585,6 @@
     },
     {
       "note": "C4",
-      "start": 49.68,
-      "duration": 0.14,
-      "role": "accompaniment",
-      "source_track": "0: Harp",
-      "source_note": "G3",
-      "source_note_index": 368,
-      "source_start": 49.68,
-      "section": "chorus one",
-      "playback_strength_multiplier": 1.05
-    },
-    {
-      "note": "G3",
-      "start": 49.68,
-      "duration": 0.14,
-      "role": "accompaniment",
-      "source_track": "0: Harp",
-      "source_note": "D4",
-      "source_note_index": 369,
-      "source_start": 49.68,
-      "section": "chorus one",
-      "playback_strength_multiplier": 0.945
-    },
-    {
-      "note": "C4",
       "start": 50.163,
       "duration": 0.447,
       "role": "melody",
@@ -2762,7 +2702,7 @@
     {
       "note": "A3",
       "start": 53.558,
-      "duration": 0.14,
+      "duration": 0.023,
       "role": "accompaniment",
       "source_track": "0: Harp",
       "source_note": "E3",
@@ -2884,18 +2824,6 @@
       "source_start": 57,
       "source_duration": 0.485,
       "section": "chorus one"
-    },
-    {
-      "note": "G3",
-      "start": 57.501,
-      "duration": 0.14,
-      "role": "accompaniment",
-      "source_track": "0: Harp",
-      "source_note": "D3",
-      "source_note_index": 401,
-      "source_start": 57.501,
-      "section": "chorus one",
-      "playback_strength_multiplier": 1.05
     },
     {
       "note": "C4",
@@ -3266,7 +3194,7 @@
     {
       "note": "G3",
       "start": 66.293,
-      "duration": 0.14,
+      "duration": 0.116,
       "role": "accompaniment",
       "source_track": "0: Harp",
       "source_note": "D3",
@@ -3368,7 +3296,7 @@
     {
       "note": "G3",
       "start": 67.423,
-      "duration": 0.14,
+      "duration": 0.111,
       "role": "accompaniment",
       "source_track": "0: Harp",
       "source_note": "D3",
@@ -3418,7 +3346,7 @@
     {
       "note": "G3",
       "start": 68.388,
-      "duration": 0.14,
+      "duration": 0.116,
       "role": "accompaniment",
       "source_track": "0: Harp",
       "source_note": "D3",
@@ -3482,7 +3410,7 @@
     {
       "note": "G3",
       "start": 68.888,
-      "duration": 0.14,
+      "duration": 0.118,
       "role": "accompaniment",
       "source_track": "0: Harp",
       "source_note": "D4",
@@ -3621,7 +3549,7 @@
     {
       "note": "F4",
       "start": 71.494,
-      "duration": 0.14,
+      "duration": 0.108,
       "role": "accompaniment",
       "source_track": "0: Harp",
       "source_note": "C4",
@@ -3723,7 +3651,7 @@
     {
       "note": "F4",
       "start": 72.955,
-      "duration": 0.14,
+      "duration": 0.117,
       "role": "accompaniment",
       "source_track": "0: Harp",
       "source_note": "C4",
@@ -3761,7 +3689,7 @@
     {
       "note": "G3",
       "start": 73.451,
-      "duration": 0.14,
+      "duration": 0.123,
       "role": "accompaniment",
       "source_track": "0: Harp",
       "source_note": "D3",
@@ -3786,7 +3714,7 @@
     {
       "note": "G3",
       "start": 73.933,
-      "duration": 0.14,
+      "duration": 0.11,
       "role": "accompaniment",
       "source_track": "0: Harp",
       "source_note": "D4",
@@ -3824,7 +3752,7 @@
     {
       "note": "G3",
       "start": 74.428,
-      "duration": 0.14,
+      "duration": 0.116,
       "role": "accompaniment",
       "source_track": "0: Harp",
       "source_note": "D3",
@@ -3951,7 +3879,7 @@
     {
       "note": "G3",
       "start": 76.211,
-      "duration": 0.14,
+      "duration": 0.116,
       "role": "accompaniment",
       "source_track": "0: Harp",
       "source_note": "D3",
@@ -4116,7 +4044,7 @@
     {
       "note": "A3",
       "start": 78.496,
-      "duration": 0.14,
+      "duration": 0.113,
       "role": "accompaniment",
       "source_track": "0: Harp",
       "source_note": "E3",
@@ -4267,7 +4195,7 @@
     {
       "note": "G3",
       "start": 82.236,
-      "duration": 0.14,
+      "duration": 0.127,
       "role": "accompaniment",
       "source_track": "0: Harp",
       "source_note": "D3",
@@ -4569,7 +4497,7 @@
     {
       "note": "G3",
       "start": 90.053,
-      "duration": 0.14,
+      "duration": 0.101,
       "role": "accompaniment",
       "source_track": "0: Harp",
       "source_note": "D3",
@@ -4670,7 +4598,7 @@
     {
       "note": "G3",
       "start": 92.329,
-      "duration": 0.14,
+      "duration": 0.109,
       "role": "accompaniment",
       "source_track": "0: Harp",
       "source_note": "D4",
@@ -4708,7 +4636,7 @@
     {
       "note": "E4",
       "start": 93.636,
-      "duration": 0.14,
+      "duration": 0.01,
       "role": "accompaniment",
       "source_track": "0: Harp",
       "source_note": "B3",
@@ -5334,18 +5262,6 @@
       "section": "contrasting verse"
     },
     {
-      "note": "F4",
-      "start": 111.074,
-      "duration": 0.14,
-      "role": "accompaniment",
-      "source_track": "0: Harp",
-      "source_note": "C4",
-      "source_note_index": 788,
-      "source_start": 111.074,
-      "section": "rebuild",
-      "playback_strength_multiplier": 0.95
-    },
-    {
       "note": "A3",
       "start": 111.44,
       "duration": 0.079,
@@ -5489,7 +5405,7 @@
     {
       "note": "D4",
       "start": 114.008,
-      "duration": 0.14,
+      "duration": 0.122,
       "role": "accompaniment",
       "source_track": "0: Harp",
       "source_note": "A3",
@@ -5510,18 +5426,6 @@
       "source_start": 114.612,
       "source_duration": 0.487,
       "section": "rebuild"
-    },
-    {
-      "note": "D4",
-      "start": 115.105,
-      "duration": 0.14,
-      "role": "accompaniment",
-      "source_track": "0: Harp",
-      "source_note": "A3",
-      "source_note_index": 809,
-      "source_start": 115.136,
-      "section": "rebuild",
-      "playback_strength_multiplier": 0.95
     },
     {
       "note": "A4",
@@ -5625,18 +5529,6 @@
       "source_start": 117.783,
       "source_duration": 0.237,
       "section": "rebuild"
-    },
-    {
-      "note": "F4",
-      "start": 118.02,
-      "duration": 0.14,
-      "role": "accompaniment",
-      "source_track": "0: Harp",
-      "source_note": "C3",
-      "source_note_index": 821,
-      "source_start": 118.02,
-      "section": "rebuild",
-      "playback_strength_multiplier": 0.95
     },
     {
       "note": "A3",
@@ -5768,7 +5660,7 @@
     {
       "note": "B3",
       "start": 121.93,
-      "duration": 0.14,
+      "duration": 0.024,
       "role": "accompaniment",
       "source_track": "0: Harp",
       "source_note": "F#3",
@@ -5933,7 +5825,7 @@
     {
       "note": "G3",
       "start": 126.984,
-      "duration": 0.14,
+      "duration": 0.132,
       "role": "accompaniment",
       "source_track": "0: Harp",
       "source_note": "D3",
@@ -5958,7 +5850,7 @@
     {
       "note": "G3",
       "start": 127.635,
-      "duration": 0.14,
+      "duration": 0.106,
       "role": "accompaniment",
       "source_track": "0: Harp",
       "source_note": "D3",
@@ -5983,7 +5875,7 @@
     {
       "note": "F4",
       "start": 128.121,
-      "duration": 0.14,
+      "duration": 0.121,
       "role": "accompaniment",
       "source_track": "0: Harp",
       "source_note": "C4",
@@ -6134,7 +6026,7 @@
     {
       "note": "G3",
       "start": 130.721,
-      "duration": 0.14,
+      "duration": 0.129,
       "role": "accompaniment",
       "source_track": "0: Harp",
       "source_note": "D3",
@@ -6185,7 +6077,7 @@
     {
       "note": "B3",
       "start": 131.224,
-      "duration": 0.14,
+      "duration": 0.116,
       "role": "accompaniment",
       "source_track": "0: Harp",
       "source_note": "F#3",
@@ -6299,7 +6191,7 @@
     {
       "note": "G3",
       "start": 132.851,
-      "duration": 0.14,
+      "duration": 0.116,
       "role": "accompaniment",
       "source_track": "0: Harp",
       "source_note": "D3",
@@ -6502,7 +6394,7 @@
     {
       "note": "F4",
       "start": 135.938,
-      "duration": 0.14,
+      "duration": 0.126,
       "role": "accompaniment",
       "source_track": "0: Harp",
       "source_note": "C3",
@@ -6527,7 +6419,7 @@
     {
       "note": "F4",
       "start": 136.426,
-      "duration": 0.14,
+      "duration": 0.107,
       "role": "accompaniment",
       "source_track": "0: Harp",
       "source_note": "C4",
@@ -6565,7 +6457,7 @@
     {
       "note": "F4",
       "start": 136.913,
-      "duration": 0.14,
+      "duration": 0.116,
       "role": "accompaniment",
       "source_track": "0: Harp",
       "source_note": "C3",
@@ -6628,7 +6520,7 @@
     {
       "note": "G3",
       "start": 137.891,
-      "duration": 0.14,
+      "duration": 0.108,
       "role": "accompaniment",
       "source_track": "0: Harp",
       "source_note": "D3",
@@ -6653,7 +6545,7 @@
     {
       "note": "G3",
       "start": 138.375,
-      "duration": 0.14,
+      "duration": 0.126,
       "role": "accompaniment",
       "source_track": "0: Harp",
       "source_note": "D4",
@@ -6755,7 +6647,7 @@
     {
       "note": "G3",
       "start": 139.356,
-      "duration": 0.14,
+      "duration": 0.117,
       "role": "accompaniment",
       "source_track": "0: Harp",
       "source_note": "D4",
@@ -6882,7 +6774,7 @@
     {
       "note": "G3",
       "start": 141.14,
-      "duration": 0.14,
+      "duration": 0.116,
       "role": "accompaniment",
       "source_track": "0: Harp",
       "source_note": "D4",
@@ -6983,7 +6875,7 @@
     {
       "note": "A3",
       "start": 142.938,
-      "duration": 0.14,
+      "duration": 0.116,
       "role": "accompaniment",
       "source_track": "0: Harp",
       "source_note": "E3",
@@ -7106,18 +6998,6 @@
       "playback_strength_multiplier": 1.05
     },
     {
-      "note": "D4",
-      "start": 145.543,
-      "duration": 0.14,
-      "role": "accompaniment",
-      "source_track": "0: Harp",
-      "source_note": "A3",
-      "source_note_index": 1045,
-      "source_start": 145.543,
-      "section": "chorus two",
-      "playback_strength_multiplier": 1.05
-    },
-    {
       "note": "B3",
       "start": 145.864,
       "duration": 0.461,
@@ -7158,7 +7038,7 @@
     {
       "note": "G3",
       "start": 146.682,
-      "duration": 0.14,
+      "duration": 0.112,
       "role": "accompaniment",
       "source_track": "0: Harp",
       "source_note": "D3",
@@ -7183,7 +7063,7 @@
     {
       "note": "G3",
       "start": 147.171,
-      "duration": 0.14,
+      "duration": 0.124,
       "role": "accompaniment",
       "source_track": "0: Harp",
       "source_note": "D4",
@@ -7271,7 +7151,7 @@
     {
       "note": "G3",
       "start": 148.963,
-      "duration": 0.14,
+      "duration": 0.114,
       "role": "accompaniment",
       "source_track": "0: Harp",
       "source_note": "D4",
@@ -7444,18 +7324,6 @@
       "playback_strength_multiplier": 1.05
     },
     {
-      "note": "D4",
-      "start": 153.36,
-      "duration": 0.14,
-      "role": "accompaniment",
-      "source_track": "0: Harp",
-      "source_note": "A3",
-      "source_note_index": 1114,
-      "source_start": 153.36,
-      "section": "chorus two",
-      "playback_strength_multiplier": 1.05
-    },
-    {
       "note": "B3",
       "start": 153.687,
       "duration": 0.429,
@@ -7496,7 +7364,7 @@
     {
       "note": "G3",
       "start": 154.497,
-      "duration": 0.14,
+      "duration": 0.12,
       "role": "accompaniment",
       "source_track": "0: Harp",
       "source_note": "D3",
@@ -7521,7 +7389,7 @@
     {
       "note": "G3",
       "start": 154.987,
-      "duration": 0.14,
+      "duration": 0.131,
       "role": "accompaniment",
       "source_track": "0: Harp",
       "source_note": "D4",
@@ -7584,7 +7452,7 @@
     {
       "note": "B3",
       "start": 156.45,
-      "duration": 0.14,
+      "duration": 0.106,
       "role": "accompaniment",
       "source_track": "0: Harp",
       "source_note": "F#3",
@@ -7672,7 +7540,7 @@
     {
       "note": "E4",
       "start": 158.24,
-      "duration": 0.14,
+      "duration": 0.129,
       "role": "accompaniment",
       "source_track": "0: Harp",
       "source_note": "B3",
@@ -7723,7 +7591,7 @@
     {
       "note": "F4",
       "start": 159.067,
-      "duration": 0.14,
+      "duration": 0.116,
       "role": "accompaniment",
       "source_track": "0: Harp",
       "source_note": "C3",
@@ -7889,7 +7757,7 @@
     {
       "note": "C4",
       "start": 161.319,
-      "duration": 0.14,
+      "duration": 0.116,
       "role": "accompaniment",
       "source_track": "0: Harp",
       "source_note": "G3",
@@ -7965,7 +7833,7 @@
     {
       "note": "C4",
       "start": 162.944,
-      "duration": 0.14,
+      "duration": 0.117,
       "role": "accompaniment",
       "source_track": "0: Harp",
       "source_note": "G3",
@@ -8042,7 +7910,7 @@
     {
       "note": "G3",
       "start": 163.601,
-      "duration": 0.14,
+      "duration": 0.116,
       "role": "accompaniment",
       "source_track": "0: Harp",
       "source_note": "D3",
@@ -8118,7 +7986,7 @@
     {
       "note": "A3",
       "start": 164.913,
-      "duration": 0.14,
+      "duration": 0.116,
       "role": "accompaniment",
       "source_track": "0: Harp",
       "source_note": "E3",
@@ -8195,7 +8063,7 @@
     {
       "note": "E4",
       "start": 165.569,
-      "duration": 0.14,
+      "duration": 0.116,
       "role": "accompaniment",
       "source_track": "0: Harp",
       "source_note": "B3",
@@ -8435,7 +8303,7 @@
     {
       "note": "G3",
       "start": 170.934,
-      "duration": 0.14,
+      "duration": 0.121,
       "role": "accompaniment",
       "source_track": "0: Harp",
       "source_note": "D4",
@@ -8511,7 +8379,7 @@
     {
       "note": "G3",
       "start": 172.397,
-      "duration": 0.14,
+      "duration": 0.111,
       "role": "accompaniment",
       "source_track": "0: Harp",
       "source_note": "D4",
@@ -9466,7 +9334,7 @@
     ],
     "transposition_semitones": -7,
     "melody_selection": "Track 0 Harp (piano program): continuity- and velocity-led upper voice extraction, including the LOWER repeated vocal notes underneath chorus harmony at 50.65-52.59s. Rolled chords are grouped, octave doubles removed, and inner piano notes underneath a sustained lead rejected. This is a reviewed extraction interpretation, not a separately encoded vocal track.",
-    "accompaniment_selection": "Sparse original left-hand root attacks plus one inner chord tone at selected chorus chord changes. Retain the source rising figures and repeated-note climax in the upper voice; suppress the continuous piano left-hand subdivisions.",
+    "accompaniment_selection": "Sparse original left-hand root attacks plus one inner chord tone at selected chorus chord changes. Retain the source rising figures and repeated-note climax in the upper voice; suppress the continuous piano left-hand subdivisions. Extras sound only within melody note windows; no accompaniment fills in melody rests.",
     "sections": [
       {
         "start": 0,
@@ -9548,7 +9416,7 @@
       "accidentals": [],
       "octaveRepairs": [],
       "melody_events": 515,
-      "accompaniment_events": 225,
+      "accompaniment_events": 214,
       "interval_changes": [],
       "source_note_count": 1382
     }
