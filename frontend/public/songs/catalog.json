@@ -1024,5 +1024,27 @@
     "visible_in_guest": true,
     "physical_rack_map": "G3-C6",
     "path": "/songs/arrangements/trial_full_rack_sweep.json"
+  },
+  {
+    "id": "yamko_rambe_yamko",
+    "title": "Yamko Rambe Yamko",
+    "aliases": [
+      "yamko",
+      "yamko rambe yamko",
+      "yamko rambe"
+    ],
+    "category": "indonesian_traditional",
+    "difficulty": "medium",
+    "priority": "high",
+    "arrangement_status": "sheet_transcription_draft_needs_listening_review",
+    "playable": true,
+    "demo_safe": false,
+    "has_validated_notes": true,
+    "active": true,
+    "visible_in_guest": true,
+    "physical_rack_map": "G3-C6",
+    "melody_register": "upper_physical",
+    "melody_target_range": "C5-C6",
+    "path": "/songs/arrangements/yamko_rambe_yamko.json"
   }
 ]
