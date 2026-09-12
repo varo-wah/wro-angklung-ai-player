@@ -26,7 +26,7 @@ function importScore(source) {
     if (!rack[channel]) throw new Error(`Invalid source channel ${channel}.`);
     const softerLowRepeat = channel <= 6 && requestedDurationMs <= 180;
     const relativeStrength = motorPowerPercent[channel] / referencePowerPercent;
-    const playbackStrengthMultiplier = Math.round(relativeStrength * (softerLowRepeat ? 0.8 : 1) * 1000) / 1000;
+    const playbackStrengthMultiplier = Math.round(relativeStrength * (softerLowRepeat ? 0.8 : 1) * (channel <= 6 ? 1.35 : 1) * 1000) / 1000;
     return {
       note: rack[channel],
       start: startMs / 1000,

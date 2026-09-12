@@ -16,8 +16,11 @@ test('You Are the Reason exactly preserves the supplied score timing and dynamic
   assert.equal(arrangement.notes.length, 827);
   assert.equal(arrangement.tempo_bpm, 86);
   assert.equal(arrangement.metadata.source_end_ms, 193600);
-  assert.equal(Math.min(...arrangement.notes.map(note => note.playback_strength_multiplier)), 0.8);
-  assert.equal(Math.max(...arrangement.notes.map(note => note.playback_strength_multiplier)), 1.25);
+  const bass = new Set('G3 A3 B3 C4 D4 E4 F4'.split(' '));
+  for (const n of arrangement.notes) {
+    const original = n.source_motor_power_percent / 40 * (n.source_softer_low_repeat ? .8 : 1);
+    assert.equal(n.playback_strength_multiplier, Math.round(original * (bass.has(n.note) ? 1.35 : 1) * 1000) / 1000);
+  }
   assert.equal(Math.max(...arrangement.notes.map(note => note.duration)), 0.3);
   assert.ok(arrangement.notes.every(note => note.role === 'melody'));
   assert.ok(arrangement.notes.some(note => note.source_softer_low_repeat));
