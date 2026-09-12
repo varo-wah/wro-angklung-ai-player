@@ -1046,5 +1046,27 @@
     "melody_register": "upper_physical",
     "melody_target_range": "C5-C6",
     "path": "/songs/arrangements/yamko_rambe_yamko.json"
+  },
+  {
+    "id": "ampar_ampar_pisang",
+    "title": "Ampar-Ampar Pisang",
+    "aliases": [
+      "ampar ampar pisang",
+      "ampar",
+      "ampar pisang"
+    ],
+    "category": "indonesian_traditional",
+    "difficulty": "medium",
+    "priority": "high",
+    "arrangement_status": "sheet_transcription_draft_needs_listening_review",
+    "playable": true,
+    "demo_safe": false,
+    "has_validated_notes": true,
+    "active": true,
+    "visible_in_guest": true,
+    "physical_rack_map": "G3-C6",
+    "melody_register": "upper_physical",
+    "melody_target_range": "G4-G5",
+    "path": "/songs/arrangements/ampar_ampar_pisang.json"
   }
 ]

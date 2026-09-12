@@ -1,0 +1,2769 @@
+{
+  "format_version": "angklung_song.v1",
+  "id": "ampar_ampar_pisang",
+  "title": "Ampar-Ampar Pisang",
+  "aliases": [
+    "ampar ampar pisang",
+    "ampar",
+    "ampar pisang"
+  ],
+  "category": "indonesian_traditional",
+  "difficulty": "medium",
+  "tempo_bpm": 90,
+  "time_signature": "4/4",
+  "physical_rack_map": "G3-C6",
+  "arrangement_status": "sheet_transcription_draft_needs_listening_review",
+  "playable": true,
+  "demo_safe": false,
+  "has_validated_notes": true,
+  "playback_policy": "authored",
+  "arrangement_policy": {
+    "preserve_authored_dynamics": true
+  },
+  "notes": [
+    {
+      "note": "G4",
+      "beat": 0,
+      "duration_beats": 0.5,
+      "role": "melody",
+      "source_note": "G3",
+      "source_measure": 1
+    },
+    {
+      "note": "C4",
+      "beat": 0.5,
+      "duration_beats": 0.18,
+      "role": "accompaniment",
+      "source_measure": 2,
+      "repeat_pass": 1,
+      "source_chord": "C",
+      "playback_strength_multiplier": 1.15
+    },
+    {
+      "note": "C5",
+      "beat": 0.5,
+      "duration_beats": 0.5,
+      "role": "melody",
+      "source_note": "C4",
+      "source_measure": 2,
+      "repeat_pass": 1,
+      "playback_strength_multiplier": 1
+    },
+    {
+      "note": "C5",
+      "beat": 1,
+      "duration_beats": 0.5,
+      "role": "melody",
+      "source_note": "C4",
+      "source_measure": 2,
+      "repeat_pass": 1,
+      "playback_strength_multiplier": 1
+    },
+    {
+      "note": "B4",
+      "beat": 1.5,
+      "duration_beats": 0.5,
+      "role": "melody",
+      "source_note": "B3",
+      "source_measure": 2,
+      "repeat_pass": 1,
+      "playback_strength_multiplier": 1
+    },
+    {
+      "note": "C5",
+      "beat": 2,
+      "duration_beats": 0.5,
+      "role": "melody",
+      "source_note": "C4",
+      "source_measure": 2,
+      "repeat_pass": 1,
+      "playback_strength_multiplier": 1
+    },
+    {
+      "note": "D5",
+      "beat": 2.5,
+      "duration_beats": 1,
+      "role": "melody",
+      "source_note": "D4",
+      "source_measure": 2,
+      "repeat_pass": 1,
+      "playback_strength_multiplier": 1
+    },
+    {
+      "note": "G3",
+      "beat": 2.5,
+      "duration_beats": 0.18,
+      "role": "accompaniment",
+      "source_measure": 2,
+      "repeat_pass": 1,
+      "source_chord": "C",
+      "playback_strength_multiplier": 1.15
+    },
+    {
+      "note": "G4",
+      "beat": 3.5,
+      "duration_beats": 0.5,
+      "role": "melody",
+      "source_note": "G3",
+      "source_measure": 2,
+      "repeat_pass": 1,
+      "playback_strength_multiplier": 1
+    },
+    {
+      "note": "G4",
+      "beat": 4,
+      "duration_beats": 0.5,
+      "role": "melody",
+      "source_note": "G3",
+      "source_measure": 2,
+      "repeat_pass": 1,
+      "playback_strength_multiplier": 1
+    },
+    {
+      "note": "D5",
+      "beat": 4.5,
+      "duration_beats": 0.5,
+      "role": "melody",
+      "source_note": "D4",
+      "source_measure": 3,
+      "repeat_pass": 1,
+      "playback_strength_multiplier": 1
+    },
+    {
+      "note": "G3",
+      "beat": 4.5,
+      "duration_beats": 0.18,
+      "role": "accompaniment",
+      "source_measure": 3,
+      "repeat_pass": 1,
+      "source_chord": "G",
+      "playback_strength_multiplier": 1.15
+    },
+    {
+      "note": "D5",
+      "beat": 5,
+      "duration_beats": 0.5,
+      "role": "melody",
+      "source_note": "D4",
+      "source_measure": 3,
+      "repeat_pass": 1,
+      "playback_strength_multiplier": 1
+    },
+    {
+      "note": "C5",
+      "beat": 5.5,
+      "duration_beats": 0.5,
+      "role": "melody",
+      "source_note": "C4",
+      "source_measure": 3,
+      "repeat_pass": 1,
+      "playback_strength_multiplier": 1
+    },
+    {
+      "note": "D5",
+      "beat": 6,
+      "duration_beats": 0.5,
+      "role": "melody",
+      "source_note": "D4",
+      "source_measure": 3,
+      "repeat_pass": 1,
+      "playback_strength_multiplier": 1
+    },
+    {
+      "note": "D4",
+      "beat": 6.5,
+      "duration_beats": 0.18,
+      "role": "accompaniment",
+      "source_measure": 3,
+      "repeat_pass": 1,
+      "source_chord": "G",
+      "playback_strength_multiplier": 1.15
+    },
+    {
+      "note": "E5",
+      "beat": 6.5,
+      "duration_beats": 1,
+      "role": "melody",
+      "source_note": "E4",
+      "source_measure": 3,
+      "repeat_pass": 1,
+      "playback_strength_multiplier": 1
+    },
+    {
+      "note": "F4",
+      "beat": 8.5,
+      "duration_beats": 0.18,
+      "role": "accompaniment",
+      "source_measure": 4,
+      "repeat_pass": 1,
+      "source_chord": "F",
+      "playback_strength_multiplier": 1.15
+    },
+    {
+      "note": "F5",
+      "beat": 8.5,
+      "duration_beats": 1,
+      "role": "melody",
+      "source_note": "F4",
+      "source_measure": 4,
+      "repeat_pass": 1,
+      "playback_strength_multiplier": 1
+    },
+    {
+      "note": "D5",
+      "beat": 9.5,
+      "duration_beats": 0.5,
+      "role": "melody",
+      "source_note": "D4",
+      "source_measure": 4,
+      "repeat_pass": 1,
+      "playback_strength_multiplier": 1
+    },
+    {
+      "note": "D5",
+      "beat": 10,
+      "duration_beats": 0.5,
+      "role": "melody",
+      "source_note": "D4",
+      "source_measure": 4,
+      "repeat_pass": 1,
+      "playback_strength_multiplier": 1
+    },
+    {
+      "note": "C4",
+      "beat": 10.5,
+      "duration_beats": 0.18,
+      "role": "accompaniment",
+      "source_measure": 4,
+      "repeat_pass": 1,
+      "source_chord": "F",
+      "playback_strength_multiplier": 1.15
+    },
+    {
+      "note": "E5",
+      "beat": 10.5,
+      "duration_beats": 1,
+      "role": "melody",
+      "source_note": "E4",
+      "source_measure": 4,
+      "repeat_pass": 1,
+      "playback_strength_multiplier": 1
+    },
+    {
+      "note": "C5",
+      "beat": 11.5,
+      "duration_beats": 0.5,
+      "role": "melody",
+      "source_note": "C4",
+      "source_measure": 4,
+      "repeat_pass": 1,
+      "playback_strength_multiplier": 1
+    },
+    {
+      "note": "C5",
+      "beat": 12,
+      "duration_beats": 0.5,
+      "role": "melody",
+      "source_note": "C4",
+      "source_measure": 4,
+      "repeat_pass": 1,
+      "playback_strength_multiplier": 1
+    },
+    {
+      "note": "D5",
+      "beat": 12.5,
+      "duration_beats": 0.5,
+      "role": "melody",
+      "source_note": "D4",
+      "source_measure": 5,
+      "repeat_pass": 1,
+      "playback_strength_multiplier": 1
+    },
+    {
+      "note": "G3",
+      "beat": 12.5,
+      "duration_beats": 0.18,
+      "role": "accompaniment",
+      "source_measure": 5,
+      "repeat_pass": 1,
+      "source_chord": "G",
+      "playback_strength_multiplier": 1.15
+    },
+    {
+      "note": "D5",
+      "beat": 13,
+      "duration_beats": 0.5,
+      "role": "melody",
+      "source_note": "D4",
+      "source_measure": 5,
+      "repeat_pass": 1,
+      "playback_strength_multiplier": 1
+    },
+    {
+      "note": "C5",
+      "beat": 13.5,
+      "duration_beats": 0.5,
+      "role": "melody",
+      "source_note": "C4",
+      "source_measure": 5,
+      "repeat_pass": 1,
+      "playback_strength_multiplier": 1
+    },
+    {
+      "note": "B4",
+      "beat": 14,
+      "duration_beats": 0.5,
+      "role": "melody",
+      "source_note": "B3",
+      "source_measure": 5,
+      "repeat_pass": 1,
+      "playback_strength_multiplier": 1
+    },
+    {
+      "note": "C5",
+      "beat": 14.5,
+      "duration_beats": 1,
+      "role": "melody",
+      "source_note": "C4",
+      "source_measure": 5,
+      "repeat_pass": 1,
+      "playback_strength_multiplier": 1
+    },
+    {
+      "note": "D4",
+      "beat": 14.5,
+      "duration_beats": 0.18,
+      "role": "accompaniment",
+      "source_measure": 5,
+      "repeat_pass": 1,
+      "source_chord": "G",
+      "playback_strength_multiplier": 1.15
+    },
+    {
+      "note": "F4",
+      "beat": 16.5,
+      "duration_beats": 0.18,
+      "role": "accompaniment",
+      "source_measure": 6,
+      "repeat_pass": 1,
+      "source_chord": "F",
+      "playback_strength_multiplier": 1.15
+    },
+    {
+      "note": "F5",
+      "beat": 16.5,
+      "duration_beats": 1,
+      "role": "melody",
+      "source_note": "F4",
+      "source_measure": 6,
+      "repeat_pass": 1,
+      "playback_strength_multiplier": 1
+    },
+    {
+      "note": "D5",
+      "beat": 17.5,
+      "duration_beats": 0.5,
+      "role": "melody",
+      "source_note": "D4",
+      "source_measure": 6,
+      "repeat_pass": 1,
+      "playback_strength_multiplier": 1
+    },
+    {
+      "note": "D5",
+      "beat": 18,
+      "duration_beats": 0.5,
+      "role": "melody",
+      "source_note": "D4",
+      "source_measure": 6,
+      "repeat_pass": 1,
+      "playback_strength_multiplier": 1
+    },
+    {
+      "note": "C4",
+      "beat": 18.5,
+      "duration_beats": 0.18,
+      "role": "accompaniment",
+      "source_measure": 6,
+      "repeat_pass": 1,
+      "source_chord": "F",
+      "playback_strength_multiplier": 1.15
+    },
+    {
+      "note": "E5",
+      "beat": 18.5,
+      "duration_beats": 1,
+      "role": "melody",
+      "source_note": "E4",
+      "source_measure": 6,
+      "repeat_pass": 1,
+      "playback_strength_multiplier": 1
+    },
+    {
+      "note": "C5",
+      "beat": 19.5,
+      "duration_beats": 0.5,
+      "role": "melody",
+      "source_note": "C4",
+      "source_measure": 6,
+      "repeat_pass": 1,
+      "playback_strength_multiplier": 1
+    },
+    {
+      "note": "C5",
+      "beat": 20,
+      "duration_beats": 0.5,
+      "role": "melody",
+      "source_note": "C4",
+      "source_measure": 6,
+      "repeat_pass": 1,
+      "playback_strength_multiplier": 1
+    },
+    {
+      "note": "D5",
+      "beat": 20.5,
+      "duration_beats": 0.5,
+      "role": "melody",
+      "source_note": "D4",
+      "source_measure": 7,
+      "repeat_pass": 1,
+      "playback_strength_multiplier": 1
+    },
+    {
+      "note": "G3",
+      "beat": 20.5,
+      "duration_beats": 0.18,
+      "role": "accompaniment",
+      "source_measure": 7,
+      "repeat_pass": 1,
+      "source_chord": "G",
+      "playback_strength_multiplier": 1.15
+    },
+    {
+      "note": "D5",
+      "beat": 21,
+      "duration_beats": 0.5,
+      "role": "melody",
+      "source_note": "D4",
+      "source_measure": 7,
+      "repeat_pass": 1,
+      "playback_strength_multiplier": 1
+    },
+    {
+      "note": "C5",
+      "beat": 21.5,
+      "duration_beats": 0.5,
+      "role": "melody",
+      "source_note": "C4",
+      "source_measure": 7,
+      "repeat_pass": 1,
+      "playback_strength_multiplier": 1
+    },
+    {
+      "note": "B4",
+      "beat": 22,
+      "duration_beats": 0.5,
+      "role": "melody",
+      "source_note": "B3",
+      "source_measure": 7,
+      "repeat_pass": 1,
+      "playback_strength_multiplier": 1
+    },
+    {
+      "note": "C5",
+      "beat": 22.5,
+      "duration_beats": 0.5,
+      "role": "melody",
+      "source_note": "C4",
+      "source_measure": 7,
+      "repeat_pass": 1,
+      "playback_strength_multiplier": 1
+    },
+    {
+      "note": "D4",
+      "beat": 22.5,
+      "duration_beats": 0.18,
+      "role": "accompaniment",
+      "source_measure": 7,
+      "repeat_pass": 1,
+      "source_chord": "G",
+      "playback_strength_multiplier": 1.15
+    },
+    {
+      "note": "G4",
+      "beat": 23,
+      "duration_beats": 0.5,
+      "role": "melody",
+      "source_note": "G3",
+      "source_measure": 7,
+      "repeat_pass": 1,
+      "playback_strength_multiplier": 1
+    },
+    {
+      "note": "G4",
+      "beat": 23.5,
+      "duration_beats": 0.5,
+      "role": "melody",
+      "source_note": "G3",
+      "source_measure": 7,
+      "repeat_pass": 1,
+      "playback_strength_multiplier": 1
+    },
+    {
+      "note": "G4",
+      "beat": 24,
+      "duration_beats": 0.5,
+      "role": "melody",
+      "source_note": "G3",
+      "source_measure": 7,
+      "repeat_pass": 1,
+      "playback_strength_multiplier": 1
+    },
+    {
+      "note": "C4",
+      "beat": 24.5,
+      "duration_beats": 0.18,
+      "role": "accompaniment",
+      "source_measure": 8,
+      "repeat_pass": 1,
+      "source_chord": "C",
+      "playback_strength_multiplier": 1.15
+    },
+    {
+      "note": "C5",
+      "beat": 24.5,
+      "duration_beats": 0.5,
+      "role": "melody",
+      "source_note": "C4",
+      "source_measure": 8,
+      "repeat_pass": 1,
+      "playback_strength_multiplier": 1
+    },
+    {
+      "note": "C5",
+      "beat": 25,
+      "duration_beats": 0.5,
+      "role": "melody",
+      "source_note": "C4",
+      "source_measure": 8,
+      "repeat_pass": 1,
+      "playback_strength_multiplier": 1
+    },
+    {
+      "note": "B4",
+      "beat": 25.5,
+      "duration_beats": 0.5,
+      "role": "melody",
+      "source_note": "B3",
+      "source_measure": 8,
+      "repeat_pass": 1,
+      "playback_strength_multiplier": 1
+    },
+    {
+      "note": "C5",
+      "beat": 26,
+      "duration_beats": 0.5,
+      "role": "melody",
+      "source_note": "C4",
+      "source_measure": 8,
+      "repeat_pass": 1,
+      "playback_strength_multiplier": 1
+    },
+    {
+      "note": "D5",
+      "beat": 26.5,
+      "duration_beats": 1,
+      "role": "melody",
+      "source_note": "D4",
+      "source_measure": 8,
+      "repeat_pass": 1,
+      "playback_strength_multiplier": 1
+    },
+    {
+      "note": "G3",
+      "beat": 26.5,
+      "duration_beats": 0.18,
+      "role": "accompaniment",
+      "source_measure": 8,
+      "repeat_pass": 1,
+      "source_chord": "C",
+      "playback_strength_multiplier": 1.15
+    },
+    {
+      "note": "G4",
+      "beat": 27.5,
+      "duration_beats": 0.5,
+      "role": "melody",
+      "source_note": "G3",
+      "source_measure": 8,
+      "repeat_pass": 1,
+      "playback_strength_multiplier": 1
+    },
+    {
+      "note": "G4",
+      "beat": 28,
+      "duration_beats": 0.5,
+      "role": "melody",
+      "source_note": "G3",
+      "source_measure": 8,
+      "repeat_pass": 1,
+      "playback_strength_multiplier": 1
+    },
+    {
+      "note": "D5",
+      "beat": 28.5,
+      "duration_beats": 0.5,
+      "role": "melody",
+      "source_note": "D4",
+      "source_measure": 9,
+      "repeat_pass": 1,
+      "playback_strength_multiplier": 1
+    },
+    {
+      "note": "G3",
+      "beat": 28.5,
+      "duration_beats": 0.18,
+      "role": "accompaniment",
+      "source_measure": 9,
+      "repeat_pass": 1,
+      "source_chord": "G",
+      "playback_strength_multiplier": 1.15
+    },
+    {
+      "note": "D5",
+      "beat": 29,
+      "duration_beats": 0.5,
+      "role": "melody",
+      "source_note": "D4",
+      "source_measure": 9,
+      "repeat_pass": 1,
+      "playback_strength_multiplier": 1
+    },
+    {
+      "note": "C5",
+      "beat": 29.5,
+      "duration_beats": 0.5,
+      "role": "melody",
+      "source_note": "C4",
+      "source_measure": 9,
+      "repeat_pass": 1,
+      "playback_strength_multiplier": 1
+    },
+    {
+      "note": "D5",
+      "beat": 30,
+      "duration_beats": 0.5,
+      "role": "melody",
+      "source_note": "D4",
+      "source_measure": 9,
+      "repeat_pass": 1,
+      "playback_strength_multiplier": 1
+    },
+    {
+      "note": "D4",
+      "beat": 30.5,
+      "duration_beats": 0.18,
+      "role": "accompaniment",
+      "source_measure": 9,
+      "repeat_pass": 1,
+      "source_chord": "G",
+      "playback_strength_multiplier": 1.15
+    },
+    {
+      "note": "E5",
+      "beat": 30.5,
+      "duration_beats": 1,
+      "role": "melody",
+      "source_note": "E4",
+      "source_measure": 9,
+      "repeat_pass": 1,
+      "playback_strength_multiplier": 1
+    },
+    {
+      "note": "E5",
+      "beat": 31.5,
+      "duration_beats": 0.5,
+      "role": "melody",
+      "source_note": "E4",
+      "source_measure": 9,
+      "repeat_pass": 1,
+      "playback_strength_multiplier": 1
+    },
+    {
+      "note": "E5",
+      "beat": 32,
+      "duration_beats": 0.5,
+      "role": "melody",
+      "source_note": "E4",
+      "source_measure": 9,
+      "repeat_pass": 1,
+      "playback_strength_multiplier": 1
+    },
+    {
+      "note": "F4",
+      "beat": 32.5,
+      "duration_beats": 0.18,
+      "role": "accompaniment",
+      "source_measure": 10,
+      "repeat_pass": 1,
+      "source_chord": "F",
+      "playback_strength_multiplier": 1.15
+    },
+    {
+      "note": "F5",
+      "beat": 32.5,
+      "duration_beats": 0.5,
+      "role": "melody",
+      "source_note": "F4",
+      "source_measure": 10,
+      "repeat_pass": 1,
+      "playback_strength_multiplier": 1
+    },
+    {
+      "note": "F5",
+      "beat": 33,
+      "duration_beats": 0.5,
+      "role": "melody",
+      "source_note": "F4",
+      "source_measure": 10,
+      "repeat_pass": 1,
+      "playback_strength_multiplier": 1
+    },
+    {
+      "note": "D5",
+      "beat": 33.5,
+      "duration_beats": 0.5,
+      "role": "melody",
+      "source_note": "D4",
+      "source_measure": 10,
+      "repeat_pass": 1,
+      "playback_strength_multiplier": 1
+    },
+    {
+      "note": "D5",
+      "beat": 34,
+      "duration_beats": 0.5,
+      "role": "melody",
+      "source_note": "D4",
+      "source_measure": 10,
+      "repeat_pass": 1,
+      "playback_strength_multiplier": 1
+    },
+    {
+      "note": "C4",
+      "beat": 34.5,
+      "duration_beats": 0.18,
+      "role": "accompaniment",
+      "source_measure": 10,
+      "repeat_pass": 1,
+      "source_chord": "F",
+      "playback_strength_multiplier": 1.15
+    },
+    {
+      "note": "E5",
+      "beat": 34.5,
+      "duration_beats": 0.5,
+      "role": "melody",
+      "source_note": "E4",
+      "source_measure": 10,
+      "repeat_pass": 1,
+      "playback_strength_multiplier": 1
+    },
+    {
+      "note": "E5",
+      "beat": 35,
+      "duration_beats": 0.5,
+      "role": "melody",
+      "source_note": "E4",
+      "source_measure": 10,
+      "repeat_pass": 1,
+      "playback_strength_multiplier": 1
+    },
+    {
+      "note": "C5",
+      "beat": 35.5,
+      "duration_beats": 0.5,
+      "role": "melody",
+      "source_note": "C4",
+      "source_measure": 10,
+      "repeat_pass": 1,
+      "playback_strength_multiplier": 1
+    },
+    {
+      "note": "C5",
+      "beat": 36,
+      "duration_beats": 0.5,
+      "role": "melody",
+      "source_note": "C4",
+      "source_measure": 10,
+      "repeat_pass": 1,
+      "playback_strength_multiplier": 1
+    },
+    {
+      "note": "D5",
+      "beat": 36.5,
+      "duration_beats": 0.5,
+      "role": "melody",
+      "source_note": "D4",
+      "source_measure": 11,
+      "repeat_pass": 1,
+      "playback_strength_multiplier": 1
+    },
+    {
+      "note": "G3",
+      "beat": 36.5,
+      "duration_beats": 0.18,
+      "role": "accompaniment",
+      "source_measure": 11,
+      "repeat_pass": 1,
+      "source_chord": "G",
+      "playback_strength_multiplier": 1.15
+    },
+    {
+      "note": "D5",
+      "beat": 37,
+      "duration_beats": 0.5,
+      "role": "melody",
+      "source_note": "D4",
+      "source_measure": 11,
+      "repeat_pass": 1,
+      "playback_strength_multiplier": 1
+    },
+    {
+      "note": "C5",
+      "beat": 37.5,
+      "duration_beats": 0.5,
+      "role": "melody",
+      "source_note": "C4",
+      "source_measure": 11,
+      "repeat_pass": 1,
+      "playback_strength_multiplier": 1
+    },
+    {
+      "note": "B4",
+      "beat": 38,
+      "duration_beats": 0.5,
+      "role": "melody",
+      "source_note": "B3",
+      "source_measure": 11,
+      "repeat_pass": 1,
+      "playback_strength_multiplier": 1
+    },
+    {
+      "note": "C5",
+      "beat": 38.5,
+      "duration_beats": 1,
+      "role": "melody",
+      "source_note": "C4",
+      "source_measure": 11,
+      "repeat_pass": 1,
+      "playback_strength_multiplier": 1
+    },
+    {
+      "note": "D4",
+      "beat": 38.5,
+      "duration_beats": 0.18,
+      "role": "accompaniment",
+      "source_measure": 11,
+      "repeat_pass": 1,
+      "source_chord": "G",
+      "playback_strength_multiplier": 1.15
+    },
+    {
+      "note": "E5",
+      "beat": 40,
+      "duration_beats": 0.5,
+      "role": "melody",
+      "source_note": "E4",
+      "source_measure": 11,
+      "repeat_pass": 1,
+      "playback_strength_multiplier": 1
+    },
+    {
+      "note": "F4",
+      "beat": 40.5,
+      "duration_beats": 0.18,
+      "role": "accompaniment",
+      "source_measure": 12,
+      "repeat_pass": 1,
+      "source_chord": "F",
+      "playback_strength_multiplier": 1.15
+    },
+    {
+      "note": "F5",
+      "beat": 40.5,
+      "duration_beats": 0.5,
+      "role": "melody",
+      "source_note": "F4",
+      "source_measure": 12,
+      "repeat_pass": 1,
+      "playback_strength_multiplier": 1
+    },
+    {
+      "note": "F5",
+      "beat": 41,
+      "duration_beats": 0.5,
+      "role": "melody",
+      "source_note": "F4",
+      "source_measure": 12,
+      "repeat_pass": 1,
+      "playback_strength_multiplier": 1
+    },
+    {
+      "note": "D5",
+      "beat": 41.5,
+      "duration_beats": 0.5,
+      "role": "melody",
+      "source_note": "D4",
+      "source_measure": 12,
+      "repeat_pass": 1,
+      "playback_strength_multiplier": 1
+    },
+    {
+      "note": "D5",
+      "beat": 42,
+      "duration_beats": 0.5,
+      "role": "melody",
+      "source_note": "D4",
+      "source_measure": 12,
+      "repeat_pass": 1,
+      "playback_strength_multiplier": 1
+    },
+    {
+      "note": "C4",
+      "beat": 42.5,
+      "duration_beats": 0.18,
+      "role": "accompaniment",
+      "source_measure": 12,
+      "repeat_pass": 1,
+      "source_chord": "F",
+      "playback_strength_multiplier": 1.15
+    },
+    {
+      "note": "E5",
+      "beat": 42.5,
+      "duration_beats": 0.5,
+      "role": "melody",
+      "source_note": "E4",
+      "source_measure": 12,
+      "repeat_pass": 1,
+      "playback_strength_multiplier": 1
+    },
+    {
+      "note": "E5",
+      "beat": 43,
+      "duration_beats": 0.5,
+      "role": "melody",
+      "source_note": "E4",
+      "source_measure": 12,
+      "repeat_pass": 1,
+      "playback_strength_multiplier": 1
+    },
+    {
+      "note": "C5",
+      "beat": 43.5,
+      "duration_beats": 0.5,
+      "role": "melody",
+      "source_note": "C4",
+      "source_measure": 12,
+      "repeat_pass": 1,
+      "playback_strength_multiplier": 1
+    },
+    {
+      "note": "C5",
+      "beat": 44,
+      "duration_beats": 0.5,
+      "role": "melody",
+      "source_note": "C4",
+      "source_measure": 12,
+      "repeat_pass": 1,
+      "playback_strength_multiplier": 1
+    },
+    {
+      "note": "D5",
+      "beat": 44.5,
+      "duration_beats": 0.5,
+      "role": "melody",
+      "source_note": "D4",
+      "source_measure": 13,
+      "repeat_pass": 1,
+      "playback_strength_multiplier": 1
+    },
+    {
+      "note": "G3",
+      "beat": 44.5,
+      "duration_beats": 0.18,
+      "role": "accompaniment",
+      "source_measure": 13,
+      "repeat_pass": 1,
+      "source_chord": "G",
+      "playback_strength_multiplier": 1.15
+    },
+    {
+      "note": "D5",
+      "beat": 45,
+      "duration_beats": 0.5,
+      "role": "melody",
+      "source_note": "D4",
+      "source_measure": 13,
+      "repeat_pass": 1,
+      "playback_strength_multiplier": 1
+    },
+    {
+      "note": "C5",
+      "beat": 45.5,
+      "duration_beats": 0.5,
+      "role": "melody",
+      "source_note": "C4",
+      "source_measure": 13,
+      "repeat_pass": 1,
+      "playback_strength_multiplier": 1
+    },
+    {
+      "note": "B4",
+      "beat": 46,
+      "duration_beats": 0.5,
+      "role": "melody",
+      "source_note": "B3",
+      "source_measure": 13,
+      "repeat_pass": 1,
+      "playback_strength_multiplier": 1
+    },
+    {
+      "note": "C5",
+      "beat": 46.5,
+      "duration_beats": 1,
+      "role": "melody",
+      "source_note": "C4",
+      "source_measure": 13,
+      "repeat_pass": 1,
+      "playback_strength_multiplier": 1
+    },
+    {
+      "note": "D4",
+      "beat": 46.5,
+      "duration_beats": 0.18,
+      "role": "accompaniment",
+      "source_measure": 13,
+      "repeat_pass": 1,
+      "source_chord": "G",
+      "playback_strength_multiplier": 1.15
+    },
+    {
+      "note": "E5",
+      "beat": 48,
+      "duration_beats": 0.5,
+      "role": "melody",
+      "source_note": "E4",
+      "source_measure": 13,
+      "repeat_pass": 1,
+      "playback_strength_multiplier": 1
+    },
+    {
+      "note": "C4",
+      "beat": 48.5,
+      "duration_beats": 0.18,
+      "role": "accompaniment",
+      "source_measure": 14,
+      "repeat_pass": 1,
+      "source_chord": "C",
+      "playback_strength_multiplier": 1.15
+    },
+    {
+      "note": "G5",
+      "beat": 48.5,
+      "duration_beats": 0.5,
+      "role": "melody",
+      "source_note": "G4",
+      "source_measure": 14,
+      "repeat_pass": 1,
+      "playback_strength_multiplier": 1
+    },
+    {
+      "note": "G5",
+      "beat": 49,
+      "duration_beats": 0.5,
+      "role": "melody",
+      "source_note": "G4",
+      "source_measure": 14,
+      "repeat_pass": 1,
+      "playback_strength_multiplier": 1
+    },
+    {
+      "note": "F5",
+      "beat": 49.5,
+      "duration_beats": 0.5,
+      "role": "melody",
+      "source_note": "F4",
+      "source_measure": 14,
+      "repeat_pass": 1,
+      "playback_strength_multiplier": 1
+    },
+    {
+      "note": "E5",
+      "beat": 50,
+      "duration_beats": 0.5,
+      "role": "melody",
+      "source_note": "E4",
+      "source_measure": 14,
+      "repeat_pass": 1,
+      "playback_strength_multiplier": 1
+    },
+    {
+      "note": "G3",
+      "beat": 50.5,
+      "duration_beats": 0.18,
+      "role": "accompaniment",
+      "source_measure": 14,
+      "repeat_pass": 1,
+      "source_chord": "C",
+      "playback_strength_multiplier": 1.15
+    },
+    {
+      "note": "G5",
+      "beat": 50.5,
+      "duration_beats": 0.5,
+      "role": "melody",
+      "source_note": "G4",
+      "source_measure": 14,
+      "repeat_pass": 1,
+      "playback_strength_multiplier": 1
+    },
+    {
+      "note": "D5",
+      "beat": 51,
+      "duration_beats": 1,
+      "role": "melody",
+      "source_note": "D4",
+      "source_measure": 14,
+      "repeat_pass": 1,
+      "playback_strength_multiplier": 1
+    },
+    {
+      "note": "D5",
+      "beat": 52,
+      "duration_beats": 0.5,
+      "role": "melody",
+      "source_note": "D4",
+      "source_measure": 14,
+      "repeat_pass": 1,
+      "playback_strength_multiplier": 1
+    },
+    {
+      "note": "F5",
+      "beat": 52.5,
+      "duration_beats": 0.5,
+      "role": "melody",
+      "source_note": "F4",
+      "source_measure": 15,
+      "repeat_pass": 1,
+      "playback_strength_multiplier": 1
+    },
+    {
+      "note": "G3",
+      "beat": 52.5,
+      "duration_beats": 0.18,
+      "role": "accompaniment",
+      "source_measure": 15,
+      "repeat_pass": 1,
+      "source_chord": "G",
+      "playback_strength_multiplier": 1.15
+    },
+    {
+      "note": "F5",
+      "beat": 53,
+      "duration_beats": 0.5,
+      "role": "melody",
+      "source_note": "F4",
+      "source_measure": 15,
+      "repeat_pass": 1,
+      "playback_strength_multiplier": 1
+    },
+    {
+      "note": "E5",
+      "beat": 53.5,
+      "duration_beats": 0.5,
+      "role": "melody",
+      "source_note": "E4",
+      "source_measure": 15,
+      "repeat_pass": 1,
+      "playback_strength_multiplier": 1
+    },
+    {
+      "note": "D5",
+      "beat": 54,
+      "duration_beats": 0.5,
+      "role": "melody",
+      "source_note": "D4",
+      "source_measure": 15,
+      "repeat_pass": 1,
+      "playback_strength_multiplier": 1
+    },
+    {
+      "note": "C5",
+      "beat": 54.5,
+      "duration_beats": 1,
+      "role": "melody",
+      "source_note": "C4",
+      "source_measure": 15,
+      "repeat_pass": 1,
+      "playback_strength_multiplier": 1
+    },
+    {
+      "note": "D4",
+      "beat": 54.5,
+      "duration_beats": 0.18,
+      "role": "accompaniment",
+      "source_measure": 15,
+      "repeat_pass": 1,
+      "source_chord": "G",
+      "playback_strength_multiplier": 1.15
+    },
+    {
+      "note": "E5",
+      "beat": 56,
+      "duration_beats": 0.5,
+      "role": "melody",
+      "source_note": "E4",
+      "source_measure": 15,
+      "repeat_pass": 1,
+      "playback_strength_multiplier": 1
+    },
+    {
+      "note": "C4",
+      "beat": 56.5,
+      "duration_beats": 0.18,
+      "role": "accompaniment",
+      "source_measure": 16,
+      "repeat_pass": 1,
+      "source_chord": "C",
+      "playback_strength_multiplier": 1.15
+    },
+    {
+      "note": "G5",
+      "beat": 56.5,
+      "duration_beats": 0.5,
+      "role": "melody",
+      "source_note": "G4",
+      "source_measure": 16,
+      "repeat_pass": 1,
+      "playback_strength_multiplier": 1
+    },
+    {
+      "note": "G5",
+      "beat": 57,
+      "duration_beats": 0.5,
+      "role": "melody",
+      "source_note": "G4",
+      "source_measure": 16,
+      "repeat_pass": 1,
+      "playback_strength_multiplier": 1
+    },
+    {
+      "note": "F5",
+      "beat": 57.5,
+      "duration_beats": 0.5,
+      "role": "melody",
+      "source_note": "F4",
+      "source_measure": 16,
+      "repeat_pass": 1,
+      "playback_strength_multiplier": 1
+    },
+    {
+      "note": "E5",
+      "beat": 58,
+      "duration_beats": 0.5,
+      "role": "melody",
+      "source_note": "E4",
+      "source_measure": 16,
+      "repeat_pass": 1,
+      "playback_strength_multiplier": 1
+    },
+    {
+      "note": "G3",
+      "beat": 58.5,
+      "duration_beats": 0.18,
+      "role": "accompaniment",
+      "source_measure": 16,
+      "repeat_pass": 1,
+      "source_chord": "C",
+      "playback_strength_multiplier": 1.15
+    },
+    {
+      "note": "G5",
+      "beat": 58.5,
+      "duration_beats": 0.5,
+      "role": "melody",
+      "source_note": "G4",
+      "source_measure": 16,
+      "repeat_pass": 1,
+      "playback_strength_multiplier": 1
+    },
+    {
+      "note": "D5",
+      "beat": 59,
+      "duration_beats": 1,
+      "role": "melody",
+      "source_note": "D4",
+      "source_measure": 16,
+      "repeat_pass": 1,
+      "playback_strength_multiplier": 1
+    },
+    {
+      "note": "D5",
+      "beat": 60,
+      "duration_beats": 0.5,
+      "role": "melody",
+      "source_note": "D4",
+      "source_measure": 16,
+      "repeat_pass": 1,
+      "playback_strength_multiplier": 1
+    },
+    {
+      "note": "F5",
+      "beat": 60.5,
+      "duration_beats": 0.5,
+      "role": "melody",
+      "source_note": "F4",
+      "source_measure": 17,
+      "repeat_pass": 1,
+      "playback_strength_multiplier": 1
+    },
+    {
+      "note": "G3",
+      "beat": 60.5,
+      "duration_beats": 0.18,
+      "role": "accompaniment",
+      "source_measure": 17,
+      "repeat_pass": 1,
+      "source_chord": "G",
+      "playback_strength_multiplier": 1.15
+    },
+    {
+      "note": "F5",
+      "beat": 61,
+      "duration_beats": 0.5,
+      "role": "melody",
+      "source_note": "F4",
+      "source_measure": 17,
+      "repeat_pass": 1,
+      "playback_strength_multiplier": 1
+    },
+    {
+      "note": "E5",
+      "beat": 61.5,
+      "duration_beats": 0.5,
+      "role": "melody",
+      "source_note": "E4",
+      "source_measure": 17,
+      "repeat_pass": 1,
+      "playback_strength_multiplier": 1
+    },
+    {
+      "note": "D5",
+      "beat": 62,
+      "duration_beats": 0.5,
+      "role": "melody",
+      "source_note": "D4",
+      "source_measure": 17,
+      "repeat_pass": 1,
+      "playback_strength_multiplier": 1
+    },
+    {
+      "note": "C5",
+      "beat": 62.5,
+      "duration_beats": 1,
+      "role": "melody",
+      "source_note": "C4",
+      "source_measure": 17,
+      "repeat_pass": 1,
+      "playback_strength_multiplier": 1
+    },
+    {
+      "note": "D4",
+      "beat": 62.5,
+      "duration_beats": 0.18,
+      "role": "accompaniment",
+      "source_measure": 17,
+      "repeat_pass": 1,
+      "source_chord": "G",
+      "playback_strength_multiplier": 1.15
+    },
+    {
+      "note": "C4",
+      "beat": 64.5,
+      "duration_beats": 0.18,
+      "role": "accompaniment",
+      "source_measure": 2,
+      "repeat_pass": 2,
+      "source_chord": "C",
+      "playback_strength_multiplier": 1.15
+    },
+    {
+      "note": "C5",
+      "beat": 64.5,
+      "duration_beats": 0.5,
+      "role": "melody",
+      "source_note": "C4",
+      "source_measure": 2,
+      "repeat_pass": 2,
+      "playback_strength_multiplier": 1
+    },
+    {
+      "note": "C5",
+      "beat": 65,
+      "duration_beats": 0.5,
+      "role": "melody",
+      "source_note": "C4",
+      "source_measure": 2,
+      "repeat_pass": 2,
+      "playback_strength_multiplier": 1
+    },
+    {
+      "note": "B4",
+      "beat": 65.5,
+      "duration_beats": 0.5,
+      "role": "melody",
+      "source_note": "B3",
+      "source_measure": 2,
+      "repeat_pass": 2,
+      "playback_strength_multiplier": 1
+    },
+    {
+      "note": "C5",
+      "beat": 66,
+      "duration_beats": 0.5,
+      "role": "melody",
+      "source_note": "C4",
+      "source_measure": 2,
+      "repeat_pass": 2,
+      "playback_strength_multiplier": 1
+    },
+    {
+      "note": "D5",
+      "beat": 66.5,
+      "duration_beats": 1,
+      "role": "melody",
+      "source_note": "D4",
+      "source_measure": 2,
+      "repeat_pass": 2,
+      "playback_strength_multiplier": 1
+    },
+    {
+      "note": "G3",
+      "beat": 66.5,
+      "duration_beats": 0.18,
+      "role": "accompaniment",
+      "source_measure": 2,
+      "repeat_pass": 2,
+      "source_chord": "C",
+      "playback_strength_multiplier": 1.15
+    },
+    {
+      "note": "G4",
+      "beat": 67.5,
+      "duration_beats": 0.5,
+      "role": "melody",
+      "source_note": "G3",
+      "source_measure": 2,
+      "repeat_pass": 2,
+      "playback_strength_multiplier": 1
+    },
+    {
+      "note": "G4",
+      "beat": 68,
+      "duration_beats": 0.5,
+      "role": "melody",
+      "source_note": "G3",
+      "source_measure": 2,
+      "repeat_pass": 2,
+      "playback_strength_multiplier": 1
+    },
+    {
+      "note": "D5",
+      "beat": 68.5,
+      "duration_beats": 0.5,
+      "role": "melody",
+      "source_note": "D4",
+      "source_measure": 3,
+      "repeat_pass": 2,
+      "playback_strength_multiplier": 1
+    },
+    {
+      "note": "G3",
+      "beat": 68.5,
+      "duration_beats": 0.18,
+      "role": "accompaniment",
+      "source_measure": 3,
+      "repeat_pass": 2,
+      "source_chord": "G",
+      "playback_strength_multiplier": 1.15
+    },
+    {
+      "note": "D5",
+      "beat": 69,
+      "duration_beats": 0.5,
+      "role": "melody",
+      "source_note": "D4",
+      "source_measure": 3,
+      "repeat_pass": 2,
+      "playback_strength_multiplier": 1
+    },
+    {
+      "note": "C5",
+      "beat": 69.5,
+      "duration_beats": 0.5,
+      "role": "melody",
+      "source_note": "C4",
+      "source_measure": 3,
+      "repeat_pass": 2,
+      "playback_strength_multiplier": 1
+    },
+    {
+      "note": "D5",
+      "beat": 70,
+      "duration_beats": 0.5,
+      "role": "melody",
+      "source_note": "D4",
+      "source_measure": 3,
+      "repeat_pass": 2,
+      "playback_strength_multiplier": 1
+    },
+    {
+      "note": "D4",
+      "beat": 70.5,
+      "duration_beats": 0.18,
+      "role": "accompaniment",
+      "source_measure": 3,
+      "repeat_pass": 2,
+      "source_chord": "G",
+      "playback_strength_multiplier": 1.15
+    },
+    {
+      "note": "E5",
+      "beat": 70.5,
+      "duration_beats": 1,
+      "role": "melody",
+      "source_note": "E4",
+      "source_measure": 3,
+      "repeat_pass": 2,
+      "playback_strength_multiplier": 1
+    },
+    {
+      "note": "F4",
+      "beat": 72.5,
+      "duration_beats": 0.18,
+      "role": "accompaniment",
+      "source_measure": 4,
+      "repeat_pass": 2,
+      "source_chord": "F",
+      "playback_strength_multiplier": 1.15
+    },
+    {
+      "note": "F5",
+      "beat": 72.5,
+      "duration_beats": 1,
+      "role": "melody",
+      "source_note": "F4",
+      "source_measure": 4,
+      "repeat_pass": 2,
+      "playback_strength_multiplier": 1
+    },
+    {
+      "note": "D5",
+      "beat": 73.5,
+      "duration_beats": 0.5,
+      "role": "melody",
+      "source_note": "D4",
+      "source_measure": 4,
+      "repeat_pass": 2,
+      "playback_strength_multiplier": 1
+    },
+    {
+      "note": "D5",
+      "beat": 74,
+      "duration_beats": 0.5,
+      "role": "melody",
+      "source_note": "D4",
+      "source_measure": 4,
+      "repeat_pass": 2,
+      "playback_strength_multiplier": 1
+    },
+    {
+      "note": "C4",
+      "beat": 74.5,
+      "duration_beats": 0.18,
+      "role": "accompaniment",
+      "source_measure": 4,
+      "repeat_pass": 2,
+      "source_chord": "F",
+      "playback_strength_multiplier": 1.15
+    },
+    {
+      "note": "E5",
+      "beat": 74.5,
+      "duration_beats": 1,
+      "role": "melody",
+      "source_note": "E4",
+      "source_measure": 4,
+      "repeat_pass": 2,
+      "playback_strength_multiplier": 1
+    },
+    {
+      "note": "C5",
+      "beat": 75.5,
+      "duration_beats": 0.5,
+      "role": "melody",
+      "source_note": "C4",
+      "source_measure": 4,
+      "repeat_pass": 2,
+      "playback_strength_multiplier": 1
+    },
+    {
+      "note": "C5",
+      "beat": 76,
+      "duration_beats": 0.5,
+      "role": "melody",
+      "source_note": "C4",
+      "source_measure": 4,
+      "repeat_pass": 2,
+      "playback_strength_multiplier": 1
+    },
+    {
+      "note": "D5",
+      "beat": 76.5,
+      "duration_beats": 0.5,
+      "role": "melody",
+      "source_note": "D4",
+      "source_measure": 5,
+      "repeat_pass": 2,
+      "playback_strength_multiplier": 1
+    },
+    {
+      "note": "G3",
+      "beat": 76.5,
+      "duration_beats": 0.18,
+      "role": "accompaniment",
+      "source_measure": 5,
+      "repeat_pass": 2,
+      "source_chord": "G",
+      "playback_strength_multiplier": 1.15
+    },
+    {
+      "note": "D5",
+      "beat": 77,
+      "duration_beats": 0.5,
+      "role": "melody",
+      "source_note": "D4",
+      "source_measure": 5,
+      "repeat_pass": 2,
+      "playback_strength_multiplier": 1
+    },
+    {
+      "note": "C5",
+      "beat": 77.5,
+      "duration_beats": 0.5,
+      "role": "melody",
+      "source_note": "C4",
+      "source_measure": 5,
+      "repeat_pass": 2,
+      "playback_strength_multiplier": 1
+    },
+    {
+      "note": "B4",
+      "beat": 78,
+      "duration_beats": 0.5,
+      "role": "melody",
+      "source_note": "B3",
+      "source_measure": 5,
+      "repeat_pass": 2,
+      "playback_strength_multiplier": 1
+    },
+    {
+      "note": "C5",
+      "beat": 78.5,
+      "duration_beats": 1,
+      "role": "melody",
+      "source_note": "C4",
+      "source_measure": 5,
+      "repeat_pass": 2,
+      "playback_strength_multiplier": 1
+    },
+    {
+      "note": "D4",
+      "beat": 78.5,
+      "duration_beats": 0.18,
+      "role": "accompaniment",
+      "source_measure": 5,
+      "repeat_pass": 2,
+      "source_chord": "G",
+      "playback_strength_multiplier": 1.15
+    },
+    {
+      "note": "F4",
+      "beat": 80.5,
+      "duration_beats": 0.18,
+      "role": "accompaniment",
+      "source_measure": 6,
+      "repeat_pass": 2,
+      "source_chord": "F",
+      "playback_strength_multiplier": 1.15
+    },
+    {
+      "note": "F5",
+      "beat": 80.5,
+      "duration_beats": 1,
+      "role": "melody",
+      "source_note": "F4",
+      "source_measure": 6,
+      "repeat_pass": 2,
+      "playback_strength_multiplier": 1
+    },
+    {
+      "note": "D5",
+      "beat": 81.5,
+      "duration_beats": 0.5,
+      "role": "melody",
+      "source_note": "D4",
+      "source_measure": 6,
+      "repeat_pass": 2,
+      "playback_strength_multiplier": 1
+    },
+    {
+      "note": "D5",
+      "beat": 82,
+      "duration_beats": 0.5,
+      "role": "melody",
+      "source_note": "D4",
+      "source_measure": 6,
+      "repeat_pass": 2,
+      "playback_strength_multiplier": 1
+    },
+    {
+      "note": "C4",
+      "beat": 82.5,
+      "duration_beats": 0.18,
+      "role": "accompaniment",
+      "source_measure": 6,
+      "repeat_pass": 2,
+      "source_chord": "F",
+      "playback_strength_multiplier": 1.15
+    },
+    {
+      "note": "E5",
+      "beat": 82.5,
+      "duration_beats": 1,
+      "role": "melody",
+      "source_note": "E4",
+      "source_measure": 6,
+      "repeat_pass": 2,
+      "playback_strength_multiplier": 1
+    },
+    {
+      "note": "C5",
+      "beat": 83.5,
+      "duration_beats": 0.5,
+      "role": "melody",
+      "source_note": "C4",
+      "source_measure": 6,
+      "repeat_pass": 2,
+      "playback_strength_multiplier": 1
+    },
+    {
+      "note": "C5",
+      "beat": 84,
+      "duration_beats": 0.5,
+      "role": "melody",
+      "source_note": "C4",
+      "source_measure": 6,
+      "repeat_pass": 2,
+      "playback_strength_multiplier": 1
+    },
+    {
+      "note": "D5",
+      "beat": 84.5,
+      "duration_beats": 0.5,
+      "role": "melody",
+      "source_note": "D4",
+      "source_measure": 7,
+      "repeat_pass": 2,
+      "playback_strength_multiplier": 1
+    },
+    {
+      "note": "G3",
+      "beat": 84.5,
+      "duration_beats": 0.18,
+      "role": "accompaniment",
+      "source_measure": 7,
+      "repeat_pass": 2,
+      "source_chord": "G",
+      "playback_strength_multiplier": 1.15
+    },
+    {
+      "note": "D5",
+      "beat": 85,
+      "duration_beats": 0.5,
+      "role": "melody",
+      "source_note": "D4",
+      "source_measure": 7,
+      "repeat_pass": 2,
+      "playback_strength_multiplier": 1
+    },
+    {
+      "note": "C5",
+      "beat": 85.5,
+      "duration_beats": 0.5,
+      "role": "melody",
+      "source_note": "C4",
+      "source_measure": 7,
+      "repeat_pass": 2,
+      "playback_strength_multiplier": 1
+    },
+    {
+      "note": "B4",
+      "beat": 86,
+      "duration_beats": 0.5,
+      "role": "melody",
+      "source_note": "B3",
+      "source_measure": 7,
+      "repeat_pass": 2,
+      "playback_strength_multiplier": 1
+    },
+    {
+      "note": "C5",
+      "beat": 86.5,
+      "duration_beats": 0.5,
+      "role": "melody",
+      "source_note": "C4",
+      "source_measure": 7,
+      "repeat_pass": 2,
+      "playback_strength_multiplier": 1
+    },
+    {
+      "note": "D4",
+      "beat": 86.5,
+      "duration_beats": 0.18,
+      "role": "accompaniment",
+      "source_measure": 7,
+      "repeat_pass": 2,
+      "source_chord": "G",
+      "playback_strength_multiplier": 1.15
+    },
+    {
+      "note": "G4",
+      "beat": 87,
+      "duration_beats": 0.5,
+      "role": "melody",
+      "source_note": "G3",
+      "source_measure": 7,
+      "repeat_pass": 2,
+      "playback_strength_multiplier": 1
+    },
+    {
+      "note": "G4",
+      "beat": 87.5,
+      "duration_beats": 0.5,
+      "role": "melody",
+      "source_note": "G3",
+      "source_measure": 7,
+      "repeat_pass": 2,
+      "playback_strength_multiplier": 1
+    },
+    {
+      "note": "G4",
+      "beat": 88,
+      "duration_beats": 0.5,
+      "role": "melody",
+      "source_note": "G3",
+      "source_measure": 7,
+      "repeat_pass": 2,
+      "playback_strength_multiplier": 1
+    },
+    {
+      "note": "C4",
+      "beat": 88.5,
+      "duration_beats": 0.18,
+      "role": "accompaniment",
+      "source_measure": 8,
+      "repeat_pass": 2,
+      "source_chord": "C",
+      "playback_strength_multiplier": 1.15
+    },
+    {
+      "note": "C5",
+      "beat": 88.5,
+      "duration_beats": 0.5,
+      "role": "melody",
+      "source_note": "C4",
+      "source_measure": 8,
+      "repeat_pass": 2,
+      "playback_strength_multiplier": 1
+    },
+    {
+      "note": "C5",
+      "beat": 89,
+      "duration_beats": 0.5,
+      "role": "melody",
+      "source_note": "C4",
+      "source_measure": 8,
+      "repeat_pass": 2,
+      "playback_strength_multiplier": 1
+    },
+    {
+      "note": "B4",
+      "beat": 89.5,
+      "duration_beats": 0.5,
+      "role": "melody",
+      "source_note": "B3",
+      "source_measure": 8,
+      "repeat_pass": 2,
+      "playback_strength_multiplier": 1
+    },
+    {
+      "note": "C5",
+      "beat": 90,
+      "duration_beats": 0.5,
+      "role": "melody",
+      "source_note": "C4",
+      "source_measure": 8,
+      "repeat_pass": 2,
+      "playback_strength_multiplier": 1
+    },
+    {
+      "note": "D5",
+      "beat": 90.5,
+      "duration_beats": 1,
+      "role": "melody",
+      "source_note": "D4",
+      "source_measure": 8,
+      "repeat_pass": 2,
+      "playback_strength_multiplier": 1
+    },
+    {
+      "note": "G3",
+      "beat": 90.5,
+      "duration_beats": 0.18,
+      "role": "accompaniment",
+      "source_measure": 8,
+      "repeat_pass": 2,
+      "source_chord": "C",
+      "playback_strength_multiplier": 1.15
+    },
+    {
+      "note": "G4",
+      "beat": 91.5,
+      "duration_beats": 0.5,
+      "role": "melody",
+      "source_note": "G3",
+      "source_measure": 8,
+      "repeat_pass": 2,
+      "playback_strength_multiplier": 1
+    },
+    {
+      "note": "G4",
+      "beat": 92,
+      "duration_beats": 0.5,
+      "role": "melody",
+      "source_note": "G3",
+      "source_measure": 8,
+      "repeat_pass": 2,
+      "playback_strength_multiplier": 1
+    },
+    {
+      "note": "D5",
+      "beat": 92.5,
+      "duration_beats": 0.5,
+      "role": "melody",
+      "source_note": "D4",
+      "source_measure": 9,
+      "repeat_pass": 2,
+      "playback_strength_multiplier": 1
+    },
+    {
+      "note": "G3",
+      "beat": 92.5,
+      "duration_beats": 0.18,
+      "role": "accompaniment",
+      "source_measure": 9,
+      "repeat_pass": 2,
+      "source_chord": "G",
+      "playback_strength_multiplier": 1.15
+    },
+    {
+      "note": "D5",
+      "beat": 93,
+      "duration_beats": 0.5,
+      "role": "melody",
+      "source_note": "D4",
+      "source_measure": 9,
+      "repeat_pass": 2,
+      "playback_strength_multiplier": 1
+    },
+    {
+      "note": "C5",
+      "beat": 93.5,
+      "duration_beats": 0.5,
+      "role": "melody",
+      "source_note": "C4",
+      "source_measure": 9,
+      "repeat_pass": 2,
+      "playback_strength_multiplier": 1
+    },
+    {
+      "note": "D5",
+      "beat": 94,
+      "duration_beats": 0.5,
+      "role": "melody",
+      "source_note": "D4",
+      "source_measure": 9,
+      "repeat_pass": 2,
+      "playback_strength_multiplier": 1
+    },
+    {
+      "note": "D4",
+      "beat": 94.5,
+      "duration_beats": 0.18,
+      "role": "accompaniment",
+      "source_measure": 9,
+      "repeat_pass": 2,
+      "source_chord": "G",
+      "playback_strength_multiplier": 1.15
+    },
+    {
+      "note": "E5",
+      "beat": 94.5,
+      "duration_beats": 1,
+      "role": "melody",
+      "source_note": "E4",
+      "source_measure": 9,
+      "repeat_pass": 2,
+      "playback_strength_multiplier": 1
+    },
+    {
+      "note": "E5",
+      "beat": 95.5,
+      "duration_beats": 0.5,
+      "role": "melody",
+      "source_note": "E4",
+      "source_measure": 9,
+      "repeat_pass": 2,
+      "playback_strength_multiplier": 1
+    },
+    {
+      "note": "E5",
+      "beat": 96,
+      "duration_beats": 0.5,
+      "role": "melody",
+      "source_note": "E4",
+      "source_measure": 9,
+      "repeat_pass": 2,
+      "playback_strength_multiplier": 1
+    },
+    {
+      "note": "F4",
+      "beat": 96.5,
+      "duration_beats": 0.18,
+      "role": "accompaniment",
+      "source_measure": 10,
+      "repeat_pass": 2,
+      "source_chord": "F",
+      "playback_strength_multiplier": 1.15
+    },
+    {
+      "note": "F5",
+      "beat": 96.5,
+      "duration_beats": 0.5,
+      "role": "melody",
+      "source_note": "F4",
+      "source_measure": 10,
+      "repeat_pass": 2,
+      "playback_strength_multiplier": 1
+    },
+    {
+      "note": "F5",
+      "beat": 97,
+      "duration_beats": 0.5,
+      "role": "melody",
+      "source_note": "F4",
+      "source_measure": 10,
+      "repeat_pass": 2,
+      "playback_strength_multiplier": 1
+    },
+    {
+      "note": "D5",
+      "beat": 97.5,
+      "duration_beats": 0.5,
+      "role": "melody",
+      "source_note": "D4",
+      "source_measure": 10,
+      "repeat_pass": 2,
+      "playback_strength_multiplier": 1
+    },
+    {
+      "note": "D5",
+      "beat": 98,
+      "duration_beats": 0.5,
+      "role": "melody",
+      "source_note": "D4",
+      "source_measure": 10,
+      "repeat_pass": 2,
+      "playback_strength_multiplier": 1
+    },
+    {
+      "note": "C4",
+      "beat": 98.5,
+      "duration_beats": 0.18,
+      "role": "accompaniment",
+      "source_measure": 10,
+      "repeat_pass": 2,
+      "source_chord": "F",
+      "playback_strength_multiplier": 1.15
+    },
+    {
+      "note": "E5",
+      "beat": 98.5,
+      "duration_beats": 0.5,
+      "role": "melody",
+      "source_note": "E4",
+      "source_measure": 10,
+      "repeat_pass": 2,
+      "playback_strength_multiplier": 1
+    },
+    {
+      "note": "E5",
+      "beat": 99,
+      "duration_beats": 0.5,
+      "role": "melody",
+      "source_note": "E4",
+      "source_measure": 10,
+      "repeat_pass": 2,
+      "playback_strength_multiplier": 1
+    },
+    {
+      "note": "C5",
+      "beat": 99.5,
+      "duration_beats": 0.5,
+      "role": "melody",
+      "source_note": "C4",
+      "source_measure": 10,
+      "repeat_pass": 2,
+      "playback_strength_multiplier": 1
+    },
+    {
+      "note": "C5",
+      "beat": 100,
+      "duration_beats": 0.5,
+      "role": "melody",
+      "source_note": "C4",
+      "source_measure": 10,
+      "repeat_pass": 2,
+      "playback_strength_multiplier": 1
+    },
+    {
+      "note": "D5",
+      "beat": 100.5,
+      "duration_beats": 0.5,
+      "role": "melody",
+      "source_note": "D4",
+      "source_measure": 11,
+      "repeat_pass": 2,
+      "playback_strength_multiplier": 1
+    },
+    {
+      "note": "G3",
+      "beat": 100.5,
+      "duration_beats": 0.18,
+      "role": "accompaniment",
+      "source_measure": 11,
+      "repeat_pass": 2,
+      "source_chord": "G",
+      "playback_strength_multiplier": 1.15
+    },
+    {
+      "note": "D5",
+      "beat": 101,
+      "duration_beats": 0.5,
+      "role": "melody",
+      "source_note": "D4",
+      "source_measure": 11,
+      "repeat_pass": 2,
+      "playback_strength_multiplier": 1
+    },
+    {
+      "note": "C5",
+      "beat": 101.5,
+      "duration_beats": 0.5,
+      "role": "melody",
+      "source_note": "C4",
+      "source_measure": 11,
+      "repeat_pass": 2,
+      "playback_strength_multiplier": 1
+    },
+    {
+      "note": "B4",
+      "beat": 102,
+      "duration_beats": 0.5,
+      "role": "melody",
+      "source_note": "B3",
+      "source_measure": 11,
+      "repeat_pass": 2,
+      "playback_strength_multiplier": 1
+    },
+    {
+      "note": "C5",
+      "beat": 102.5,
+      "duration_beats": 1,
+      "role": "melody",
+      "source_note": "C4",
+      "source_measure": 11,
+      "repeat_pass": 2,
+      "playback_strength_multiplier": 1
+    },
+    {
+      "note": "D4",
+      "beat": 102.5,
+      "duration_beats": 0.18,
+      "role": "accompaniment",
+      "source_measure": 11,
+      "repeat_pass": 2,
+      "source_chord": "G",
+      "playback_strength_multiplier": 1.15
+    },
+    {
+      "note": "E5",
+      "beat": 104,
+      "duration_beats": 0.5,
+      "role": "melody",
+      "source_note": "E4",
+      "source_measure": 11,
+      "repeat_pass": 2,
+      "playback_strength_multiplier": 1
+    },
+    {
+      "note": "F4",
+      "beat": 104.5,
+      "duration_beats": 0.18,
+      "role": "accompaniment",
+      "source_measure": 12,
+      "repeat_pass": 2,
+      "source_chord": "F",
+      "playback_strength_multiplier": 1.15
+    },
+    {
+      "note": "F5",
+      "beat": 104.5,
+      "duration_beats": 0.5,
+      "role": "melody",
+      "source_note": "F4",
+      "source_measure": 12,
+      "repeat_pass": 2,
+      "playback_strength_multiplier": 1
+    },
+    {
+      "note": "F5",
+      "beat": 105,
+      "duration_beats": 0.5,
+      "role": "melody",
+      "source_note": "F4",
+      "source_measure": 12,
+      "repeat_pass": 2,
+      "playback_strength_multiplier": 1
+    },
+    {
+      "note": "D5",
+      "beat": 105.5,
+      "duration_beats": 0.5,
+      "role": "melody",
+      "source_note": "D4",
+      "source_measure": 12,
+      "repeat_pass": 2,
+      "playback_strength_multiplier": 1
+    },
+    {
+      "note": "D5",
+      "beat": 106,
+      "duration_beats": 0.5,
+      "role": "melody",
+      "source_note": "D4",
+      "source_measure": 12,
+      "repeat_pass": 2,
+      "playback_strength_multiplier": 1
+    },
+    {
+      "note": "C4",
+      "beat": 106.5,
+      "duration_beats": 0.18,
+      "role": "accompaniment",
+      "source_measure": 12,
+      "repeat_pass": 2,
+      "source_chord": "F",
+      "playback_strength_multiplier": 1.15
+    },
+    {
+      "note": "E5",
+      "beat": 106.5,
+      "duration_beats": 0.5,
+      "role": "melody",
+      "source_note": "E4",
+      "source_measure": 12,
+      "repeat_pass": 2,
+      "playback_strength_multiplier": 1
+    },
+    {
+      "note": "E5",
+      "beat": 107,
+      "duration_beats": 0.5,
+      "role": "melody",
+      "source_note": "E4",
+      "source_measure": 12,
+      "repeat_pass": 2,
+      "playback_strength_multiplier": 1
+    },
+    {
+      "note": "C5",
+      "beat": 107.5,
+      "duration_beats": 0.5,
+      "role": "melody",
+      "source_note": "C4",
+      "source_measure": 12,
+      "repeat_pass": 2,
+      "playback_strength_multiplier": 1
+    },
+    {
+      "note": "C5",
+      "beat": 108,
+      "duration_beats": 0.5,
+      "role": "melody",
+      "source_note": "C4",
+      "source_measure": 12,
+      "repeat_pass": 2,
+      "playback_strength_multiplier": 1
+    },
+    {
+      "note": "D5",
+      "beat": 108.5,
+      "duration_beats": 0.5,
+      "role": "melody",
+      "source_note": "D4",
+      "source_measure": 13,
+      "repeat_pass": 2,
+      "playback_strength_multiplier": 1
+    },
+    {
+      "note": "G3",
+      "beat": 108.5,
+      "duration_beats": 0.18,
+      "role": "accompaniment",
+      "source_measure": 13,
+      "repeat_pass": 2,
+      "source_chord": "G",
+      "playback_strength_multiplier": 1.15
+    },
+    {
+      "note": "D5",
+      "beat": 109,
+      "duration_beats": 0.5,
+      "role": "melody",
+      "source_note": "D4",
+      "source_measure": 13,
+      "repeat_pass": 2,
+      "playback_strength_multiplier": 1
+    },
+    {
+      "note": "C5",
+      "beat": 109.5,
+      "duration_beats": 0.5,
+      "role": "melody",
+      "source_note": "C4",
+      "source_measure": 13,
+      "repeat_pass": 2,
+      "playback_strength_multiplier": 1
+    },
+    {
+      "note": "B4",
+      "beat": 110,
+      "duration_beats": 0.5,
+      "role": "melody",
+      "source_note": "B3",
+      "source_measure": 13,
+      "repeat_pass": 2,
+      "playback_strength_multiplier": 1
+    },
+    {
+      "note": "C5",
+      "beat": 110.5,
+      "duration_beats": 1,
+      "role": "melody",
+      "source_note": "C4",
+      "source_measure": 13,
+      "repeat_pass": 2,
+      "playback_strength_multiplier": 1
+    },
+    {
+      "note": "D4",
+      "beat": 110.5,
+      "duration_beats": 0.18,
+      "role": "accompaniment",
+      "source_measure": 13,
+      "repeat_pass": 2,
+      "source_chord": "G",
+      "playback_strength_multiplier": 1.15
+    },
+    {
+      "note": "E5",
+      "beat": 112,
+      "duration_beats": 0.5,
+      "role": "melody",
+      "source_note": "E4",
+      "source_measure": 13,
+      "repeat_pass": 2,
+      "playback_strength_multiplier": 1
+    },
+    {
+      "note": "C4",
+      "beat": 112.5,
+      "duration_beats": 0.18,
+      "role": "accompaniment",
+      "source_measure": 14,
+      "repeat_pass": 2,
+      "source_chord": "C",
+      "playback_strength_multiplier": 1.15
+    },
+    {
+      "note": "G5",
+      "beat": 112.5,
+      "duration_beats": 0.5,
+      "role": "melody",
+      "source_note": "G4",
+      "source_measure": 14,
+      "repeat_pass": 2,
+      "playback_strength_multiplier": 1
+    },
+    {
+      "note": "G5",
+      "beat": 113,
+      "duration_beats": 0.5,
+      "role": "melody",
+      "source_note": "G4",
+      "source_measure": 14,
+      "repeat_pass": 2,
+      "playback_strength_multiplier": 1
+    },
+    {
+      "note": "F5",
+      "beat": 113.5,
+      "duration_beats": 0.5,
+      "role": "melody",
+      "source_note": "F4",
+      "source_measure": 14,
+      "repeat_pass": 2,
+      "playback_strength_multiplier": 1
+    },
+    {
+      "note": "E5",
+      "beat": 114,
+      "duration_beats": 0.5,
+      "role": "melody",
+      "source_note": "E4",
+      "source_measure": 14,
+      "repeat_pass": 2,
+      "playback_strength_multiplier": 1
+    },
+    {
+      "note": "G3",
+      "beat": 114.5,
+      "duration_beats": 0.18,
+      "role": "accompaniment",
+      "source_measure": 14,
+      "repeat_pass": 2,
+      "source_chord": "C",
+      "playback_strength_multiplier": 1.15
+    },
+    {
+      "note": "G5",
+      "beat": 114.5,
+      "duration_beats": 0.5,
+      "role": "melody",
+      "source_note": "G4",
+      "source_measure": 14,
+      "repeat_pass": 2,
+      "playback_strength_multiplier": 1
+    },
+    {
+      "note": "D5",
+      "beat": 115,
+      "duration_beats": 1,
+      "role": "melody",
+      "source_note": "D4",
+      "source_measure": 14,
+      "repeat_pass": 2,
+      "playback_strength_multiplier": 1
+    },
+    {
+      "note": "D5",
+      "beat": 116,
+      "duration_beats": 0.5,
+      "role": "melody",
+      "source_note": "D4",
+      "source_measure": 14,
+      "repeat_pass": 2,
+      "playback_strength_multiplier": 1
+    },
+    {
+      "note": "F5",
+      "beat": 116.5,
+      "duration_beats": 0.5,
+      "role": "melody",
+      "source_note": "F4",
+      "source_measure": 15,
+      "repeat_pass": 2,
+      "playback_strength_multiplier": 1
+    },
+    {
+      "note": "G3",
+      "beat": 116.5,
+      "duration_beats": 0.18,
+      "role": "accompaniment",
+      "source_measure": 15,
+      "repeat_pass": 2,
+      "source_chord": "G",
+      "playback_strength_multiplier": 1.15
+    },
+    {
+      "note": "F5",
+      "beat": 117,
+      "duration_beats": 0.5,
+      "role": "melody",
+      "source_note": "F4",
+      "source_measure": 15,
+      "repeat_pass": 2,
+      "playback_strength_multiplier": 1
+    },
+    {
+      "note": "E5",
+      "beat": 117.5,
+      "duration_beats": 0.5,
+      "role": "melody",
+      "source_note": "E4",
+      "source_measure": 15,
+      "repeat_pass": 2,
+      "playback_strength_multiplier": 1
+    },
+    {
+      "note": "D5",
+      "beat": 118,
+      "duration_beats": 0.5,
+      "role": "melody",
+      "source_note": "D4",
+      "source_measure": 15,
+      "repeat_pass": 2,
+      "playback_strength_multiplier": 1
+    },
+    {
+      "note": "C5",
+      "beat": 118.5,
+      "duration_beats": 1,
+      "role": "melody",
+      "source_note": "C4",
+      "source_measure": 15,
+      "repeat_pass": 2,
+      "playback_strength_multiplier": 1
+    },
+    {
+      "note": "D4",
+      "beat": 118.5,
+      "duration_beats": 0.18,
+      "role": "accompaniment",
+      "source_measure": 15,
+      "repeat_pass": 2,
+      "source_chord": "G",
+      "playback_strength_multiplier": 1.15
+    },
+    {
+      "note": "E5",
+      "beat": 120,
+      "duration_beats": 0.5,
+      "role": "melody",
+      "source_note": "E4",
+      "source_measure": 15,
+      "repeat_pass": 2,
+      "playback_strength_multiplier": 1
+    },
+    {
+      "note": "C4",
+      "beat": 120.5,
+      "duration_beats": 0.18,
+      "role": "accompaniment",
+      "source_measure": 16,
+      "repeat_pass": 2,
+      "source_chord": "C",
+      "playback_strength_multiplier": 1.15
+    },
+    {
+      "note": "G5",
+      "beat": 120.5,
+      "duration_beats": 0.5,
+      "role": "melody",
+      "source_note": "G4",
+      "source_measure": 16,
+      "repeat_pass": 2,
+      "playback_strength_multiplier": 1
+    },
+    {
+      "note": "G5",
+      "beat": 121,
+      "duration_beats": 0.5,
+      "role": "melody",
+      "source_note": "G4",
+      "source_measure": 16,
+      "repeat_pass": 2,
+      "playback_strength_multiplier": 1
+    },
+    {
+      "note": "F5",
+      "beat": 121.5,
+      "duration_beats": 0.5,
+      "role": "melody",
+      "source_note": "F4",
+      "source_measure": 16,
+      "repeat_pass": 2,
+      "playback_strength_multiplier": 1
+    },
+    {
+      "note": "E5",
+      "beat": 122,
+      "duration_beats": 0.5,
+      "role": "melody",
+      "source_note": "E4",
+      "source_measure": 16,
+      "repeat_pass": 2,
+      "playback_strength_multiplier": 1
+    },
+    {
+      "note": "G3",
+      "beat": 122.5,
+      "duration_beats": 0.18,
+      "role": "accompaniment",
+      "source_measure": 16,
+      "repeat_pass": 2,
+      "source_chord": "C",
+      "playback_strength_multiplier": 1.15
+    },
+    {
+      "note": "G5",
+      "beat": 122.5,
+      "duration_beats": 0.5,
+      "role": "melody",
+      "source_note": "G4",
+      "source_measure": 16,
+      "repeat_pass": 2,
+      "playback_strength_multiplier": 1
+    },
+    {
+      "note": "D5",
+      "beat": 123,
+      "duration_beats": 1,
+      "role": "melody",
+      "source_note": "D4",
+      "source_measure": 16,
+      "repeat_pass": 2,
+      "playback_strength_multiplier": 1
+    },
+    {
+      "note": "D5",
+      "beat": 124,
+      "duration_beats": 0.5,
+      "role": "melody",
+      "source_note": "D4",
+      "source_measure": 16,
+      "repeat_pass": 2,
+      "playback_strength_multiplier": 1
+    },
+    {
+      "note": "F5",
+      "beat": 124.5,
+      "duration_beats": 0.5,
+      "role": "melody",
+      "source_note": "F4",
+      "source_measure": 17,
+      "repeat_pass": 2,
+      "playback_strength_multiplier": 1
+    },
+    {
+      "note": "G3",
+      "beat": 124.5,
+      "duration_beats": 0.18,
+      "role": "accompaniment",
+      "source_measure": 17,
+      "repeat_pass": 2,
+      "source_chord": "G",
+      "playback_strength_multiplier": 1.15
+    },
+    {
+      "note": "F5",
+      "beat": 125,
+      "duration_beats": 0.5,
+      "role": "melody",
+      "source_note": "F4",
+      "source_measure": 17,
+      "repeat_pass": 2,
+      "playback_strength_multiplier": 1
+    },
+    {
+      "note": "E5",
+      "beat": 125.5,
+      "duration_beats": 0.5,
+      "role": "melody",
+      "source_note": "E4",
+      "source_measure": 17,
+      "repeat_pass": 2,
+      "playback_strength_multiplier": 1
+    },
+    {
+      "note": "D5",
+      "beat": 126,
+      "duration_beats": 0.5,
+      "role": "melody",
+      "source_note": "D4",
+      "source_measure": 17,
+      "repeat_pass": 2,
+      "playback_strength_multiplier": 1
+    },
+    {
+      "note": "C5",
+      "beat": 126.5,
+      "duration_beats": 1,
+      "role": "melody",
+      "source_note": "C4",
+      "source_measure": 17,
+      "repeat_pass": 2,
+      "playback_strength_multiplier": 1
+    },
+    {
+      "note": "D4",
+      "beat": 126.5,
+      "duration_beats": 0.18,
+      "role": "accompaniment",
+      "source_measure": 17,
+      "repeat_pass": 2,
+      "source_chord": "G",
+      "playback_strength_multiplier": 1.15
+    }
+  ],
+  "metadata": {
+    "source": "User-supplied Ampar-Ampar Pisang score screenshot, 2026-09-12; arrangement credited to Reynard Ruslan.",
+    "tempo_bpm": 90,
+    "transposition_semitones": 12,
+    "pickup": [
+      [
+        "G3",
+        0.5
+      ]
+    ],
+    "repeat_policy": "Play the opening pickup once, then the 16 complete measures twice for the closing repeat sign.",
+    "bass_policy": "Simplified C/F/G harmonic pulses; discard the continuous bass eighth-note arpeggios and bass chords.",
+    "melody_selection": "Supplied treble melody raised one octave, preserving pickup, rests, and closing repeat. No accidental substitutions.",
+    "accompaniment_selection": "Simplified C/F/G harmonic pulses; discard the continuous bass eighth-note arpeggios and bass chords.",
+    "calibration_review": "Audition 120 ms bass pulses, repeated-note clarity and melody transcription on the physical rack."
+  }
+}
