@@ -4,7 +4,7 @@ The shared setup is on `main`. Use this repository for song fixes, the operator 
 
 ## Studio v2 preview
 
-The combined application workspace is at **http://127.0.0.1:3011/studio**. Player/UI and camera-conducting work are now integrated in this checkout, at `Software Releases/angklobot-conducting`. Use this directory for further Studio changes; the older hidden `angklobot-app-v2` checkout is a preserved earlier version, not the running source.
+The combined application workspace is at **http://127.0.0.1:3011/studio**. Player/UI and camera-conducting work are now integrated in this checkout, at `wro-angklung-ai-player/.worktrees/angklobot-conducting`. Use this directory for further Studio changes; the older hidden `angklobot-app-v2` checkout is a preserved earlier version, not the running source.
 
 ```sh
 cd frontend

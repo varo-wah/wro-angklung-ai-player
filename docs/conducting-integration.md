@@ -28,7 +28,7 @@ Only `StudioShell.tsx` (navigation and disabled player button) and `runtime/stud
 
 The isolated `codex/conducting-preview` checkout began with a source snapshot of the uncommitted Studio workspace. That snapshot is a development baseline, not conducting work. On 31 October, the user requested synchronization with the player/UI chat. A three-way merge against that snapshot brought in the latest themes, sizing, queue resizing, and player tests while retaining Conduct's navigation and mode ownership. Conduct's surfaces and typography now follow the same saved appearance choices.
 
-`Software Releases/angklobot-conducting` is now the shared Studio working directory. Port 3011 runs `dev:studio` here, and the existing port 3012 `dev:conduct` preview reads the same source with a separate build cache. These are two browser origins, not shared live queue sessions. Keep further Studio work in this checkout or explicitly port feature commits; there is no automatic cross-chat or cross-worktree merge. The former hidden Studio checkout and the original dirty main controller checkout remain preserved.
+`wro-angklung-ai-player/.worktrees/angklobot-conducting` is now the shared Studio working directory. Port 3011 runs `dev:studio` here, and the existing port 3012 `dev:conduct` preview reads the same source with a separate build cache. These are two browser origins, not shared live queue sessions. Keep further Studio work in this checkout or explicitly port feature commits; there is no automatic cross-chat or cross-worktree merge. The former hidden Studio checkout and the original dirty main controller checkout remain preserved.
 
 ## Run
 

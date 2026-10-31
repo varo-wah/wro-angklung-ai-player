@@ -4,7 +4,7 @@ Status: first browser preview milestone, 2 October 2026. This is an application 
 
 ## Shared Studio checkout — 31 October 2026
 
-The player/UI and Conduct branches are now combined in `Software Releases/angklobot-conducting` (`codex/conducting-preview`). Both local preview servers, ports 3011 and 3012, use that working directory with separate build caches. The hidden `angklobot-app-v2` checkout is preserved as the earlier UI version; the original main controller checkout remains unchanged. Future Studio edits should use the shared directory or be deliberately integrated from a feature checkout. Browser sessions, queues, and per-origin preferences are still separate across ports.
+The player/UI and Conduct branches are now combined in `wro-angklung-ai-player/.worktrees/angklobot-conducting` (`codex/conducting-preview`). Both local preview servers, ports 3011 and 3012, use that working directory with separate build caches. The hidden `angklobot-app-v2` checkout is preserved as the earlier UI version; the original main controller checkout remains unchanged. Future Studio edits should use the shared directory or be deliberately integrated from a feature checkout. Browser sessions, queues, and per-origin preferences are still separate across ports.
 
 Integration checks: 43 focused Studio/conducting tests and the production build pass. Browser verification covered both themes on Conduct, the five-item phone navigation at 320px and 140% sizing, song-to-Conduct audio ownership, and return to Player. Camera capture and robot output were not enabled during this integration check.
 
