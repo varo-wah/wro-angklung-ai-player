@@ -27,15 +27,20 @@ int main() {
     assert(motorPowerPercent[i] == expectedPower[i]); assert(motorPulseMs[i] == 550);
     std::string note = "NOTE," + std::to_string(i) + ",5000,1000";
     send(note.c_str()); assert(motors[i].active);
-    assert(motors[i].dutyPermille == (uint16_t)expectedPower[i] * 10U);
+    assert(motors[i].dutyPermille == (uint16_t)expectedPower[i] * 15U);
     assert(motors[i].pulseEndMs == fakeMillis + 5000);
   }
   send("ALL_OFF"); assert(armed); off();
+  motorPowerPercent[0]=100;
+  send("NOTE,0,300,1000"); assert(motors[0].dutyPermille==1000);
+  send("NOTE,0,300,0"); assert(motors[0].dutyPermille==0);
+  motorPowerPercent[0]=30;
+  send("ALL_OFF"); off();
   send("NOTE,0,300,500"); send("NOTE,1,200,1000");
   assert(motors[0].active && motors[1].active);
-  assert(motors[0].dutyPermille == 150);
+  assert(motors[0].dutyPermille == 225);
   updateSoftwarePwm(); assert(fakePinValues[6] == HIGH);
-  fakeMicros=150; updateSoftwarePwm(); assert(fakePinValues[6] == LOW);
+  fakeMicros=225; updateSoftwarePwm(); assert(fakePinValues[6] == LOW);
   fakeMillis=100; send("NOTE,0,550,1000"); assert(motors[0].pulseEndMs == 650);
   fakeMillis=200; updateMotorPulseExpiry(); assert(!motors[1].active && motors[0].active);
   fakeMillis=650; updateMotorPulseExpiry(); off();

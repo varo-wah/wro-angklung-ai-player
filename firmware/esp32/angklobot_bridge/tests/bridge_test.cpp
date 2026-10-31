@@ -36,7 +36,7 @@ int main() {
   s=slot(0,"ARM\n"); parseRequest(0); reply("ACK,ARM\n");
   wasConnected=true; WiFi.state=0; loop(); assert(fault && !wirelessMayBeArmed);
   // Preloaded song playback: ordered upload, exact deadlines, completion and lease.
-  WiFi.state=WL_CONNECTED; fault=false; pending=-1; wirelessMayBeArmed=false;
+  WiFi.state=WL_CONNECTED; fault=false; owner=Owner::WIFI; ownerAt=nowMs; pending=-1; wirelessMayBeArmed=false;
   clearSchedule(); megaUart.output.clear();
   s=slot(0,"SCHED,BEGIN,7,2\n"); parseRequest(0); assert(expectedNotes==2);
   s=slot(0,"SCHED,ADD,7,0,0:0:100:800;150:18:100:800\n"); parseRequest(0);

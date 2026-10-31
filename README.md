@@ -2,6 +2,20 @@
 
 The shared setup is on `main`. Use this repository for song fixes, the operator website, local voice, paired-device control, Arduino USB, and ESP32 Wi-Fi. The active rack is **18 natural notes, G3–C6**.
 
+## Studio v2 preview
+
+The new application workspace is at **http://127.0.0.1:3011/studio**. In this checkout:
+
+```sh
+cd frontend
+npm ci
+npm run dev:studio
+```
+
+Studio includes library search and category filters, favourites, recent playback, persistent preferences, and synthesized audio previews. Its independently tested runtime reuses the existing schedule and validation rules through repository, preference, audio, and playback interfaces. The `/control` console remains available for hardware operation. Studio does not connect to a robot or start local AI/speech services.
+
+See [the architecture and release path](docs/app-v2-architecture.md) for platform boundaries and the next steps toward native packaging and a customer pilot. This is a local preview, not a native package or published commercial release.
+
 ## Start the competition website
 
 ```sh

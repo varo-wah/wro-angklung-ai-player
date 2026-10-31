@@ -1068,5 +1068,118 @@
     "melody_register": "upper_physical",
     "melody_target_range": "G4-G5",
     "path": "/songs/arrangements/ampar_ampar_pisang.json"
+  },
+  {
+    "id": "satu_nusa_satu_bangsa",
+    "title": "Satu Nusa Satu Bangsa",
+    "aliases": [
+      "satu nusa satu bangsa",
+      "satu nusa",
+      "satu bangsa"
+    ],
+    "category": "indonesian_national",
+    "difficulty": "easy",
+    "priority": "high",
+    "arrangement_status": "sheet_transcription_draft_needs_listening_review",
+    "playable": true,
+    "demo_safe": false,
+    "has_validated_notes": true,
+    "active": true,
+    "visible_in_guest": true,
+    "physical_rack_map": "G3-C6",
+    "melody_register": "upper_physical",
+    "melody_target_range": "E4-F5",
+    "path": "/songs/arrangements/satu_nusa_satu_bangsa.json"
+  },
+  {
+    "id": "garuda_pancasila",
+    "title": "Garuda Pancasila",
+    "aliases": [
+      "garuda pancasila",
+      "garuda",
+      "pancasila"
+    ],
+    "category": "indonesian_national",
+    "difficulty": "easy",
+    "priority": "high",
+    "arrangement_status": "sheet_transcription_draft_needs_listening_review",
+    "playable": true,
+    "demo_safe": false,
+    "has_validated_notes": true,
+    "active": true,
+    "visible_in_guest": true,
+    "physical_rack_map": "G3-C6",
+    "melody_register": "upper_physical",
+    "melody_target_range": "G4-A5",
+    "path": "/songs/arrangements/garuda_pancasila.json"
+  },
+  {
+    "id": "rek_ayo_rek",
+    "title": "Rek Ayo Rek",
+    "aliases": [
+      "rek ayo rek",
+      "rek ayo",
+      "rek ayorek"
+    ],
+    "category": "indonesian_traditional",
+    "difficulty": "easy",
+    "priority": "high",
+    "arrangement_status": "sheet_transcription_draft_needs_listening_review",
+    "playable": true,
+    "demo_safe": false,
+    "has_validated_notes": true,
+    "active": true,
+    "visible_in_guest": true,
+    "physical_rack_map": "G3-C6",
+    "melody_register": "upper_physical",
+    "melody_target_range": "G4-A5",
+    "path": "/songs/arrangements/rek_ayo_rek.json"
+  },
+  {
+    "id": "tian_mi_mi",
+    "title": "Tian Mi Mi",
+    "aliases": [
+      "tian mi mi",
+      "tian mimi",
+      "tianmimi",
+      "甜蜜蜜",
+      "teresa teng tian mi mi"
+    ],
+    "category": "international_pop",
+    "difficulty": "easy",
+    "priority": "high",
+    "arrangement_status": "sheet_transcription_draft_needs_listening_review",
+    "playable": true,
+    "demo_safe": false,
+    "has_validated_notes": true,
+    "active": true,
+    "visible_in_guest": true,
+    "physical_rack_map": "G3-C6",
+    "melody_register": "upper_physical",
+    "melody_target_range": "G4-C6",
+    "path": "/songs/arrangements/tian_mi_mi.json"
+  },
+  {
+    "id": "balonku_ada_lima",
+    "title": "Balonku Ada Lima",
+    "aliases": [
+      "balonku ada lima",
+      "balonku",
+      "balon ku ada lima",
+      "balonku ada 5"
+    ],
+    "category": "indonesian_traditional",
+    "difficulty": "easy",
+    "priority": "high",
+    "arrangement_status": "sheet_transcription_draft_needs_listening_review",
+    "playable": true,
+    "demo_safe": false,
+    "has_validated_notes": true,
+    "active": true,
+    "visible_in_guest": true,
+    "physical_rack_map": "G3-C6",
+    "melody_register": "upper_physical",
+    "melody_target_range": "C5-C6",
+    "path": "/songs/arrangements/balonku_ada_lima.json"
   }
 ]

@@ -13,12 +13,12 @@ export function MicrophoneButton({ voice, large = false }: { voice: VisitorVoice
 
 export function VoiceControls({ voice }: { voice: VisitorVoice }) {
   return <div className="voice-controls">
-    <button type="button" className="voice-control" onClick={voice.enableSpokenReplies}>Enable spoken replies</button>
+    {voice.speechDisabled ? <span className="voice-control">Spoken replies off on phones</span> : <button type="button" className="voice-control" onClick={voice.enableSpokenReplies}>Enable spoken replies</button>}
     <button type="button" aria-pressed={voice.wakeWord.enabled} disabled={!voice.wakeWord.enabled && voice.state !== "idle" && voice.state !== "error"}
       className="voice-control wake-control" onClick={() => void (voice.wakeWord.enabled ? voice.wakeWord.disable() : voice.wakeWord.enable())}>
       <span className={`wake-dot ${voice.wakeWord.enabled ? "active" : ""}`} />Hey Angklobot: {voice.wakeWord.enabled ? "On" : "Off"}
     </button>
-    <button type="button" className="voice-control" aria-pressed={voice.muted} onClick={() => voice.setMuted(!voice.muted)}>{voice.muted ? "Unmute" : "Mute"}</button>
+    {!voice.speechDisabled && <button type="button" className="voice-control" aria-pressed={voice.muted} onClick={() => voice.setMuted(!voice.muted)}>{voice.muted ? "Unmute" : "Mute"}</button>}
     <label className="voice-control"><span className="sr-only">Voice language</span>
       <select aria-label="Voice language" value={voice.language} disabled={voice.state === "listening" || voice.state === "transcribing"}
         onChange={e => voice.setLanguage(e.target.value === "id" ? "id" : "en")}>

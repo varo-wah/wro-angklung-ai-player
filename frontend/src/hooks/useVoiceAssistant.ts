@@ -5,6 +5,7 @@ import {
   BrowserVoiceRecorder, VoiceCaptureError, speakVoiceResponse, stopSpeaking,
   transcribeVoiceRecording, type VoiceLanguage, type VoiceState,
 } from "@/lib/voice";
+import { phoneSpeechDisabled } from "@/lib/phoneSpeech";
 import { useWakeWord } from "@/hooks/useWakeWord";
 
 type VoiceAssistantOptions = {
@@ -17,6 +18,7 @@ type VoiceAssistantOptions = {
 export function useVoiceAssistant({ onAfterResponse, onBeforeListen, onWakeDetected, onTranscript }: VoiceAssistantOptions) {
   const [error, setError] = useState<string | null>(null);
   const [language, setLanguageState] = useState<VoiceLanguage>("en");
+  const [speechDisabled, setSpeechDisabled] = useState(false);
   const [muted, setMutedState] = useState(false);
   const mutedRef = useRef(muted);
   mutedRef.current = muted;
@@ -61,10 +63,11 @@ export function useVoiceAssistant({ onAfterResponse, onBeforeListen, onWakeDetec
 
   useEffect(() => {
     mountedRef.current = true;
+    setSpeechDisabled(phoneSpeechDisabled());
     try {
       const storedLanguage = window.localStorage.getItem("angklobot.voice.language");
       if (storedLanguage === "en" || storedLanguage === "id") setLanguageState(storedLanguage);
-      setMutedState(window.localStorage.getItem("angklobot.voice.muted") === "true");
+      setMutedState(phoneSpeechDisabled() || window.localStorage.getItem("angklobot.voice.muted") === "true");
     } catch { /* Private browsing may disable storage. */ }
     return () => {
       mountedRef.current = false;
@@ -80,7 +83,7 @@ export function useVoiceAssistant({ onAfterResponse, onBeforeListen, onWakeDetec
   const speak = useCallback(async (text: string | null) => {
     const speech = ++speechRef.current;
     stopSpeaking();
-    if (!text?.trim() || mutedRef.current) {
+    if (!text?.trim() || mutedRef.current || phoneSpeechDisabled()) {
       await optionsRef.current.onAfterResponse?.();
       setState("idle");
       return;
@@ -174,6 +177,7 @@ export function useVoiceAssistant({ onAfterResponse, onBeforeListen, onWakeDetec
   }, []);
 
   const setMuted = useCallback((nextMuted: boolean) => {
+    nextMuted = phoneSpeechDisabled() || nextMuted;
     mutedRef.current = nextMuted;
     setMutedState(nextMuted);
     try { window.localStorage.setItem("angklobot.voice.muted", String(nextMuted)); } catch { /* Optional preference. */ }
@@ -182,6 +186,7 @@ export function useVoiceAssistant({ onAfterResponse, onBeforeListen, onWakeDetec
 
   const enableSpokenReplies = useCallback(() => {
     stopSpeech();
+    if (phoneSpeechDisabled()) return;
     setMuted(false);
     setError(null);
     // Speak directly in the tap handler, before any asynchronous work.
@@ -191,6 +196,6 @@ export function useVoiceAssistant({ onAfterResponse, onBeforeListen, onWakeDetec
     if (!utterance) setError("This browser does not support spoken replies.");
   }, [language, setMuted, stopSpeech]);
 
-  return { enableSpokenReplies, cancelListening, error, language, muted, setLanguage, setMuted, speak,
+  return { speechDisabled, enableSpokenReplies, cancelListening, error, language, muted, setLanguage, setMuted, speak,
     startListening, submitText: runRequest, state, stopSpeech, transcript, wakeWord };
 }

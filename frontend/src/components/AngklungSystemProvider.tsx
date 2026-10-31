@@ -7,6 +7,7 @@ import { RobotSessionStatus } from "@/components/RobotSessionStatus";
 import type { RobotAction, RobotCommand, RobotResult } from "@/lib/robotSession";
 import { usePathname } from "next/navigation";
 import { createContext, useContext, useEffect, useMemo, useRef, useState, type ReactNode } from "react";
+import { Esp32UsbLink } from "@/lib/esp32UsbLink";
 import { Esp32Transport } from "@/lib/esp32Transport";
 import type { RobotTransport, RobotTransportMode } from "@/lib/robotTransport";
 import { AudioEngine } from "@/lib/audioEngine";
@@ -35,6 +36,7 @@ import { validateSchedulePayload } from "@/lib/scheduleValidator";
 import { getActiveCatalogSongs, getVisibleCatalogSongs, loadSongCatalog } from "@/lib/songCatalog";
 import { loadSongArrangement } from "@/lib/songLoader";
 import type { LoadedSong, SongCatalogEntry, SongNote } from "@/lib/songTypes";
+import { MacReplySpeech } from "@/lib/macReplySpeech";
 import type { VoiceLanguage } from "@/lib/voice";
 import {
   createSyncTabId,
@@ -273,6 +275,8 @@ export function AngklungSystemProvider({ children }: { children: ReactNode }) {
   const hasCheckedAiProviderRef = useRef(false);
   const playbackSessionRef = useRef(0);
   const conversationEpoch = useRef(0);
+  const macReplySpeech = useRef(new MacReplySpeech());
+  useEffect(() => () => macReplySpeech.current.cancel(), []);
   const generatedScheduleRef = useRef<ActuatorSchedule | null>(null);
   const pendingUserModeScheduleRef = useRef<{ epoch: number; schedule: ActuatorSchedule } | null>(null);
   const activeCommandTimeoutsRef = useRef(new Set<number>());
@@ -313,7 +317,11 @@ export function AngklungSystemProvider({ children }: { children: ReactNode }) {
         return { ok: true };
       }
       case "request": {
+        macReplySpeech.current.cancel();
         const value = await handleSongRequest(action.text, action.language, true);
+        const epoch = conversationEpoch.current;
+        const completed = await macReplySpeech.current.speak(value, action.language);
+        if (!completed || epoch !== conversationEpoch.current) return { ok: false, error: "Request cancelled." };
         hostPendingRequestRef.current = value && pendingUserModeScheduleRef.current ? command.id : null;
         return { ok: true, value, pending: Boolean(hostPendingRequestRef.current) };
       }
@@ -398,11 +406,11 @@ export function AngklungSystemProvider({ children }: { children: ReactNode }) {
 
   useEffect(() => {
     let mode: RobotTransportMode = "usb";
-    try { if (localStorage.getItem("angklobot.transport") === "esp32") mode = "esp32"; } catch { /* Optional preference. */ }
+    try { const saved = localStorage.getItem("angklobot.transport"); if (saved === "esp32" || saved === "esp32-usb") mode = saved; } catch { /* Optional preference. */ }
     transportModeRef.current = mode;
     setTransportModeState(mode);
     setArduinoConnection(mode === "usb" ? getInitialArduinoConnectionState() : {
-      status: "disconnected", outputMode: "unknown", message: "ESP32 Wi-Fi selected. Click Connect ESP32.",
+      status: "disconnected", outputMode: "unknown", message: mode === "esp32-usb" ? "ESP32 USB selected. Click Connect ESP32 USB." : "ESP32 Wi-Fi selected. Click Connect ESP32 Wi-Fi.",
     });
     return () => {
       if (arduinoRef.current?.connected) {
@@ -1007,6 +1015,7 @@ export function AngklungSystemProvider({ children }: { children: ReactNode }) {
   }
 
   function cancelConversationRequest() {
+    macReplySpeech.current.cancel();
     ++conversationEpoch.current;
     pendingUserModeScheduleRef.current = null;
   }
@@ -1189,8 +1198,8 @@ export function AngklungSystemProvider({ children }: { children: ReactNode }) {
           stopPlaybackMedia();
         }
       };
-      arduinoRef.current = transportModeRef.current === "esp32"
-        ? new Esp32Transport(changed) : new ArduinoSerialController(changed);
+      arduinoRef.current = transportModeRef.current !== "usb"
+        ? new Esp32Transport(changed, transportModeRef.current === "esp32-usb" ? new Esp32UsbLink() : undefined) : new ArduinoSerialController(changed);
     }
     return arduinoRef.current;
   }
@@ -1207,7 +1216,7 @@ export function AngklungSystemProvider({ children }: { children: ReactNode }) {
       arduinoRef.current = null;
       transportModeRef.current = mode; setTransportModeState(mode);
       setArduinoConnection(mode === "usb" ? getInitialArduinoConnectionState() : {
-        status: "disconnected", outputMode: "unknown", message: "ESP32 Wi-Fi selected. Click Connect ESP32.",
+        status: "disconnected", outputMode: "unknown", message: mode === "esp32-usb" ? "ESP32 USB selected. Click Connect ESP32 USB." : "ESP32 Wi-Fi selected. Click Connect ESP32 Wi-Fi.",
       });
       try { localStorage.setItem("angklobot.transport", mode); } catch { /* Optional preference. */ }
     } finally { transportChangingRef.current = false; setTransportChanging(false); }
@@ -1263,7 +1272,7 @@ export function AngklungSystemProvider({ children }: { children: ReactNode }) {
   }
 
   async function startSchedule(nextSchedule: ActuatorSchedule, offset = 0, isCurrent = () => true): Promise<boolean> {
-    if (!virtualOnlyRef.current && (transportChangingRef.current || ((robotSession.credentials.current.role === "host" || transportModeRef.current === "esp32") && !arduinoRef.current?.connected))) {
+    if (!virtualOnlyRef.current && (transportChangingRef.current || ((robotSession.credentials.current.role === "host" || transportModeRef.current !== "usb") && !arduinoRef.current?.connected))) {
       setErrors(["Robot disconnected. Connect the selected transport before playback."]);
       return false;
     }
@@ -1461,7 +1470,7 @@ export function AngklungSystemProvider({ children }: { children: ReactNode }) {
       message: robotSession.status.hostOnline ? `Mac USB: ${robotSession.status.arduino.message}` : "Mac controller offline. Remote playback unavailable.",
     } : arduinoConnection,
     remoteControl: routesToMac(),
-    physicalControl: routesToMac() ? robotSession.status.virtualPlayback !== true : !virtualOnly && (robotSession.role === "host" || transportMode === "esp32"),
+    physicalControl: routesToMac() ? robotSession.status.virtualPlayback !== true : !virtualOnly && (robotSession.role === "host" || transportMode !== "usb"),
     transportMode, transportChanging, setTransportMode,
     aiAssistantMode,
     aiConfidence,
@@ -1554,7 +1563,7 @@ export function AngklungSystemProvider({ children }: { children: ReactNode }) {
           </label>
           <p className="mt-1 text-xs text-slate-400">{virtualOnly ? "Mac speakers only: paired phones control virtual playback here." : "Turn off to test on Mac speakers; turn on to send notes to connected hardware."}</p>
         </div>}
-        {<RobotSessionStatus session={robotSession} connectionLabel={transportMode === "esp32" ? "ESP32 Wi-Fi" : "Arduino USB"}
+        {<RobotSessionStatus session={robotSession} connectionLabel={transportMode === "esp32-usb" ? "ESP32 USB" : transportMode === "esp32" ? "ESP32 Wi-Fi" : "Arduino USB"}
           onEnableHost={async () => { if (!await prepareUserModeAudio()) throw new Error("Enable browser audio on the Mac before starting its controller."); stopPlaybackMedia(); await robotSession.enableHost(); }}
           onConnect={connectArduino} onStop={value.emergencyStopPlayback} />}
         {children}

@@ -30,6 +30,7 @@ class HardwareSerial {
   std::string input, output;
   int writeSpace = 512;
   explicit operator bool() const { return true; }
+  size_t write(const uint8_t *data, size_t n) { output.append((const char *)data,n); return n; }
   int availableForWrite() { return writeSpace; }
   explicit HardwareSerial(int=0) {}
   void begin(unsigned long, int=0, int=0, int=0) {}

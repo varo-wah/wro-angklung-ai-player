@@ -24,7 +24,7 @@ int main() {
   run(Serial1, "ALLON"); assert(Serial1.output == "ERROR,WIRELESS_COMMAND_NOT_ALLOWED\n");
   run(Serial1, "CALIBRATE"); assert(!calibrationMode);
   run(Serial1, "NOTE,0,300,1000"); assert(Serial1.output == "ACK,NOTE,0\n");
-  assert(motors[0].active && motors[0].dutyPermille == 300);
+  assert(motors[0].active && motors[0].dutyPermille == 450);
   fakeMillis = 300; loop(); assert(!motors[0].active);
   run(Serial1, "NOTE,0,5000,1000"); fakeMillis += 5000; loop(); assert(!motors[0].active);
   fakeMillis += 1000; run(Serial1, "PING"); assert(!armed && owner == OWNER_NONE);

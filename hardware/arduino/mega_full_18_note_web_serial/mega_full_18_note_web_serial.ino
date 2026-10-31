@@ -359,7 +359,7 @@ void beginPulse(
 //
 // calibrated motor power
 // ×
-// musical strength
+// musical strength × 1.5 global song boost (raw tests/calibration stay unchanged)
 //
 
 void startMotorPulseCalibrated(
@@ -370,10 +370,10 @@ void startMotorPulseCalibrated(
   const uint16_t calibratedDutyPermille =
     (uint16_t)motorPowerPercent[channel] * 10U;
 
+  const uint32_t boostedDutyPermille =
+    (uint32_t)calibratedDutyPermille * strength * 150UL / 100000UL;
   const uint16_t dutyPermille =
-    (uint32_t)calibratedDutyPermille *
-    strength /
-    1000UL;
+    boostedDutyPermille > 1000UL ? 1000U : (uint16_t)boostedDutyPermille;
 
   beginPulse(
     channel,

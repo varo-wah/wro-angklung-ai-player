@@ -7,7 +7,7 @@ const load = require('./load-typescript.cjs');
 const sleep = ms => new Promise(resolve => setTimeout(resolve, ms));
 const deferred = () => { let resolve; const promise = new Promise(r => { resolve = r; }); return { promise, resolve }; };
 
-async function harness({ stored = false, permission } = {}) {
+async function harness({ stored = false, permission, userAgent = "Desktop" } = {}) {
   const dom = new JSDOM('<div id="root"></div>', { url: 'http://localhost:3000' });
   global.window = dom.window;
   global.document = dom.window.document;
@@ -15,7 +15,7 @@ async function harness({ stored = false, permission } = {}) {
   const events = [];
   const recording = deferred(), transcription = deferred(), response = deferred();
   let speechCallbacks;
-  const navigator = { mediaDevices: { getUserMedia: () => permission?.promise ?? Promise.resolve({
+  const navigator = { userAgent, mediaDevices: { getUserMedia: () => permission?.promise ?? Promise.resolve({
     getTracks: () => [{ stop() { events.push('permission-mic-stop'); } }],
   }) } };
   if (stored) dom.window.localStorage.setItem('angklobot.wakeword.enabled', 'true');
@@ -190,4 +190,18 @@ test('muting while AI thinks suppresses the eventual spoken response', async () 
     assert.equal(h.events.some(e => e.startsWith('tts:')), false);
     assert.equal(h.api.state, 'idle');
   } finally { await h.cleanup(); }
+});
+
+for (const userAgent of ['Mozilla/5.0 iPhone', 'Mozilla/5.0 Android']) test(`phone replies skip TTS and start pending playback: ${userAgent}`, async () => {
+ const h=await harness({userAgent});
+ try {
+  assert.equal(h.api.speechDisabled,true);
+  await React.act(async()=>{h.api.setMuted(false);h.api.enableSpokenReplies();});
+  let request;
+  await React.act(async()=>{request=h.api.submitText('Play Golden');});
+  await React.act(async()=>{h.response.resolve('Playing Golden.');await request;});
+  assert.equal(h.events.filter(e=>e.startsWith('tts:')).length,0);
+  assert.equal(h.events.filter(e=>e==='after-response').length,1);
+  assert.equal(h.api.state,'idle');
+ } finally {await h.cleanup();}
 });

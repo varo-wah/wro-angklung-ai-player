@@ -1,6 +1,6 @@
 import type { ActuatorCommand } from "./types";
 
-export type RobotTransportMode = "usb" | "esp32";
+export type RobotTransportMode = "usb" | "esp32" | "esp32-usb";
 
 /** Shared operator controls. USB keeps its existing implementation. */
 export interface RobotTransport {

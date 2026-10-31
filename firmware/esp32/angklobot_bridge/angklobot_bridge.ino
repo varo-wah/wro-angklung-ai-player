@@ -19,6 +19,13 @@ struct HttpSlot {
   bool waiting = false;
 };
 HttpSlot clients[CLIENT_COUNT];
+enum class Owner { NONE, WIFI, USB };
+Owner owner = Owner::NONE;
+unsigned long ownerAt = 0;
+constexpr unsigned long OWNER_LEASE_MS = 7000;
+String usbInput;
+String usbOutput;
+bool usbDiscard = false;
 int pending = -1;
 uint8_t skippedReplies = 0;
 String pendingCommand;
@@ -43,8 +50,8 @@ bool scheduleCommand(int i, const String &command);
 
 // Diagnostic output must never hold up network/UART safety handling.
 void logLine(const String &line) {
-  if (Serial && Serial.availableForWrite() >= (int)line.length() + 2)
-    Serial.println(line);
+  if (owner != Owner::USB && !usbOutput.length() && Serial && Serial.availableForWrite() >= (int)line.length() + 6)
+    Serial.println("DBG," + line);
 }
 
 bool safetyCommand(const String &s) {
@@ -55,6 +62,12 @@ bool allowedCommand(const String &s) {
     s == "STATUS" || s == "ARM" || s.startsWith("NOTE,");
 }
 void finish(int i, int code, const String &body) {
+  if (i <= -100) {
+    String frame = "USB," + String(-i - 100) + "," + String(code) + "," + body;
+    if (usbOutput.length() + frame.length() + 1 <= 2048) usbOutput += frame + "\n";
+    // A missing response times out at the host; never block motor safety on USB TX.
+    return;
+  }
   if (i < 0) return;
   logLine("HTTP result: " + String(code));
   auto &c = clients[i];
@@ -65,10 +78,11 @@ void finish(int i, int code, const String &body) {
 }
 void failSafe(const char *reason) {
   clearSchedule();
+  owner = Owner::NONE;
   if (wirelessMayBeArmed) megaUart.println("DISARM");
   wirelessMayBeArmed = false;
   fault = true; recoveryAt = millis(); seenReply = false;
-  if (pending >= 0) finish(pending, 504, reason);
+  if (pending != -1 && pending != -2) finish(pending, 504, reason);
   pending = -1; pendingCommand = "";
 }
 bool matchesReply(const String &line) {
@@ -108,6 +122,17 @@ void readMega() {
 }
 void dispatch(int i, String command) {
   const bool safety = safetyCommand(command);
+  const Owner sender = i <= -100 ? Owner::USB : Owner::WIFI;
+  if (!safety && owner != Owner::NONE && owner != sender) { finish(i, 409, "BRIDGE,OWNED_BY_OTHER_TRANSPORT"); return; }
+  if (!safety && !fault && owner == Owner::NONE && command != "HELLO,1") { finish(i, 409, "BRIDGE,HELLO_REQUIRED"); return; }
+  if (owner == sender) ownerAt = millis();
+  if (safety && owner != Owner::NONE && owner != sender) {
+    // Emergency stop is always accepted, but cannot transfer ownership or replay a buffer.
+    owner = Owner::NONE; fault = true; recoveryAt = millis();
+  }
+  if (command == "USB,RELEASE" && sender == Owner::USB && owner == sender && !wirelessMayBeArmed && !scheduleRunning && pending == -1) {
+    owner = Owner::NONE; finish(i, 200, "USB,RELEASED"); return;
+  }
   if (safety) clearSchedule();
   else if (scheduleCommand(i, command)) return;
   else if (scheduleRunning) { finish(i, 409, "BRIDGE,SCHEDULE_ACTIVE"); return; }
@@ -128,7 +153,8 @@ void dispatch(int i, String command) {
     skippedReplies = 0; responseLength = 0; discardResponse = false;
   }
   pending = i; pendingCommand = command; sentAt = millis();
-  clients[i].waiting = true;
+  if (i >= 0) clients[i].waiting = true;
+  if (command == "HELLO,1") { owner = sender; ownerAt = millis(); }
   if (command == "ARM") wirelessMayBeArmed = true;
   logLine("UART TX: " + command);
   megaUart.println(command);
@@ -239,6 +265,27 @@ void parseRequest(int i) {
   }
   dispatch(i, command);
 }
+// USB frames carry a request ID so late/preempted replies cannot satisfy a newer command.
+void readUsb() {
+  for (int n = 0; n < 512 && Serial.available(); ++n) {
+    char ch = Serial.read();
+    if (ch == '\r') continue;
+    if (ch == '\n') {
+      if (!usbDiscard && usbInput.length()) {
+        unsigned id = 0; int used = 0;
+        if (sscanf(usbInput.c_str(), "USB,%u,%n", &id, &used) == 1 && used > 0 && id > 0 && id < 1000000) {
+          String command = usbInput.substring(used); bool valid = command.length() > 0;
+          for (size_t j = 0; j < command.length(); ++j) if (command[j] < 32 || command[j] > 126) valid = false;
+          if (valid) dispatch(-100 - (int)id, command);
+          else finish(-100 - (int)id, 400, "BRIDGE,INVALID_COMMAND");
+        }
+      }
+      usbInput = ""; usbDiscard = false;
+    } else if (!usbDiscard && usbInput.length() < 3050) usbInput += ch;
+    else { usbDiscard = true; usbInput = ""; }
+  }
+}
+
 void setup() {
   Serial.begin(115200);
 #if defined(ARDUINO_USB_MODE) && ARDUINO_USB_MODE && ARDUINO_USB_CDC_ON_BOOT
@@ -255,11 +302,21 @@ void setup() {
   // No UART command, ARM, NOTE, or motor activation on boot/reconnect.
 }
 void loop() {
+  readUsb();
   readMega();
+  // Drain bounded chunks; USB backpressure must never delay STOP or scheduler deadlines.
+  if (Serial && usbOutput.length()) {
+    int count = ((int)usbOutput.length() < Serial.availableForWrite() ? (int)usbOutput.length() : Serial.availableForWrite());
+    if (count > 0) { size_t sent = Serial.write((const uint8_t *)usbOutput.c_str(), count); usbOutput = usbOutput.substring(sent); }
+  }
+  if (owner != Owner::NONE && millis() - ownerAt > OWNER_LEASE_MS) failSafe("BRIDGE,OWNER_LEASE_EXPIRED");
+#if defined(ARDUINO_USB_CDC_ON_BOOT) && ARDUINO_USB_CDC_ON_BOOT
+  if (owner == Owner::USB && !Serial) failSafe("BRIDGE,USB_DISCONNECTED");
+#endif
   const bool connected = WiFi.status() == WL_CONNECTED;
   if (wasConnected && !connected) {
     logLine("Wi-Fi disconnected; wireless session revoked.");
-    failSafe("BRIDGE,WIFI_LOST");
+    if (owner == Owner::WIFI) failSafe("BRIDGE,WIFI_LOST");
     for (int i = 0; i < (int)CLIENT_COUNT; ++i) { clients[i].socket.stop(); clients[i].waiting = false; clients[i].request = ""; }
   }
   if (connected && !wasConnected) { server.begin(); logLine("Bridge IP: " + WiFi.localIP().toString()); }
@@ -272,7 +329,7 @@ void loop() {
     if (connected) { logLine("Bridge IP: " + WiFi.localIP().toString()); }
   }
   if (pending != -1 && ((pending >= 0 && !clients[pending].socket.connected()) || millis() - sentAt >= UART_TIMEOUT_MS)) failSafe("BRIDGE,MEGA_TIMEOUT_OR_CLIENT_LOST");
-  if (!connected) { delay(1); return; }
+  if (!connected) { tickSchedule(); delay(1); return; }
   WiFiClient incoming = server.available();
   if (incoming) {
     bool accepted = false;

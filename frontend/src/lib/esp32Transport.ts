@@ -5,6 +5,8 @@ import type { ActuatorCommand } from "./types";
 const ENDPOINT = "/api/robot/wireless";
 const MAX_SCHEDULE_NOTES = 4096;
 
+export interface Esp32CommandLink { open(): Promise<void>; request(line: string): Promise<string>; close(): Promise<void>; }
+
 export class Esp32Transport implements RobotTransport {
   private online = false;
   private connecting = false;
@@ -18,7 +20,7 @@ export class Esp32Transport implements RobotTransport {
   private playing = false;
   private host = "";
 
-  constructor(private readonly publish: (state: ArduinoConnectionState) => void) {}
+  constructor(private readonly publish: (state: ArduinoConnectionState) => void, private readonly link?: Esp32CommandLink) {}
   get connected() { return this.online; }
 
   private state(status: ArduinoConnectionState["status"], message: string) {
@@ -26,6 +28,7 @@ export class Esp32Transport implements RobotTransport {
   }
 
   private async request(line: string): Promise<string> {
+    if (this.link) return this.link.request(line);
     const response = await fetch(ENDPOINT, {
       method: "POST", cache: "no-store",
       headers: { "Content-Type": "application/json" },
@@ -47,20 +50,30 @@ export class Esp32Transport implements RobotTransport {
     if (this.online || this.connecting) return;
     this.connecting = true;
     const epoch = ++this.epoch;
-    this.state("connecting", "Connecting to ESP32 over Wi-Fi…");
+    this.state("connecting", this.link ? "Choose ESP32 USB; connecting through its UART bridge…" : "Connecting to ESP32 over Wi-Fi…");
     try {
+      if (this.link) { await this.link.open(); this.host = "USB"; }
+      else {
       const response = await fetch(ENDPOINT, { cache: "no-store", signal: AbortSignal.timeout(3000) });
       const config = await response.json();
       if (!response.ok) throw new Error(config.error || "Start the local Wi-Fi website server.");
       this.host = config.host;
-      await this.expect("HELLO,1", "READY,1,ACTIVE");
+      }
+      for (let attempt = 0; ; attempt++) {
+        try { await this.expect("HELLO,1", "READY,1,ACTIVE"); break; }
+        catch (error) {
+          if (!this.link || attempt >= 15 || !String(error).includes("RECOVERY_REQUIRED")) throw error;
+          await new Promise(resolve => setTimeout(resolve, 500));
+          if (epoch !== this.epoch) return;
+        }
+      }
       await this.expect("SCHED,CAPS", "SCHED,1,4096");
       const status = await this.request("STATUS");
       if (!status.startsWith("STATUS,READY,PROTOCOL=1,")) throw new Error("Mega status was not confirmed.");
       if (status.includes("ARMED=TRUE")) throw new Error("Mega is already armed. Stop the active controller before connecting.");
       if (epoch !== this.epoch) return;
       this.online = true;
-      this.state("connected", `ESP32 Wi-Fi · ${this.host} · Mega ready, disarmed`);
+      this.state("connected", `ESP32 ${this.link ? "USB" : "Wi-Fi"} · ${this.host} · Mega ready, disarmed`);
       this.poll = setInterval(() => {
         if (!this.playing && !this.stopping && !this.probing && this.online) {
           this.probing = true;
@@ -69,6 +82,7 @@ export class Esp32Transport implements RobotTransport {
       }, 5000);
     } catch (error) {
       if (epoch === this.epoch) this.fail(error);
+      if (this.link) await this.link.close();
       throw error;
     } finally { this.connecting = false; }
   }
@@ -81,12 +95,13 @@ export class Esp32Transport implements RobotTransport {
     if (this.poll) clearInterval(this.poll);
     this.poll = null;
     // Stop before publishing: the provider's error handler also requests allOff.
-    if (wasPlaying) void this.stop().catch(() => {});
+    if (wasPlaying) void this.stop().catch(() => {}).finally(() => this.link?.close());
+    else if (this.link) void this.link.close();
     this.state("error", error instanceof Error ? error.message : "ESP32 connection failed.");
   }
 
   async preparePlayback(commands: readonly ActuatorCommand[], offset = 0) {
-    if (!this.online) throw new Error("Connect ESP32 Wi-Fi before playback.");
+    if (!this.online) throw new Error("Connect ESP32 before playback.");
     const notes = commands.filter(command => command.start_time_seconds >= offset)
       .map(command => {
         const [, channel, duration, strength] = encodeArduinoNoteCommand({ ...command, duration_seconds: Math.min(command.duration_seconds, 2) }).split(",");
@@ -118,7 +133,7 @@ export class Esp32Transport implements RobotTransport {
       const sent = performance.now();
       await this.expect(`SCHED,RUN,${id}`, "SCHED,STARTING,500"); current();
       const received = performance.now();
-      if (received - sent > 400) throw new Error("Wi-Fi start acknowledgment was too slow. Playback cancelled.");
+      if (received - sent > 400) throw new Error("ESP32 start acknowledgment was too slow. Playback cancelled.");
       const keep = async () => {
         if (epoch !== this.epoch) return;
         try {
@@ -157,10 +172,11 @@ export class Esp32Transport implements RobotTransport {
     ++this.epoch;
     if (this.poll) clearInterval(this.poll);
     this.poll = null;
-    try { if (this.online || this.playing) await this.stop(); }
+    try { if (this.online || this.playing) { await this.stop(); if (this.link) await this.request("USB,RELEASE"); } }
     finally {
       this.online = false; this.playing = false;
-      this.state("disconnected", "ESP32 Wi-Fi disconnected.");
+      if (this.link) await this.link.close();
+      this.state("disconnected", this.link ? "ESP32 USB disconnected." : "ESP32 Wi-Fi disconnected.");
     }
   }
   async runWakeSweep(): Promise<boolean> {

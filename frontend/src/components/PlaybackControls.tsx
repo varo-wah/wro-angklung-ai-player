@@ -60,7 +60,7 @@ export function PlaybackControls({
   }
   const arduinoConnected = arduinoConnection.status === "connected";
   const [connectionError, setConnectionError] = useState<string | null>(null);
-  const connectionLabel = transportMode === "esp32" ? "ESP32" : "Arduino";
+  const connectionLabel = transportMode === "esp32-usb" ? "ESP32 USB" : transportMode === "esp32" ? "ESP32" : "Arduino";
   async function connectAction() {
     setConnectionError(null);
     try { await (arduinoConnection.status === "connected" ? onDisconnectArduino() : onConnectArduino()); }
@@ -99,6 +99,7 @@ export function PlaybackControls({
             className="rounded border border-white/20 bg-slate-900 px-3 py-2 text-slate-100 disabled:opacity-50">
             <option value="usb">Arduino USB</option>
             <option value="esp32">ESP32 Wi-Fi</option>
+            <option value="esp32-usb">ESP32 USB</option>
           </select>
         </label>
         {transportMode === "esp32" && <p className="mt-2 text-[11px] text-slate-400">Keep the Mac and ESP32 on the same Wi-Fi. If a song falls behind, playback stops; use USB for faster arrangements.</p>}

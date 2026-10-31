@@ -1,5 +1,5 @@
 import type { Metadata, Viewport } from "next";
-import { AngklungSystemProvider } from "@/components/AngklungSystemProvider";
+import { LegacySystemBoundary } from "@/components/LegacySystemBoundary";
 import "./globals.css";
 
 export const viewport: Viewport = { width: "device-width", initialScale: 1, viewportFit: "cover" };
@@ -17,7 +17,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body>
-        <AngklungSystemProvider>{children}</AngklungSystemProvider>
+        <LegacySystemBoundary>{children}</LegacySystemBoundary>
       </body>
     </html>
   );
