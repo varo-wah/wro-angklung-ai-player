@@ -318,6 +318,64 @@ test('blocked or corrupt storage does not block catalog, preferences or playback
   h.controller.dispose();
 });
 
+test('appearance upgrades older preferences and bounds corrupt sizes', () => {
+  const old = parsePreferences({ version: 1, favoriteIds: ['a'], tempo: 'slower' });
+  assert.equal(old.theme, 'light');
+  assert.equal(old.interfaceScale, 120);
+  assert.equal(old.queueWidth, 320);
+  assert.equal(old.tempo, 'slower');
+  assert.equal(old.favoriteIds.join(','), 'a');
+  for (const bad of [NaN, Infinity, null, '130', {}]) {
+    const p = parsePreferences({ version: 1, theme: 'invalid', interfaceScale: bad, queueWidth: bad });
+    assert.equal(p.theme, 'light');
+    assert.equal(p.interfaceScale, 120);
+    assert.equal(p.queueWidth, 320);
+  }
+  const huge = parsePreferences({ version: 1, theme: 'dark', interfaceScale: 1000, queueWidth: 100000 });
+  assert.equal(huge.theme, 'dark');
+  assert.equal(huge.interfaceScale, 140);
+  assert.equal(huge.queueWidth, 460);
+  const small = parsePreferences({ version: 1, interfaceScale: -1, queueWidth: 0 });
+  assert.equal(small.interfaceScale, 100);
+  assert.equal(small.queueWidth, 250);
+});
+
+test('appearance changes persist without interrupting playback, queue, or selection', async () => {
+  const h = harness();
+  await h.controller.initialize();
+  h.controller.addToQueue('b');
+  h.controller.toggleFavorite('a');
+  await h.controller.play();
+  h.playback[0].callbacks.onTimeUpdate(0.5);
+  const before = h.controller.getSnapshot();
+  const audioStops = h.audio.stops;
+  h.controller.setTheme('dark');
+  h.controller.setInterfaceScale(130);
+  h.controller.setQueueWidth(410);
+  const after = h.controller.getSnapshot();
+  assert.equal(after.playback, 'playing');
+  assert.equal(after.positionSeconds, 0.5);
+  assert.equal(after.queue, before.queue);
+  assert.equal(after.selectedSongId, before.selectedSongId);
+  assert.equal(h.audio.stops, audioStops);
+  assert.equal(h.playback.length, 1);
+  assert.equal(h.playback[0].stops, 0);
+  const restored = harness({ saved: h.writes.at(-1) });
+  await restored.controller.initialize();
+  assert.equal(restored.controller.getSnapshot().preferences.theme, 'dark');
+  assert.equal(restored.controller.getSnapshot().preferences.interfaceScale, 130);
+  assert.equal(restored.controller.getSnapshot().preferences.queueWidth, 410);
+  assert.equal(restored.controller.getSnapshot().preferences.favoriteIds.join(','), 'a');
+  assert.equal(restored.playback.length, 0);
+  h.controller.dispose();
+  const writeCount = h.writes.length;
+  h.controller.setTheme('light');
+  h.controller.setInterfaceScale(100);
+  h.controller.setQueueWidth(250);
+  assert.equal(h.writes.length, writeCount);
+  restored.controller.dispose();
+});
+
 test('catalog failure is recoverable and initialization is idempotent', async () => {
   let attempts = 0;
   const h = harness({ loadCatalog: async () => { if (++attempts === 1) throw new Error('offline'); return [entry('a')]; } });

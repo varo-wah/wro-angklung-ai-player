@@ -2,8 +2,10 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import type { ReactNode } from "react";
+import type { CSSProperties, ReactNode } from "react";
 import { useStudio } from "./runtime/useStudio";
+import { StudioAppearanceControls } from "./StudioAppearance";
+import { APPEARANCE_BOOTSTRAP } from "./runtime/preferences";
 
 export type IconName =
   | "home"
@@ -27,9 +29,13 @@ export type IconName =
   | "up"
   | "down"
   | "close"
+  | "sun"
+  | "moon"
   | "check";
 export function Icon({ name, size = 20 }: { name: IconName; size?: number }) {
   const paths: Record<IconName, ReactNode> = {
+    sun: <><circle cx="12" cy="12" r="4" /><path d="M12 2v2m0 16v2M2 12h2m16 0h2M5 5l1.5 1.5m11 11L19 19M5 19l1.5-1.5m11-11L19 5" /></>,
+    moon: <path d="M20.5 14.5A9 9 0 0 1 9.5 3.5a9 9 0 1 0 11 11Z" />,
     previous: <><path d="M5 5v14" /><path d="m18 5-10 7 10 7Z" fill="currentColor" stroke="none" /></>,
     next: <><path d="M19 5v14" /><path d="m6 5 10 7-10 7Z" fill="currentColor" stroke="none" /></>,
     shuffle: <><path d="M3 6h3c5 0 7 12 12 12h3m-4-4 4 4-4 4M3 18h3c2 0 3-2 4-4m4-4c1-2 2-4 4-4h3m-4-4 4 4-4 4" /></>,
@@ -141,7 +147,9 @@ export function StudioShell({ children }: { children: ReactNode }) {
     ["/studio/settings", "Preferences", "settings"],
   ];
   return (
-    <div className="studio-app">
+    <div className="studio-app" data-theme={snapshot.preferences.theme} suppressHydrationWarning
+      style={{ "--ui-scale": snapshot.preferences.interfaceScale / 100 } as CSSProperties}>
+      <script dangerouslySetInnerHTML={{ __html: APPEARANCE_BOOTSTRAP }} />
       <a className="studio-skip" href="#studio-main">
         Skip to content
       </a>
@@ -167,7 +175,8 @@ export function StudioShell({ children }: { children: ReactNode }) {
               aria-current={pathname === href ? "page" : undefined}
             >
               <Icon name={icon} />
-              <span>{label}</span>
+              <span className="studio-nav-label-full">{label}</span>
+              <span className="studio-nav-label-short">{href === "/studio/settings" ? "Settings" : href === "/studio/device" ? "Device" : label}</span>
               {href === "/studio/library" && snapshot.catalog.length > 0 ? (
                 <small>{snapshot.catalog.length}</small>
               ) : null}
@@ -190,10 +199,10 @@ export function StudioShell({ children }: { children: ReactNode }) {
               {navigation.find(([href]) => href === pathname)?.[1] ?? "Studio"}
             </span>
           </span>
-          <Link href="/studio/device" className="studio-output-badge">
-            <span />
-            Audio preview
-          </Link>
+          <div className="studio-topbar-actions">
+            <Link href="/studio/device" className="studio-output-badge"><span />Audio preview</Link>
+            <StudioAppearanceControls />
+          </div>
         </header>
         <main id="studio-main" className="studio-main">
           {snapshot.error ? (

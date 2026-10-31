@@ -88,6 +88,25 @@ test('Stop and leaving Conduct invalidate a pending audio unlock', async () => {
   }
 });
 
+test('theme and resizing preserve Conduct ownership and an explicitly enabled preview', async () => {
+  const { c, audio, engines } = controllerHarness();
+  await c.initialize();
+  c.setInputMode('conduct');
+  await c.enableConductPreview();
+  c.setTheme('dark'); c.setInterfaceScale(140); c.setQueueWidth(400);
+  assert.equal(c.getSnapshot().inputMode, 'conduct');
+  assert.equal(c.getSnapshot().conductReady, true);
+  assert.equal(audio.length, 0);
+  await c.play();
+  assert.equal(engines.length, 0);
+  c.previewConductNote('E4');
+  assert.equal(audio.length, 1);
+  c.setInputMode('player');
+  assert.equal(c.getSnapshot().conductReady, false);
+  assert.equal(engines.length, 0);
+  c.dispose();
+});
+
 test('a stopped camera releases a stream arriving after the permission dialog', async () => {
   const permission = deferred(); let stopped = 0; let workers = 0;
   const env = { getMedia: () => permission.promise, createWorker: () => { workers++; },

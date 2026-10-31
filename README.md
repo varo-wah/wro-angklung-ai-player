@@ -4,7 +4,7 @@ The shared setup is on `main`. Use this repository for song fixes, the operator 
 
 ## Studio v2 preview
 
-The new application workspace is at **http://127.0.0.1:3011/studio**. In this checkout:
+The combined application workspace is at **http://127.0.0.1:3011/studio**. Player/UI and camera-conducting work are now integrated in this checkout, at `Software Releases/angklobot-conducting`. Use this directory for further Studio changes; the older hidden `angklobot-app-v2` checkout is a preserved earlier version, not the running source.
 
 ```sh
 cd frontend
@@ -12,7 +12,9 @@ npm ci
 npm run dev:studio
 ```
 
-Studio includes library search and category filters, favourites, recent playback, persistent preferences, and synthesized audio previews. Its independently tested runtime reuses the existing schedule and validation rules through repository, preference, audio, and playback interfaces. The `/control` console remains available for hardware operation. Studio does not connect to a robot or start local AI/speech services.
+Studio includes the searchable library, queue/shuffle/repeat player, light/dark themes, saved interface sizing, a resizable queue, and the Conduct camera prototype. Conduct uses the same appearance preferences and shared audio runtime; entering it stops song playback. The `/control` console remains available for hardware operation. Studio does not connect to a robot or start local AI/speech services.
+
+The existing `npm run dev:conduct` command and port 3012 still serve this same source for compatibility with the other chat's preview address. The two ports are separate browser sessions, so their queues and preferences are not live-synchronized. A future edit made in another worktree still needs an explicit integration; chats do not automatically merge code.
 
 See [the architecture and release path](docs/app-v2-architecture.md) for platform boundaries and the next steps toward native packaging and a customer pilot. This is a local preview, not a native package or published commercial release.
 

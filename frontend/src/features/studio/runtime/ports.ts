@@ -46,4 +46,7 @@ export type StudioPreferences = {
   muted: boolean;
   tempo: "normal" | "slower";
   mode: "melody" | "harmony";
+  theme: "light" | "dark";
+  interfaceScale: number;
+  queueWidth: number;
 };

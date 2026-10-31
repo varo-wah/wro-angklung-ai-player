@@ -2,6 +2,12 @@
 
 Status: first browser preview milestone, 2 October 2026. This is an application foundation alongside the existing controller. It is not a shipped native app, a hosted customer service, or evidence of physical robot operation.
 
+## Shared Studio checkout — 31 October 2026
+
+The player/UI and Conduct branches are now combined in `Software Releases/angklobot-conducting` (`codex/conducting-preview`). Both local preview servers, ports 3011 and 3012, use that working directory with separate build caches. The hidden `angklobot-app-v2` checkout is preserved as the earlier UI version; the original main controller checkout remains unchanged. Future Studio edits should use the shared directory or be deliberately integrated from a feature checkout. Browser sessions, queues, and per-origin preferences are still separate across ports.
+
+Integration checks: 43 focused Studio/conducting tests and the production build pass. Browser verification covered both themes on Conduct, the five-item phone navigation at 320px and 140% sizing, song-to-Conduct audio ownership, and return to Player. Camera capture and robot output were not enabled during this integration check.
+
 ## Puerto Rico desktop player pass — 31 October 2026
 
 The current priority is a Mac-operated performance interface, retaining the existing phone connection flow. Commercial packaging and camera conducting are deferred.
@@ -12,7 +18,9 @@ The queue and repeat/shuffle settings remain within the current Studio session a
 
 This remains a computer-audio preview. The Studio route boundary, original controller, firmware, pairing endpoints, and existing phone interface were not changed by this pass. No robot connection, firmware upload, or physical playback is claimed. Integrating the approved player with the existing Mac controller is the next milestone.
 
-Verification: all 33 Studio runtime tests pass, including queue completion, repeated entries, shuffle cycles, repeat modes, stale loads, cancelled transitions, unavailable audio, and navigation lifecycle. The production build passes. Browser checks covered search, queue addition/reordering/removal, shuffle and repeat controls, next/stop playback, queue retention across Studio navigation, and desktop/phone layouts. Phone layout was inspected at approximately 390 CSS pixels without horizontal overflow; actual phone pairing was not retested.
+Studio also has saved light/dark themes and 100–140% interface sizing, with a larger 120% default. The top bar exposes theme and size controls on desktop and phone; Preferences provides the same choices plus a sizing reset. Text and control sizes adapt without changing browser zoom. The desktop queue divider supports dragging, arrow keys (Shift for larger steps), Home/End, and double-click reset; widths are bounded to preserve room for the library. The player uses the full available workspace width, with narrow layouts stacking the queue below the library. Appearance updates do not interrupt playback. Validated theme and size preferences are applied before first paint to avoid a light-theme flash on reload.
+
+Verification: all 35 Studio runtime tests pass, including queue completion, repeated entries, shuffle cycles, repeat modes, stale loads, cancelled transitions, unavailable audio, navigation lifecycle, appearance preference migration, and uninterrupted playback during appearance changes. The production build passes. Browser checks covered search, queue addition/reordering/removal, shuffle and repeat controls, next/stop playback, queue retention across Studio navigation, theme and sizing persistence, pointer/keyboard resizing, and desktop/phone layouts. Maximum sizing was checked at 320, 390, 1024, and 1440 CSS pixels without horizontal overflow; actual phone pairing was not retested.
 
 ## Product direction
 

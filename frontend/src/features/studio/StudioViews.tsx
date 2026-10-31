@@ -1,5 +1,7 @@
 "use client";
 
+import { StudioAppearanceSettings } from "./StudioAppearance";
+
 import Link from "next/link";
 import { useMemo, useState } from "react";
 import {
@@ -506,6 +508,7 @@ export function StudioSettings() {
           <p>Preferences and favourites are saved in this browser.</p>
         </div>
       </div>
+      <StudioAppearanceSettings />
       <section className="studio-panel studio-settings-panel">
         <h2>Playback preferences</h2>
         <div className="studio-setting">

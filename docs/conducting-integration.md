@@ -26,7 +26,9 @@ The shared Studio runtime enforces player-versus-conduct **audio** ownership. It
 
 Only `StudioShell.tsx` (navigation and disabled player button) and `runtime/studioController.ts` (mode/preview actions) are shared application edit points for this slice. Merge those deliberately with ongoing playlist work. Feature CSS and camera logic stay separate.
 
-The isolated `codex/conducting-preview` checkout begins with a source snapshot of the uncommitted Studio workspace. That snapshot is a development baseline, not conducting work. Port only the subsequent conducting feature changes into the current Studio branch; do not overwrite the other checkout or merge its entire snapshot blindly. The original Studio server remains on port 3011; this preview uses port 3012.
+The isolated `codex/conducting-preview` checkout began with a source snapshot of the uncommitted Studio workspace. That snapshot is a development baseline, not conducting work. On 31 October, the user requested synchronization with the player/UI chat. A three-way merge against that snapshot brought in the latest themes, sizing, queue resizing, and player tests while retaining Conduct's navigation and mode ownership. Conduct's surfaces and typography now follow the same saved appearance choices.
+
+`Software Releases/angklobot-conducting` is now the shared Studio working directory. Port 3011 runs `dev:studio` here, and the existing port 3012 `dev:conduct` preview reads the same source with a separate build cache. These are two browser origins, not shared live queue sessions. Keep further Studio work in this checkout or explicitly port feature commits; there is no automatic cross-chat or cross-worktree merge. The former hidden Studio checkout and the original dirty main controller checkout remain preserved.
 
 ## Run
 
@@ -49,6 +51,8 @@ Open `http://localhost:3012/studio/conduct` on the Mac. Camera access is request
 5. Expose recognized note, mode and connection state through the shared session for a second display. The current fullscreen option is a single-window preview, not synchronized multi-window display state. Reuse existing phone pairing; do not introduce an independent motor owner on the phone or display.
 
 ## Verification
+
+After the player/UI synchronization, all 43 focused Studio/conducting tests and the production build pass. Additional browser checks covered shared themes/sizing, five-item navigation at 320px and 140% sizing, and stopping song playback on entry to Conduct. This check did not activate a camera or robot output.
 
 - TypeScript and the production build passed.
 - All 40 focused conducting/Studio runtime tests passed, including late permission cancellation, one-frame backpressure, duplicate-note filtering, ambiguous samples, mode ownership, pending audio cancellation, and existing queue behavior.

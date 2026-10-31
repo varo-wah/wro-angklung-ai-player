@@ -1,10 +1,11 @@
 "use client";
 
 import Link from "next/link";
-import { useState } from "react";
+import { useState, type CSSProperties } from "react";
 import { SONG_LIBRARY_GROUPS, songLibraryGroup, songLibraryGroupLabel } from "@/lib/songLibraryGroups";
 import { BrandMark, Icon, formatTime } from "./StudioShell";
 import { useStudio } from "./runtime/useStudio";
+import { QueueResizeHandle } from "./QueueResizeHandle";
 
 export function StudioPerformance() {
   const { snapshot: s, actions: a } = useStudio();
@@ -12,6 +13,7 @@ export function StudioPerformance() {
   const [collection, setCollection] = useState("all");
   const [group, setGroup] = useState("all");
   const [announcement, setAnnouncement] = useState("");
+  const [queueDraft, setQueueDraft] = useState<number | null>(null);
   const selected = s.catalog.find((song) => song.id === s.selectedSongId);
   const playing = s.playback === "playing";
   const canPlay = s.songStatus === "ready" && !!s.schedule && !s.validationErrors.length;
@@ -32,7 +34,7 @@ export function StudioPerformance() {
         <div><p className="studio-eyebrow">ANGKLOBOT / PERFORMANCE WORKSPACE</p><h1>Let the music play.</h1></div>
         <Link className="performance-connect" href="/studio/device"><Icon name="device" size={17} /> Robot & phone connection <Icon name="arrow" size={16} /></Link>
       </div>
-      <div className="performance-columns">
+      <div className="performance-columns" style={{ "--queue-width": `${queueDraft ?? s.preferences.queueWidth}px` } as CSSProperties}>
         <div className="performance-main">
           <section className="performance-current" aria-label="Selected song">
             <div className={`performance-art${playing ? " is-playing" : ""}`} aria-hidden="true"><BrandMark /><span>ANGKLOBOT SESSIONS</span></div>
@@ -83,7 +85,8 @@ export function StudioPerformance() {
           </section>
         </div>
 
-        <aside className="performance-queue" aria-label="Playback queue">
+        <aside id="studio-playback-queue" className="performance-queue" aria-label="Playback queue">
+          <QueueResizeHandle width={queueDraft ?? s.preferences.queueWidth} onPreview={setQueueDraft} onCommit={a.setQueueWidth} />
           <div className="performance-queue-heading"><h2><Icon name="queue" size={19} /> Queue <span>{upcoming.length}</span></h2><button disabled={!upcoming.length} onClick={a.clearQueue}>Clear next</button></div>
           <div className="performance-queue-current"><p>NOW SELECTED</p><div><span className="performance-queue-art"><BrandMark /></span><span><strong>{selected?.title ?? "No song selected"}</strong><small>{playing ? "Playing on this computer" : s.songStatus === "loading" ? "Preparing…" : "Computer preview"}</small></span></div></div>
           <div className="performance-up-next-heading"><span>UP NEXT</span><span>{s.shuffle ? "Shuffled" : "In order"}</span></div>

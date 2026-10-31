@@ -4,7 +4,7 @@ import { validateMotorSafety, type SafetyReport } from "../../../lib/safetyValid
 import { validateSchedulePayload } from "../../../lib/scheduleValidator";
 import type { LoadedSong, SongCatalogEntry } from "../../../lib/songTypes";
 import type { ActuatorSchedule } from "../../../lib/types";
-import { defaultPreferences, parsePreferences } from "./preferences";
+import { defaultPreferences, parsePreferences, normalizeInterfaceScale, normalizeQueueWidth } from "./preferences";
 import type { PreviewPlayback, StudioPorts, StudioPreferences } from "./ports";
 
 export type QueueEntry = { key: number; songId: string };
@@ -273,6 +273,26 @@ export class StudioController {
     this.changeArrangement({ tempo });
   };
 
+  // Appearance is independent of playback: resizing must never stop a song.
+  setTheme = (theme: StudioPreferences["theme"]): void => {
+    if (theme !== "light" && theme !== "dark") return;
+    this.changeAppearance({ theme });
+  };
+
+  setInterfaceScale = (interfaceScale: number): void => {
+    this.changeAppearance({ interfaceScale: normalizeInterfaceScale(interfaceScale) });
+  };
+
+  setQueueWidth = (queueWidth: number): void => {
+    this.changeAppearance({ queueWidth: normalizeQueueWidth(queueWidth) });
+  };
+
+  private changeAppearance(change: Partial<Pick<StudioPreferences, "theme" | "interfaceScale" | "queueWidth">>): void {
+    if (this.disposed) return;
+    this.publish({ preferences: { ...this.snapshot.preferences, ...change } });
+    this.persist();
+  }
+
   setMode = (mode: StudioPreferences["mode"]): void => {
     if (mode !== "melody" && mode !== "harmony") return;
     this.changeArrangement({ mode });
@@ -399,6 +419,7 @@ export class StudioController {
     initialize: this.initialize, reloadCatalog: this.reloadCatalog, selectSong: this.selectSong,
     play: this.play, pause: this.pause, stop: this.stop, seek: this.seek, setMuted: this.setMuted,
     setTempo: this.setTempo, setMode: this.setMode, toggleFavorite: this.toggleFavorite, clearError: this.clearError,
+    setTheme: this.setTheme, setInterfaceScale: this.setInterfaceScale, setQueueWidth: this.setQueueWidth,
     addToQueue: this.addToQueue, removeFromQueue: this.removeFromQueue, moveInQueue: this.moveInQueue,
     clearQueue: this.clearQueue, setShuffle: this.setShuffle, setRepeat: this.setRepeat,
     playSong: this.playSong, playQueueEntry: this.playQueueEntry, next: this.next, previous: this.previous,
