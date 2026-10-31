@@ -31,10 +31,12 @@
   "include": [
     "**/*.ts",
     "**/*.tsx",
+    ".next-competition/types/**/*.ts",
+    ".next-conduct/types/**/*.ts",
     ".next-wireless/types/**/*.ts",
     ".next/types/**/*.ts",
     "next-env.d.ts",
-    ".next-competition/types/**/*.ts"
+    ".next-conduct-build/types/**/*.ts"
   ],
   "exclude": [
     "node_modules"

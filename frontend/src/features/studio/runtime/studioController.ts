@@ -11,6 +11,8 @@ export type QueueEntry = { key: number; songId: string };
 export type RepeatMode = "off" | "all" | "one";
 
 export type StudioSnapshot = {
+  inputMode: "player" | "conduct";
+  conductReady: boolean;
   catalog: SongCatalogEntry[];
   catalogStatus: "idle" | "loading" | "ready" | "error";
   selectedSongId: string | null;
@@ -35,6 +37,7 @@ export type StudioSnapshot = {
 /** Application state and playback policy, independent of React and browser APIs. */
 export class StudioController {
   private snapshot: StudioSnapshot = {
+    inputMode: "player", conductReady: false,
     catalog: [], catalogStatus: "idle", selectedSongId: null, song: null, songStatus: "idle",
     schedule: null, safety: null, validationErrors: [], playback: "idle", positionSeconds: 0,
     durationSeconds: 0, activeNotes: [], preferences: defaultPreferences(), error: null, storageWarning: null,
@@ -147,7 +150,7 @@ export class StudioController {
 
   play = async (): Promise<void> => {
     const schedule = this.snapshot.schedule;
-    if (this.disposed || !schedule || this.snapshot.validationErrors.length > 0
+    if (this.disposed || this.snapshot.inputMode !== "player" || !schedule || this.snapshot.validationErrors.length > 0
       || this.snapshot.playback === "playing" || this.snapshot.playback === "starting") return;
     const fromSeconds = this.snapshot.positionSeconds >= this.snapshot.durationSeconds ? 0 : this.snapshot.positionSeconds;
     this.haltPlayback();
@@ -205,7 +208,40 @@ export class StudioController {
     if (this.disposed) return;
     ++this.transitionRequest;
     this.haltPlayback();
-    this.publish({ playback: "idle", positionSeconds: 0, activeNotes: [] });
+    this.publish({ playback: "idle", positionSeconds: 0, activeNotes: [], conductReady: false });
+  };
+
+  /** Shared preview ownership: a camera component never opens its own audio/robot path. */
+  setInputMode = (inputMode: "player" | "conduct"): void => {
+    if (this.disposed || this.snapshot.inputMode === inputMode) return;
+    this.stop();
+    this.publish({ inputMode });
+  };
+
+  enableConductPreview = async (): Promise<void> => {
+    if (this.disposed || this.snapshot.inputMode !== "conduct") return;
+    this.stop();
+    const request = this.playbackRequest;
+    try {
+      await this.ports.audio.ensureReady();
+      if (this.disposed || request !== this.playbackRequest || this.snapshot.inputMode !== "conduct") return;
+      this.publish({ conductReady: true, error: null });
+    } catch (error) {
+      if (!this.disposed && request === this.playbackRequest) this.failPlayback(error);
+    }
+  };
+
+  silenceConductPreview = (): void => {
+    if (this.snapshot.inputMode === "conduct") this.ports.audio.stopAll();
+  };
+
+  previewConductNote = (note: string): void => {
+    if (this.disposed || this.snapshot.inputMode !== "conduct" || !this.snapshot.conductReady
+      || !["C4", "D4", "E4", "F4", "G4", "A4", "B4", "C5"].includes(note)) return;
+    try {
+      this.ports.audio.stopAll();
+      this.ports.audio.playNote(note, 0.3, 0.45);
+    } catch (error) { this.stop(); this.publish({ error: errorMessage(error, "Conduct preview failed.") }); }
   };
 
   /** Seeking pauses first; resuming always requires an explicit play action. */
@@ -358,6 +394,8 @@ export class StudioController {
   }
 
   readonly actions = {
+    setInputMode: this.setInputMode, enableConductPreview: this.enableConductPreview,
+    previewConductNote: this.previewConductNote, silenceConductPreview: this.silenceConductPreview,
     initialize: this.initialize, reloadCatalog: this.reloadCatalog, selectSong: this.selectSong,
     play: this.play, pause: this.pause, stop: this.stop, seek: this.seek, setMuted: this.setMuted,
     setTempo: this.setTempo, setMode: this.setMode, toggleFavorite: this.toggleFavorite, clearError: this.clearError,

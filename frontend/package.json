@@ -13,9 +13,14 @@
     "build:competition": "ANGKLOBOT_DIST_DIR=.next-competition next build",
     "start:competition": "ANGKLOBOT_WIRELESS_ENABLED=1 ANGKLOBOT_DIST_DIR=.next-competition next start --hostname 127.0.0.1 --port 3002",
     "competition": "npm run build:competition && npm run start:competition",
-    "dev:studio": "next dev --hostname 127.0.0.1 --port 3011"
+    "dev:studio": "next dev --hostname 127.0.0.1 --port 3011",
+    "prepare:vision": "node scripts/prepare-vision.mjs",
+    "postinstall": "npm run prepare:vision",
+    "dev:conduct": "ANGKLOBOT_DIST_DIR=.next-conduct next dev --hostname 127.0.0.1 --port 3012",
+    "build:conduct": "ANGKLOBOT_DIST_DIR=.next-conduct-build next build"
   },
   "dependencies": {
+    "@mediapipe/tasks-vision": "1.2.0",
     "@tonejs/midi": "^2.0.28",
     "next": "^15.0.0",
     "openai": "^6.45.0",

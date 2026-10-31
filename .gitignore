@@ -21,3 +21,10 @@ frontend/.next-wireless/
 
 # Stable competition production build
 frontend/.next-competition/
+
+# Isolated conducting preview and generated local vision assets
+frontend/.next-conduct*/
+frontend/public/vision/wasm/
+frontend/public/vision/vision_bundle.js
+frontend/public/vision/hand_landmarker.task
+frontend/tsconfig.tsbuildinfo

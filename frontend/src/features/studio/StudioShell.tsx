@@ -136,6 +136,7 @@ export function StudioShell({ children }: { children: ReactNode }) {
   const navigation: [string, string, IconName][] = [
     ["/studio", "Player", "play"],
     ["/studio/library", "Library", "library"],
+    ["/studio/conduct", "Conduct", "device"],
     ["/studio/device", "My device", "device"],
     ["/studio/settings", "Preferences", "settings"],
   ];
@@ -158,7 +159,7 @@ export function StudioShell({ children }: { children: ReactNode }) {
           </div>
         </div>
         <span className="studio-nav-label">WORKSPACE</span>
-        <nav aria-label="Studio navigation">
+        <nav aria-label="Studio navigation" style={{ gridTemplateColumns: `repeat(${navigation.length}, minmax(0, 1fr))` }}>
           {navigation.map(([href, label, icon]) => (
             <Link
               key={href}
@@ -282,8 +283,8 @@ function StudioPlayer() {
           <button className="studio-icon-button" aria-label="Previous song" title="Previous song" disabled={s.queueIndex < 0 || s.songStatus === "loading"} onClick={() => void a.previous()}><Icon name="previous" size={18} /></button>
           <button
             className="studio-play-button"
-            aria-label={playing ? "Pause preview" : "Play preview"}
-            disabled={!canPlay || s.playback === "starting"}
+            aria-label={s.inputMode === "conduct" ? "Song playback unavailable in Conduct mode" : playing ? "Pause preview" : "Play preview"}
+            disabled={s.inputMode === "conduct" || !canPlay || s.playback === "starting"}
             onClick={() => (playing ? a.pause() : void a.play())}
           >
             <Icon name={playing ? "pause" : "play"} />
