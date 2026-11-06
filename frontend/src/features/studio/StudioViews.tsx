@@ -284,7 +284,7 @@ export function StudioHome() {
             <p className="studio-eyebrow">FROM SCREEN TO STAGE</p>
             <h2>Have an Angklobot?</h2>
             <p>
-              Use the operator console to connect your instrument and run a
+              Open the Studio live session to connect your instrument and run a
               physical performance.
             </p>
             <Link href="/studio/device">
@@ -430,69 +430,6 @@ export function StudioLibrary() {
         Select a song to prepare its synthesized preview, then press Play when
         you are ready.
       </p>
-    </>
-  );
-}
-
-export function StudioDevice() {
-  return (
-    <>
-      <div className="studio-page-heading">
-        <div>
-          <p className="studio-eyebrow">CHOOSE YOUR OUTPUT</p>
-          <h1>From listening to playing.</h1>
-          <p>Know where the music is going before you press play.</p>
-        </div>
-      </div>
-      <div className="studio-device-grid">
-        <section className="studio-panel studio-active-device">
-          <div className="studio-device-illustration">
-            <Icon name="volume" size={58} />
-          </div>
-          <span className="studio-status-pill">Active in Studio</span>
-          <h2>Computer audio</h2>
-          <p>
-            Explore the collection with synthesized angklung audio on this
-            device. No robot connection is created by Studio.
-          </p>
-          <div className="studio-detail-row">
-            <span>Output</span>
-            <strong>Browser audio</strong>
-          </div>
-          <div className="studio-detail-row">
-            <span>Instrument range</span>
-            <strong>18 notes · G3–C6</strong>
-          </div>
-        </section>
-        <section className="studio-panel">
-          <div className="studio-device-illustration studio-device-olive">
-            <Icon name="device" size={58} />
-          </div>
-          <span className="studio-status-pill studio-status-neutral">
-            Operator console
-          </span>
-          <h2>Your physical Angklobot</h2>
-          <p>
-            Connect, calibrate, and control your robot through the existing
-            operator console. Studio audio stops when you leave this workspace.
-          </p>
-          <a className="studio-button studio-button-dark" href="/control">
-            Open operator console <Icon name="arrow" size={17} />
-          </a>
-          <small className="studio-device-note">
-            USB and ESP32 options depend on your browser, local services, and
-            hardware setup.
-          </small>
-        </section>
-      </div>
-      <section className="studio-device-info">
-        <h2>One clear boundary</h2>
-        <p>
-          Studio is currently an audio preview workspace. Robot connection,
-          voice assistance, and physical playback remain in the operator
-          console. Other open controller tabs keep their own sessions.
-        </p>
-      </section>
     </>
   );
 }

@@ -1,6 +1,5 @@
 import type { Metadata } from "next";
-import { StudioProvider } from "@/features/studio/runtime/useStudio";
-import { StudioShell } from "@/features/studio/StudioShell";
+import { StudioWorkspace } from "@/features/studio/StudioWorkspace";
 import "./studio.css";
 import "./performance.css";
 import "./appearance.css";
@@ -15,9 +14,5 @@ export default function StudioLayout({
 }: {
   children: React.ReactNode;
 }) {
-  return (
-    <StudioProvider>
-      <StudioShell>{children}</StudioShell>
-    </StudioProvider>
-  );
+  return <StudioWorkspace>{children}</StudioWorkspace>;
 }

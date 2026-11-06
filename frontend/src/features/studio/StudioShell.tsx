@@ -143,7 +143,7 @@ export function StudioShell({ children }: { children: ReactNode }) {
     ["/studio", "Player", "play"],
     ["/studio/library", "Library", "library"],
     ["/studio/conduct", "Conduct", "device"],
-    ["/studio/device", "My device", "device"],
+    ["/studio/device", "Live session", "device"],
     ["/studio/settings", "Preferences", "settings"],
   ];
   return (
@@ -176,7 +176,7 @@ export function StudioShell({ children }: { children: ReactNode }) {
             >
               <Icon name={icon} />
               <span className="studio-nav-label-full">{label}</span>
-              <span className="studio-nav-label-short">{href === "/studio/settings" ? "Settings" : href === "/studio/device" ? "Device" : label}</span>
+              <span className="studio-nav-label-short">{href === "/studio/settings" ? "Settings" : href === "/studio/device" ? "Live" : label}</span>
               {href === "/studio/library" && snapshot.catalog.length > 0 ? (
                 <small>{snapshot.catalog.length}</small>
               ) : null}
@@ -328,7 +328,7 @@ function StudioPlayer() {
       <Link className="studio-player-output" href="/studio/device">
         <Icon name="device" size={17} />
         <span>
-          Computer audio<small>Robot not connected in Studio</small>
+          Computer audio<small>Open live robot controls</small>
         </span>
       </Link>
     </footer>

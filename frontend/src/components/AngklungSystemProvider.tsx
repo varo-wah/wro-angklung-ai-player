@@ -78,6 +78,7 @@ type AngklungSystemContextValue = {
   transportMode: RobotTransportMode;
   transportChanging: boolean;
   setTransportMode: (mode: RobotTransportMode) => Promise<void>;
+  sessionRole: "host" | "remote" | "viewer";
   remoteControl: boolean;
   physicalControl: boolean;
   aiAssistantMode: AiAssistantMode;
@@ -334,9 +335,11 @@ export function AngklungSystemProvider({ children }: { children: ReactNode }) {
         cancelConversationRequest();
         stopPlaybackMedia();
         setSchedule(null); generatedScheduleRef.current = null;
-        const song = await loadSelectedSong(action.songId);
+        const epoch = playbackSessionRef.current;
+        const song = await loadSelectedSong(action.songId, undefined, () => epoch === playbackSessionRef.current);
         if (!song) return { ok: false, error: "Song is unavailable." };
         setSelectedSongIdState(action.songId);
+        if (pathname === "/studio/device") generateScheduleForSong(song);
         return { ok: true };
       }
       case "generate": return { ok: true, value: (await generateSelectedSongSchedule())?.overall === "PASSED" };
@@ -413,6 +416,9 @@ export function AngklungSystemProvider({ children }: { children: ReactNode }) {
       status: "disconnected", outputMode: "unknown", message: mode === "esp32-usb" ? "ESP32 USB selected. Click Connect ESP32 USB." : "ESP32 Wi-Fi selected. Click Connect ESP32 Wi-Fi.",
     });
     return () => {
+      playbackSessionRef.current++;
+      engineRef.current?.stop();
+      audioRef.current?.stopAll();
       if (arduinoRef.current?.connected) {
         void arduinoRef.current.disconnect();
       }
@@ -682,7 +688,15 @@ export function AngklungSystemProvider({ children }: { children: ReactNode }) {
 
   function setSelectedSongId(songId: string) {
     setSelectedSongIdState(songId);
-    void loadSelectedSong(songId);
+    if (pathname === "/studio/device") {
+      stopPlaybackMedia();
+      generatedScheduleRef.current = null;
+      setSchedule(null); setSafetyReport(null);
+      const epoch = playbackSessionRef.current;
+      void loadSelectedSong(songId, undefined, () => epoch === playbackSessionRef.current).then(song => {
+        if (song && epoch === playbackSessionRef.current) generateScheduleForSong(song);
+      });
+    } else void loadSelectedSong(songId);
   }
 
   function generateScheduleForSong(song: LoadedSong, arrangementSettings = settings): SafetyReport | null {
@@ -1469,6 +1483,7 @@ export function AngklungSystemProvider({ children }: { children: ReactNode }) {
       ...robotSession.status.arduino,
       message: robotSession.status.hostOnline ? `Mac USB: ${robotSession.status.arduino.message}` : "Mac controller offline. Remote playback unavailable.",
     } : arduinoConnection,
+    sessionRole: robotSession.role,
     remoteControl: routesToMac(),
     physicalControl: routesToMac() ? robotSession.status.virtualPlayback !== true : !virtualOnly && (robotSession.role === "host" || transportMode !== "usb"),
     transportMode, transportChanging, setTransportMode,
@@ -1544,10 +1559,10 @@ export function AngklungSystemProvider({ children }: { children: ReactNode }) {
   return (
     <AngklungSystemContext.Provider value={value}>
       <div className={pathname === "/guest" || pathname === "/voice" ? "visitor-shell" : "min-h-screen"}>
-        <SystemNavigation pathname={pathname} status={systemStatus} syncState={robotSession.role === "host" ? {
+        {pathname === "/studio/device" ? <header className="border-b border-white/15 p-4"><strong>Angklobot Studio · Live session</strong></header> : <SystemNavigation pathname={pathname} status={systemStatus} syncState={robotSession.role === "host" ? {
           available: robotSession.serverAvailable, lastSyncedAt: robotSession.status.lastSeen,
           status: robotSession.serverAvailable ? "synced" : "waiting",
-        } : syncState} />
+        } : syncState} />}
         {robotSession.role === "host" && <div className="mx-auto max-w-5xl px-4 py-3">
           <label className="flex items-center gap-3 text-sm text-slate-100">
             <input type="checkbox" checked={!virtualOnly} onChange={event => {

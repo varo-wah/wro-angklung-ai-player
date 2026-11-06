@@ -12,7 +12,9 @@ npm ci
 npm run dev:studio
 ```
 
-Studio includes the searchable library, queue/shuffle/repeat player, light/dark themes, saved interface sizing, a resizable queue, and the Conduct camera prototype. Conduct uses the same appearance preferences and shared audio runtime; entering it stops song playback. The `/control` console remains available for hardware operation. Studio does not connect to a robot or start local AI/speech services.
+Studio includes the searchable library, queue/shuffle/repeat player, light/dark themes, saved interface sizing, a resizable queue, and the Conduct camera prototype. Conduct uses the same appearance preferences and shared audio runtime; entering it stops song playback. Choose **Live session** to play individual songs on a connected robot. The preview queue and Conduct remain local preview modes; neither automatically sends motor commands.
+
+For the live setup, start the competition server as described below. Open `http://localhost:3002/studio/device` in Chrome on the Mac, enable the Mac controller, choose a USB or ESP32 connection and connect. Select a song to prepare and validate it, then press Play. For a speakers-only rehearsal, turn off **Send playback to physical angklung**. On the phone, open `/studio/device` through your existing phone-access URL pointing at **the same Mac server and port** (see [phone setup](docs/mobile-local-development.md)); phone localhost refers to the phone. Enter the six-digit code. Keep the Mac host tab open during performance. Stop playback and disable remote control to end the session.
 
 The existing `npm run dev:conduct` command and port 3012 still serve this same source for compatibility with the other chat's preview address. The two ports are separate browser sessions, so their queues and preferences are not live-synchronized. A future edit made in another worktree still needs an explicit integration; chats do not automatically merge code.
 

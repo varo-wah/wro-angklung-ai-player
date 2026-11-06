@@ -143,6 +143,15 @@ export function routeSongRequestPreRouter(
       languageText(context, `Playing ${match.best.song.title}.`, `Memainkan ${match.best.song.title}.`)));
   }
   if (match.confidence === "medium" && match.candidates.length) {
+    const tied = match.candidates.filter(c => c.score === match.candidates[0].score);
+    if (tied.length > 1) {
+      const titles = tied.map(c => c.song.title).join(" / ");
+      return routed("ambiguous_song_match", result({
+        assistantMessage: languageText(context, `Which arrangement: ${titles}?`, `Aransemen yang mana: ${titles}?`),
+        confidence: tied[0].score, intent: "song_request", nextState: "awaiting_song",
+        shouldSearchCatalog: true, suggestedSongIds: tied.map(c => c.song.id),
+      }));
+    }
     const candidate = match.candidates[0].song;
     return routed("ambiguous_song_match", result({
       assistantMessage: languageText(context, `Do you mean ${candidate.title}?`, `Maksud Anda ${candidate.title}?`),
