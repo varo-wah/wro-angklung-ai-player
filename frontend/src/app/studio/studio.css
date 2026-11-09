@@ -1768,3 +1768,7 @@
     scroll-behavior: auto!important;
   }
 }
+
+.studio-legacy-link { display: block; color: #626f59; font-size: 12px; padding: 14px 12px; text-decoration: underline !important; }
+.studio-sidebar nav .studio-legacy-mobile { display: none; }
+@media (max-width: 680px) { .studio-legacy-link { display: none; } .studio-sidebar nav .studio-legacy-mobile { display: flex; } }

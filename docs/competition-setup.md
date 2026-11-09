@@ -4,7 +4,7 @@
 
 Use this repository's **main** branch, at the same workspace used for song editing. The integration includes the current song catalog, genre menu, note/rest tuning, USB controls, buffered ESP32 transport, Mac controller/pairing, guest conversation, local voice/wake interaction and display screen. Private Wi-Fi settings remain local and ignored by Git.
 
-The competition address is **http://localhost:3002/control**. Ports 3000/3001 are older development instances, not the canonical competition server. Do not run several competing controller tabs. A branch name alone is not a runtime: the command and the checkout serving that port determine the actual version.
+The competition address is **http://localhost:3002/**, which opens Studio v2. Select **Live session** for robot/phone control. **Legacy interface** keeps the original `/control` workspace available. Ports 3000/3001 are older development instances, not the canonical competition server. Do not run several competing controller tabs. A branch name alone is not a runtime: the command and the checkout serving that port determine the actual version.
 
 ## Start and operate
 
@@ -15,10 +15,10 @@ The competition address is **http://localhost:3002/control**. Ports 3000/3001 ar
    npm run competition
    ```
    This builds the production app in its own `.next-competition` directory, then starts it on **127.0.0.1:3002** with both transport choices enabled. First-time clones need `npm ci` beforehand. Reuse an unchanged successful build with `npm run start:competition`.
-3. Open `http://localhost:3002/control` in the Codex browser. For USB, use a browser with Web Serial support; this Mac's Codex browser has previously exposed the USB picker. Chrome/Edge are alternatives if Web Serial is unavailable.
+3. Open `http://localhost:3002/` and choose **Live session**. For USB, use a browser with Web Serial support; this Mac's Codex browser has previously exposed the USB picker. Chrome/Edge are alternatives if Web Serial is unavailable.
 4. Click **Enable Mac controller**. Keep that tab open: its session displays the six-digit pairing code. If another tab owns the controller, release it there first. A reload/restart can require re-enabling and pairing again.
 5. Select **ESP32 Wi-Fi**, then **Connect ESP32**. Connection checks HELLO, buffered-schedule capability and disarmed Mega STATUS. For USB fallback, stop playback, change to **Arduino USB**, click **Connect Arduino**, and select the Mega. Switching transport stops and disconnects the old connection.
-6. Choose a song and **Melody only** or **Melody with Extra**. Press **Generate**, inspect validation, then press **Play**. The current software does not auto-start on connection. Test a short familiar passage and website Stop before the demonstration.
+6. Choose a song in Studio Live session; selection prepares and validates the schedule. Press **Play** explicitly. The legacy interface retains the manual arrangement settings and **Generate** workflow. The current software does not auto-start on connection. Test a short familiar passage and website Stop before the demonstration.
 7. **Stop/E-stop:** use the visible website controls; if the website/network is unresponsive, use the physical stop. Do not assume receipt of a remote stop merely because the button was pressed.
 8. `/guest`, `/voice`, and `/display` use the same server. Additional tabs can pair with the Mac code. The competition command intentionally binds only to loopback: a phone cannot reach it directly through the Mac's LAN IP. Remote phone/tunnel operation is a separately configured mode in the operating guide, not an automatic property of this startup command.
 

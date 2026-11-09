@@ -62,7 +62,7 @@ firebase deploy \
   --project "$FIREBASE_PROJECT"
 
 echo
-echo "Angklobot tunnel: $TUNNEL_URL/guest"
+echo "Angklobot tunnel: $TUNNEL_URL/studio"
 echo "Firebase status page: check the Hosting URL shown above"
 echo "Leave this process running. Press Ctrl+C to take Angklobot offline."
 wait "$TUNNEL_PID"

@@ -16,7 +16,7 @@ export function LegacySystemBoundary({
   children: React.ReactNode;
 }) {
   const pathname = usePathname();
-  if (pathname === "/studio" || pathname.startsWith("/studio/"))
+  if (pathname === "/" || pathname === "/legacy" || pathname === "/studio" || pathname.startsWith("/studio/"))
     return children;
   return <AngklungSystemProvider>{children}</AngklungSystemProvider>;
 }

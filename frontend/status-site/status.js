@@ -7,6 +7,7 @@
   const elements = {
     dot: document.getElementById("status-dot"),
     guest: document.getElementById("open-guest"),
+    legacy: document.getElementById("open-legacy"),
     lastChecked: document.getElementById("last-checked"),
     message: document.getElementById("status-message"),
     ollama: document.getElementById("ollama-status"),
@@ -33,9 +34,11 @@
   }
 
   function enableGuest(enabled) {
-    elements.guest.href = enabled ? `${backendOrigin}/guest` : "#";
-    elements.guest.classList.toggle("disabled", !enabled);
-    elements.guest.setAttribute("aria-disabled", String(!enabled));
+    for (const [element, path] of [[elements.guest, "/studio"], [elements.legacy, "/control"]]) {
+      element.href = enabled ? `${backendOrigin}${path}` : "#";
+      element.classList.toggle("disabled", !enabled);
+      element.setAttribute("aria-disabled", String(!enabled));
+    }
   }
 
   function render(state, payload) {
@@ -93,8 +96,8 @@
   }
 
   elements.refresh.addEventListener("click", checkStatus);
-  elements.guest.addEventListener("click", function (event) {
-    if (elements.guest.getAttribute("aria-disabled") === "true") event.preventDefault();
+  for (const link of [elements.guest, elements.legacy]) link.addEventListener("click", function (event) {
+    if (link.getAttribute("aria-disabled") === "true") event.preventDefault();
   });
   void checkStatus();
   window.setInterval(checkStatus, refreshIntervalMs);

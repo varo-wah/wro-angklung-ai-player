@@ -142,7 +142,6 @@ export function StudioShell({ children }: { children: ReactNode }) {
   const navigation: [string, string, IconName][] = [
     ["/studio", "Player", "play"],
     ["/studio/library", "Library", "library"],
-    ["/studio/conduct", "Conduct", "device"],
     ["/studio/device", "Live session", "device"],
     ["/studio/settings", "Preferences", "settings"],
   ];
@@ -163,11 +162,11 @@ export function StudioShell({ children }: { children: ReactNode }) {
         <div className="studio-workspace">
           <span className="studio-avatar">A</span>
           <div>
-            Performance workspace<small>Desktop edition · preview</small>
+            Performance workspace<small>Studio · Version 2</small>
           </div>
         </div>
         <span className="studio-nav-label">WORKSPACE</span>
-        <nav aria-label="Studio navigation" style={{ gridTemplateColumns: `repeat(${navigation.length}, minmax(0, 1fr))` }}>
+        <nav aria-label="Studio navigation" style={{ gridTemplateColumns: `repeat(${navigation.length + 1}, minmax(0, 1fr))` }}>
           {navigation.map(([href, label, icon]) => (
             <Link
               key={href}
@@ -182,7 +181,9 @@ export function StudioShell({ children }: { children: ReactNode }) {
               ) : null}
             </Link>
           ))}
+          <a href="/legacy" className="studio-legacy-mobile" aria-label="Legacy interface"><Icon name="settings"/><span>Legacy</span></a>
         </nav>
+        <a className="studio-legacy-link" href="/legacy">Legacy interface ↗</a>
         <div className="studio-sidebar-bottom">
           <div className="studio-local-dot" />
           <span>

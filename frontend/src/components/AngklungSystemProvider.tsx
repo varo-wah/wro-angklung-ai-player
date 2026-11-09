@@ -1559,7 +1559,7 @@ export function AngklungSystemProvider({ children }: { children: ReactNode }) {
   return (
     <AngklungSystemContext.Provider value={value}>
       <div className={pathname === "/guest" || pathname === "/voice" ? "visitor-shell" : "min-h-screen"}>
-        {pathname === "/studio/device" ? <header className="border-b border-white/15 p-4"><strong>Angklobot Studio · Live session</strong></header> : <SystemNavigation pathname={pathname} status={systemStatus} syncState={robotSession.role === "host" ? {
+        {pathname === "/studio/device" ? <header className="border-b border-white/15 p-4"><strong>Angklobot Studio · Live session</strong>{robotSession.role !== "host" && <a href="/legacy" className="ml-5 underline">Legacy interface</a>}</header> : <SystemNavigation pathname={pathname} status={systemStatus} syncState={robotSession.role === "host" ? {
           available: robotSession.serverAvailable, lastSyncedAt: robotSession.status.lastSeen,
           status: robotSession.serverAvailable ? "synced" : "waiting",
         } : syncState} />}
@@ -1624,6 +1624,7 @@ function SystemNavigation({ pathname, status, syncState }: { pathname: string; s
           <h1 className="mt-1 text-2xl font-bold text-slate-50">AI Angklung Performance System</h1>
         </div>
         <nav className="flex flex-wrap items-center gap-2">
+          <a href="/studio" className="rounded border border-lime-300/40 px-3 py-2 text-sm text-lime-200">Studio v2</a>
           <NavLink active={pathname.startsWith("/guest")} href="/guest" label="Guest Interface" />
           <NavLink active={pathname.startsWith("/control")} href="/control" label="Control Panel" />
           <span className="rounded border border-white/10 bg-white/5 px-3 py-2 text-sm font-semibold text-slate-300 shadow-[inset_0_1px_0_rgba(255,255,255,0.06)]">
