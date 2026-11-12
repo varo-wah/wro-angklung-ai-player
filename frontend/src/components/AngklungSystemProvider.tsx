@@ -310,7 +310,7 @@ export function AngklungSystemProvider({ children }: { children: ReactNode }) {
     if (!virtualOnlyRef.current && !arduinoRef.current?.connected) return { ok: false, error: "Arduino disconnected from the Mac. Enable virtual playback on the Mac to test without hardware." };
     const action = command.action;
     switch (action.type) {
-      case "addToQueue": case "removeFromQueue": case "playSong": case "playQueueEntry": case "moveInQueue": case "setRepeat": case "setShuffle": case "next": case "previous": case "clearQueue":
+      case "setVolume": case "addToQueue": case "removeFromQueue": case "playSong": case "playQueueEntry": case "moveInQueue": case "setRepeat": case "setShuffle": case "next": case "previous": case "clearQueue":
         return { ok: false, error: "Open the Studio player on the Mac to use its queue." };
       case "settings": {
         cancelConversationRequest();

@@ -51,12 +51,27 @@ export class StudioController {
   private songRequest = 0;
   private playbackRequest = 0;
   private engine: PreviewPlayback | null = null;
+  private sweeping = false;
+  private bufferedRobot = false;
   private robot: RobotTransport | null = null;
   private stopping: Promise<void> = Promise.resolve();
 
-  setRobot(robot: RobotTransport | null) {
+  setRobot(robot: RobotTransport | null, buffered = false) {
     this.stop();
     this.robot = robot;
+    this.bufferedRobot = buffered;
+  }
+
+  async runSweep() {
+    const robot = this.robot;
+    if (!robot?.connected || this.sweeping) throw new Error("Connect the Arduino and wait for the current sweep to finish.");
+    this.stop();
+    const request = this.playbackRequest;
+    this.sweeping = true;
+    try {
+      await this.stopping;
+      if (request !== this.playbackRequest || !robot.connected || !await robot.runWakeSweep()) throw new Error("Sweep stopped.");
+    } finally { this.sweeping = false; }
   }
 
   private async unlockOutput() {
@@ -164,7 +179,7 @@ export class StudioController {
 
   play = async (): Promise<void> => {
     const schedule = this.snapshot.schedule;
-    if (this.disposed || this.snapshot.inputMode !== "player" || !schedule || this.snapshot.validationErrors.length > 0
+    if (this.sweeping || this.disposed || this.snapshot.inputMode !== "player" || !schedule || this.snapshot.validationErrors.length > 0
       || this.snapshot.playback === "playing" || this.snapshot.playback === "starting") return;
     const fromSeconds = this.snapshot.positionSeconds >= this.snapshot.durationSeconds ? 0 : this.snapshot.positionSeconds;
     this.haltPlayback();
@@ -179,22 +194,26 @@ export class StudioController {
       }
       const current = () => !this.disposed && request === this.playbackRequest;
       const robot = this.robot;
+      const robotLevel = this.snapshot.preferences.volume / 100;
+      const outputSchedule = robot && this.bufferedRobot && robotLevel !== 1 ? { ...schedule, commands: schedule.commands.map(
+        command => ({ ...command, strength: command.strength * robotLevel })) } : schedule;
       if (robot) {
         await this.stopping;
         if (!current()) return;
         if (this.snapshot.safety?.overall !== "PASSED" || !robot.connected) throw new Error("Check the robot connection and arrangement before playing.");
-        await robot.preparePlayback(schedule.commands, fromSeconds);
+        await robot.preparePlayback(outputSchedule.commands, fromSeconds);
         if (!current()) return;
       }
-      this.engine = this.ports.createPlayback(schedule, {
+      this.engine = this.ports.createPlayback(outputSchedule, {
         onCommand: (command) => {
           if (!current()) return;
           try {
             if (robot) {
-              void robot.sendNote(command).catch(error => { if (current()) this.failPlayback(error); });
+              const note = this.bufferedRobot ? command : { ...command, strength: command.strength * this.snapshot.preferences.volume / 100 };
+              void robot.sendNote(note).catch(error => { if (current()) this.failPlayback(error); });
               return;
             }
-            this.ports.audio.playNote(command.note, command.duration_seconds, command.strength);
+            this.ports.audio.playNote(command.note, command.duration_seconds, command.strength * this.snapshot.preferences.volume / 100);
           } catch (error) {
             this.failPlayback(error);
           }
@@ -266,7 +285,7 @@ export class StudioController {
       || !["C4", "D4", "E4", "F4", "G4", "A4", "B4", "C5"].includes(note)) return;
     try {
       this.ports.audio.stopAll();
-      this.ports.audio.playNote(note, 0.3, 0.45);
+      this.ports.audio.playNote(note, 0.3, 0.45 * this.snapshot.preferences.volume / 100);
     } catch (error) { this.stop(); this.publish({ error: errorMessage(error, "Conduct preview failed.") }); }
   };
 
@@ -278,6 +297,13 @@ export class StudioController {
     this.haltPlayback();
     const positionSeconds = this.clampPosition(seconds);
     this.publish({ playback: positionSeconds >= this.snapshot.durationSeconds ? "ended" : "paused", positionSeconds, activeNotes: [] });
+  };
+
+  setVolume = (value: number): void => {
+    if (this.disposed || !Number.isFinite(value)) return;
+    const volume = Math.max(0, Math.min(100, Math.round(value)));
+    this.publish({ preferences: { ...this.snapshot.preferences, volume } });
+    this.persist();
   };
 
   setMuted = (muted: boolean): void => {
@@ -443,7 +469,7 @@ export class StudioController {
     setInputMode: this.setInputMode, enableConductPreview: this.enableConductPreview,
     previewConductNote: this.previewConductNote, silenceConductPreview: this.silenceConductPreview,
     initialize: this.initialize, reloadCatalog: this.reloadCatalog, selectSong: this.selectSong,
-    play: this.play, pause: this.pause, stop: this.stop, seek: this.seek, setMuted: this.setMuted,
+    play: this.play, pause: this.pause, stop: this.stop, seek: this.seek, setVolume: this.setVolume, setMuted: this.setMuted,
     setTempo: this.setTempo, setMode: this.setMode, toggleFavorite: this.toggleFavorite, clearError: this.clearError,
     setTheme: this.setTheme, setInterfaceScale: this.setInterfaceScale, setQueueWidth: this.setQueueWidth,
     addToQueue: this.addToQueue, removeFromQueue: this.removeFromQueue, moveInQueue: this.moveInQueue,

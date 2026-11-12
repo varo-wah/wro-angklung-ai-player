@@ -100,6 +100,7 @@ export class ArduinoSerialController {
     reject: (error: Error) => void;
     resolve: (line: string) => void;
   }>();
+  private sweepEpoch = 0;
   private wakeSweepPromise: Promise<boolean> | null = null;
   private state: ArduinoConnectionState = getInitialArduinoConnectionState();
 
@@ -217,6 +218,8 @@ export class ArduinoSerialController {
   }
 
   async disarm(): Promise<void> {
+    ++this.sweepEpoch;
+    if (this.wakeSweepPromise) this.rejectLineWaiters(new Error("Sweep stopped."));
     if (!this.connected) {
       return;
     }
@@ -228,13 +231,19 @@ export class ArduinoSerialController {
     if (!this.connected) return false;
     if (this.wakeSweepPromise) return this.wakeSweepPromise;
 
+    const epoch = ++this.sweepEpoch;
+    const check = () => { if (epoch !== this.sweepEpoch) throw new Error("Sweep stopped."); };
     const run = async () => {
       const completed = this.waitForLine((line) => line === "ACK,SWEEP,DONE", ARDUINO_WAKE_SWEEP_TIMEOUT_MS);
+      void completed.catch(() => {});
       try {
         await this.writeLine("ARM");
+        check();
         await this.writeLine("CALIBRATE");
+        check();
         await this.writeLine("SWEEP,30,150,50");
         await completed;
+        check();
         await this.writeLine("CALDONE");
         await this.writeLine("DISARM");
         return true;

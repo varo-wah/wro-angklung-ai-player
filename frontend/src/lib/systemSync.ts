@@ -27,6 +27,7 @@ export type SyncedWorkflowStatus = {
 
 export type SyncedSystemSnapshot = {
   studio?: {
+    volume?: number;
     queue: { key: number; songId: string }[]; queueIndex: number; shuffle: boolean; repeat: "off" | "one" | "all";
     playback: "idle" | "starting" | "playing" | "paused" | "ended";
     tempo: "normal" | "slower"; mode: "melody" | "harmony"; error: string | null;

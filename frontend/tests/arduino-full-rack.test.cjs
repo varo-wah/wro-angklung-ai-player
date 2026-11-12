@@ -170,3 +170,13 @@ test("disconnect shuts down and disarms before releasing serial", async () => {
   assert.deepEqual(lines, ["ALL_OFF", "DISARM"]);
   assert.equal(controller.connected, false);
 });
+
+test("disarming during sweep startup cancels the remaining sweep commands", async () => {
+  const {controller, lines} = connectedController();
+  const sweep = controller.runWakeSweep();
+  const cancelled = assert.rejects(sweep, /Sweep stopped/);
+  await controller.disarm();
+  await cancelled;
+  assert.ok(!lines.some(line => line.startsWith("SWEEP,")));
+  assert.equal(lines.at(-1), "DISARM");
+});

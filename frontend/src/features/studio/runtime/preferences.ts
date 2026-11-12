@@ -30,7 +30,7 @@ function boundedNumber(value: unknown, min: number, max: number, fallback: numbe
 }
 
 export function defaultPreferences(): StudioPreferences {
-  return { version: 1, favoriteIds: [], recentIds: [], lastSongId: null, muted: false, tempo: "normal", mode: "melody",
+  return { version: 1, favoriteIds: [], recentIds: [], lastSongId: null, muted: false, volume: 100, tempo: "normal", mode: "melody",
     theme: "light", interfaceScale: INTERFACE_SIZE.default, queueWidth: QUEUE_WIDTH.default };
 }
 
@@ -44,6 +44,7 @@ export function parsePreferences(value: unknown): StudioPreferences {
     favoriteIds: ids(record.favoriteIds),
     recentIds: ids(record.recentIds).slice(0, 6),
     lastSongId: typeof record.lastSongId === "string" && record.lastSongId.length > 0 ? record.lastSongId : null,
+    volume: boundedNumber(record.volume, 0, 100, 100),
     muted: record.muted === true,
     tempo: record.tempo === "slower" ? "slower" : "normal",
     mode: record.mode === "harmony" ? "harmony" : "melody",

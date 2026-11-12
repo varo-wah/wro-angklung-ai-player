@@ -26,6 +26,7 @@ async function execute(player: StudioController, action: RobotAction) {
     case "setRepeat": player.setRepeat(action.repeat); break;
     case "setShuffle": player.setShuffle(action.shuffle); break;
     case "next": case "previous": case "clearQueue": await player[action.type](); break;
+    case "setVolume": player.setVolume(action.volume); break;
     case "settings": player.setTempo(action.settings.tempo); player.setMode(action.settings.mode); break;
     default: throw new Error("This command is unavailable in Studio.");
   }
@@ -38,6 +39,8 @@ export function StudioRobotSession({ runtime, view, children }: { runtime: Studi
   const [arduino, setArduino] = useState(OFFLINE_ROBOT.arduino);
   const [mirror, setMirror] = useState<SyncedSystemSnapshot | null>(null);
   const [error, setError] = useState("");
+  const [sweeping, setSweeping] = useState(false);
+  const [sweepMessage, setSweepMessage] = useState("");
   const [mode, setMode] = useState<RobotTransportMode>("usb");
   const transport = useRef<RobotTransport | null>(null);
   const alive = useRef(true);
@@ -52,7 +55,7 @@ export function StudioRobotSession({ runtime, view, children }: { runtime: Studi
         selectedSongId: s.selectedSongId || "", sourceLabel: s.song?.title || "", elapsedSeconds: s.positionSeconds,
         playbackState: s.playback === "idle" || s.playback === "ended" ? "stopped" : s.playback,
         schedule: s.schedule, safetyReport: s.safety })!;
-      return { ...snapshot, studio: { queue: s.queue, queueIndex: s.queueIndex, shuffle: s.shuffle, repeat: s.repeat,
+      return { ...snapshot, studio: { volume: s.preferences.volume, queue: s.queue, queueIndex: s.queueIndex, shuffle: s.shuffle, repeat: s.repeat,
         playback: s.playback, tempo: s.preferences.tempo, mode: s.preferences.mode, error: s.error } };
     },
   });
@@ -83,7 +86,7 @@ export function StudioRobotSession({ runtime, view, children }: { runtime: Studi
       if (mode !== "usb" || !await device.reconnectAuthorized()) return;
     } else await device.connect();
     if (!alive.current || session.credentials.current.role !== "host") { await device.disconnect(); return; }
-    if (device.connected) runtime.setRobot(device);
+    if (device.connected) runtime.setRobot(device, mode !== "usb");
   }
 
   useEffect(() => {
@@ -115,7 +118,7 @@ export function StudioRobotSession({ runtime, view, children }: { runtime: Studi
     song: local.song?.id === shared.selectedSongId ? local.song : null, schedule: shared.schedule, safety: shared.safetyReport,
     songStatus: shared.schedule ? "ready" as const : "idle" as const, positionSeconds: shared.elapsedSeconds,
     durationSeconds: shared.schedule?.timing.total_duration_seconds ?? 0, validationErrors: [],
-    preferences: { ...local.preferences, mode: shared.studio.mode, tempo: shared.studio.tempo } } : local;
+    preferences: { ...local.preferences, volume: shared.studio.volume ?? 100, mode: shared.studio.mode, tempo: shared.studio.tempo } } : local;
 
   async function switchOutput() {
     if (session.credentials.current.role === "host") {
@@ -134,10 +137,20 @@ export function StudioRobotSession({ runtime, view, children }: { runtime: Studi
     clearQueue: () => void send({type:"clearQueue"}), playQueueEntry: key => send({type:"playQueueEntry",key}),
     moveInQueue: (key,direction) => void send({type:"moveInQueue",key,direction}), setShuffle: shuffle => void send({type:"setShuffle",shuffle}),
     setRepeat: repeat => void send({type:"setRepeat",repeat}),
+    setVolume: volume => void send({type:"setVolume",volume}),
     setTempo: tempo => void send({type:"settings",settings:{tempo,mode:s.preferences.mode,strength:0.6}}),
     setMode: mode => void send({type:"settings",settings:{mode,tempo:s.preferences.tempo,strength:0.6}}),
     clearError: () => { setError(""); view.actions.clearError(); },
   };
+  async function runSweep() {
+    if (session.credentials.current.role !== "host" || !ready || mode !== "usb" || sweeping) return;
+    session.cancelQueued();
+    setSweeping(true);
+    setSweepMessage("Sweeping the rack…");
+    try { await runtime.runSweep(); setSweepMessage("Sweep complete."); }
+    catch (err) { setSweepMessage(err instanceof Error ? err.message : "Sweep failed."); }
+    finally { setSweeping(false); }
+  }
   const connection = <div>
     {session.role === "host" && <label>Connection <select aria-label="Robot transport" value={mode} disabled={arduino.status === "connecting" || arduino.status === "connected"}
       onChange={event => { transport.current = null; setMode(event.target.value as RobotTransportMode); }}>
@@ -149,5 +162,6 @@ export function StudioRobotSession({ runtime, view, children }: { runtime: Studi
     {session.role === "host" && <small role="status">{arduino.message}</small>}
   </div>;
   return <StudioContext.Provider value={{ ...view, robotMode:true, toggleOutput: () => void switchOutput(), outputLabel:"Angklung robot", connection, actions,
+    sweep: session.role === "host" && ready && mode === "usb" ? { run: runSweep, busy: sweeping, message: sweepMessage } : undefined,
     snapshot:{...s, error:error || s.error, schedule:ready ? s.schedule : null} }}>{children}</StudioContext.Provider>;
 }

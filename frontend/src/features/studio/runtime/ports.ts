@@ -44,6 +44,7 @@ export type StudioPreferences = {
   recentIds: string[];
   lastSongId: string | null;
   muted: boolean;
+  volume: number;
   tempo: "normal" | "slower";
   mode: "melody" | "harmony";
   theme: "light" | "dark";

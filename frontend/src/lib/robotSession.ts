@@ -2,6 +2,7 @@ import type { ArduinoConnectionState } from "./arduinoSerial";
 import type { SyncedSystemSnapshot } from "./systemSync";
 
 export type StudioAction =
+  | { type: "setVolume"; volume: number }
   | { type: "playSong" | "addToQueue"; songId: string }
   | { type: "removeFromQueue" | "playQueueEntry"; key: number }
   | { type: "moveInQueue"; key: number; direction: -1 | 1 }
@@ -44,6 +45,7 @@ export const isInterrupt = (action: RobotAction) => ["stop", "estop", "pause", "
 export function parseRobotAction(value: unknown): RobotAction {
   if (!value || typeof value !== "object") throw new Error("Invalid command.");
   const a = value as Record<string, unknown>;
+  if (a.type === "setVolume" && typeof a.volume === "number" && Number.isInteger(a.volume) && a.volume >= 0 && a.volume <= 100) return { type: a.type, volume: a.volume };
   if ((a.type === "playSong" || a.type === "addToQueue") && typeof a.songId === "string" && /^[a-zA-Z0-9_-]{1,120}$/.test(a.songId)) return { type: a.type, songId: a.songId };
   if (typeof a.key === "number" && Number.isSafeInteger(a.key) && a.key > 0) {
     if (a.type === "playQueueEntry" || a.type === "removeFromQueue") return { type: a.type, key: a.key };

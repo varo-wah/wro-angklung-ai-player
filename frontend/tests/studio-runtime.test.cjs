@@ -738,3 +738,24 @@ test('robot output repeats the queue and Stop invalidates late note callbacks', 
   assert.equal(h.audio.notes.length, 0);
   assert.ok(disarms > previous);
 });
+
+test('volume scales live USB notes and buffered schedules without changing the arrangement', async () => {
+  for (const buffered of [false, true]) {
+    const h = harness();
+    await h.controller.initialize();
+    const commands = h.controller.getSnapshot().schedule.commands;
+    const original = commands[0].strength;
+    let uploaded;
+    let sent;
+    h.controller.setRobot({ connected: true, preparePlayback: async notes => { uploaded = notes; },
+      sendNote: async note => { sent = note; }, disarm: async () => {} }, buffered);
+    h.controller.setVolume(50);
+    await h.controller.play();
+    h.controller.setVolume(20);
+    h.playback[0].callbacks.onCommand(h.playback[0].schedule.commands[0]);
+    assert.equal(uploaded[0].strength, buffered ? original * 0.5 : original);
+    assert.equal(sent.strength, buffered ? original * 0.5 : original * 20 / 100);
+    assert.equal(commands[0].strength, original);
+    h.controller.dispose();
+  }
+});

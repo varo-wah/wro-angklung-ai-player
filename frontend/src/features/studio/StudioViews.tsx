@@ -435,7 +435,7 @@ export function StudioLibrary() {
 }
 
 export function StudioSettings() {
-  const { snapshot: s, actions: a } = useStudio();
+  const { snapshot: s, actions: a, robotMode, sweep } = useStudio();
   return (
     <>
       <div className="studio-page-heading">
@@ -448,6 +448,21 @@ export function StudioSettings() {
       <StudioAppearanceSettings />
       <section className="studio-panel studio-settings-panel">
         <h2>Playback preferences</h2>
+        <div className="studio-setting">
+          <div><h3><label htmlFor="studio-volume">{robotMode ? "Robot volume" : "Preview volume"}</label></h3>
+            <p>{robotMode ? "Arduino USB adjusts upcoming notes. ESP32 applies changes on play or resume." : "Adjusts the loudness of upcoming notes."}</p></div>
+          <select id="studio-volume" disabled={robotMode && !s.schedule} value={s.preferences.volume}
+            onChange={event => a.setVolume(Number(event.target.value))}>
+            {Array.from(new Set([...Array.from({length: 11}, (_, i) => i * 10), s.preferences.volume])).sort((a,b) => a-b)
+              .map(value => <option key={value} value={value}>{value}%</option>)}
+          </select>
+        </div>
+        <details className="studio-setting-tools">
+          <summary>Advanced rack controls</summary>
+          <p>{sweep ? "Stops the song and sweeps every channel once at fixed calibration power." : "Connect Arduino USB on the Mac controller to run the full rack sweep."}</p>
+          <button type="button" disabled={!sweep || sweep.busy} onClick={sweep?.run}>Run rack sweep</button>
+          {sweep?.message && <p role="status">{sweep.message}</p>}
+        </details>
         <div className="studio-setting">
           <div>
             <h3>Preview sound</h3>

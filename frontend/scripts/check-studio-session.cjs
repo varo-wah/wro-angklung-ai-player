@@ -15,6 +15,7 @@ const { chromium } = require(process.env.PLAYWRIGHT_MODULE || "playwright-core")
         writable: new WritableStream({ write(data) {
           const line = new TextDecoder().decode(data).trim();
           window.serialLines.push(line);
+          if (line.startsWith("SWEEP,")) reader.enqueue(new TextEncoder().encode("ACK,SWEEP,DONE\n"));
           if (line === "HELLO,1") reader.enqueue(new TextEncoder().encode("READY,1,ACTIVE\n"));
         } }),
       };
@@ -48,6 +49,15 @@ const { chromium } = require(process.env.PLAYWRIGHT_MODULE || "playwright-core")
     await phone.getByRole("button",{name:"Stop robot",exact:true}).click();
     await host.getByText("Bengawan Solo · stopped",{exact:true}).waitFor();
     await host.waitForFunction(() => window.serialLines.lastIndexOf("DISARM") > window.serialLines.findLastIndex(s => s.startsWith("NOTE,")));
+    await host.getByRole("link",{name:"Preferences"}).click();
+    await phone.getByRole("link",{name:/Settings|Preferences/}).click();
+    await phone.getByLabel("Robot volume").selectOption("30");
+    await host.waitForFunction(() => document.querySelector("#studio-volume")?.value === "30");
+    if (await host.getByRole("button",{name:"Run rack sweep"}).isVisible()) throw new Error("Sweep should start collapsed");
+    await host.getByText("Advanced rack controls",{exact:true}).click();
+    await host.getByRole("button",{name:"Run rack sweep"}).click();
+    await host.getByText("Sweep complete.",{exact:true}).waitFor();
+    await host.waitForFunction(() => window.serialLines.includes("SWEEP,30,150,50") && window.serialLines.at(-1) === "DISARM");
     await host.getByRole("button",{name:"Disable remote control"}).click();
     console.log("PASS: separate clients paired, selected, played, paused, stopped and released one Mac session.");
   } finally { await browser.close(); }

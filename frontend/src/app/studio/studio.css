@@ -1772,3 +1772,9 @@
 .studio-legacy-link { display: block; color: #626f59; font-size: 12px; padding: 14px 12px; text-decoration: underline !important; }
 .studio-sidebar nav .studio-legacy-mobile { display: none; }
 @media (max-width: 680px) { .studio-legacy-link { display: none; } .studio-sidebar nav .studio-legacy-mobile { display: flex; } }
+
+.studio-setting-tools { padding: 1rem 0; }
+.studio-setting-tools summary { cursor: pointer; font-weight: 600; }
+.studio-setting-tools p { margin: .75rem 0; }
+.studio-setting-tools button, #studio-volume { border: 1px solid currentColor; border-radius: .5rem; padding: .35rem .75rem; }
+.studio-setting-tools button:disabled { opacity: .5; }
