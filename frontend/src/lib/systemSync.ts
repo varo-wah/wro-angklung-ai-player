@@ -26,6 +26,11 @@ export type SyncedWorkflowStatus = {
 };
 
 export type SyncedSystemSnapshot = {
+  studio?: {
+    queue: { key: number; songId: string }[]; queueIndex: number; shuffle: boolean; repeat: "off" | "one" | "all";
+    playback: "idle" | "starting" | "playing" | "paused" | "ended";
+    tempo: "normal" | "slower"; mode: "melody" | "harmony"; error: string | null;
+  };
   virtualPlayback?: boolean;
   activeCommandIds: string[];
   activeInstrumentIds: string[];
@@ -136,7 +141,7 @@ export function readStoredSystemSnapshot(): SyncedSystemSnapshot | null {
   }
 }
 
-function normalizeSnapshot(candidate: unknown): SyncedSystemSnapshot | null {
+export function normalizeSnapshot(candidate: unknown): SyncedSystemSnapshot | null {
   if (!candidate || typeof candidate !== "object") {
     return null;
   }

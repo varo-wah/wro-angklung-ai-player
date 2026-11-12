@@ -138,11 +138,10 @@ export function BrandMark() {
 
 export function StudioShell({ children }: { children: ReactNode }) {
   const pathname = usePathname();
-  const { snapshot, actions } = useStudio();
+  const { snapshot, actions, robotMode, connection, toggleOutput } = useStudio();
   const navigation: [string, string, IconName][] = [
     ["/studio", "Player", "play"],
     ["/studio/library", "Library", "library"],
-    ["/studio/device", "Live session", "device"],
     ["/studio/settings", "Preferences", "settings"],
   ];
   return (
@@ -201,11 +200,12 @@ export function StudioShell({ children }: { children: ReactNode }) {
             </span>
           </span>
           <div className="studio-topbar-actions">
-            <Link href="/studio/device" className="studio-output-badge"><span />Audio preview</Link>
+            <button className="studio-output-badge" onClick={toggleOutput} aria-pressed={robotMode}><span />{robotMode ? "Use computer audio" : "Play on angklung"}</button>
             <StudioAppearanceControls />
           </div>
         </header>
         <main id="studio-main" className="studio-main">
+          {connection}
           {snapshot.error ? (
             <div className="studio-alert" role="alert">
               <span>{snapshot.error}</span>
@@ -250,7 +250,7 @@ export function formatTime(seconds: number) {
 }
 
 function StudioPlayer() {
-  const { snapshot: s, actions: a } = useStudio();
+  const { snapshot: s, actions: a, robotMode, outputLabel, toggleOutput } = useStudio();
   const playing = s.playback === "playing";
   const canPlay =
     s.songStatus === "ready" &&
@@ -260,7 +260,7 @@ function StudioPlayer() {
   const favorite =
     !!s.selectedSongId && s.preferences.favoriteIds.includes(s.selectedSongId);
   return (
-    <footer className="studio-player" aria-label="Audio preview player">
+    <footer className="studio-player" aria-label={outputLabel + " player"}>
       <div className="studio-player-song">
         <div className="studio-mini-art">
           <BrandMark />
@@ -269,9 +269,9 @@ function StudioPlayer() {
           <strong>
             {s.songStatus === "loading"
               ? "Preparing arrangement…"
-              : (s.song?.title ?? "Choose your first song")}
+              : (s.catalog.find(song => song.id === s.selectedSongId)?.title ?? "Choose your first song")}
           </strong>
-          <small>Synthesized angklung · this device</small>
+          <small>{outputLabel}</small>
         </div>
         <button
           className="studio-icon-button studio-player-favorite"
@@ -281,7 +281,7 @@ function StudioPlayer() {
               : "Favourite current song"
           }
           aria-pressed={favorite}
-          disabled={!s.song}
+          disabled={!s.selectedSongId}
           onClick={() => s.selectedSongId && a.toggleFavorite(s.selectedSongId)}
         >
           <Icon name="heart" size={17} />
@@ -293,7 +293,7 @@ function StudioPlayer() {
           <button className="studio-icon-button" aria-label="Previous song" title="Previous song" disabled={s.queueIndex < 0 || s.songStatus === "loading"} onClick={() => void a.previous()}><Icon name="previous" size={18} /></button>
           <button
             className="studio-play-button"
-            aria-label={s.inputMode === "conduct" ? "Song playback unavailable in Conduct mode" : playing ? "Pause preview" : "Play preview"}
+            aria-label={s.inputMode === "conduct" ? "Song playback unavailable in Conduct mode" : playing ? "Pause" : robotMode ? "Play on robot" : "Play preview"}
             disabled={s.inputMode === "conduct" || !canPlay || s.playback === "starting"}
             onClick={() => (playing ? a.pause() : void a.play())}
           >
@@ -301,8 +301,8 @@ function StudioPlayer() {
           </button>
           <button className="studio-icon-button" aria-label="Next song" title="Next song" disabled={s.songStatus === "loading" || !s.queue.length || (s.queueIndex >= s.queue.length - 1 && s.repeat !== "all")} onClick={() => void a.next()}><Icon name="next" size={18} /></button>
           <button className="studio-icon-button studio-repeat-button" aria-label={`Repeat: ${s.repeat}`} title={`Repeat: ${s.repeat}`} aria-pressed={s.repeat !== "off"} onClick={() => a.setRepeat(s.repeat === "off" ? "all" : s.repeat === "all" ? "one" : "off")}><Icon name="repeat" size={17} />{s.repeat === "one" ? <b>1</b> : null}</button>
-          <button className="studio-icon-button studio-stop-button" aria-label="Stop preview" title="Stop preview" onClick={a.stop}><Icon name="stop" size={17} /></button>
-          <button
+          <button className="studio-icon-button studio-stop-button" aria-label="Stop playback" title="Stop playback" onClick={a.stop}><Icon name="stop" size={17} /></button>
+          <button hidden={robotMode}
             className="studio-icon-button"
             aria-label={s.preferences.muted ? "Unmute preview" : "Mute preview"}
             aria-pressed={s.preferences.muted}
@@ -314,7 +314,7 @@ function StudioPlayer() {
         <div className="studio-progress">
           <span>{formatTime(s.positionSeconds)}</span>
           <input
-            aria-label="Preview position"
+            aria-label="Playback position"
             type="range"
             min="0"
             max={s.durationSeconds || 1}
@@ -326,12 +326,12 @@ function StudioPlayer() {
           <span>{formatTime(s.durationSeconds)}</span>
         </div>
       </div>
-      <Link className="studio-player-output" href="/studio/device">
+      <button className="studio-player-output" onClick={toggleOutput}>
         <Icon name="device" size={17} />
         <span>
-          Computer audio<small>Open live robot controls</small>
+          {outputLabel}<small>Change output</small>
         </span>
-      </Link>
+      </button>
     </footer>
   );
 }

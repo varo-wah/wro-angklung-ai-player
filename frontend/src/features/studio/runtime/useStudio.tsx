@@ -1,10 +1,12 @@
 "use client";
 
-import { createContext, useContext, useEffect, useRef, useState, useSyncExternalStore, type ReactNode } from "react";
+import { useContext, useEffect, useRef, useState, useSyncExternalStore, type ReactNode } from "react";
 import { createBrowserPorts } from "./browserAdapters";
+import { StudioRobotSession } from "./StudioRobotSession";
+import { usePathname } from "next/navigation";
 import { StudioController } from "./studioController";
 
-const StudioContext = createContext<StudioController | null>(null);
+import { StudioContext, type StudioView } from "./studioContext";
 
 export function StudioProvider({ children }: { children: ReactNode }) {
   const [runtime] = useState(() => new StudioController(createBrowserPorts()));
@@ -20,12 +22,18 @@ export function StudioProvider({ children }: { children: ReactNode }) {
       });
     };
   }, [runtime]);
-  return <StudioContext.Provider value={runtime}>{children}</StudioContext.Provider>;
+  const snapshot = useSyncExternalStore(runtime.subscribe, runtime.getSnapshot, runtime.getSnapshot);
+  const [robotMode, setRobotMode] = useState(false);
+  const pathname = usePathname();
+  useEffect(() => { if (new URLSearchParams(window.location.search).get("output") === "robot") setRobotMode(true); }, [pathname]);
+  const view: StudioView = { snapshot, actions: runtime.actions, robotMode: false, outputLabel: "Computer audio",
+    connection: null, toggleOutput: () => { runtime.stop(); setRobotMode(!robotMode); } };
+  if (robotMode && pathname !== "/studio/conduct") return <StudioRobotSession runtime={runtime} view={view}>{children}</StudioRobotSession>;
+  return <StudioContext.Provider value={view}>{children}</StudioContext.Provider>;
 }
 
 export function useStudio() {
   const runtime = useContext(StudioContext);
   if (!runtime) throw new Error("useStudio must be used inside StudioProvider.");
-  const snapshot = useSyncExternalStore(runtime.subscribe, runtime.getSnapshot, runtime.getSnapshot);
-  return { snapshot, actions: runtime.actions };
+  return runtime;
 }

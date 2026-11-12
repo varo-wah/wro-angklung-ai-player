@@ -1,7 +1,16 @@
 import type { ArduinoConnectionState } from "./arduinoSerial";
 import type { SyncedSystemSnapshot } from "./systemSync";
 
+export type StudioAction =
+  | { type: "playSong" | "addToQueue"; songId: string }
+  | { type: "removeFromQueue" | "playQueueEntry"; key: number }
+  | { type: "moveInQueue"; key: number; direction: -1 | 1 }
+  | { type: "setRepeat"; repeat: "off" | "all" | "one" }
+  | { type: "setShuffle"; shuffle: boolean }
+  | { type: "previous" | "next" | "clearQueue" };
+
 export type RobotAction =
+  | StudioAction
   | { type: "seek"; seconds: number }
   | { type: "settings"; settings: { strength: number; tempo: "normal" | "slower"; mode: "melody" | "harmony" } }
   | { type: "request"; text: string; language: "en" | "id" }
@@ -35,6 +44,14 @@ export const isInterrupt = (action: RobotAction) => ["stop", "estop", "pause", "
 export function parseRobotAction(value: unknown): RobotAction {
   if (!value || typeof value !== "object") throw new Error("Invalid command.");
   const a = value as Record<string, unknown>;
+  if ((a.type === "playSong" || a.type === "addToQueue") && typeof a.songId === "string" && /^[a-zA-Z0-9_-]{1,120}$/.test(a.songId)) return { type: a.type, songId: a.songId };
+  if (typeof a.key === "number" && Number.isSafeInteger(a.key) && a.key > 0) {
+    if (a.type === "playQueueEntry" || a.type === "removeFromQueue") return { type: a.type, key: a.key };
+    if (a.type === "moveInQueue" && (a.direction === 1 || a.direction === -1)) return { type: a.type, key: a.key, direction: a.direction };
+  }
+  if (a.type === "setRepeat" && (a.repeat === "off" || a.repeat === "one" || a.repeat === "all")) return { type: a.type, repeat: a.repeat };
+  if (a.type === "setShuffle" && typeof a.shuffle === "boolean") return { type: a.type, shuffle: a.shuffle };
+  if (a.type === "next" || a.type === "previous" || a.type === "clearQueue") return { type: a.type };
   if (a.type === "seek" && typeof a.seconds === "number" && Number.isFinite(a.seconds) && a.seconds >= 0) return { type: "seek", seconds: a.seconds };
   if (a.type === "request" && typeof a.text === "string" && a.text.trim().length > 0 && a.text.length <= 2000 && (a.language === "en" || a.language === "id")) {
     return { type: "request", text: a.text.trim(), language: a.language };

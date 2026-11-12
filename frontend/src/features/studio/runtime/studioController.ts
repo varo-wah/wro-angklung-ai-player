@@ -2,6 +2,7 @@ import { getVisibleCatalogSongs } from "../../../lib/songCatalog";
 import { buildScheduleFromBuiltInSong } from "../../../lib/scheduleBuilder";
 import { validateMotorSafety, type SafetyReport } from "../../../lib/safetyValidator";
 import { validateSchedulePayload } from "../../../lib/scheduleValidator";
+import type { RobotTransport } from "../../../lib/robotTransport";
 import type { LoadedSong, SongCatalogEntry } from "../../../lib/songTypes";
 import type { ActuatorSchedule } from "../../../lib/types";
 import { defaultPreferences, parsePreferences, normalizeInterfaceScale, normalizeQueueWidth } from "./preferences";
@@ -50,6 +51,19 @@ export class StudioController {
   private songRequest = 0;
   private playbackRequest = 0;
   private engine: PreviewPlayback | null = null;
+  private robot: RobotTransport | null = null;
+  private stopping: Promise<void> = Promise.resolve();
+
+  setRobot(robot: RobotTransport | null) {
+    this.stop();
+    this.robot = robot;
+  }
+
+  private async unlockOutput() {
+    if (!this.robot) return this.ports.audio.ensureReady();
+    if (!this.robot.connected) throw new Error("Connect the angklung on the Mac before playing.");
+  }
+
   private queueKey = 0;
   private transitionRequest = 0;
 
@@ -158,16 +172,28 @@ export class StudioController {
     this.publish({ playback: "starting", positionSeconds: fromSeconds, activeNotes: [], error: null });
     try {
       // Keep this directly in the user gesture's synchronous call stack.
-      await this.ports.audio.ensureReady();
+      await this.unlockOutput();
       if (this.disposed || request !== this.playbackRequest) {
         if (this.disposed || this.getSnapshot().playback !== "playing") this.ports.audio.stopAll();
         return;
       }
       const current = () => !this.disposed && request === this.playbackRequest;
+      const robot = this.robot;
+      if (robot) {
+        await this.stopping;
+        if (!current()) return;
+        if (this.snapshot.safety?.overall !== "PASSED" || !robot.connected) throw new Error("Check the robot connection and arrangement before playing.");
+        await robot.preparePlayback(schedule.commands, fromSeconds);
+        if (!current()) return;
+      }
       this.engine = this.ports.createPlayback(schedule, {
         onCommand: (command) => {
           if (!current()) return;
           try {
+            if (robot) {
+              void robot.sendNote(command).catch(error => { if (current()) this.failPlayback(error); });
+              return;
+            }
             this.ports.audio.playNote(command.note, command.duration_seconds, command.strength);
           } catch (error) {
             this.failPlayback(error);
@@ -260,7 +286,7 @@ export class StudioController {
     this.ports.audio.setMuted(muted);
     this.publish({ preferences: { ...this.snapshot.preferences, muted } });
     this.persist();
-    if (!muted && active) {
+    if (!muted && active && !this.robot) {
       // Muted playback may never have unlocked audio. Use this user gesture to
       // unlock it before scheduling more notes, preserving the current position.
       this.pause();
@@ -409,7 +435,7 @@ export class StudioController {
   }
 
   private async unlockForTransition(): Promise<{ ok: true } | { ok: false; error: unknown }> {
-    try { await this.ports.audio.ensureReady(); return { ok: true }; }
+    try { await this.unlockOutput(); return { ok: true }; }
     catch (error) { return { ok: false, error }; }
   }
 
@@ -479,6 +505,13 @@ export class StudioController {
     const engine = this.engine;
     this.engine = null;
     engine?.stop();
+    if (this.robot?.connected) {
+      this.stopping = this.robot.disarm().catch(error => {
+        this.publish({ error: errorMessage(error, "Robot did not confirm stop.") });
+        throw error;
+      });
+      void this.stopping.catch(() => {});
+    }
     this.ports.audio.stopAll();
   }
 

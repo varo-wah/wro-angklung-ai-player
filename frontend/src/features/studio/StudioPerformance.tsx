@@ -1,6 +1,5 @@
 "use client";
 
-import Link from "next/link";
 import { useState, type CSSProperties } from "react";
 import { SONG_LIBRARY_GROUPS, songLibraryGroup, songLibraryGroupLabel } from "@/lib/songLibraryGroups";
 import { BrandMark, Icon, formatTime } from "./StudioShell";
@@ -8,7 +7,7 @@ import { useStudio } from "./runtime/useStudio";
 import { QueueResizeHandle } from "./QueueResizeHandle";
 
 export function StudioPerformance() {
-  const { snapshot: s, actions: a } = useStudio();
+  const { snapshot: s, actions: a, robotMode, outputLabel, toggleOutput } = useStudio();
   const [query, setQuery] = useState("");
   const [collection, setCollection] = useState("all");
   const [group, setGroup] = useState("all");
@@ -32,19 +31,19 @@ export function StudioPerformance() {
     <div className="performance-workspace">
       <div className="performance-heading">
         <div><p className="studio-eyebrow">ANGKLOBOT / PERFORMANCE WORKSPACE</p><h1>Let the music play.</h1></div>
-        <Link className="performance-connect" href="/studio/device"><Icon name="device" size={17} /> Robot & phone connection <Icon name="arrow" size={16} /></Link>
+        <button className="performance-connect" onClick={toggleOutput}><Icon name="device" size={17} /> {robotMode ? "Switch to computer audio" : "Robot & phone connection"} <Icon name="arrow" size={16} /></button>
       </div>
       <div className="performance-columns" style={{ "--queue-width": `${queueDraft ?? s.preferences.queueWidth}px` } as CSSProperties}>
         <div className="performance-main">
           <section className="performance-current" aria-label="Selected song">
             <div className={`performance-art${playing ? " is-playing" : ""}`} aria-hidden="true"><BrandMark /><span>ANGKLOBOT SESSIONS</span></div>
             <div className="performance-current-copy">
-              <p className="performance-kicker"><span className={playing ? "is-playing" : ""} />{playing ? "NOW PLAYING · COMPUTER PREVIEW" : "SELECTED · COMPUTER PREVIEW"}</p>
+              <p className="performance-kicker"><span className={playing ? "is-playing" : ""} />{playing ? "NOW PLAYING" : "SELECTED"} · {outputLabel.toUpperCase()}</p>
               <h2>{s.songStatus === "loading" ? "Preparing arrangement…" : selected?.title ?? "Choose a song"}</h2>
               <p>{selected ? songLibraryGroupLabel(selected) : "Browse the library to get started."}{s.durationSeconds > 0 ? ` · ${formatTime(s.durationSeconds)}` : ""}</p>
               <div className="performance-current-actions">
                 <button className="performance-primary" disabled={!canPlay || s.playback === "starting"}
-                  onClick={() => playing ? a.pause() : void a.play()}><Icon name={playing ? "pause" : "play"} size={18} />{playing ? "Pause" : s.playback === "starting" ? "Starting…" : "Play preview"}</button>
+                  onClick={() => playing ? a.pause() : void a.play()}><Icon name={playing ? "pause" : "play"} size={18} />{playing ? "Pause" : s.playback === "starting" ? "Starting…" : robotMode ? "Play on angklung" : "Play preview"}</button>
                 <button className="performance-secondary" disabled={!s.schedule} onClick={a.stop}><Icon name="stop" size={15} /> Stop</button>
               </div>
             </div>
@@ -70,11 +69,11 @@ export function StudioPerformance() {
                 const favorite = s.preferences.favoriteIds.includes(song.id);
                 return <div className={`performance-song-row${current ? " is-selected" : ""}`} key={song.id}>
                   <span className="performance-song-number">{current && playing ? <span className="performance-equalizer" aria-label="Playing"><i /><i /><i /></span> : String(index + 1).padStart(2, "0")}</span>
-                  <button className="performance-song-title" aria-label={`Select ${song.title}`} aria-pressed={current} onClick={() => void a.selectSong(song.id)}><strong>{song.title}</strong><small>{current ? playing ? "Playing preview" : "Selected" : songLibraryGroupLabel(song)}</small></button>
+                  <button className="performance-song-title" aria-label={`Select ${song.title}`} aria-pressed={current} onClick={() => void a.selectSong(song.id)}><strong>{song.title}</strong><small>{current ? playing ? "Playing" : "Selected" : songLibraryGroupLabel(song)}</small></button>
                   <span className="performance-song-category">{songLibraryGroupLabel(song)}</span>
                   <div className="performance-song-actions">
                     <button className="studio-icon-button" aria-label={`Play ${song.title}`} title={`Play ${song.title}`} onClick={() => void a.playSong(song.id)}><Icon name="play" size={17} /></button>
-                    <button className="studio-icon-button" aria-label={`Add ${song.title} to queue`} title="Add to queue" disabled={s.queue.length >= 200} onClick={() => { a.addToQueue(song.id); setAnnouncement(`${song.title} added to queue.`); }}><Icon name="plus" size={18} /></button>
+                    <button className="studio-icon-button" aria-label={`Add ${song.title} to queue`} title="Add to queue" disabled={s.queue.length >= 200 || (robotMode && !s.schedule)} onClick={() => { a.addToQueue(song.id); setAnnouncement(`${song.title} added to queue.`); }}><Icon name="plus" size={18} /></button>
                     <button className="studio-icon-button performance-row-favorite" aria-label={`${favorite ? "Unfavourite" : "Favourite"} ${song.title}`} aria-pressed={favorite} onClick={() => a.toggleFavorite(song.id)}><Icon name="heart" size={17} /></button>
                   </div>
                 </div>;
@@ -88,7 +87,7 @@ export function StudioPerformance() {
         <aside id="studio-playback-queue" className="performance-queue" aria-label="Playback queue">
           <QueueResizeHandle width={queueDraft ?? s.preferences.queueWidth} onPreview={setQueueDraft} onCommit={a.setQueueWidth} />
           <div className="performance-queue-heading"><h2><Icon name="queue" size={19} /> Queue <span>{upcoming.length}</span></h2><button disabled={!upcoming.length} onClick={a.clearQueue}>Clear next</button></div>
-          <div className="performance-queue-current"><p>NOW SELECTED</p><div><span className="performance-queue-art"><BrandMark /></span><span><strong>{selected?.title ?? "No song selected"}</strong><small>{playing ? "Playing on this computer" : s.songStatus === "loading" ? "Preparing…" : "Computer preview"}</small></span></div></div>
+          <div className="performance-queue-current"><p>NOW SELECTED</p><div><span className="performance-queue-art"><BrandMark /></span><span><strong>{selected?.title ?? "No song selected"}</strong><small>{outputLabel}</small></span></div></div>
           <div className="performance-up-next-heading"><span>UP NEXT</span><span>{s.shuffle ? "Shuffled" : "In order"}</span></div>
           <ol className="performance-queue-list">
             {upcoming.map((entry, index) => {

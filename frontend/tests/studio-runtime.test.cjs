@@ -683,7 +683,7 @@ test('React Strict Mode effect replay keeps one live session and real unmount di
   global.IS_REACT_ACT_ENVIRONMENT = true;
   let catalogLoads = 0;
   const h = harness({ loadCatalog: async () => { catalogLoads++; return [entry('a')]; } });
-  const { StudioProvider, useStudio } = load('src/features/studio/runtime/useStudio.tsx', {}, {
+  const { StudioProvider, useStudio } = load('src/features/studio/runtime/useStudio.tsx', { window: dom.window, URLSearchParams }, {
     './browserAdapters': { createBrowserPorts: () => h.ports },
   });
   let view;
@@ -712,4 +712,29 @@ test('React Strict Mode effect replay keeps one live session and real unmount di
     global.document = previousDocument;
     global.IS_REACT_ACT_ENVIRONMENT = previousAct;
   }
+});
+
+test('robot output repeats the queue and Stop invalidates late note callbacks', async () => {
+  const h = harness();
+  await h.controller.initialize();
+  const prepared = [], notes = [];
+  let disarms = 0;
+  h.controller.setRobot({ connected: true, preparePlayback: async commands => prepared.push(commands),
+    sendNote: async command => notes.push(command.note), disarm: async () => { disarms++; } });
+  h.controller.addToQueue('b');
+  h.controller.setRepeat('all');
+  await h.controller.play();
+  h.playback[0].callbacks.onCommand(h.playback[0].schedule.commands[0]);
+  h.playback[0].callbacks.onComplete();
+  await waitFor(() => prepared.length === 2 && h.playback.length === 2);
+  assert.equal(h.controller.getSnapshot().selectedSongId, 'b');
+  h.playback[1].callbacks.onComplete();
+  await waitFor(() => prepared.length === 3 && h.playback.length === 3);
+  assert.equal(h.controller.getSnapshot().selectedSongId, 'a');
+  const previous = disarms;
+  h.controller.stop();
+  h.playback[2].callbacks.onCommand(h.playback[2].schedule.commands[0]);
+  assert.equal(notes.length, 1);
+  assert.equal(h.audio.notes.length, 0);
+  assert.ok(disarms > previous);
 });
