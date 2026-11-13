@@ -11,7 +11,7 @@ import {
 } from "@/lib/songLibraryGroups";
 import type { SongCatalogEntry } from "@/lib/songTypes";
 import { useStudio } from "./runtime/useStudio";
-import { Icon, formatTime } from "./StudioShell";
+import { Icon, formatTime, volumeOptions } from "./StudioShell";
 
 function BambooArtwork() {
   return (
@@ -453,8 +453,7 @@ export function StudioSettings() {
             <p>{robotMode ? "Arduino USB adjusts upcoming notes. ESP32 applies changes on play or resume." : "Adjusts the loudness of upcoming notes."}</p></div>
           <select id="studio-volume" disabled={robotMode && !s.schedule} value={s.preferences.volume}
             onChange={event => a.setVolume(Number(event.target.value))}>
-            {Array.from(new Set([...Array.from({length: 11}, (_, i) => i * 10), s.preferences.volume])).sort((a,b) => a-b)
-              .map(value => <option key={value} value={value}>{value}%</option>)}
+            {volumeOptions(s.preferences.volume)}
           </select>
         </div>
         <details className="studio-setting-tools">

@@ -148,3 +148,43 @@
   .studio-segmented { max-width:100%; flex-wrap:wrap; }
   .studio-alert { flex-wrap:wrap; }
 }
+
+.studio-side-volume {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  margin-left: auto;
+  padding-inline: 6px;
+  border: 1px solid var(--line);
+  border-radius: 7px;
+  color: var(--ink);
+  background: var(--surface);
+  flex: none;
+}
+.studio-side-volume select { min-height: 34px; font-size: .8rem; background: var(--surface); }
+.studio-player-song > div:nth-child(2) { min-width: 0; }
+.studio-player-buttons [hidden] { display: none; }
+.studio-controller {
+  margin-bottom: 1.25rem;
+  padding: 1rem;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  background: var(--surface);
+  color: var(--ink);
+}
+.studio-controller h2 { margin: 0 0 .6rem; font-size: 1rem; font-weight: 650; }
+.studio-controller > label { display: flex; gap: .65rem; align-items: center; margin-bottom: .5rem; }
+.studio-controller section { background: transparent; color: var(--ink); border: 0; padding: 0; }
+.studio-controller section > div { justify-content: flex-start; gap: .6rem; }
+.studio-controller section span, .studio-controller strong { color: var(--ink); }
+.studio-controller section [role=status] { color: var(--selected-ink); background: var(--badge); padding: .4rem .7rem; border-radius: 1rem; }
+.studio-controller button, .studio-controller input, .studio-controller select {
+  background: var(--surface-alt); color: var(--ink); border: 1px solid var(--line);
+  border-radius: 7px; min-height: 36px; padding: .4rem .65rem;
+}
+.studio-controller button.bg-lime-300 { background: var(--accent); color: var(--accent-contrast); }
+.studio-controller button.bg-red-600 { background: #a72e31; color: white; }
+.studio-controller button:disabled { opacity: .55; }
+.studio-controller small { display: block; margin-top: .5rem; color: var(--muted); }
+.studio-controller [role=alert] { color: var(--warning-ink); }
+.studio-controller form { max-width: 100%; flex-wrap: wrap; }

@@ -151,7 +151,8 @@ export function StudioRobotSession({ runtime, view, children }: { runtime: Studi
     catch (err) { setSweepMessage(err instanceof Error ? err.message : "Sweep failed."); }
     finally { setSweeping(false); }
   }
-  const connection = <div>
+  const connection = <div className="studio-controller">
+    <h2>Mac controller</h2>
     {session.role === "host" && <label>Connection <select aria-label="Robot transport" value={mode} disabled={arduino.status === "connecting" || arduino.status === "connected"}
       onChange={event => { transport.current = null; setMode(event.target.value as RobotTransportMode); }}>
       <option value="usb">Arduino USB</option><option value="esp32-usb">ESP32 USB</option><option value="esp32">ESP32 Wi-Fi</option>

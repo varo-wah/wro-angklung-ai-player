@@ -249,6 +249,12 @@ export function formatTime(seconds: number) {
   return `${Math.floor(safe / 60)}:${String(safe % 60).padStart(2, "0")}`;
 }
 
+export function volumeOptions(current: number) {
+  const levels = new Set(Array.from({ length: 11 }, (_, index) => index * 10));
+  levels.add(current);
+  return [...levels].sort((a, b) => a - b).map(level => <option key={level} value={level}>{level}%</option>);
+}
+
 function StudioPlayer() {
   const { snapshot: s, actions: a, robotMode, outputLabel, toggleOutput } = useStudio();
   const playing = s.playback === "playing";
@@ -286,6 +292,14 @@ function StudioPlayer() {
         >
           <Icon name="heart" size={17} />
         </button>
+        <label className="studio-side-volume" title={robotMode ? "Robot volume" : "Preview volume"}>
+          <Icon name="volume" size={16} />
+          <select aria-label={robotMode ? "Player robot volume" : "Player preview volume"}
+            disabled={robotMode && !s.schedule} value={s.preferences.volume}
+            onChange={event => a.setVolume(Number(event.target.value))}>
+            {volumeOptions(s.preferences.volume)}
+          </select>
+        </label>
       </div>
       <div className="studio-player-middle">
         <div className="studio-player-buttons">
