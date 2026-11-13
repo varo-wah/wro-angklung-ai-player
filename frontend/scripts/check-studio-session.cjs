@@ -37,6 +37,16 @@ const { chromium } = require(process.env.PLAYWRIGHT_MODULE || "playwright-core")
     await phone.waitForFunction(() => !document.querySelector('button[aria-label="Play on robot"]')?.disabled);
     await phone.getByRole("button",{name:"Add Bengawan Solo to queue",exact:true}).click();
     await host.getByRole("button",{name:"Play queued Bengawan Solo",exact:true}).waitFor();
+    await phone.getByLabel("Playlist name").fill("Concert");
+    await phone.getByRole("button",{name:"Save queue"}).click();
+    await host.getByRole("button",{name:"Play playlist Concert"}).waitFor();
+    await phone.getByRole("button",{name:"Play playlist Concert"}).click();
+    await host.waitForFunction(() => window.serialLines.some(line => line.startsWith("NOTE,")));
+    await phone.getByRole("slider",{name:"Player robot volume"}).press("Home");
+    await host.waitForFunction(() => document.querySelector('input[aria-label="Player robot volume"]').value === "0");
+    await phone.waitForFunction(() => document.querySelector('input[aria-label="Player robot volume"]').value === "0");
+    await phone.getByRole("slider",{name:"Player robot volume"}).press("End");
+    await host.waitForFunction(() => document.querySelector('input[aria-label="Player robot volume"]').value === "100");
     await phone.getByRole("button",{name:"Queue repeat: off"}).click();
     await host.getByRole("button",{name:"Queue repeat: all"}).waitFor();
     await phone.getByRole("button",{name:"Play queued Bengawan Solo",exact:true}).click();
@@ -51,7 +61,7 @@ const { chromium } = require(process.env.PLAYWRIGHT_MODULE || "playwright-core")
     await host.waitForFunction(() => window.serialLines.lastIndexOf("DISARM") > window.serialLines.findLastIndex(s => s.startsWith("NOTE,")));
     await host.getByRole("link",{name:"Preferences"}).click();
     await phone.getByRole("link",{name:/Settings|Preferences/}).click();
-    await phone.getByLabel("Robot volume").selectOption("30");
+    await phone.locator("#studio-volume").selectOption("30");
     await host.waitForFunction(() => document.querySelector("#studio-volume")?.value === "30");
     if (await host.getByRole("button",{name:"Run rack sweep"}).isVisible()) throw new Error("Sweep should start collapsed");
     await host.getByText("Advanced rack controls",{exact:true}).click();

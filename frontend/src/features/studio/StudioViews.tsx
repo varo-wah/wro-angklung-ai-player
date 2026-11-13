@@ -450,7 +450,7 @@ export function StudioSettings() {
         <h2>Playback preferences</h2>
         <div className="studio-setting">
           <div><h3><label htmlFor="studio-volume">{robotMode ? "Robot volume" : "Preview volume"}</label></h3>
-            <p>{robotMode ? "Arduino USB adjusts upcoming notes. ESP32 applies changes on play or resume." : "Adjusts the loudness of upcoming notes."}</p></div>
+            <p>{robotMode ? "Adjusts how strongly the rack plays. ESP32 briefly pauses to update the remaining notes." : "Adjusts the loudness of upcoming notes."}</p></div>
           <select id="studio-volume" disabled={robotMode && !s.schedule} value={s.preferences.volume}
             onChange={event => a.setVolume(Number(event.target.value))}>
             {volumeOptions(s.preferences.volume)}

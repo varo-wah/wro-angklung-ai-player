@@ -30,7 +30,7 @@ function boundedNumber(value: unknown, min: number, max: number, fallback: numbe
 }
 
 export function defaultPreferences(): StudioPreferences {
-  return { version: 1, favoriteIds: [], recentIds: [], lastSongId: null, muted: false, volume: 100, tempo: "normal", mode: "melody",
+  return { version: 1, playlists: [], favoriteIds: [], recentIds: [], lastSongId: null, muted: false, volume: 100, tempo: "normal", mode: "melody",
     theme: "light", interfaceScale: INTERFACE_SIZE.default, queueWidth: QUEUE_WIDTH.default };
 }
 
@@ -41,6 +41,11 @@ export function parsePreferences(value: unknown): StudioPreferences {
   if (record.version !== 1) return defaultPreferences();
   return {
     version: 1,
+    playlists: Array.isArray(record.playlists) ? record.playlists.slice(0, 50).flatMap(item => {
+      if (!item || typeof item.name !== "string" || !item.name.trim() || !Array.isArray(item.songs)) return [];
+      const songs = item.songs.slice(0, 200).filter((id: unknown): id is string => typeof id === "string");
+      return songs.length ? [{ name: item.name.trim().slice(0, 64), songs }] : [];
+    }) : [],
     favoriteIds: ids(record.favoriteIds),
     recentIds: ids(record.recentIds).slice(0, 6),
     lastSongId: typeof record.lastSongId === "string" && record.lastSongId.length > 0 ? record.lastSongId : null,

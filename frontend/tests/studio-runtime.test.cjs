@@ -751,11 +751,30 @@ test('volume scales live USB notes and buffered schedules without changing the a
       sendNote: async note => { sent = note; }, disarm: async () => {} }, buffered);
     h.controller.setVolume(50);
     await h.controller.play();
-    h.controller.setVolume(20);
-    h.playback[0].callbacks.onCommand(h.playback[0].schedule.commands[0]);
     assert.equal(uploaded[0].strength, buffered ? original * 0.5 : original);
-    assert.equal(sent.strength, buffered ? original * 0.5 : original * 20 / 100);
+    h.controller.setVolume(20);
+    if (buffered) await waitFor(() => h.playback.length === 2);
+    const active = h.playback.at(-1);
+    active.callbacks.onCommand(active.schedule.commands[0]);
+    assert.ok(Math.abs(sent.strength - original * .2) < 1e-9);
     assert.equal(commands[0].strength, original);
     h.controller.dispose();
   }
+});
+
+test('saved playlists restore in order and autoplay from the first song', async () => {
+  const h = harness();
+  await h.controller.initialize();
+  h.controller.addToQueue('b');
+  h.controller.savePlaylist('Concert');
+  const restored = harness({saved:h.writes.at(-1)});
+  await restored.controller.initialize();
+  await restored.controller.playPlaylist('Concert');
+  assert.equal(restored.controller.getSnapshot().selectedSongId, 'a');
+  restored.playback[0].callbacks.onComplete();
+  await waitFor(() => restored.playback.length === 2);
+  assert.equal(restored.controller.getSnapshot().selectedSongId, 'b');
+  assert.equal(restored.controller.getSnapshot().playback, 'playing');
+  restored.controller.deletePlaylist('Concert');
+  assert.equal(restored.writes.at(-1).playlists.length, 0);
 });

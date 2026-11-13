@@ -302,8 +302,12 @@ export class StudioController {
   setVolume = (value: number): void => {
     if (this.disposed || !Number.isFinite(value)) return;
     const volume = Math.max(0, Math.min(100, Math.round(value)));
+    if (volume === this.snapshot.preferences.volume) return;
+    const restart = this.bufferedRobot && this.robot?.connected && ["playing", "starting"].includes(this.snapshot.playback);
+    if (restart) this.pause();
     this.publish({ preferences: { ...this.snapshot.preferences, volume } });
     this.persist();
+    if (restart) void this.play();
   };
 
   setMuted = (muted: boolean): void => {
@@ -400,6 +404,30 @@ export class StudioController {
     if (!this.disposed && ["off", "all", "one"].includes(repeat)) this.publish({ repeat });
   };
 
+  savePlaylist = (name: string): void => {
+    name = name.trim();
+    const { preferences, queue } = this.snapshot;
+    if (!name || name.length > 64 || !queue.length || preferences.playlists.length >= 50 ||
+        preferences.playlists.some(list => list.name === name)) return;
+    this.publish({ preferences: { ...preferences, playlists: [...preferences.playlists, { name, songs: queue.map(item => item.songId) }] } });
+    this.persist();
+  };
+
+  deletePlaylist = (name: string): void => {
+    const preferences = this.snapshot.preferences;
+    this.publish({ preferences: { ...preferences, playlists: preferences.playlists.filter(list => list.name !== name) } });
+    this.persist();
+  };
+
+  playPlaylist = async (name: string): Promise<void> => {
+    const list = this.snapshot.preferences.playlists.find(item => item.name === name);
+    const available = new Set(this.snapshot.catalog.map(song => song.id));
+    const queue = list?.songs.filter(id => available.has(id)).map(songId => ({ songId, key: ++this.queueKey }));
+    if (!queue?.length) { this.publish({ error: "This playlist has no available songs." }); return; }
+    this.publish({ queue, queueIndex: 0, shuffle: false, repeat: this.snapshot.repeat === "all" ? "all" : "off" });
+    await this.transitionTo(0, true);
+  };
+
   playSong = async (songId: string): Promise<void> => {
     if (this.disposed || !this.snapshot.catalog.some((song) => song.id === songId)) return;
     const request = ++this.transitionRequest;
@@ -472,6 +500,7 @@ export class StudioController {
     play: this.play, pause: this.pause, stop: this.stop, seek: this.seek, setVolume: this.setVolume, setMuted: this.setMuted,
     setTempo: this.setTempo, setMode: this.setMode, toggleFavorite: this.toggleFavorite, clearError: this.clearError,
     setTheme: this.setTheme, setInterfaceScale: this.setInterfaceScale, setQueueWidth: this.setQueueWidth,
+    savePlaylist: this.savePlaylist, deletePlaylist: this.deletePlaylist, playPlaylist: this.playPlaylist,
     addToQueue: this.addToQueue, removeFromQueue: this.removeFromQueue, moveInQueue: this.moveInQueue,
     clearQueue: this.clearQueue, setShuffle: this.setShuffle, setRepeat: this.setRepeat,
     playSong: this.playSong, playQueueEntry: this.playQueueEntry, next: this.next, previous: this.previous,

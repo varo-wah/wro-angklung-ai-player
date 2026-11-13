@@ -8,6 +8,7 @@ import { QueueResizeHandle } from "./QueueResizeHandle";
 
 export function StudioPerformance() {
   const { snapshot: s, actions: a, robotMode, outputLabel, toggleOutput } = useStudio();
+  const [playlistName, setPlaylistName] = useState("");
   const [query, setQuery] = useState("");
   const [collection, setCollection] = useState("all");
   const [group, setGroup] = useState("all");
@@ -108,6 +109,21 @@ export function StudioPerformance() {
             <button aria-pressed={s.shuffle} onClick={() => a.setShuffle(!s.shuffle)}><Icon name="shuffle" size={16} /> Shuffle {s.shuffle ? "on" : "off"}</button>
             <button aria-label={`Queue repeat: ${s.repeat}`} onClick={() => a.setRepeat(s.repeat === "off" ? "all" : s.repeat === "all" ? "one" : "off")}><Icon name="repeat" size={16} />{s.repeat === "off" ? "Repeat off" : s.repeat === "all" ? "Repeat all" : "Repeat one"}</button>
           </div>
+          <section className="studio-playlists" aria-label="Saved playlists">
+            <h2>Playlists</h2>
+            <form onSubmit={event => { event.preventDefault(); a.savePlaylist(playlistName.trim()); setPlaylistName(""); }}>
+              <input aria-label="Playlist name" placeholder="Playlist name" maxLength={64}
+                value={playlistName} onChange={event => setPlaylistName(event.target.value)} />
+              <button disabled={!s.queue.length || !playlistName.trim() || s.preferences.playlists.length >= 50 ||
+                s.preferences.playlists.some(list => list.name === playlistName.trim()) || (robotMode && !s.schedule)}>Save queue</button>
+            </form>
+            {s.preferences.playlists.map(list => <div className="studio-playlist-row" key={list.name}>
+              <button aria-label={`Play playlist ${list.name}`} disabled={robotMode && !s.schedule} onClick={() => void a.playPlaylist(list.name)}>
+                <Icon name="play" size={15}/><span>{list.name}</span><small>{list.songs.length} tracks</small>
+              </button>
+              <button aria-label={`Delete playlist ${list.name}`} disabled={robotMode && !s.schedule} onClick={() => a.deletePlaylist(list.name)}><Icon name="close" size={15}/></button>
+            </div>)}
+          </section>
           <p className="performance-queue-note">Your queue stays while you browse Studio. Reloading starts a fresh session.</p>
         </aside>
       </div>

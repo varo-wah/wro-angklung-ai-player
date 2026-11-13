@@ -26,6 +26,7 @@ async function execute(player: StudioController, action: RobotAction) {
     case "setRepeat": player.setRepeat(action.repeat); break;
     case "setShuffle": player.setShuffle(action.shuffle); break;
     case "next": case "previous": case "clearQueue": await player[action.type](); break;
+    case "savePlaylist": case "deletePlaylist": case "playPlaylist": await player[action.type](action.name); break;
     case "setVolume": player.setVolume(action.volume); break;
     case "settings": player.setTempo(action.settings.tempo); player.setMode(action.settings.mode); break;
     default: throw new Error("This command is unavailable in Studio.");
@@ -55,7 +56,7 @@ export function StudioRobotSession({ runtime, view, children }: { runtime: Studi
         selectedSongId: s.selectedSongId || "", sourceLabel: s.song?.title || "", elapsedSeconds: s.positionSeconds,
         playbackState: s.playback === "idle" || s.playback === "ended" ? "stopped" : s.playback,
         schedule: s.schedule, safetyReport: s.safety })!;
-      return { ...snapshot, studio: { volume: s.preferences.volume, queue: s.queue, queueIndex: s.queueIndex, shuffle: s.shuffle, repeat: s.repeat,
+      return { ...snapshot, studio: { playlists: s.preferences.playlists, volume: s.preferences.volume, queue: s.queue, queueIndex: s.queueIndex, shuffle: s.shuffle, repeat: s.repeat,
         playback: s.playback, tempo: s.preferences.tempo, mode: s.preferences.mode, error: s.error } };
     },
   });
@@ -118,7 +119,7 @@ export function StudioRobotSession({ runtime, view, children }: { runtime: Studi
     song: local.song?.id === shared.selectedSongId ? local.song : null, schedule: shared.schedule, safety: shared.safetyReport,
     songStatus: shared.schedule ? "ready" as const : "idle" as const, positionSeconds: shared.elapsedSeconds,
     durationSeconds: shared.schedule?.timing.total_duration_seconds ?? 0, validationErrors: [],
-    preferences: { ...local.preferences, volume: shared.studio.volume ?? 100, mode: shared.studio.mode, tempo: shared.studio.tempo } } : local;
+    preferences: { ...local.preferences, playlists: shared.studio.playlists ?? [], volume: shared.studio.volume ?? 100, mode: shared.studio.mode, tempo: shared.studio.tempo } } : local;
 
   async function switchOutput() {
     if (session.credentials.current.role === "host") {
@@ -137,6 +138,9 @@ export function StudioRobotSession({ runtime, view, children }: { runtime: Studi
     clearQueue: () => void send({type:"clearQueue"}), playQueueEntry: key => send({type:"playQueueEntry",key}),
     moveInQueue: (key,direction) => void send({type:"moveInQueue",key,direction}), setShuffle: shuffle => void send({type:"setShuffle",shuffle}),
     setRepeat: repeat => void send({type:"setRepeat",repeat}),
+    savePlaylist: name => void send({type:"savePlaylist",name}),
+    deletePlaylist: name => void send({type:"deletePlaylist",name}),
+    playPlaylist: name => send({type:"playPlaylist",name}),
     setVolume: volume => void send({type:"setVolume",volume}),
     setTempo: tempo => void send({type:"settings",settings:{tempo,mode:s.preferences.mode,strength:0.6}}),
     setMode: mode => void send({type:"settings",settings:{mode,tempo:s.preferences.tempo,strength:0.6}}),

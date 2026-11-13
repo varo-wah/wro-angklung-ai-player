@@ -40,6 +40,7 @@ export interface StudioPorts {
 
 export type StudioPreferences = {
   version: 1;
+  playlists: { name: string; songs: string[] }[];
   favoriteIds: string[];
   recentIds: string[];
   lastSongId: string | null;

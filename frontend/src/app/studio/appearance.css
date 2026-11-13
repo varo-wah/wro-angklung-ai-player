@@ -188,3 +188,26 @@
 .studio-controller small { display: block; margin-top: .5rem; color: var(--muted); }
 .studio-controller [role=alert] { color: var(--warning-ink); }
 .studio-controller form { max-width: 100%; flex-wrap: wrap; }
+
+.studio-player-right { display: grid; justify-items: end; gap: 4px; }
+.studio-side-volume { border: 0; background: transparent; padding: 0; font-size: .75rem; }
+.studio-side-volume input { width: clamp(58px, 7vw, 104px); height: 28px; accent-color: var(--accent); }
+.studio-side-volume output { min-width: 4ch; text-align: right; font-variant-numeric: tabular-nums; }
+.studio-playlists { margin-top: 20px; border-top: 1px solid var(--line); padding-top: 16px; }
+.studio-playlists h2 { font-weight: 650; margin-bottom: 8px; }
+.studio-playlists form, .studio-playlist-row, .studio-playlist-row button { display: flex; align-items: center; gap: 6px; }
+.studio-playlists form input { min-width: 0; width: 0; flex: 1; }
+.studio-playlists input, .studio-playlists button { padding: 6px; border: 1px solid var(--line); border-radius: 6px; background: var(--surface); }
+.studio-playlist-row { margin-top: 7px; }
+.studio-playlist-row button:first-child { flex: 1; min-width: 0; }
+.studio-playlist-row span { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.studio-playlist-row small { margin-left: auto; white-space: nowrap; }
+@media (min-width:681px) and (max-width:1199px) {
+  .studio-player { grid-template-columns: minmax(0,1fr) minmax(285px,1.4fr) auto; }
+}
+@media (max-width:680px) {
+  .studio-player { grid-template-columns: minmax(0,1fr) auto; }
+  .studio-player-song { grid-column:1; grid-row:1; }
+  .studio-player-right { grid-column:2; grid-row:1; }
+  .studio-player-middle { grid-column:1 / -1; grid-row:2; }
+}

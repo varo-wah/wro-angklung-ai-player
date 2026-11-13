@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import type { CSSProperties, ReactNode } from "react";
+import { useState, type CSSProperties, type ReactNode } from "react";
 import { useStudio } from "./runtime/useStudio";
 import { StudioAppearanceControls } from "./StudioAppearance";
 import { APPEARANCE_BOOTSTRAP } from "./runtime/preferences";
@@ -292,14 +292,7 @@ function StudioPlayer() {
         >
           <Icon name="heart" size={17} />
         </button>
-        <label className="studio-side-volume" title={robotMode ? "Robot volume" : "Preview volume"}>
-          <Icon name="volume" size={16} />
-          <select aria-label={robotMode ? "Player robot volume" : "Player preview volume"}
-            disabled={robotMode && !s.schedule} value={s.preferences.volume}
-            onChange={event => a.setVolume(Number(event.target.value))}>
-            {volumeOptions(s.preferences.volume)}
-          </select>
-        </label>
+
       </div>
       <div className="studio-player-middle">
         <div className="studio-player-buttons">
@@ -340,12 +333,29 @@ function StudioPlayer() {
           <span>{formatTime(s.durationSeconds)}</span>
         </div>
       </div>
+      <div className="studio-player-right">
       <button className="studio-player-output" onClick={toggleOutput}>
         <Icon name="device" size={17} />
         <span>
           {outputLabel}<small>Change output</small>
         </span>
       </button>
+      <PlayerVolume value={s.preferences.volume} robot={robotMode} disabled={robotMode && !s.schedule} onSet={a.setVolume} />
+      </div>
     </footer>
   );
+}
+
+function PlayerVolume({ value, robot, disabled, onSet }: { value: number; robot: boolean; disabled: boolean; onSet(value: number): void }) {
+  const [draft, setDraft] = useState<number | null>(null);
+  return <label className="studio-side-volume" title={robot ? "Robot note strength" : "Preview volume"}>
+    <Icon name="volume" size={16} />
+    <input type="range" aria-label={robot ? "Player robot volume" : "Player preview volume"} min={0} max={100} step={1}
+      value={draft ?? value} disabled={disabled}
+      onPointerDown={e => { e.currentTarget.setPointerCapture(e.pointerId); setDraft(value); }}
+      onPointerCancel={() => setDraft(null)}
+      onPointerUp={e => { onSet(Number(e.currentTarget.value)); setDraft(null); }}
+      onChange={e => { const level = Number(e.target.value); if (draft === null) onSet(level); else setDraft(level); }} />
+    <output>{draft ?? value}%</output>
+  </label>;
 }
