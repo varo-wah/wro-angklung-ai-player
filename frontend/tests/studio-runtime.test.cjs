@@ -778,3 +778,56 @@ test('saved playlists restore in order and autoplay from the first song', async 
   restored.controller.deletePlaylist('Concert');
   assert.equal(restored.writes.at(-1).playlists.length, 0);
 });
+
+test('manual holds map every channel, scale strength, use bounded pulses and stop on release', async () => {
+  const h = harness();
+  await h.controller.initialize();
+  const notes = [];
+  let disarms = 0;
+  h.controller.setRobot({ connected: true, preparePlayback: async () => {},
+    sendNote: async note => notes.push(note), disarm: async () => { disarms++; } });
+  h.controller.setVolume(40);
+  for (let channel = 0; channel < 18; channel++) {
+    const request = await h.controller.beginManualNote(channel);
+    assert.equal(await h.controller.pulseManualNote(request), true);
+    assert.equal(notes.at(-1).actuator_channel, channel);
+    assert.equal(notes.at(-1).duration_seconds, .25);
+    assert.equal(notes.at(-1).strength, .4);
+    const before = disarms;
+    h.controller.stop();
+    assert.ok(disarms > before);
+    assert.equal(await h.controller.pulseManualNote(request), false);
+  }
+  await assert.rejects(h.controller.beginManualNote(18), /Choose a motor/);
+  h.controller.dispose();
+});
+
+test('release during manual arming disarms without sending a note', async () => {
+  const h = harness();
+  const armed = deferred();
+  let preparing = false, notes = 0, disarms = 0;
+  h.controller.setRobot({ connected: true, preparePlayback: () => { preparing = true; return armed.promise; },
+    sendNote: async () => { notes++; }, disarm: async () => { disarms++; } });
+  const start = h.controller.beginManualNote(0);
+  await waitFor(() => preparing);
+  h.controller.stop();
+  const before = disarms;
+  armed.resolve();
+  assert.equal(await start, null);
+  assert.ok(disarms > before);
+  assert.equal(notes, 0);
+  h.controller.dispose();
+});
+
+test('manual holds reject buffered transport and cannot resume after song playback starts', async () => {
+  const h = harness();
+  await h.controller.initialize();
+  const robot = { connected: true, preparePlayback: async () => {}, sendNote: async () => {}, disarm: async () => {} };
+  h.controller.setRobot(robot, true);
+  await assert.rejects(h.controller.beginManualNote(0), /Arduino USB/);
+  h.controller.setRobot(robot);
+  const request = await h.controller.beginManualNote(0);
+  await h.controller.play();
+  assert.equal(await h.controller.pulseManualNote(request), false);
+  h.controller.dispose();
+});

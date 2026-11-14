@@ -167,6 +167,10 @@ export function StudioRobotSession({ runtime, view, children }: { runtime: Studi
     {session.role === "host" && <small role="status">{arduino.message}</small>}
   </div>;
   return <StudioContext.Provider value={{ ...view, robotMode:true, toggleOutput: () => void switchOutput(), outputLabel:"Angklung robot", connection, actions,
+    manual: session.role === "host" && ready && mode === "usb" ? {
+      begin: channel => { session.cancelQueued(); return runtime.beginManualNote(channel); },
+      pulse: request => runtime.pulseManualNote(request), stop: () => runtime.stop(),
+    } : undefined,
     sweep: session.role === "host" && ready && mode === "usb" ? { run: runSweep, busy: sweeping, message: sweepMessage } : undefined,
     snapshot:{...s, error:error || s.error, schedule:ready ? s.schedule : null} }}>{children}</StudioContext.Provider>;
 }

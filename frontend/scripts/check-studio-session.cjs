@@ -68,6 +68,28 @@ const { chromium } = require(process.env.PLAYWRIGHT_MODULE || "playwright-core")
     await host.getByRole("button",{name:"Run rack sweep"}).click();
     await host.getByText("Sweep complete.",{exact:true}).waitFor();
     await host.waitForFunction(() => window.serialLines.includes("SWEEP,30,150,50") && window.serialLines.at(-1) === "DISARM");
+
+    await host.getByRole("link", { name: "Manual notes", exact: true }).click();
+    const note = host.getByRole("button", { name: "Hold G3, motor 1", exact: true });
+    await note.waitFor();
+    await note.focus();
+    const beforeHold = await host.evaluate(() => window.serialLines.length);
+    await host.keyboard.down("Space");
+    await host.waitForFunction(start => window.serialLines.slice(start).filter(line => line.startsWith("NOTE,0,250,300")).length >= 2, beforeHold);
+    await host.keyboard.up("Space");
+    await host.waitForFunction(() => window.serialLines.at(-1) === "DISARM");
+    const released = await host.evaluate(() => window.serialLines.length);
+    await host.waitForTimeout(400);
+    if (await host.evaluate(() => window.serialLines.length) !== released) throw new Error("Notes continued after release");
+    await host.bringToFront();
+    await note.scrollIntoViewIfNeeded();
+    const bounds = await note.boundingBox();
+    await host.mouse.move(bounds.x + bounds.width / 2, bounds.y + bounds.height / 2);
+    await host.mouse.down();
+    await host.waitForFunction(start => window.serialLines.slice(start).some(line => line.startsWith("NOTE,0,250,")), released);
+    await host.mouse.move(1, 1);
+    await host.mouse.up();
+    await host.waitForFunction(() => window.serialLines.at(-1) === "DISARM");
     await host.getByRole("button",{name:"Disable remote control"}).click();
     console.log("PASS: separate clients paired, selected, played, paused, stopped and released one Mac session.");
   } finally { await browser.close(); }
