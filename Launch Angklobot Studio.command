@@ -25,6 +25,8 @@ def studio_ready():
 
 
 def open_player():
+    if os.environ.get("ANGKLOBOT_OPEN_BROWSER", "1") == "0":
+        return
     subprocess.run(["open", "-a", "Google Chrome", PLAYER], check=True)
 
 
