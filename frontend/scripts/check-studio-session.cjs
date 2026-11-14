@@ -16,6 +16,7 @@ const { chromium } = require(process.env.PLAYWRIGHT_MODULE || "playwright-core")
           const line = new TextDecoder().decode(data).trim();
           window.serialLines.push(line);
           if (line.startsWith("SWEEP,")) reader.enqueue(new TextEncoder().encode("ACK,SWEEP,DONE\n"));
+          if (line === "MANUAL_CAPS") reader.enqueue(new TextEncoder().encode("CAPS,MANUAL_RAW,100,250\n"));
           if (line === "HELLO,1") reader.enqueue(new TextEncoder().encode("READY,1,ACTIVE\n"));
         } }),
       };
@@ -75,18 +76,19 @@ const { chromium } = require(process.env.PLAYWRIGHT_MODULE || "playwright-core")
     await note.focus();
     const beforeHold = await host.evaluate(() => window.serialLines.length);
     await host.keyboard.down("Space");
-    await host.waitForFunction(start => window.serialLines.slice(start).filter(line => line.startsWith("NOTE,0,250,300")).length >= 2, beforeHold);
+    await host.waitForFunction(start => window.serialLines.slice(start).filter(line => line === "MANUAL,0,30").length >= 2, beforeHold);
     await host.keyboard.up("Space");
     await host.waitForFunction(() => window.serialLines.at(-1) === "DISARM");
     const released = await host.evaluate(() => window.serialLines.length);
     await host.waitForTimeout(400);
     if (await host.evaluate(() => window.serialLines.length) !== released) throw new Error("Notes continued after release");
+    await host.getByRole("slider", { name: "Manual motor power" }).fill("100");
     await host.bringToFront();
     await note.scrollIntoViewIfNeeded();
     const bounds = await note.boundingBox();
     await host.mouse.move(bounds.x + bounds.width / 2, bounds.y + bounds.height / 2);
     await host.mouse.down();
-    await host.waitForFunction(start => window.serialLines.slice(start).some(line => line.startsWith("NOTE,0,250,")), released);
+    await host.waitForFunction(start => window.serialLines.slice(start).some(line => line === "MANUAL,0,100"), released);
     await host.mouse.move(1, 1);
     await host.mouse.up();
     await host.waitForFunction(() => window.serialLines.at(-1) === "DISARM");

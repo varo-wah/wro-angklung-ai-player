@@ -2,7 +2,6 @@ import { getVisibleCatalogSongs } from "../../../lib/songCatalog";
 import { buildScheduleFromBuiltInSong } from "../../../lib/scheduleBuilder";
 import { validateMotorSafety, type SafetyReport } from "../../../lib/safetyValidator";
 import { validateSchedulePayload } from "../../../lib/scheduleValidator";
-import { buildFullAngklungRack } from "../../../lib/instrumentMap";
 import type { RobotTransport } from "../../../lib/robotTransport";
 import type { LoadedSong, SongCatalogEntry } from "../../../lib/songTypes";
 import type { ActuatorSchedule } from "../../../lib/types";
@@ -69,25 +68,24 @@ export class StudioController {
     if (!Number.isInteger(channel) || channel < 0 || channel >= 18)
       throw new Error("Choose a motor from the rack.");
     const robot = this.robot;
-    if (this.disposed || this.sweeping || !robot?.connected || this.bufferedRobot)
+    if (this.disposed || this.sweeping || !robot?.connected || this.bufferedRobot || !robot.prepareManual || !robot.sendManualPower)
       throw new Error("Manual notes require the Mac controller connected by Arduino USB.");
     this.stop();
     const request = this.playbackRequest;
     await this.stopping;
     if (request !== this.playbackRequest) return null;
-    await robot.preparePlayback([]);
+    await robot.prepareManual();
     if (request !== this.playbackRequest) { await robot.disarm(); return null; }
     this.manualNote = { channel, request };
     return request;
   }
 
-  async pulseManualNote(request: number): Promise<boolean> {
+  async pulseManualNote(request: number, power: number): Promise<boolean> {
     const held = this.manualNote;
     if (!held || held.request !== request || request !== this.playbackRequest || !this.robot?.connected) return false;
-    const mapping = buildFullAngklungRack()[held.channel];
+
     try {
-      await this.robot.sendNote({ ...mapping, command_id: "manual", action: "shake",
-        start_time_seconds: 0, duration_seconds: 0.25, strength: this.snapshot.preferences.volume / 100 });
+      await this.robot.sendManualPower!(held.channel, power);
       return this.manualNote === held;
     } catch (error) { this.stop(); throw error; }
   }

@@ -51,5 +51,22 @@ int main() {
     send("ARM"); send("NOTE,0,300,1000"); updateSoftwarePwm();
     send(stop); off(); assert(armed == (strcmp(stop,"STOP") == 0));
   }
+  send("MANUAL_CAPS"); assert(Serial.output == "CAPS,MANUAL_RAW,100,250\n");
+  send("DISARM"); send("MANUAL,0,100"); off();
+  send("ARM");
+  for (int channel=0; channel<18; channel++) {
+    for (int power : {0, 30, 60, 100}) {
+      std::string manual = "MANUAL," + std::to_string(channel) + "," + std::to_string(power);
+      send(manual.c_str());
+      assert(motors[channel].dutyPermille == power * 10);
+      assert(motors[channel].pulseEndMs == fakeMillis + 250);
+      for (int other=0; other<18; other++) if (other!=channel) assert(!motors[other].active);
+    }
+  }
+  fakeMillis += 251; updateMotorPulseExpiry(); off();
+  for (const char *bad : {"MANUAL,18,100", "MANUAL,0,101", "MANUAL,-1,100", "MANUAL,0,-1", "MANUAL,0,30,20"}) {
+    send(bad); assert(Serial.output.find("ERROR,") == 0); off();
+  }
+  send("MANUAL,0,100"); send("DISARM"); off();
   std::cout << "USB firmware host tests passed (physical pin conflict unverified)\n";
 }

@@ -5,13 +5,16 @@ import { buildFullAngklungRack } from "@/lib/instrumentMap";
 import { useStudio } from "./runtime/useStudio";
 
 export function StudioManual() {
-  const { manual, robotMode, toggleOutput, snapshot, actions } = useStudio();
+  const { manual, robotMode, toggleOutput, actions } = useStudio();
   const controls = useRef(manual);
   controls.current = manual;
   const generation = useRef(0);
   const timer = useRef<ReturnType<typeof setTimeout> | null>(null);
   const holding = useRef(false);
   const [active, setActive] = useState<number | null>(null);
+  const [power, setPower] = useState(30);
+  const powerRef = useRef(power);
+  powerRef.current = power;
   const [error, setError] = useState("");
 
   function release() {
@@ -50,7 +53,7 @@ export function StudioManual() {
       const pulse = async () => {
         if (current !== generation.current) return;
         try {
-          if (!await controls.current?.pulse(request)) { release(); return; }
+          if (!await controls.current?.pulse(request, powerRef.current)) { release(); return; }
           if (current === generation.current) timer.current = setTimeout(() => void pulse(), 120);
         } catch (err) {
           if (current === generation.current) {
@@ -75,10 +78,11 @@ export function StudioManual() {
       {!robotMode && <button onClick={toggleOutput}>Switch to angklung robot</button>}
       {!manual && <p role="status">Enable the Mac controller and connect Arduino USB above. Manual notes are available on that Mac; phone and ESP32 control are not supported here yet.</p>}
       <p>Pressing a note stops the current song. Use a mouse, touch, or hold Space or Enter on a focused button.</p>
-      <label>Note strength: {snapshot.preferences.volume}%
-        <input aria-label="Manual note strength" type="range" min="0" max="100" step="1" disabled={!manual}
-          value={snapshot.preferences.volume} onChange={event => actions.setVolume(Number(event.target.value))} />
+      <label>Motor power: {power}%
+        <input aria-label="Manual motor power" type="range" min="0" max="100" step="1" disabled={!manual}
+          value={power} onChange={event => setPower(Number(event.target.value))} />
       </label>
+      <p>Direct PWM power: 100% is full motor output, independent of song volume and note calibration. This is not measured RPM.</p>
       <div className="studio-manual-grid">
         {buildFullAngklungRack().map(({ note, actuator_channel: channel }) =>
           <button key={channel} type="button" disabled={!manual} aria-label={`Hold ${note}, motor ${channel + 1}`}

@@ -203,6 +203,24 @@ export class ArduinoSerialController {
     await this.writeLine("ALL_OFF");
   }
 
+  async prepareManual(): Promise<void> {
+    if (!this.connected) throw new Error("Connect Arduino USB first.");
+    const supported = this.waitForLine(line => line === "CAPS,MANUAL_RAW,100,250", 1500);
+    void supported.catch(() => {});
+    await this.writeLine("MANUAL_CAPS");
+    try { await supported; }
+    catch { throw new Error("Update the Arduino firmware to enable direct motor power."); }
+    await this.preparePlayback([]);
+  }
+
+  async sendManualPower(channel: number, power: number): Promise<void> {
+    if (!Number.isInteger(channel) || channel < 0 || channel > 17 ||
+        !Number.isInteger(power) || power < 0 || power > 100)
+      throw new Error("Manual motor power must be 0–100% on a valid channel.");
+    if (!this.connected) throw new Error("Arduino disconnected.");
+    await this.writeLine(`MANUAL,${channel},${power}`);
+  }
+
   async sendNote(command: ActuatorCommand): Promise<void> {
     if (!this.connected) {
       return;

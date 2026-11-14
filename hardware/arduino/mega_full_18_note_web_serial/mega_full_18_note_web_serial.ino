@@ -998,6 +998,26 @@ void updateRoutine() {
 // NOTE,10,500,800
 //
 
+// Direct USB manual control: raw PWM, short renewable pulse, no song calibration.
+void handleManualCommand(char *command) {
+  if (commandSource != OWNER_USB || !requireArmed()) return;
+  if (countCommas(command) != 2) {
+    commandOutput->println(F("ERROR,INVALID_MANUAL"));
+    return;
+  }
+  char *channelText = strtok(command + 7, ",");
+  char *powerText = strtok(NULL, ",");
+  long channel, power;
+  if (!parseLongInRange(channelText, 0, CHANNEL_COUNT - 1, channel) ||
+      !parseLongInRange(powerText, 0, 100, power)) {
+    commandOutput->println(F("ERROR,INVALID_MANUAL"));
+    return;
+  }
+  allOff();
+  startMotorPulseRawPercent((uint8_t)channel, (uint8_t)power, 250);
+  commandOutput->println(F("ACK,MANUAL"));
+}
+
 void handleNoteCommand(
   char *command
 ) {
@@ -2266,6 +2286,15 @@ void handleCommand(
   }
 
   // ---------------------------------------------------------------------------
+  if (strcmp(command, "MANUAL_CAPS") == 0) {
+    commandOutput->println(F("CAPS,MANUAL_RAW,100,250"));
+    return;
+  }
+  if (strncmp(command, "MANUAL,", 7) == 0) {
+    handleManualCommand(command);
+    return;
+  }
+
   // NORMAL NOTE
   // ---------------------------------------------------------------------------
 

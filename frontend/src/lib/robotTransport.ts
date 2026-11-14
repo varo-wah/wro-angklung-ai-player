@@ -9,6 +9,8 @@ export interface RobotTransport {
   disconnect(): Promise<void>;
   reconnectAuthorized(): Promise<boolean>;
   preparePlayback(commands: readonly ActuatorCommand[], offset?: number): Promise<void>;
+  prepareManual?(): Promise<void>;
+  sendManualPower?(channel: number, power: number): Promise<void>;
   sendNote(command: ActuatorCommand): Promise<void>;
   allOff(): Promise<void>;
   disarm(): Promise<void>;

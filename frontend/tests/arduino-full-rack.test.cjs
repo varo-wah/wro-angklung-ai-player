@@ -180,3 +180,27 @@ test("disarming during sweep startup cancels the remaining sweep commands", asyn
   assert.ok(!lines.some(line => line.startsWith("SWEEP,")));
   assert.equal(lines.at(-1), "DISARM");
 });
+
+test("direct manual power requires firmware capability and sends uncalibrated percent", async () => {
+  const controller = new ArduinoSerialController(() => {});
+  const lines = [];
+  controller.state = { status: "connected", outputMode: "active", message: "" };
+  controller.writer = { write: async bytes => {
+    const line = new TextDecoder().decode(bytes).trim(); lines.push(line);
+    if (line === "MANUAL_CAPS") controller.handleLine("CAPS,MANUAL_RAW,100,250");
+  } };
+  await controller.prepareManual();
+  await controller.sendManualPower(17, 100);
+  assert.deepEqual(lines, ["MANUAL_CAPS", "ARM", "ALL_OFF", "MANUAL,17,100"]);
+  await assert.rejects(controller.sendManualPower(0, 101));
+  await assert.rejects(controller.sendManualPower(18, 50));
+});
+
+test("older firmware cannot silently fall back to calibrated manual power", async () => {
+  const controller = new ArduinoSerialController(() => {});
+  const lines = [];
+  controller.state = { status: "connected", outputMode: "active", message: "" };
+  controller.writer = { write: async bytes => lines.push(new TextDecoder().decode(bytes).trim()) };
+  await assert.rejects(controller.prepareManual(), /Update the Arduino firmware/);
+  assert.deepEqual(lines, ["MANUAL_CAPS"]);
+});
