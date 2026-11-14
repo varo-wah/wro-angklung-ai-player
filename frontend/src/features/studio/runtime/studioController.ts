@@ -62,6 +62,7 @@ export class StudioController {
     this.bufferedRobot = buffered;
   }
 
+  private manualStarting: Promise<unknown> = Promise.resolve();
   private manualNote: { channel: number; request: number } | null = null;
 
   async beginManualNote(channel: number): Promise<number | null> {
@@ -72,12 +73,18 @@ export class StudioController {
       throw new Error("Manual notes require the Mac controller connected by Arduino USB.");
     this.stop();
     const request = this.playbackRequest;
-    await this.stopping;
-    if (request !== this.playbackRequest) return null;
-    await robot.prepareManual();
-    if (request !== this.playbackRequest) { await robot.disarm(); return null; }
-    this.manualNote = { channel, request };
-    return request;
+    const previous = this.manualStarting;
+    const pending = (async () => {
+      await previous.catch(() => {});
+      await this.stopping;
+      if (request !== this.playbackRequest) return null;
+      await robot.prepareManual!();
+      if (request !== this.playbackRequest) { await robot.disarm(); return null; }
+      this.manualNote = { channel, request };
+      return request;
+    })();
+    this.manualStarting = pending;
+    return pending;
   }
 
   async pulseManualNote(request: number, power: number): Promise<boolean> {
@@ -226,6 +233,7 @@ export class StudioController {
       const outputSchedule = robot && this.bufferedRobot && robotLevel !== 1 ? { ...schedule, commands: schedule.commands.map(
         command => ({ ...command, strength: command.strength * robotLevel })) } : schedule;
       if (robot) {
+        await this.manualStarting.catch(() => {});
         await this.stopping;
         if (!current()) return;
         if (this.snapshot.safety?.overall !== "PASSED" || !robot.connected) throw new Error("Check the robot connection and arrangement before playing.");

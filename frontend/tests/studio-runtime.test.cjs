@@ -830,3 +830,22 @@ test('manual holds reject buffered transport and cannot resume after song playba
   assert.equal(await h.controller.pulseManualNote(request, 100), false);
   h.controller.dispose();
 });
+
+test('a released manual start cannot disarm a newer hold', async () => {
+  const h = harness();
+  const firstArm = deferred();
+  let arms = 0, armed = false;
+  h.controller.setRobot({ connected: true, prepareManual: async () => {
+    if (++arms === 1) await firstArm.promise;
+    armed = true;
+  }, sendManualPower: async () => { assert.equal(armed, true); }, disarm: async () => { armed = false; } });
+  const first = h.controller.beginManualNote(0);
+  await waitFor(() => arms === 1);
+  h.controller.stop();
+  const second = h.controller.beginManualNote(1);
+  firstArm.resolve();
+  assert.equal(await first, null);
+  const request = await second;
+  assert.equal(await h.controller.pulseManualNote(request, 30), true);
+  h.controller.dispose();
+});

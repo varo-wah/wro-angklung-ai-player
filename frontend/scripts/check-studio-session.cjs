@@ -16,6 +16,9 @@ const { chromium } = require(process.env.PLAYWRIGHT_MODULE || "playwright-core")
           const line = new TextDecoder().decode(data).trim();
           window.serialLines.push(line);
           if (line.startsWith("SWEEP,")) reader.enqueue(new TextEncoder().encode("ACK,SWEEP,DONE\n"));
+          if (line === "ARM") reader.enqueue(new TextEncoder().encode("ACK,ARM\n"));
+          if (line === "ALL_OFF") reader.enqueue(new TextEncoder().encode("ACK,ALL_OFF\n"));
+          if (line.startsWith("MANUAL,")) reader.enqueue(new TextEncoder().encode("ACK,MANUAL\n"));
           if (line === "MANUAL_CAPS") reader.enqueue(new TextEncoder().encode("CAPS,MANUAL_RAW,100,250\n"));
           if (line === "HELLO,1") reader.enqueue(new TextEncoder().encode("READY,1,ACTIVE\n"));
         } }),

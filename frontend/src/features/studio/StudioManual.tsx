@@ -54,7 +54,9 @@ export function StudioManual() {
       const pulse = async () => {
         if (current !== generation.current) return;
         try {
-          if (!await controls.current?.pulse(request, powerRef.current)) { release(); return; }
+          const continued = await controls.current?.pulse(request, powerRef.current);
+          if (current !== generation.current) return;
+          if (!continued) { release(); return; }
           if (current === generation.current) timer.current = setTimeout(() => void pulse(), 120);
         } catch (err) {
           if (current === generation.current) {

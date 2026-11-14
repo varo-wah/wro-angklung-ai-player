@@ -101,6 +101,7 @@ export class ArduinoSerialController {
     resolve: (line: string) => void;
   }>();
   private sweepEpoch = 0;
+  private manualSupported = false;
   private wakeSweepPromise: Promise<boolean> | null = null;
   private state: ArduinoConnectionState = getInitialArduinoConnectionState();
 
@@ -205,12 +206,22 @@ export class ArduinoSerialController {
 
   async prepareManual(): Promise<void> {
     if (!this.connected) throw new Error("Connect Arduino USB first.");
-    const supported = this.waitForLine(line => line === "CAPS,MANUAL_RAW,100,250", 1500);
-    void supported.catch(() => {});
-    await this.writeLine("MANUAL_CAPS");
-    try { await supported; }
-    catch { throw new Error("Update the Arduino firmware to enable direct motor power."); }
-    await this.preparePlayback([]);
+    if (!this.manualSupported) {
+      const supported = this.waitForLine(line => line === "CAPS,MANUAL_RAW,100,250", 1500);
+      void supported.catch(() => {});
+      await this.writeLine("MANUAL_CAPS");
+      try { await supported; this.manualSupported = true; }
+      catch { throw new Error("Update the Arduino firmware to enable direct motor power."); }
+    }
+    await this.manualCommand("ARM", "ACK,ARM");
+    await this.manualCommand("ALL_OFF", "ACK,ALL_OFF");
+  }
+
+  private async manualCommand(command: string, acknowledgement: string): Promise<void> {
+    const reply = this.waitForLine(line => line === acknowledgement, 1000);
+    void reply.catch(() => {});
+    try { await this.writeLine(command); await reply; }
+    catch (error) { this.rejectLineWaiters(error instanceof Error ? error : new Error("Manual command failed.")); throw error; }
   }
 
   async sendManualPower(channel: number, power: number): Promise<void> {
@@ -218,7 +229,7 @@ export class ArduinoSerialController {
         !Number.isInteger(power) || power < 0 || power > 100)
       throw new Error("Manual motor power must be 0–100% on a valid channel.");
     if (!this.connected) throw new Error("Arduino disconnected.");
-    await this.writeLine(`MANUAL,${channel},${power}`);
+    await this.manualCommand(`MANUAL,${channel},${power}`, "ACK,MANUAL");
   }
 
   async sendNote(command: ActuatorCommand): Promise<void> {
@@ -396,6 +407,7 @@ export class ArduinoSerialController {
   }
 
   private async closePort(): Promise<void> {
+    this.manualSupported = false;
     this.rejectLineWaiters(new Error("Arduino connection closed before the requested command completed."));
     this.readyReject?.(new Error("Arduino connection closed before the handshake completed."));
     this.readyReject = null;
@@ -464,7 +476,7 @@ export class ArduinoSerialController {
       };
       timeoutId = window.setTimeout(() => {
         if (!this.lineWaiters.delete(waiter)) return;
-        reject(new Error("Arduino greeting sweep did not finish within 60 seconds."));
+        reject(new Error("Arduino did not acknowledge the command before its timeout."));
       }, timeoutMs);
       this.lineWaiters.add(waiter);
     });

@@ -188,10 +188,15 @@ test("direct manual power requires firmware capability and sends uncalibrated pe
   controller.writer = { write: async bytes => {
     const line = new TextDecoder().decode(bytes).trim(); lines.push(line);
     if (line === "MANUAL_CAPS") controller.handleLine("CAPS,MANUAL_RAW,100,250");
+    if (line === "ARM") controller.handleLine("ACK,ARM");
+    if (line === "ALL_OFF") controller.handleLine("ACK,ALL_OFF");
+    if (line.startsWith("MANUAL,")) controller.handleLine("ACK,MANUAL");
   } };
   await controller.prepareManual();
   await controller.sendManualPower(17, 100);
   assert.deepEqual(lines, ["MANUAL_CAPS", "ARM", "ALL_OFF", "MANUAL,17,100"]);
+  await controller.prepareManual();
+  assert.equal(lines.filter(line => line === "MANUAL_CAPS").length, 1);
   await assert.rejects(controller.sendManualPower(0, 101));
   await assert.rejects(controller.sendManualPower(18, 50));
 });
