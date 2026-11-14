@@ -13,6 +13,7 @@ export function StudioManual() {
   const holding = useRef(false);
   const [active, setActive] = useState<number | null>(null);
   const [power, setPower] = useState(30);
+  const [powerEntry, setPowerEntry] = useState<string | null>(null);
   const powerRef = useRef(power);
   powerRef.current = power;
   const [error, setError] = useState("");
@@ -80,7 +81,25 @@ export function StudioManual() {
       <p>Pressing a note stops the current song. Use a mouse, touch, or hold Space or Enter on a focused button.</p>
       <label>Motor power: {power}%
         <input aria-label="Manual motor power" type="range" min="0" max="100" step="1" disabled={!manual}
-          value={power} onChange={event => setPower(Number(event.target.value))} />
+          value={power} onChange={event => { setPower(Number(event.target.value)); setPowerEntry(null); }} />
+      </label>
+      <label className="studio-manual-power-entry">Type motor power (%)
+        <input aria-label="Motor power percent" type="number" inputMode="numeric" min={0} max={100} step={1}
+          disabled={!manual} value={powerEntry ?? power}
+          onChange={event => {
+            const text = event.target.value;
+            setPowerEntry(text);
+            const value = Number(text);
+            if (text !== "" && Number.isInteger(value) && value >= 0 && value <= 100) setPower(value);
+          }}
+          onBlur={() => {
+            const value = Number(powerEntry);
+            if (powerEntry !== null && powerEntry !== "" && Number.isFinite(value))
+              setPower(Math.max(0, Math.min(100, Math.round(value))));
+            setPowerEntry(null);
+          }}
+          onKeyDown={event => { if (event.key === "Enter") event.currentTarget.blur(); }}
+        />
       </label>
       <p>Direct PWM power: 100% is full motor output, independent of song volume and note calibration. This is not measured RPM.</p>
       <div className="studio-manual-grid">
