@@ -204,6 +204,15 @@ export class ArduinoSerialController {
     await this.writeLine("ALL_OFF");
   }
 
+  async prepareConduct(): Promise<void> {
+    await this.manualCommand("ARM", "ACK,ARM");
+    await this.manualCommand("ALL_OFF", "ACK,ALL_OFF");
+  }
+
+  async sendConductNote(command: ActuatorCommand): Promise<void> {
+    await this.manualCommand(encodeArduinoNoteCommand(command), `ACK,NOTE,${command.actuator_channel}`);
+  }
+
   async prepareManual(): Promise<void> {
     if (!this.connected) throw new Error("Connect Arduino USB first.");
     if (!this.manualSupported) {

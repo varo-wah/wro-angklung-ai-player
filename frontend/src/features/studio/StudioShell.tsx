@@ -142,6 +142,7 @@ export function StudioShell({ children }: { children: ReactNode }) {
   const navigation: [string, string, IconName][] = [
     ["/studio", "Player", "play"],
     ["/studio/library", "Library", "library"],
+    ["/studio/conduct", "Conduct", "play"],
     ["/studio/manual", "Manual notes", "play"],
     ["/studio/settings", "Preferences", "settings"],
   ];
@@ -240,7 +241,7 @@ export function StudioShell({ children }: { children: ReactNode }) {
           {children}
         </main>
       </div>
-      {pathname !== "/studio/manual" && <StudioPlayer />}
+      {pathname !== "/studio/manual" && pathname !== "/studio/conduct" && <StudioPlayer />}
     </div>
   );
 }

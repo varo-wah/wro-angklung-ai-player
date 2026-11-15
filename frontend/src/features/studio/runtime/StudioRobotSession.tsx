@@ -131,6 +131,13 @@ export function StudioRobotSession({ runtime, view, children }: { runtime: Studi
     view.toggleOutput();
   }
   const actions: StudioView["actions"] = { ...view.actions,
+    enableConductPreview: async () => {
+      if (remote || !ready || mode !== "usb") { setError("Conduct from the Mac controller with Arduino USB connected."); return; }
+      session.cancelQueued();
+      await runtime.enableConductPreview();
+    },
+    previewConductNote: note => { if (!remote && ready && mode === "usb") runtime.previewConductNote(note); },
+    silenceConductPreview: () => { if (!remote) runtime.silenceConductPreview(); },
     play: () => send({type:"play"}), pause: () => void send({type:"pause"}), stop: () => void send({type:"stop"}),
     selectSong: songId => send({type:"select",songId}), playSong: songId => send({type:"playSong",songId}),
     seek: seconds => void send({type:"seek",seconds}), next: () => send({type:"next"}), previous: () => send({type:"previous"}),

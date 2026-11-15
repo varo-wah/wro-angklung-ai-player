@@ -58,6 +58,16 @@ def main():
         for sig in (signal.SIGTERM, signal.SIGHUP):
             signal.signal(sig, interrupted)
         try:
+            vision = Path(os.environ.get("ANGKLOBOT_VISION_DIR", str(FRONTEND.parent.parent / "angklobot-conducting" / "Conducting Vision")))
+            python = vision / ".venv/bin/python"
+            if python.exists():
+                try:
+                    urllib.request.urlopen("http://127.0.0.1:8766", timeout=1).close()
+                except (OSError, urllib.error.URLError):
+                    start([str(python), str(FRONTEND.parent / "scripts/conduct_server.py")],
+                          env={**os.environ, "ANGKLOBOT_VISION_DIR": str(vision)})
+            else:
+                print("YOLO service unavailable: missing Conducting Vision environment.", flush=True)
             server = None
             if not studio_ready():
                 if not Path("node_modules/.bin/next").exists():

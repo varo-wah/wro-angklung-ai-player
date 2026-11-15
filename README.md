@@ -12,7 +12,7 @@ npm ci
 npm run dev:studio
 ```
 
-Studio includes the searchable library, queue/shuffle/repeat player, light/dark themes, saved interface sizing, a resizable queue, and the Conduct camera prototype. Conduct uses the same appearance preferences and shared audio runtime; entering it stops song playback. Choose **Live session** to play individual songs on a connected robot. The preview queue and Conduct remain local preview modes; neither automatically sends motor commands.
+Studio includes the searchable library, queue/shuffle/repeat player, light/dark themes, saved interface sizing, a resizable queue, and integrated camera conducting. Conduct shares the controller with the player; entering it stops song playback. Select sound preview or Arduino USB robot output explicitly. See [conducting setup](docs/studio-conducting.md).
 
 For the live setup, start the competition server as described below. Open `http://localhost:3002/studio/device` in Chrome on the Mac, enable the Mac controller, choose a USB or ESP32 connection and connect. Select a song to prepare and validate it, then press Play. For a speakers-only rehearsal, turn off **Send playback to physical angklung**. On the phone, open `/studio/device` through your existing phone-access URL pointing at **the same Mac server and port** (see [phone setup](docs/mobile-local-development.md)); phone localhost refers to the phone. Enter the six-digit code. Keep the Mac host tab open during performance. Stop playback and disable remote control to end the session.
 
@@ -48,4 +48,4 @@ ESP32 full-song playback is operator-confirmed working. Code/build checks and a 
 
 Unsupported songs are rejected; arbitrary YouTube-to-song conversion is not implemented. Older parser-only sketches and research prototypes remain for reference, not as the upload target. [Historical overview](docs/legacy-project-overview.md).
 
-The root address now opens Studio v2. Use **Live session** for robot/phone operation and **Legacy interface** for the preserved `/control` workspace (`/legacy` is a shortcut). Conduct remains a direct developer route at `/studio/conduct` and is deferred from the primary navigation. The Firebase launcher opens Studio on the configured Mac server; static hosting alone cannot run its session APIs.
+The root address now opens Studio v2. Use **Live session** for robot/phone operation and **Legacy interface** for the preserved `/control` workspace (`/legacy` is a shortcut). Conduct is available in the main navigation at `/studio/conduct`. The Firebase launcher opens Studio on the configured Mac server; static hosting alone cannot run its session APIs.

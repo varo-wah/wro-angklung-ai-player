@@ -137,3 +137,57 @@ test('camera keeps one frame in flight and closes late bitmaps on Stop', async (
   assert.equal(posts.length, 1); assert.equal(stopped, 1); assert.equal(terminated, 1); assert.equal(closed, 1);
   assert.equal(video.srcObject, null);
 });
+
+test('robot conducting shares USB transport, uses calibrated notes and stops on neutral and exit', async () => {
+  const { c, audio, engines } = controllerHarness();
+  const notes = []; let arms = 0, offs = 0, disarms = 0;
+  c.setRobot({ connected: true, prepareConduct: async () => { arms++; },
+    sendConductNote: async note => notes.push(note),
+    allOff: async () => { offs++; }, disarm: async () => { disarms++; } });
+  c.setInputMode('conduct');
+  c.previewConductNote('C4'); assert.equal(notes.length, 0);
+  await c.enableConductPreview(); assert.equal(arms, 1);
+  c.setVolume(50);
+  c.previewConductNote('C4');
+  await new Promise(resolve => setImmediate(resolve));
+  assert.equal(notes[0].actuator_channel, 3);
+  assert.equal(notes[0].duration_seconds, .3);
+  assert.equal(notes[0].strength, .3);
+  assert.equal(audio.length, 0);
+  c.silenceConductPreview(); c.silenceConductPreview(); assert.equal(offs, 1);
+  c.previewConductNote('C8'); assert.equal(notes.length, 1);
+  const before = disarms;
+  c.setInputMode('player'); assert.ok(disarms > before);
+  c.previewConductNote('D4'); assert.equal(notes.length, 1);
+  assert.equal(engines.length, 0);
+  c.dispose();
+});
+
+test('stop while robot conducting arms cannot enable output later', async () => {
+  const { c } = controllerHarness();
+  const arm = deferred(); let entered = false, disarms = 0;
+  c.setRobot({ connected: true, prepareConduct: async () => { entered = true; await arm.promise; },
+    disarm: async () => { disarms++; } });
+  c.setInputMode('conduct');
+  const enabling = c.enableConductPreview();
+  while (!entered) await new Promise(resolve => setImmediate(resolve));
+  c.stop(); const before = disarms;
+  arm.resolve(); await enabling;
+  assert.equal(c.getSnapshot().conductReady, false);
+  assert.ok(disarms > before);
+  c.dispose();
+});
+
+test('robot rejects conducting on buffered ESP32 transport and stops after rejected notes', async () => {
+  const { c } = controllerHarness();
+  const robot = { connected: true, prepareConduct: async () => {},
+    sendConductNote: async () => { throw new Error('NOT_ARMED'); }, disarm: async () => {} };
+  c.setRobot(robot, true); c.setInputMode('conduct'); await c.enableConductPreview();
+  assert.equal(c.getSnapshot().conductReady, false);
+  c.setRobot(robot); await c.enableConductPreview();
+  c.previewConductNote('C4');
+  await new Promise(resolve => setImmediate(resolve));
+  assert.equal(c.getSnapshot().conductReady, false);
+  assert.match(c.getSnapshot().error, /NOT_ARMED/);
+  c.dispose();
+});

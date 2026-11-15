@@ -28,7 +28,7 @@ export function StudioProvider({ children }: { children: ReactNode }) {
   useEffect(() => { if (new URLSearchParams(window.location.search).get("output") === "robot") setRobotMode(true); }, [pathname]);
   const view: StudioView = { snapshot, actions: runtime.actions, robotMode: false, outputLabel: "Computer audio",
     connection: null, toggleOutput: () => { runtime.stop(); setRobotMode(!robotMode); } };
-  if (robotMode && pathname !== "/studio/conduct") return <StudioRobotSession runtime={runtime} view={view}>{children}</StudioRobotSession>;
+  if (robotMode) return <StudioRobotSession runtime={runtime} view={view}>{children}</StudioRobotSession>;
   return <StudioContext.Provider value={view}>{children}</StudioContext.Provider>;
 }
 

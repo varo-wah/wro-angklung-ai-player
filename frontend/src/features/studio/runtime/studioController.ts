@@ -2,6 +2,7 @@ import { getVisibleCatalogSongs } from "../../../lib/songCatalog";
 import { buildScheduleFromBuiltInSong } from "../../../lib/scheduleBuilder";
 import { validateMotorSafety, type SafetyReport } from "../../../lib/safetyValidator";
 import { validateSchedulePayload } from "../../../lib/scheduleValidator";
+import { FRONTEND_INSTRUMENT_MAP } from "../../../lib/instrumentMap";
 import type { RobotTransport } from "../../../lib/robotTransport";
 import type { LoadedSong, SongCatalogEntry } from "../../../lib/songTypes";
 import type { ActuatorSchedule } from "../../../lib/types";
@@ -104,6 +105,7 @@ export class StudioController {
     const request = this.playbackRequest;
     this.sweeping = true;
     try {
+      await this.manualStarting.catch(() => {});
       await this.stopping;
       if (request !== this.playbackRequest || !robot.connected || !await robot.runWakeSweep()) throw new Error("Sweep stopped.");
     } finally { this.sweeping = false; }
@@ -299,21 +301,43 @@ export class StudioController {
     this.publish({ inputMode });
   };
 
+  private conductSounding = false;
+  private conductSending = false;
+
   enableConductPreview = async (): Promise<void> => {
     if (this.disposed || this.snapshot.inputMode !== "conduct") return;
     this.stop();
     const request = this.playbackRequest;
-    try {
-      await this.ports.audio.ensureReady();
-      if (this.disposed || request !== this.playbackRequest || this.snapshot.inputMode !== "conduct") return;
-      this.publish({ conductReady: true, error: null });
-    } catch (error) {
-      if (!this.disposed && request === this.playbackRequest) this.failPlayback(error);
-    }
+    const previous = this.manualStarting;
+    const pending = (async () => {
+      try {
+        await previous.catch(() => {});
+        await this.stopping;
+        if (request !== this.playbackRequest) return;
+        if (this.robot) {
+          if (this.bufferedRobot || !this.robot.connected || !this.robot.prepareConduct)
+            throw new Error("Conducting requires Arduino USB on this Mac.");
+          await this.robot.prepareConduct();
+          if (request !== this.playbackRequest) { await this.robot.disarm(); return; }
+        } else await this.ports.audio.ensureReady();
+        if (this.disposed || request !== this.playbackRequest || this.snapshot.inputMode !== "conduct") return;
+        this.publish({ conductReady: true, error: null });
+      } catch (error) {
+        if (!this.disposed && request === this.playbackRequest) this.failPlayback(error);
+      }
+    })();
+    this.manualStarting = pending;
+    await pending;
   };
 
   silenceConductPreview = (): void => {
-    if (this.snapshot.inputMode === "conduct") this.ports.audio.stopAll();
+    if (this.snapshot.inputMode !== "conduct") return;
+    this.ports.audio.stopAll();
+    if (this.conductSounding && this.robot?.connected) {
+      this.conductSounding = false;
+      const request = this.playbackRequest;
+      void this.robot.allOff().catch(error => { if (request === this.playbackRequest) this.failPlayback(error); });
+    }
   };
 
   previewConductNote = (note: string): void => {
@@ -321,7 +345,16 @@ export class StudioController {
       || !["C4", "D4", "E4", "F4", "G4", "A4", "B4", "C5"].includes(note)) return;
     try {
       this.ports.audio.stopAll();
-      this.ports.audio.playNote(note, 0.3, 0.45 * this.snapshot.preferences.volume / 100);
+      if (this.robot) {
+        if (this.conductSending || !this.robot.sendConductNote) return;
+        const request = this.playbackRequest;
+        this.conductSounding = true; this.conductSending = true;
+        void this.robot.sendConductNote({ ...FRONTEND_INSTRUMENT_MAP[note], command_id: "conduct",
+          start_time_seconds: 0, action: "shake", duration_seconds: .3,
+          strength: .6 * this.snapshot.preferences.volume / 100 })
+          .catch(error => { if (request === this.playbackRequest) { this.stop(); this.publish({ error: errorMessage(error, "Conducting stopped.") }); } })
+          .finally(() => { this.conductSending = false; });
+      } else this.ports.audio.playNote(note, 0.3, 0.45 * this.snapshot.preferences.volume / 100);
     } catch (error) { this.stop(); this.publish({ error: errorMessage(error, "Conduct preview failed.") }); }
   };
 
@@ -593,6 +626,7 @@ export class StudioController {
 
   private haltPlayback(): void {
     this.manualNote = null;
+    this.conductSounding = false;
     ++this.playbackRequest;
     const engine = this.engine;
     this.engine = null;
