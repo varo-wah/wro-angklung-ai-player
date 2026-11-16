@@ -10,6 +10,12 @@ import { APPEARANCE_BOOTSTRAP } from "./runtime/preferences";
 export type IconName =
   | "home"
   | "library"
+  | "music"
+  | "conduct"
+  | "keyboard"
+  | "playlist"
+  | "queueAdd"
+  | "trash"
   | "device"
   | "settings"
   | "play"
@@ -34,6 +40,12 @@ export type IconName =
   | "check";
 export function Icon({ name, size = 20 }: { name: IconName; size?: number }) {
   const paths: Record<IconName, ReactNode> = {
+    music: <><path d="M9 18V5l11-2v13M9 9l11-2" /><ellipse cx="6" cy="18" rx="3" ry="3" /><ellipse cx="17" cy="16" rx="3" ry="3" /></>,
+    conduct: <path d="M8 12V5a1.5 1.5 0 0 1 3 0v6-7.5a1.5 1.5 0 0 1 3 0V11 5a1.5 1.5 0 0 1 3 0v7-3.5a1.5 1.5 0 0 1 3 0V14a7 7 0 0 1-7 7h-1a6 6 0 0 1-4.8-2.4L3 13a1.6 1.6 0 0 1 2.5-2l2.5 3" />,
+    keyboard: <><rect x="3" y="4" width="18" height="16" rx="2" /><path d="M9 13v7m6-7v7" /><path d="M7 4h4v9H7zm6 0h4v9h-4Z" fill="currentColor" stroke="none" /></>,
+    playlist: <><path d="M3 5h14M3 10h10M3 15h7m8 3V9l4-1v4" /><ellipse cx="15.5" cy="18" rx="2.5" ry="2.5" /></>,
+    queueAdd: <path d="M3 5h17M3 10h12M3 15h7m7-2v8m-4-4h8" />,
+    trash: <><path d="M3 6h18M9 6V3h6v3M5 6l1 15h12l1-15M10 10v7m4-7v7" /></>,
     sun: <><circle cx="12" cy="12" r="4" /><path d="M12 2v2m0 16v2M2 12h2m16 0h2M5 5l1.5 1.5m11 11L19 19M5 19l1.5-1.5m11-11L19 5" /></>,
     moon: <path d="M20.5 14.5A9 9 0 0 1 9.5 3.5a9 9 0 1 0 11 11Z" />,
     previous: <><path d="M5 5v14" /><path d="m18 5-10 7 10 7Z" fill="currentColor" stroke="none" /></>,
@@ -116,7 +128,7 @@ export function Icon({ name, size = 20 }: { name: IconName; size?: number }) {
       viewBox="0 0 24 24"
       fill="none"
       stroke="currentColor"
-      strokeWidth="1.6"
+      strokeWidth="1.8"
       strokeLinecap="round"
       strokeLinejoin="round"
       aria-hidden="true"
@@ -140,10 +152,11 @@ export function StudioShell({ children }: { children: ReactNode }) {
   const pathname = usePathname();
   const { snapshot, actions, robotMode, connection, toggleOutput } = useStudio();
   const navigation: [string, string, IconName][] = [
-    ["/studio", "Player", "play"],
+    ["/studio", "Player", "music"],
     ["/studio/library", "Library", "library"],
-    ["/studio/conduct", "Conduct", "play"],
-    ["/studio/manual", "Manual notes", "play"],
+    ["/studio/playlists", "Playlists", "playlist"],
+    ["/studio/conduct", "Conduct", "conduct"],
+    ["/studio/manual", "Manual notes", "keyboard"],
     ["/studio/settings", "Preferences", "settings"],
   ];
   return (
@@ -167,7 +180,7 @@ export function StudioShell({ children }: { children: ReactNode }) {
           </div>
         </div>
         <span className="studio-nav-label">WORKSPACE</span>
-        <nav aria-label="Studio navigation" style={{ gridTemplateColumns: `repeat(${navigation.length + 1}, minmax(0, 1fr))` }}>
+        <nav aria-label="Studio navigation" style={{ gridTemplateColumns: `repeat(${navigation.length + 1}, minmax(64px, 1fr))` }}>
           {navigation.map(([href, label, icon]) => (
             <Link
               key={href}
@@ -176,7 +189,7 @@ export function StudioShell({ children }: { children: ReactNode }) {
             >
               <Icon name={icon} />
               <span className="studio-nav-label-full">{label}</span>
-              <span className="studio-nav-label-short">{href === "/studio/settings" ? "Settings" : href === "/studio/device" ? "Live" : label}</span>
+              <span className="studio-nav-label-short">{href === "/studio/settings" ? "Settings" : href === "/studio/manual" ? "Notes" : href === "/studio/device" ? "Live" : label}</span>
               {href === "/studio/library" && snapshot.catalog.length > 0 ? (
                 <small>{snapshot.catalog.length}</small>
               ) : null}
