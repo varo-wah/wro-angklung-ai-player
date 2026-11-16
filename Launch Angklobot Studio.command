@@ -8,6 +8,7 @@ import signal
 import subprocess
 import sys
 import time
+import urllib.parse
 import urllib.error
 import urllib.request
 
@@ -27,7 +28,9 @@ def studio_ready():
 def open_player():
     if os.environ.get("ANGKLOBOT_OPEN_BROWSER", "1") == "0":
         return
-    subprocess.run(["open", "-a", "Google Chrome", PLAYER], check=True)
+    # Open the embedded browser through ChatGPT's registered deep link.
+    target = "codex://browser?" + urllib.parse.urlencode({"url": PLAYER})
+    subprocess.run(["open", "-b", "com.openai.codex", target], check=True)
 
 
 def main():
