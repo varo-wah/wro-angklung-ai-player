@@ -209,3 +209,23 @@ test("older firmware cannot silently fall back to calibrated manual power", asyn
   await assert.rejects(controller.prepareManual(), /Update the Arduino firmware/);
   assert.deepEqual(lines, ["MANUAL_CAPS"]);
 });
+
+test('fortissimo saves validate limits and acknowledge DISARM before writing', async () => {
+  const c = new ArduinoSerialController(() => {}), calls = [];
+  c.manualCommand = async (line, ack) => { calls.push([line, ack]); };
+  await c.saveForteCalibration(3,47);
+  assert.deepEqual(calls, [['DISARM','ACK,DISARM'],['FFMAX,3,47','ACK,FFMAX,3,47']]);
+  await c.saveForteCalibration(3,null);
+  assert.equal(calls.at(-1)[0], 'FFMAX,3,255');
+  for (const [ch,p] of [[18,50],[0,101],[0,-1],[0,1.5]]) await assert.rejects(c.saveForteCalibration(ch,p));
+  c.manualCommand = async () => { throw new Error('disarm failed'); };
+  await assert.rejects(c.saveForteCalibration(3,47), /disarm failed/);
+});
+test('fortissimo readback validates all 18 channels', async () => {
+  const c = new ArduinoSerialController(() => {});
+  c.writeLine = async () => {};
+  c.waitForLine = async () => 'FFMAX,'+[47,0,100,...Array(15).fill(255)].join(',');
+  assert.deepEqual(Array.from(await c.readForteCalibration()), [47,0,100,...Array(15).fill(null)]);
+  c.waitForLine = async () => 'FFMAX,47,999';
+  await assert.rejects(c.readForteCalibration(), /Invalid calibration response/);
+});

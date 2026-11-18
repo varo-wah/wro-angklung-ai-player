@@ -11,6 +11,8 @@ export interface RobotTransport {
   preparePlayback(commands: readonly ActuatorCommand[], offset?: number): Promise<void>;
   prepareConduct?(): Promise<void>;
   sendConductNote?(command: ActuatorCommand): Promise<void>;
+  readForteCalibration?(): Promise<(number | null)[]>;
+  saveForteCalibration?(channel: number, power: number | null): Promise<void>;
   prepareManual?(): Promise<void>;
   sendManualPower?(channel: number, power: number): Promise<void>;
   sendNote(command: ActuatorCommand): Promise<void>;

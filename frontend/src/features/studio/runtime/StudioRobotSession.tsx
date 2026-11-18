@@ -178,6 +178,10 @@ export function StudioRobotSession({ runtime, view, children }: { runtime: Studi
       begin: channel => { session.cancelQueued(); return runtime.beginManualNote(channel); },
       pulse: (request, power) => runtime.pulseManualNote(request, power), stop: () => runtime.stop(),
     } : undefined,
+    calibration: session.role === "host" && ready && mode === "usb" ? {
+      read: () => transport.current!.readForteCalibration!(),
+      save: (channel, power) => { session.cancelQueued(); return runtime.saveForteCalibration(channel, power); },
+    } : undefined,
     sweep: session.role === "host" && ready && mode === "usb" ? { run: runSweep, busy: sweeping, message: sweepMessage } : undefined,
     snapshot:{...s, error:error || s.error, schedule:ready ? s.schedule : null} }}>{children}</StudioContext.Provider>;
 }

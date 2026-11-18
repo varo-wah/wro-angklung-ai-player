@@ -5,7 +5,35 @@ import { buildFullAngklungRack } from "@/lib/instrumentMap";
 import { useStudio } from "./runtime/useStudio";
 
 export function StudioManual() {
-  const { manual, robotMode, toggleOutput, actions } = useStudio();
+  const { manual, calibration, robotMode, toggleOutput, actions } = useStudio();
+  const [calibrating, setCalibrating] = useState(false);
+  const [ceilings, setCeilings] = useState<(number | null)[] | null>(null);
+  const [tested, setTested] = useState<{ channel: number; power: number } | null>(null);
+  const [saving, setSaving] = useState(false);
+  const [calibrationMessage, setCalibrationMessage] = useState("");
+  const calibrationRef = useRef(calibration);
+  calibrationRef.current = calibration;
+  useEffect(() => {
+    let cancelled = false;
+    setCeilings(null); setTested(null);
+    if (calibrating && calibrationRef.current) {
+      setCalibrationMessage("Reading saved note ceilings…");
+      void calibrationRef.current.read().then(values => {
+        if (!cancelled) { setCeilings(values); setCalibrationMessage(""); }
+      }).catch(err => { if (!cancelled) setCalibrationMessage(err.message); });
+    }
+    return () => { cancelled = true; };
+  }, [calibrating, !!calibration]);
+  async function saveCeiling(reset = false) {
+    if (!tested || !calibrationRef.current || !ceilings || saving) return;
+    release(); setSaving(true); setCalibrationMessage("");
+    try {
+      await calibrationRef.current.save(tested.channel, reset ? null : tested.power);
+      setCeilings(await calibrationRef.current.read());
+      setCalibrationMessage(reset ? "Original song calibration restored." : `Saved ${tested.power}% as this note’s fortissimo ceiling on the Arduino.`);
+    } catch (err) { setCalibrationMessage(err instanceof Error ? err.message : "Could not save calibration."); }
+    finally { setSaving(false); }
+  }
   const controls = useRef(manual);
   controls.current = manual;
   const generation = useRef(0);
@@ -42,7 +70,7 @@ export function StudioManual() {
   useEffect(() => { if (!manual) release(); }, [!!manual]);
 
   async function press(channel: number) {
-    if (!controls.current || holding.current) return;
+    if (!controls.current || holding.current || saving) return;
     holding.current = true;
     const current = ++generation.current;
     setActive(channel);
@@ -54,9 +82,11 @@ export function StudioManual() {
       const pulse = async () => {
         if (current !== generation.current) return;
         try {
-          const continued = await controls.current?.pulse(request, powerRef.current);
+          const testedPower = powerRef.current;
+          const continued = await controls.current?.pulse(request, testedPower);
           if (current !== generation.current) return;
           if (!continued) { release(); return; }
+          setTested({ channel, power: testedPower });
           if (current === generation.current) timer.current = setTimeout(() => void pulse(), 120);
         } catch (err) {
           if (current === generation.current) {
@@ -80,14 +110,26 @@ export function StudioManual() {
     <section className="studio-panel studio-settings-panel" aria-label="Manual motor controls">
       {!robotMode && <button onClick={toggleOutput}>Switch to angklung robot</button>}
       {!manual && <p role="status">Enable the Mac controller and connect Arduino USB above. Manual notes are available on that Mac; phone and ESP32 control are not supported here yet.</p>}
+      <label><input type="checkbox" checked={calibrating} disabled={saving} onChange={event => { release(); setCalibrating(event.target.checked); }} /> Calibration mode</label>
+      {calibrating && <section className="studio-calibration-panel" aria-label="Fortissimo calibration">
+        <h2>Set each note’s fortissimo (ff)</h2>
+        <p>Test a note at the power you want, release it, then save. At full song strength and 100% player volume, that note will use this ceiling. Softer dynamics stay below it.</p>
+        <p>Saved on the Arduino across restarts. Manual testing stays at raw power. Untested notes keep their existing calibration.</p>
+        <p>{tested ? `Last test: ${buildFullAngklungRack()[tested.channel].note} at ${tested.power}%` : "Hold a note below to test its power first."}</p>
+        <button disabled={!calibration || !ceilings || !tested || tested.power !== power || active !== null || saving}
+          onClick={() => void saveCeiling()}>{saving ? "Saving…" : "Set tested power as song ff max"}</button>
+        <button disabled={!calibration || !ceilings || !tested || ceilings[tested.channel] === null || active !== null || saving}
+          onClick={() => void saveCeiling(true)}>Restore this note’s original default</button>
+        <p role="status">{calibrationMessage}</p>
+      </section>}
       <p>Pressing a note stops the current song. Use a mouse, touch, or hold Space or Enter on a focused button.</p>
       <label>Motor power: {power}%
-        <input aria-label="Manual motor power" type="range" min="0" max="100" step="1" disabled={!manual}
+        <input aria-label="Manual motor power" type="range" min="0" max="100" step="1" disabled={!manual || saving}
           value={power} onChange={event => { setPower(Number(event.target.value)); setPowerEntry(null); }} />
       </label>
       <label className="studio-manual-power-entry">Type motor power (%)
         <input aria-label="Motor power percent" type="number" inputMode="numeric" min={0} max={100} step={1}
-          disabled={!manual} value={powerEntry ?? power}
+          disabled={!manual || saving} value={powerEntry ?? power}
           onChange={event => {
             const text = event.target.value;
             setPowerEntry(text);
@@ -106,7 +148,7 @@ export function StudioManual() {
       <p>Direct PWM power: 100% is full motor output, independent of song volume and note calibration. This is not measured RPM.</p>
       <div className="studio-manual-grid">
         {buildFullAngklungRack().map(({ note, actuator_channel: channel }) =>
-          <button key={channel} type="button" disabled={!manual} aria-label={`Hold ${note}, motor ${channel + 1}`}
+          <button key={channel} type="button" disabled={!manual || saving} aria-label={`Hold ${note}, motor ${channel + 1}`}
             aria-pressed={active === channel} className="studio-manual-note"
             onPointerDown={event => {
               if (event.button !== 0 || holding.current) return;
@@ -122,6 +164,7 @@ export function StudioManual() {
             }}
             onKeyUp={event => { if (event.key === " " || event.key === "Enter") { event.preventDefault(); release(); } }}>
             <strong>{note}</strong><span>Motor {channel + 1} · CH {channel}</span>
+            {calibrating && <small>{ceilings ? ceilings[channel] === null ? "Song ff: original default" : `Song ff max: ${ceilings[channel]}%` : "Song ff: not loaded"}</small>}
           </button>)}
       </div>
       <button onClick={() => { release(); actions.stop(); }}>Stop all motors</button>

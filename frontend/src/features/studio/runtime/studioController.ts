@@ -98,6 +98,23 @@ export class StudioController {
     } catch (error) { this.stop(); throw error; }
   }
 
+  async saveForteCalibration(channel: number, power: number | null) {
+    const robot = this.robot;
+    if (!robot?.connected || !robot.saveForteCalibration || this.bufferedRobot || this.sweeping)
+      throw new Error("Calibration requires Arduino USB on the Mac, with no sweep running.");
+    this.stop();
+    const request = this.playbackRequest;
+    const previous = this.manualStarting;
+    const pending = (async () => {
+      await previous.catch(() => {});
+      await this.stopping;
+      if (request !== this.playbackRequest) throw new Error("Calibration cancelled.");
+      await robot.saveForteCalibration!(channel, power);
+    })();
+    this.manualStarting = pending;
+    await pending;
+  }
+
   async runSweep() {
     const robot = this.robot;
     if (!robot?.connected || this.sweeping) throw new Error("Connect the Arduino and wait for the current sweep to finish.");

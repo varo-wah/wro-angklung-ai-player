@@ -224,3 +224,8 @@
   .studio-sidebar nav { overflow-x:auto; overscroll-behavior-x:contain; scrollbar-width:thin; }
   .studio-sidebar nav a { white-space:nowrap; }
 }
+
+.studio-calibration-panel { border:1px solid var(--line); border-radius:12px; padding:20px; margin:16px 0; background:var(--surface-alt); }
+.studio-calibration-panel button { padding:12px 16px; margin:8px 8px 8px 0; border:1px solid var(--line); border-radius:8px; background:var(--selected); color:var(--selected-ink); }
+.studio-calibration-panel p { margin:10px 0; line-height:1.6; }
+.studio-manual-note small { font-size:12px; color:var(--muted); }

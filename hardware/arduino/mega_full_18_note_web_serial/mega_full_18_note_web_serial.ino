@@ -1,4 +1,5 @@
 #include <Arduino.h>
+#include <EEPROM.h>
 #include <stdlib.h>
 #include <string.h>
 
@@ -7,6 +8,11 @@
 // =============================================================================
 
 const uint8_t CHANNEL_COUNT = 18;
+// 255 preserves the original calibration and song boost. Per-note records use
+// a value/complement pair; interrupted writes fall back to the original value.
+uint8_t forteMaxPercent[CHANNEL_COUNT];
+const int FORTE_EEPROM_BASE = 64;
+
 
 // =============================================================================
 // [L010] MOTOR PIN MAPPING
@@ -373,7 +379,9 @@ void startMotorPulseCalibrated(
   const uint32_t boostedDutyPermille =
     (uint32_t)calibratedDutyPermille * strength * 150UL / 100000UL;
   const uint16_t dutyPermille =
-    boostedDutyPermille > 1000UL ? 1000U : (uint16_t)boostedDutyPermille;
+    forteMaxPercent[channel] <= 100
+      ? (uint16_t)((uint32_t)forteMaxPercent[channel] * 10UL * strength / 1000UL)
+      : (boostedDutyPermille > 1000UL ? 1000U : (uint16_t)boostedDutyPermille);
 
   beginPulse(
     channel,
@@ -2286,6 +2294,34 @@ void handleCommand(
   }
 
   // ---------------------------------------------------------------------------
+  if (strcmp(command, "FFMAX_GET") == 0) {
+    commandOutput->print(F("FFMAX"));
+    for (uint8_t ch = 0; ch < CHANNEL_COUNT; ++ch) {
+      commandOutput->print(','); commandOutput->print(forteMaxPercent[ch]);
+    }
+    commandOutput->println();
+    return;
+  }
+  if (strncmp(command, "FFMAX,", 6) == 0) {
+    if (armed) { commandOutput->println(F("ERROR,DISARM_FIRST")); return; }
+    if (countCommas(command) != 2) { commandOutput->println(F("ERROR,INVALID_FFMAX")); return; }
+    char *channelText = strtok(command + 6, ",");
+    char *powerText = strtok(NULL, ",");
+    long channel, power;
+    if (!parseLongInRange(channelText, 0, CHANNEL_COUNT - 1, channel) ||
+        !parseLongInRange(powerText, 0, 255, power) || (power > 100 && power != 255)) {
+      commandOutput->println(F("ERROR,INVALID_FFMAX")); return;
+    }
+    allOff();
+    int address = FORTE_EEPROM_BASE + channel * 2;
+    EEPROM.update(address + 1, (uint8_t)power); // Invalidate before changing value.
+    EEPROM.update(address, (uint8_t)power);
+    EEPROM.update(address + 1, (uint8_t)(power ^ 0xFF));
+    forteMaxPercent[channel] = (uint8_t)power;
+    commandOutput->print(F("ACK,FFMAX,")); commandOutput->print(channel);
+    commandOutput->print(','); commandOutput->println(power);
+    return;
+  }
   if (strcmp(command, "MANUAL_CAPS") == 0) {
     commandOutput->println(F("CAPS,MANUAL_RAW,100,250"));
     return;
@@ -2772,7 +2808,16 @@ void enforceWirelessLease() {
 // [L1210] SETUP
 // =============================================================================
 
+void loadForteCalibration() {
+  for (uint8_t ch = 0; ch < CHANNEL_COUNT; ++ch) {
+    uint8_t value = EEPROM.read(FORTE_EEPROM_BASE + ch * 2);
+    uint8_t check = EEPROM.read(FORTE_EEPROM_BASE + ch * 2 + 1);
+    forteMaxPercent[ch] = value <= 100 && check == (uint8_t)(value ^ 0xFF) ? value : 255;
+  }
+}
+
 void setup() {
+  loadForteCalibration();
   owner = OWNER_NONE;
   commandOutput = &Serial;
   commandSource = OWNER_USB;

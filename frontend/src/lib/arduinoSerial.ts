@@ -213,6 +213,27 @@ export class ArduinoSerialController {
     await this.manualCommand(encodeArduinoNoteCommand(command), `ACK,NOTE,${command.actuator_channel}`);
   }
 
+  async readForteCalibration(): Promise<(number | null)[]> {
+    const reply = this.waitForLine(line => line.startsWith("FFMAX,"), 1500);
+    void reply.catch(() => {});
+    await this.writeLine("FFMAX_GET");
+    let line: string;
+    try { line = await reply; }
+    catch { throw new Error("Update the Arduino firmware to enable saved fortissimo calibration."); }
+    const values = line.split(",").slice(1).map(Number);
+    if (values.length !== 18 || values.some(n => !Number.isInteger(n) || (n !== 255 && (n < 0 || n > 100))))
+      throw new Error("Invalid calibration response from Arduino.");
+    return values.map(n => n === 255 ? null : n);
+  }
+
+  async saveForteCalibration(channel: number, power: number | null): Promise<void> {
+    if (!Number.isInteger(channel) || channel < 0 || channel > 17 ||
+        (power !== null && (!Number.isInteger(power) || power < 0 || power > 100)))
+      throw new Error("Choose a note and a power from 0 to 100%.");
+    await this.manualCommand("DISARM", "ACK,DISARM");
+    await this.manualCommand(`FFMAX,${channel},${power ?? 255}`, `ACK,FFMAX,${channel},${power ?? 255}`);
+  }
+
   async prepareManual(): Promise<void> {
     if (!this.connected) throw new Error("Connect Arduino USB first.");
     if (!this.manualSupported) {
