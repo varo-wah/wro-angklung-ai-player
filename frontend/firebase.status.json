@@ -1,7 +1,8 @@
 {
   "hosting": {
     "target": "status",
-    "public": "status-site",
+    "public": "out-status",
+    "predeploy": ["npm --prefix \"$PROJECT_DIR\" run build:public"],
     "cleanUrls": true,
     "ignore": [
       "firebase.status.json",

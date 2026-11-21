@@ -5,6 +5,7 @@
   "scripts": {
     "dev": "next dev",
     "build": "next build",
+    "build:public": "node scripts/build-public-library.mjs",
     "start": "next start",
     "test": "node --test tests/*.test.cjs",
     "lint": "next lint",
@@ -32,6 +33,7 @@
     "@types/react": "^19.0.0",
     "@types/react-dom": "^19.0.0",
     "autoprefixer": "^10.4.20",
+    "esbuild": "^0.28.2",
     "eslint": "^9.0.0",
     "eslint-config-next": "^15.0.0",
     "jsdom": "^30.0.1",

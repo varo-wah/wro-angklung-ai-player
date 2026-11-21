@@ -9,13 +9,8 @@
     guest: document.getElementById("open-guest"),
     pair: document.getElementById("open-pair"),
     legacy: document.getElementById("open-legacy"),
-    lastChecked: document.getElementById("last-checked"),
-    message: document.getElementById("status-message"),
-    ollama: document.getElementById("ollama-status"),
     refresh: document.getElementById("refresh-status"),
     title: document.getElementById("status-title"),
-    website: document.getElementById("website-status"),
-    whisper: document.getElementById("whisper-status"),
   };
   let checking = false;
 
@@ -29,11 +24,6 @@
     }
   }
 
-  function setService(element, available, unavailableLabel) {
-    element.textContent = available ? "Available" : unavailableLabel;
-    element.className = available ? "available" : "unavailable";
-  }
-
   function enableGuest(enabled) {
     for (const [element, path] of [[elements.guest, "/studio"], [elements.pair, "/studio/device"], [elements.legacy, "/control"]]) {
       element.href = enabled ? `${backendOrigin}${path}` : "#";
@@ -42,38 +32,17 @@
     }
   }
 
-  function render(state, payload) {
-    elements.dot.className = `status-dot ${state}`;
-    if (state === "online") {
-      elements.title.textContent = "Angklobot is online";
-      elements.message.textContent = "The website, speech recognition, and local AI are ready.";
-    } else if (state === "limited") {
-      elements.title.textContent = "Online with issues";
-      elements.message.textContent = "The Mac is reachable, but one or more local services need attention.";
-    } else if (state === "setup") {
-      elements.title.textContent = "Setup required";
-      elements.message.textContent = "Add the permanent Cloudflare Tunnel address before publishing this page.";
-    } else {
-      elements.title.textContent = "Angklobot is offline";
-      elements.message.textContent = "The Mac may be asleep, or the website and tunnel may be stopped.";
-    }
-
-    const services = payload?.services;
-    setService(elements.website, services?.website?.available === true, state === "setup" ? "Not configured" : "Unavailable");
-    setService(elements.whisper, services?.whisper?.available === true, state === "setup" ? "Not configured" : "Unavailable");
-    const ollamaReady = services?.ollama?.available === true && services?.ollama?.modelAvailable !== false;
-    setService(elements.ollama, ollamaReady, services?.ollama?.available === true ? "Model missing" : state === "setup" ? "Not configured" : "Unavailable");
-    enableGuest(state === "online" || state === "limited");
-    if (location.hash === "#pair" && (state === "online" || state === "limited")) {
-      location.replace(elements.pair.href);
-    }
-    elements.lastChecked.textContent = state === "setup" ? "" : `Last checked ${new Date().toLocaleTimeString()}`;
+  function render(online) {
+    elements.dot.className = online ? "online" : "offline";
+    elements.title.textContent = online ? "Studio server online" : "Studio server offline · previews available";
+    enableGuest(online);
+    if (online && location.hash === "#pair") location.replace(elements.pair.href);
   }
 
   async function checkStatus() {
     if (checking) return;
     if (!configured()) {
-      render("setup");
+      render(false);
       return;
     }
 
@@ -90,9 +59,9 @@
       }
       if (!response.ok) throw new Error("Status endpoint unavailable");
       const payload = await response.json();
-      render(payload.status === "online" ? "online" : "limited", payload);
+      render(payload.services?.website?.available === true);
     } catch {
-      render("offline");
+      render(false);
     } finally {
       checking = false;
       elements.refresh.disabled = false;
