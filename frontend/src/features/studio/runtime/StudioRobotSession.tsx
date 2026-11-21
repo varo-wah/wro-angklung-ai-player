@@ -1,7 +1,8 @@
 "use client";
 import { useEffect, useRef, useState, type ReactNode } from "react";
 import { useRobotSession } from "@/hooks/useRobotSession";
-import { RobotSessionStatus } from "@/components/RobotSessionStatus";
+import Link from "next/link";
+import type { StudioDeviceProps } from "../StudioDevices";
 import { ArduinoSerialController } from "@/lib/arduinoSerial";
 import { Esp32Transport } from "@/lib/esp32Transport";
 import { Esp32UsbLink } from "@/lib/esp32UsbLink";
@@ -162,18 +163,23 @@ export function StudioRobotSession({ runtime, view, children }: { runtime: Studi
     catch (err) { setSweepMessage(err instanceof Error ? err.message : "Sweep failed."); }
     finally { setSweeping(false); }
   }
-  const connection = <div className="studio-controller">
-    <h2>Mac controller</h2>
-    {session.role === "host" && <label>Connection <select aria-label="Robot transport" value={mode} disabled={arduino.status === "connecting" || arduino.status === "connected"}
-      onChange={event => { transport.current = null; setMode(event.target.value as RobotTransportMode); }}>
-      <option value="usb">Arduino USB</option><option value="esp32-usb">ESP32 USB</option><option value="esp32">ESP32 Wi-Fi</option>
-    </select></label>}
-    <RobotSessionStatus session={session} onEnableHost={async () => { await session.enableHost(); await connect(true); }} onConnect={() => connect()}
-      connectionLabel={mode === "usb" ? "Arduino USB" : mode === "esp32" ? "ESP32 Wi-Fi" : "ESP32 USB"} onStop={() => void send({type:"estop"})}/>
-    {session.role === "remote" && !shared && <small role="status">Waiting for the Mac Studio player. Open Studio on the Mac to share its queue.</small>}
-    {session.role === "host" && <small role="status">{arduino.message}</small>}
-  </div>;
-  return <StudioContext.Provider value={{ ...view, robotMode:true, toggleOutput: () => void switchOutput(), outputLabel:"Angklung robot", connection, actions,
+  const instrument = session.role === "host" ? arduino : session.status.arduino;
+  const stopRobot = () => void send({ type: "estop" });
+  const devices: StudioDeviceProps = {
+    session, instrument, mode,
+    changeMode(next) { transport.current = null; setMode(next); },
+    async enableHost() { await session.enableHost(); await connect(true); },
+    connect: () => connect(), stop: stopRobot,
+  };
+  const connection = <section className="device-strip" aria-label="Robot connection">
+    <Link href="/studio/device">{session.role === "host" ? "Mac controller" : remote ? "Phone remote" : "Connect devices"} ↗</Link>
+    <span role="status">{session.error || (session.status.hostOnline
+      ? instrument.status === "connected" ? instrument.outputMode === "active" ? "Angklobot connected" : "Connected · dry run" : "Mac online · instrument disconnected"
+      : session.serverAvailable ? "Mac controller offline" : "Checking connection…")}</span>
+    {session.status.hostOnline && <small>{session.status.sourceLabel || "No song selected"} · {session.status.playbackState}</small>}
+    {(remote || session.role === "host") && <button className="device-stop" onClick={stopRobot}>Stop robot</button>}
+  </section>;
+  return <StudioContext.Provider value={{ ...view, robotMode:true, toggleOutput: () => void switchOutput(), outputLabel:"Angklung robot", connection, devices, actions,
     manual: session.role === "host" && ready && mode === "usb" ? {
       begin: channel => { session.cancelQueued(); return runtime.beginManualNote(channel); },
       pulse: (request, power) => runtime.pulseManualNote(request, power), stop: () => runtime.stop(),

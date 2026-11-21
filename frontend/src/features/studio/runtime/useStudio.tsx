@@ -25,7 +25,13 @@ export function StudioProvider({ children }: { children: ReactNode }) {
   const snapshot = useSyncExternalStore(runtime.subscribe, runtime.getSnapshot, runtime.getSnapshot);
   const [robotMode, setRobotMode] = useState(false);
   const pathname = usePathname();
-  useEffect(() => { if (new URLSearchParams(window.location.search).get("output") === "robot") setRobotMode(true); }, [pathname]);
+  useEffect(() => {
+    if (pathname === "/studio/device" || new URLSearchParams(window.location.search).get("output") === "robot") {
+      if (!robotMode) { runtime.stop(); setRobotMode(true); }
+    }
+    // Read the requested output on navigation. The user can switch output afterwards.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [pathname, runtime]);
   const view: StudioView = { snapshot, actions: runtime.actions, robotMode: false, outputLabel: "Computer audio",
     connection: null, toggleOutput: () => { runtime.stop(); setRobotMode(!robotMode); } };
   if (robotMode) return <StudioRobotSession runtime={runtime} view={view}>{children}</StudioRobotSession>;

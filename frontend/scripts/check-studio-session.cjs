@@ -1,7 +1,7 @@
 // Run against a separate local test server. Never connects to hardware.
 const { chromium } = require(process.env.PLAYWRIGHT_MODULE || "playwright-core");
 (async () => {
-  const browser = await chromium.launch({ channel: "chrome", headless: true });
+  const browser = await chromium.launch({ channel: "chrome", headless: true, args: ["--host-resolver-rules=MAP phone.test 127.0.0.1", "--no-proxy-server"] });
   try {
     const url = (process.env.STUDIO_TEST_ORIGIN || "http://127.0.0.1:3187") + "/studio";
     const host = await browser.newPage();
@@ -26,23 +26,29 @@ const { chromium } = require(process.env.PLAYWRIGHT_MODULE || "playwright-core")
       Object.defineProperty(navigator, "serial", {value: {getPorts: async () => [], requestPort: async () => port}});
     });
     await host.goto(url);
-    await host.getByRole("button",{name:"Robot & phone connection"}).click();
+    const phoneUrl = new URL(url + "/device");
+    phoneUrl.hostname = "phone.test";
+    await phone.goto(phoneUrl.href);
+    await phone.getByRole("heading", { name: "Join the Mac" }).waitFor();
+    await phone.getByText("Offline", { exact: true }).waitFor();
+    if (await phone.getByRole("button", { name: "Pair device" }).isEnabled()) throw new Error("Offline pairing enabled");
+    await host.getByRole("link", {name:"Robot & phone connection"}).click();
     await host.getByRole("button", {name:"Enable Mac controller"}).click();
-    {
-      await host.getByRole("region",{name:"Robot connection"}).getByRole("button",{name:"Connect Arduino USB"}).click();
-      await host.getByText("Angklobot connected",{exact:true}).waitFor();
-    }
-    const code = await host.locator("strong.tracking-widest").innerText();
-    await phone.goto(url);
-    await phone.getByRole("button",{name:"Robot & phone connection"}).click();
+    await host.getByRole("button", {name:"Connect Arduino USB"}).click();
+    await host.getByText("Active",{exact:true}).waitFor();
+    const code = await host.getByLabel("Mac pairing code").innerText();
     await phone.getByLabel("Mac pairing code").fill(code);
     await phone.getByRole("button",{name:"Pair device"}).click();
-    await phone.getByText("Paired remote control").waitFor();
+    await phone.getByRole("heading", {name:"Phone paired"}).waitFor();
+    if (await phone.evaluate(() => document.documentElement.scrollWidth > innerWidth)) throw new Error("Pairing page overflows the phone");
+    await phone.getByRole("link", { name: "Open player" }).click();
+    await host.getByRole("link", { name: "Player", exact: true }).click();
     await phone.waitForFunction(() => !document.querySelector('button[aria-label="Play on robot"]')?.disabled);
     await phone.getByRole("button",{name:"Add Bengawan Solo to queue",exact:true}).click();
     await host.getByRole("button",{name:"Play queued Bengawan Solo",exact:true}).waitFor();
+    for (const page of [host, phone]) await page.getByRole("link", {name:"Playlists", exact:true}).click();
     await phone.getByLabel("Playlist name").fill("Concert");
-    await phone.getByRole("button",{name:"Save queue"}).click();
+    await phone.getByRole("button",{name:"Save playlist"}).click();
     await host.getByRole("button",{name:"Play playlist Concert"}).waitFor();
     await phone.getByRole("button",{name:"Play playlist Concert"}).click();
     await host.waitForFunction(() => window.serialLines.some(line => line.startsWith("NOTE,")));
@@ -51,6 +57,7 @@ const { chromium } = require(process.env.PLAYWRIGHT_MODULE || "playwright-core")
     await phone.waitForFunction(() => document.querySelector('input[aria-label="Player robot volume"]').value === "0");
     await phone.getByRole("slider",{name:"Player robot volume"}).press("End");
     await host.waitForFunction(() => document.querySelector('input[aria-label="Player robot volume"]').value === "100");
+    for (const page of [host, phone]) await page.getByRole("link", {name:"Player", exact:true}).click();
     await phone.getByRole("button",{name:"Queue repeat: off"}).click();
     await host.getByRole("button",{name:"Queue repeat: all"}).waitFor();
     await phone.getByRole("button",{name:"Play queued Bengawan Solo",exact:true}).click();
@@ -64,7 +71,8 @@ const { chromium } = require(process.env.PLAYWRIGHT_MODULE || "playwright-core")
     await host.getByText("Bengawan Solo · stopped",{exact:true}).waitFor();
     await host.waitForFunction(() => window.serialLines.lastIndexOf("DISARM") > window.serialLines.findLastIndex(s => s.startsWith("NOTE,")));
     await host.getByRole("link",{name:"Preferences"}).click();
-    await phone.getByRole("link",{name:/Settings|Preferences/}).click();
+    await phone.getByText("More", { exact: true }).click();
+    await phone.getByRole("link",{name:"Preferences", exact:true}).click();
     await phone.locator("#studio-volume").selectOption("30");
     await host.waitForFunction(() => document.querySelector("#studio-volume")?.value === "30");
     if (await host.getByRole("button",{name:"Run rack sweep"}).isVisible()) throw new Error("Sweep should start collapsed");
@@ -95,6 +103,7 @@ const { chromium } = require(process.env.PLAYWRIGHT_MODULE || "playwright-core")
     await host.mouse.move(1, 1);
     await host.mouse.up();
     await host.waitForFunction(() => window.serialLines.at(-1) === "DISARM");
+    await host.getByRole("link", {name:"Devices", exact:true}).click();
     await host.getByRole("button",{name:"Disable remote control"}).click();
     console.log("PASS: separate clients paired, selected, played, paused, stopped and released one Mac session.");
   } finally { await browser.close(); }

@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { useState, type CSSProperties, type ReactNode } from "react";
+import { useRef, useState, type CSSProperties, type ReactNode } from "react";
 import { useStudio } from "./runtime/useStudio";
 import { StudioAppearanceControls } from "./StudioAppearance";
 import { APPEARANCE_BOOTSTRAP } from "./runtime/preferences";
@@ -16,6 +16,8 @@ export type IconName =
   | "playlist"
   | "queueAdd"
   | "trash"
+  | "more"
+  | "phone"
   | "device"
   | "settings"
   | "play"
@@ -69,6 +71,8 @@ export function Icon({ name, size = 20 }: { name: IconName; size?: number }) {
         <path d="m17 4 4 1-1 15-4-1Z" />
       </>
     ),
+    more: <>{[5, 12, 19].map(x => <circle key={x} cx={x} cy="12" r="1.6" fill="currentColor" stroke="none" />)}</>,
+    phone: <><rect x="6" y="2" width="12" height="20" rx="3" /><path d="M11 18h2" /></>,
     device: (
       <>
         <rect x="3" y="4" width="18" height="13" rx="2" />
@@ -151,12 +155,15 @@ export function BrandMark() {
 export function StudioShell({ children }: { children: ReactNode }) {
   const pathname = usePathname();
   const { snapshot, actions, robotMode, connection, toggleOutput } = useStudio();
+  const moreMenu = useRef<HTMLDetailsElement>(null);
+  const secondaryRoutes = ["/studio/conduct", "/studio/manual", "/studio/settings"];
   const navigation: [string, string, IconName][] = [
     ["/studio", "Player", "music"],
     ["/studio/library", "Library", "library"],
     ["/studio/playlists", "Playlists", "playlist"],
     ["/studio/conduct", "Conduct", "conduct"],
     ["/studio/manual", "Manual notes", "keyboard"],
+    ["/studio/device", "Devices", "phone"],
     ["/studio/settings", "Preferences", "settings"],
   ];
   return (
@@ -180,22 +187,37 @@ export function StudioShell({ children }: { children: ReactNode }) {
           </div>
         </div>
         <span className="studio-nav-label">WORKSPACE</span>
-        <nav aria-label="Studio navigation" style={{ gridTemplateColumns: `repeat(${navigation.length + 1}, minmax(64px, 1fr))` }}>
+        <nav aria-label="Studio navigation">
           {navigation.map(([href, label, icon]) => (
             <Link
+              className={secondaryRoutes.includes(href) ? "studio-nav-secondary" : undefined}
               key={href}
               href={href}
               aria-current={pathname === href ? "page" : undefined}
             >
               <Icon name={icon} />
               <span className="studio-nav-label-full">{label}</span>
-              <span className="studio-nav-label-short">{href === "/studio/settings" ? "Settings" : href === "/studio/manual" ? "Notes" : href === "/studio/device" ? "Live" : label}</span>
+              <span className="studio-nav-label-short">{href === "/studio/settings" ? "Settings" : href === "/studio/manual" ? "Notes" : label}</span>
               {href === "/studio/library" && snapshot.catalog.length > 0 ? (
                 <small>{snapshot.catalog.length}</small>
               ) : null}
             </Link>
           ))}
-          <a href="/legacy" className="studio-legacy-mobile" aria-label="Legacy interface"><Icon name="settings"/><span>Legacy</span></a>
+          <details className="studio-more" ref={moreMenu}
+            onBlur={event => { if (!event.currentTarget.contains(event.relatedTarget)) event.currentTarget.open = false; }}
+            onKeyDown={event => {
+              if (event.key === "Escape") {
+                event.currentTarget.open = false;
+                event.currentTarget.querySelector("summary")?.focus();
+              }
+            }}>
+            <summary data-active={secondaryRoutes.includes(pathname)}><Icon name="more" /><span>More</span></summary>
+            <div className="studio-more-links" onClick={() => { if (moreMenu.current) moreMenu.current.open = false; }}>
+              {navigation.filter(([href]) => secondaryRoutes.includes(href)).map(([href, label, icon]) =>
+                <Link key={href} href={href} aria-current={pathname === href ? "page" : undefined}><Icon name={icon} />{label}</Link>)}
+              <a href="/legacy"><Icon name="arrow" />Legacy interface</a>
+            </div>
+          </details>
         </nav>
         <a className="studio-legacy-link" href="/legacy">Legacy interface ↗</a>
         <div className="studio-sidebar-bottom">
@@ -215,12 +237,12 @@ export function StudioShell({ children }: { children: ReactNode }) {
             </span>
           </span>
           <div className="studio-topbar-actions">
-            <button className="studio-output-badge" onClick={toggleOutput} aria-pressed={robotMode}><span />{robotMode ? "Use computer audio" : "Play on angklung"}</button>
+            {pathname !== "/studio/device" && <button className="studio-output-badge" onClick={toggleOutput} aria-pressed={robotMode}><span />{robotMode ? "Use computer audio" : "Play on angklung"}</button>}
             <StudioAppearanceControls />
           </div>
         </header>
         <main id="studio-main" className="studio-main">
-          {connection}
+          {pathname !== "/studio/device" && connection}
           {snapshot.error ? (
             <div className="studio-alert" role="alert">
               <span>{snapshot.error}</span>
@@ -254,7 +276,7 @@ export function StudioShell({ children }: { children: ReactNode }) {
           {children}
         </main>
       </div>
-      {pathname !== "/studio/manual" && pathname !== "/studio/conduct" && <StudioPlayer />}
+      {pathname !== "/studio/manual" && pathname !== "/studio/conduct" && pathname !== "/studio/device" && <StudioPlayer />}
     </div>
   );
 }

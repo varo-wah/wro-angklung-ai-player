@@ -4,7 +4,7 @@ const fs = require('node:fs');
 const { JSDOM } = require('jsdom');
 const path = require('node:path');
 for (const state of ['online', 'limited', 'offline', 'setup']) {
-  test('Studio launcher routes and disables both versions: ' + state, async () => {
+  test('Studio launcher routes and disables Studio, pairing and legacy: ' + state, async () => {
     const folder = path.join(__dirname, '../status-site');
     const dom = new JSDOM(fs.readFileSync(path.join(folder, 'index.html'), 'utf8'), {runScripts:'outside-only', url:'https://example.test'});
     try {
@@ -16,7 +16,7 @@ for (const state of ['online', 'limited', 'offline', 'setup']) {
       };
       dom.window.eval(fs.readFileSync(path.join(folder,'status.js'),'utf8'));
       await new Promise(resolve => setImmediate(resolve));
-      for (const [id, route] of [['open-guest','/studio'], ['open-legacy','/control']]) {
+      for (const [id, route] of [['open-guest','/studio'], ['open-pair','/studio/device'], ['open-legacy','/control']]) {
         const link = dom.window.document.getElementById(id);
         const enabled = state === 'online' || state === 'limited';
         assert.equal(link.getAttribute('aria-disabled'), String(!enabled));

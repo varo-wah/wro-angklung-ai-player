@@ -1,9 +1,11 @@
 import { createContext, type ReactNode } from "react";
 import type { StudioController, StudioSnapshot } from "./studioController";
 
+import type { StudioDeviceProps } from "../StudioDevices";
+
 export type StudioView = { snapshot: StudioSnapshot; actions: StudioController["actions"]; robotMode: boolean;
   manual?: { begin(channel: number): Promise<number | null>; pulse(request: number, power: number): Promise<boolean>; stop(): void };
   calibration?: { read(): Promise<(number | null)[]>; save(channel: number, power: number | null): Promise<void> };
   sweep?: { run(): void; busy: boolean; message: string };
-  outputLabel: string; toggleOutput(): void; connection: ReactNode };
+  outputLabel: string; toggleOutput(): void; devices?: StudioDeviceProps; connection: ReactNode };
 export const StudioContext = createContext<StudioView | null>(null);

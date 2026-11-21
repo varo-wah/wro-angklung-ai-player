@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
+import Link from "next/link";
 import { buildFullAngklungRack } from "@/lib/instrumentMap";
 import { useStudio } from "./runtime/useStudio";
 
@@ -109,7 +110,7 @@ export function StudioManual() {
     </div></div>
     <section className="studio-panel studio-settings-panel" aria-label="Manual motor controls">
       {!robotMode && <button onClick={toggleOutput}>Switch to angklung robot</button>}
-      {!manual && <p role="status">Enable the Mac controller and connect Arduino USB above. Manual notes are available on that Mac; phone and ESP32 control are not supported here yet.</p>}
+      {!manual && <p role="status">On the Mac, open <Link href="/studio/device">Devices</Link>, enable the controller, and connect Arduino USB to play manual notes.</p>}
       <label><input type="checkbox" checked={calibrating} disabled={saving} onChange={event => { release(); setCalibrating(event.target.checked); }} /> Calibration mode</label>
       {calibrating && <section className="studio-calibration-panel" aria-label="Fortissimo calibration">
         <h2>Set each note’s fortissimo (ff)</h2>

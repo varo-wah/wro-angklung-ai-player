@@ -3,6 +3,7 @@ import { StudioWorkspace } from "@/features/studio/StudioWorkspace";
 import "./studio.css";
 import "./performance.css";
 import "./appearance.css";
+import "./devices.css";
 
 export const metadata: Metadata = {
   title: "Angklobot Studio",

@@ -7,6 +7,7 @@
   const elements = {
     dot: document.getElementById("status-dot"),
     guest: document.getElementById("open-guest"),
+    pair: document.getElementById("open-pair"),
     legacy: document.getElementById("open-legacy"),
     lastChecked: document.getElementById("last-checked"),
     message: document.getElementById("status-message"),
@@ -34,7 +35,7 @@
   }
 
   function enableGuest(enabled) {
-    for (const [element, path] of [[elements.guest, "/studio"], [elements.legacy, "/control"]]) {
+    for (const [element, path] of [[elements.guest, "/studio"], [elements.pair, "/studio/device"], [elements.legacy, "/control"]]) {
       element.href = enabled ? `${backendOrigin}${path}` : "#";
       element.classList.toggle("disabled", !enabled);
       element.setAttribute("aria-disabled", String(!enabled));
@@ -63,6 +64,9 @@
     const ollamaReady = services?.ollama?.available === true && services?.ollama?.modelAvailable !== false;
     setService(elements.ollama, ollamaReady, services?.ollama?.available === true ? "Model missing" : state === "setup" ? "Not configured" : "Unavailable");
     enableGuest(state === "online" || state === "limited");
+    if (location.hash === "#pair" && (state === "online" || state === "limited")) {
+      location.replace(elements.pair.href);
+    }
     elements.lastChecked.textContent = state === "setup" ? "" : `Last checked ${new Date().toLocaleTimeString()}`;
   }
 
@@ -96,7 +100,7 @@
   }
 
   elements.refresh.addEventListener("click", checkStatus);
-  for (const link of [elements.guest, elements.legacy]) link.addEventListener("click", function (event) {
+  for (const link of [elements.guest, elements.pair, elements.legacy]) link.addEventListener("click", function (event) {
     if (link.getAttribute("aria-disabled") === "true") event.preventDefault();
   });
   void checkStatus();

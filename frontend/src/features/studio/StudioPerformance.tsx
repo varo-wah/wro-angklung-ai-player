@@ -8,7 +8,7 @@ import { useStudio } from "./runtime/useStudio";
 import { QueueResizeHandle } from "./QueueResizeHandle";
 
 export function StudioPerformance() {
-  const { snapshot: s, actions: a, robotMode, outputLabel, toggleOutput } = useStudio();
+  const { snapshot: s, actions: a, robotMode, outputLabel } = useStudio();
   const [query, setQuery] = useState("");
   const [collection, setCollection] = useState("all");
   const [group, setGroup] = useState("all");
@@ -32,7 +32,7 @@ export function StudioPerformance() {
     <div className="performance-workspace">
       <div className="performance-heading">
         <div><p className="studio-eyebrow">ANGKLOBOT / PERFORMANCE WORKSPACE</p><h1>Let the music play.</h1></div>
-        <button className="performance-connect" onClick={toggleOutput}><Icon name="device" size={17} /> {robotMode ? "Switch to computer audio" : "Robot & phone connection"} <Icon name="arrow" size={16} /></button>
+        <Link className="performance-connect" href="/studio/device"><Icon name="phone" size={17} /> Robot &amp; phone connection <Icon name="arrow" size={16} /></Link>
       </div>
       <div className="performance-columns" style={{ "--queue-width": `${queueDraft ?? s.preferences.queueWidth}px` } as CSSProperties}>
         <div className="performance-main">
